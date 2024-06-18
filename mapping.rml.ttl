@@ -1,0 +1,136 @@
+@prefix rml: <http://semweb.mmlab.be/ns/rml#> .
+@prefix rr: <http://www.w3.org/ns/r2rml#> .
+@prefix ql: <http://semweb.mmlab.be/ns/ql#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix : <http://example.org/rules/> .
+@prefix schema: <http://schema.org/> .
+@prefix commonlib: <https://commonlib.equinor.com/Library/> .
+@prefix dexpi: <https://dexpi.org/ontology/> .
+@prefix asset: <https://assetid.equinor.comm/plantx#> .
+@prefix dbo: <http://dbpedia.org/ontology/> .
+
+:TriplesMap a rr:TriplesMap;
+  rml:logicalSource [
+    rml:source "/home/daghovland/source/repos/TrainingTestCases/dexpi 1.3/example pids/C01 DEXPI Reference P&ID/C01V04-VER.EX01.xml";
+    rml:referenceFormulation ql:XPath;
+    rml:iterator "//*"
+  ].
+:TriplesMap rr:subjectMap [
+  rr:template "https://assetid.equinor.com/plantx#{@ID}";
+  rr:termType rr:IRI;
+].
+:TriplesMap rr:predicateObjectMap [
+  rr:predicate rdf:type;
+  rr:objectMap [ 
+    rml:reference "@ComponentClassURI" ;
+    rr:termType rr:IRI
+    ];
+].
+
+:TriplesMap rr:predicateObjectMap [
+  rr:predicate rdfs:label;
+  rr:objectMap [ 
+    rml:reference "Label/Text/@String" 
+    ];
+].
+
+
+:TriplesMap rr:predicateObjectMap [
+  rr:predicate dexpi:hasLabel;
+  rr:objectMap [ 
+    rr:template "https://assetid.equinor.com/plantx#{Label/@ID}"
+    ];
+].
+
+
+
+:AttributesMap a rr:TriplesMap;
+  rml:logicalSource [
+    rml:source "/home/daghovland/source/repos/TrainingTestCases/dexpi 1.3/example pids/C01 DEXPI Reference P&ID/C01V04-VER.EX01.xml";
+    rml:referenceFormulation ql:XPath;
+    rml:iterator "//GenericAttributes/GenericAttribute"
+  ].
+
+
+:AttributesMap rr:subjectMap [
+  rr:template "https://assetid.equinor.com/plantx#{../../@ID}"
+].
+
+:AttributesMap rr:predicateObjectMap [
+  rr:predicateMap [
+    rml:reference "@AttributeURI";
+  ];
+  rr:objectMap [ 
+    rml:reference "@Value" ;
+    rr:termType rr:Literal
+    ],
+    [ 
+    rml:reference "@ValueURI";
+    rr:termType rr:IRI
+    ]; 
+
+].
+
+
+:ConnectionsMap a rr:TriplesMap;
+  rml:logicalSource [
+    rml:source "/home/daghovland/source/repos/TrainingTestCases/dexpi 1.3/example pids/C01 DEXPI Reference P&ID/C01V04-VER.EX01.xml";
+    rml:referenceFormulation ql:XPath;
+    rml:iterator "//Connection"
+  ].
+
+:ConnectionsMap rr:subjectMap [
+  rr:template "https://assetid.equinor.com/plantx#{../../@ID}"
+].
+
+:ConnectionsMap rr:predicateObjectMap [
+  rr:predicate dexpi:hasConnectionFrom;
+  rr:objectMap 
+    [ 
+    rr:template "https://assetid.equinor.com/plantx#{@FromID}";
+    rr:termType rr:IRI
+    ]; 
+
+].
+
+
+:ConnectionsMap rr:predicateObjectMap [
+  rr:predicate dexpi:hasConnectionTo;
+  rr:objectMap 
+    [ 
+    rr:template "https://assetid.equinor.com/plantx#{@ToID}";
+    rr:termType rr:IRI
+    ]; 
+
+].
+
+
+:LabelsMap a rr:TriplesMap;
+  rml:logicalSource [
+    rml:source "/home/daghovland/source/repos/TrainingTestCases/dexpi 1.3/example pids/C01 DEXPI Reference P&ID/C01V04-VER.EX01.xml";
+    rml:referenceFormulation ql:XPath;
+    rml:iterator "*/Label"
+  ].
+:LabelsMap rr:subjectMap [
+  rr:template "https://assetid.equinor.com/plantx#{@ID}" 
+].
+
+:LabelsMap rr:predicateObjectMap [
+  rr:predicate rdf:type;
+  rr:objectMap [ 
+    rml:reference "@ComponentClassURI" ;
+    rr:termType rr:IRI
+    ];
+].
+
+
+:ConceptModelMap a rr:TriplesMap;
+    rml:logicalSource [
+    rml:source "/home/daghovland/source/repos/TrainingTestCases/dexpi 1.3/example pids/C01 DEXPI Reference P&ID/C01V04-VER.EX01.xml";
+    rml:referenceFormulation ql:XPath;
+    rml:iterator "/PlantModel"
+  ].
+
+:ConceptModelMap rr:subjectMap [
+    rr:template "https://example.com/PlantModel/{@ID}"
+  ].
