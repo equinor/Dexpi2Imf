@@ -35,6 +35,9 @@ asset:AHA-D065-AG-18-PE-0001-004--ReciprocatingPump-1 rdf:type <http://data.posc
                                                         imf:fulfills asset:AHA-Tag-20-ABC-01 .
 
 # This triple comes from the datasheet.
+asset:grundfos-PUMPA12342 rdf:type :Pump;
+            imf:fulfills asset:AHA-D065-AG-18-PE-0001-004--ReciprocatingPump-1 ;
+            :weightInKiloGrams 1234 .
 
                                                         
 ```
