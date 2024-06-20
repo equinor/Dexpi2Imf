@@ -11,7 +11,7 @@
 
 :TriplesMap a rr:TriplesMap;
   rml:logicalSource [
-    rml:source "/home/daghovland/source/repos/TrainingTestCases/dexpi 1.3/example pids/C01 DEXPI Reference P&ID/C01V04-VER.EX01.xml";
+    rml:source "pandid.xml";
     rml:referenceFormulation ql:XPath;
     rml:iterator "//*"
   ].
@@ -46,7 +46,7 @@
 
 :AttributesMap a rr:TriplesMap;
   rml:logicalSource [
-    rml:source "/home/daghovland/source/repos/TrainingTestCases/dexpi 1.3/example pids/C01 DEXPI Reference P&ID/C01V04-VER.EX01.xml";
+    rml:source "pandid.xml";
     rml:referenceFormulation ql:XPath;
     rml:iterator "//GenericAttributes/GenericAttribute"
   ].
@@ -71,10 +71,20 @@
 
 ].
 
+:AttributesMap rr:predicateObjectMap [
+  rr:predicateMap [
+    rr:template "https://rdf.equinor.com/dexpi#{@Name}";
+  ];
+  rr:objectMap [ 
+    rml:reference "@Value" ;
+    rr:termType rr:Literal
+    ]; 
+
+].
 
 :ConnectionsMap a rr:TriplesMap;
   rml:logicalSource [
-    rml:source "/home/daghovland/source/repos/TrainingTestCases/dexpi 1.3/example pids/C01 DEXPI Reference P&ID/C01V04-VER.EX01.xml";
+    rml:source "pandid.xml";
     rml:referenceFormulation ql:XPath;
     rml:iterator "//Connection"
   ].
@@ -107,7 +117,7 @@
 
 :ConnectionPointsMap a rr:TriplesMap;
   rml:logicalSource [
-    rml:source "/home/daghovland/source/repos/TrainingTestCases/dexpi 1.3/example pids/C01 DEXPI Reference P&ID/C01V04-VER.EX01.xml";
+    rml:source "pandid.xml";
     rml:referenceFormulation ql:XPath;
     rml:iterator "//ConnectionPoints/Node[@Type='process']"
   ].
@@ -130,7 +140,7 @@
 
 # :LabelsMap a rr:TriplesMap;
 #   rml:logicalSource [
-#     rml:source "/home/daghovland/source/repos/TrainingTestCases/dexpi 1.3/example pids/C01 DEXPI Reference P&ID/C01V04-VER.EX01.xml";
+#     rml:source "pandid.xml";
 #     rml:referenceFormulation ql:XPath;
 #     rml:iterator "*/Label"
 #   ].
@@ -149,7 +159,7 @@
 
 :ConceptModelMap a rr:TriplesMap;
     rml:logicalSource [
-    rml:source "/home/daghovland/source/repos/TrainingTestCases/dexpi 1.3/example pids/C01 DEXPI Reference P&ID/C01V04-VER.EX01.xml";
+    rml:source "pandid.xml";
     rml:referenceFormulation ql:XPath;
     rml:iterator "/PlantModel"
   ].

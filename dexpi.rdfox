@@ -14,6 +14,6 @@ prefix dbo: <http://dbpedia.org/ontology/>
 import > asset:axioms dexpi.ttl
 importaxioms  asset:axioms 
 
-import "C01V04-VER.EX01.trig"
+import "pandid.trig"
 
 endpoint start
