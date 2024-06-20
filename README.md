@@ -19,3 +19,9 @@ RDFox sandbox . dexpi
 
 Open a browser at the query  
 [SELECT * WHERE {  ?asset dexpi:hasConnection ?d  }](http://localhost:12110/console/test?query=SELECT%20%2A%20WHERE%20%7B%20%20%3Fasset%20dexpi%3AhasConnection%20%3Fd%20%20%7D) and click "Explore Results"
+
+# Example DEXPI files
+
+* https://github.com/equinor/NOAKADEXPI
+
+* https://gitlab.com/dexpi/TrainingTestCases
