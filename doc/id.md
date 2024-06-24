@@ -16,7 +16,10 @@ Tags are one of the persistent, and globally understood names in Equinor. Unfort
 
 A solution is to use IRIs that also include the aspect, f.ex. adding Activity/Space/Implementation to the IRI. This solution is not acceptable, since many systems have objects that do not correspond to tags, or make objects before tags are decided. 
 
-The chosen solution is to choose one perspective, probably activity, or some "tag"-perspecitve, and let the IRI made by facility + tag represent that object, and define relations between this and the other objects. This is an example of how that could look:
+The chosen solution is to choose one perspective, probably activity, or some "tag"-perspecitve, and let the IRI made by facility + tag represent that object, and define relations between this and the other objects. 
+
+### Example
+This is an example of how the perspective-approach could look
 
 ```turtle
 @prefix : <https://rdf.equinor.com/dexpi#> .
@@ -52,4 +55,12 @@ The second identifier `asset:AHA-D065-AG-18-PE-0001-004--ReciprocatingPump-1` re
 The third identifier `asset:grundfos-PUMPA12342` is a product catalog id, identifying a specific type of pump from a specific supplier. 
 
 
+### Requirements
+#### The basic global / Equinor-wide requirements of this approach are: 
+- A unique URL for each "aspect". This will be used as the first part of the persistent IRI for objects. 
+- Some persistent code tables for globally understood identifiers. Among these are three-letter facility codes, tag numbers, and document numbers.
 
+
+#### The system requirement for the approach: 
+Locally unique persistent IDs for all relevant objects. Locally unique means that the ID must be unique for the combination of aspect + any number of code table values. For the example above, `ReciprocatingPump-1` must be unique (and persistent across time/revisions) for the document with name `D065-AG-18-PE-0001` regarding the facility `AHA`.
+So  `ReciprocatingPump-1` can occur in any document not pertaining to `AHA` and in any other document than `D065-AG-18-PE-0001` pertaining to `AHA`. But in any verison of a document `D065-AG-18-PE-0001` about `AHA`we require that `ReciprocatingPump-1` refers to the same object.
