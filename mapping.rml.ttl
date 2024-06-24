@@ -9,6 +9,9 @@
 @prefix asset: <https://assetid.equinor.comm/plantx#> .
 @prefix dbo: <http://dbpedia.org/ontology/> .
 
+:Dexpi-mappings
+    a owl:Ontology .
+
 :TriplesMap a rr:TriplesMap;
   rml:logicalSource [
     rml:source "pandid.xml";

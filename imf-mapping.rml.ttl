@@ -1,0 +1,133 @@
+@prefix rml: <http://semweb.mmlab.be/ns/rml#> .
+@prefix rr: <http://www.w3.org/ns/r2rml#> .
+@prefix ql: <http://semweb.mmlab.be/ns/ql#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix : <http://example.org/rules/> .
+@prefix schema: <http://schema.org/> .
+@prefix commonlib: <https://commonlib.equinor.com/Library/> .
+@prefix dexpi: <https://rdf.equinor.com/dexpi#> .
+@prefix asset: <https://assetid.equinor.comm/plantx#> .
+@prefix dbo: <http://dbpedia.org/ontology/> .
+@prefix imf: <http://ns.imfid.org/imf#> .
+
+:Imf-mappings
+    a owl:Ontology ;
+    owl:imports :Dexpi-mappings .
+
+
+:ElementMap a rr:TriplesMap;
+  rml:logicalSource [
+    rml:source "pandid.xml";
+    rml:referenceFormulation ql:XPath;
+    rml:iterator "//*"
+  ].
+:ElementMap rr:subjectMap [
+  rr:template "https://assetid.equinor.com/plantx#{@ID}";
+  rr:termType rr:IRI;
+].
+
+:ElementMap rr:predicateObjectMap [
+  rr:predicate rdf:type;
+  rr:objectMap [ 
+    rml:reference "@ComponentClassURI" ;
+    rr:termType rr:IRI
+  ],
+  [ 
+    rr:constant "http://ns.imfid.org/imf#AspectElement" ;
+    rr:termType rr:IRI
+  ];
+].
+
+:ElementMap rr:predicateObjectMap [
+  rr:predicate "http://ns.imfid.org/imf#hasAspect";
+  rr:objectMap [ 
+    rr:constant "http://ns.imfid.org/imf#functionAspect" ;
+    rr:termType rr:IRI
+  ];
+].
+
+:ElementMap rr:predicateObjectMap [
+  rr:predicate "http://ns.imfid.org/imf#partOf";
+  rr:objectMap [ 
+    rr:template "https://assetid.equinor.com/plantx#{../@ID}";
+    rr:termType rr:IRI
+  ];
+].
+
+:PipingNetworkSegmentMap a rr:TriplesMap;
+  rml:logicalSource [
+    rml:source "pandid.xml";
+    rml:referenceFormulation ql:XPath;
+    rml:iterator "//PipingNetworkSegment"
+  ].
+
+:PipingNetworkSegmentMap rr:subjectMap [
+    rr:template "https://assetid.equinor.com/plantx#{@ID}";
+    rr:termType rr:IRI;
+    ].
+
+
+:PipingNetworkSegmentMap rr:predicateObjectMap [
+  rr:predicate rdf:type;
+  rr:objectMap [ 
+    rr:constant "http://ns.imfid.org/imf#Connector" ;
+    rr:termType rr:IRI
+  ];
+].
+
+
+:PipingNetworkSegmentMap rr:predicateObjectMap [
+  rr:predicate imf:connectedTo;
+  rr:objectMap [ 
+    rr:template "https://assetid.equinor.com/plantx#{@FromID}";
+    rr:termType rr:IRI
+  ];
+].
+
+
+:PipingNetworkSegmentMap rr:predicateObjectMap [
+  rr:predicate imf:connectedTo;
+  rr:objectMap [ 
+    rr:template "https://assetid.equinor.com/plantx#{@ToID}";
+    rr:termType rr:IRI
+  ];
+].
+
+
+:AttributesMap a rr:TriplesMap;
+  rml:logicalSource [
+    rml:source "pandid.xml";
+    rml:referenceFormulation ql:XPath;
+    rml:iterator "//GenericAttributes/GenericAttribute"
+  ].
+
+
+:AttributesMap rr:subjectMap [
+  rr:template "https://assetid.equinor.com/plantx#{../../@ID}"
+].
+
+:AttributesMap rr:predicateObjectMap [
+  rr:predicateMap [
+    rml:reference "@AttributeURI";
+  ];
+  rr:objectMap [ 
+    rml:reference "@Value" ;
+    rr:termType rr:Literal
+    ],
+    [ 
+    rml:reference "@ValueURI";
+    rr:termType rr:IRI
+    ]; 
+
+].
+
+:AttributesMap rr:predicateObjectMap [
+  rr:predicateMap [
+    rr:template "https://rdf.equinor.com/dexpi#{@Name}";
+  ];
+  rr:objectMap [ 
+    rml:reference "@Value" ;
+    rr:termType rr:Literal
+    ]; 
+
+].
