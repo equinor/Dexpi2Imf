@@ -24,6 +24,8 @@ This is an example of how the perspective-approach could look
 ```turtle
 @prefix : <https://rdf.equinor.com/dexpi#> .
 @prefix asset: <https://assetid.equinor.com/> .
+@prefix activity: <https://assetid.equinor.com/activity> .
+@prefix implementation: <https://assetid.equinor.com/activity> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix imf: <https://ns.imfid.org/imf#> .
@@ -33,13 +35,13 @@ asset:AHA-Tag-P4712 rdf:type :Tag ;
                    rdfs:label "P4712" .
 
 # This triple comes from the P&ID. It assumes the P&ID knows what tag is used.
-asset:AHA-D065-AG-18-PE-0001-004--ReciprocatingPump-1 rdf:type <http://data.posccaesar.org/rdl/RDS416969> ;
+activity:AHA-D065-AG-18-PE-0001-004--ReciprocatingPump-1 rdf:type <http://data.posccaesar.org/rdl/RDS416969> ;
                                                         rdfs:label "P4712";
                                                         <http://sandbox.dexpi.org/rdl/TagNameAssignmentClass> "P4712";
                                                         imf:fulfills asset:AHA-Tag-P4712 .
 
 # This triple comes from the datasheet.
-asset:grundfos-PUMPA12342 rdf:type :Pump;
+implementation:grundfos-PUMPA12342 rdf:type :Pump;
             imf:fulfills asset:AHA-Tag-P4712 ;
             :weightInKiloGrams 1234 .
 
@@ -50,9 +52,9 @@ The example is based on P4712 in https://gitlab.com/dexpi/TrainingTestCases/-/bl
 
 The first identifier `asset:AHA-Tag-P4712`is basically just a tag (`P4712`) in a facility (Aasta Hansteen - `AHA`), so the "tag"-perspecitve mentioned above. 
 
-The second identifier `asset:AHA-D065-AG-18-PE-0001-004--ReciprocatingPump-1` represents an object in a P&ID-drawing and is built up by document number (`AHA-D065-AG-18-PE-0001-004`) of the P&ID plus the local ID  (`ReciprocatingPump-1`) on the P&ID. 
+The second identifier `activity:AHA-D065-AG-18-PE-0001-004--ReciprocatingPump-1` represents an object in a P&ID-drawing and is built up by document number (`AHA-D065-AG-18-PE-0001-004`) of the P&ID plus the local ID  (`ReciprocatingPump-1`) on the P&ID. 
 
-The third identifier `asset:grundfos-PUMPA12342` is a product catalog id, identifying a specific type of pump from a specific supplier. 
+The third identifier `implementation:grundfos-PUMPA12342` is a product catalog id, identifying a specific type of pump from a specific supplier. 
 
 
 ### Requirements
@@ -62,5 +64,9 @@ The third identifier `asset:grundfos-PUMPA12342` is a product catalog id, identi
 
 
 #### The system requirement for the approach: 
-Locally unique persistent IDs for all relevant objects. Locally unique means that the ID must be unique for the combination of aspect + any number of code table values. For the example above, `ReciprocatingPump-1` must be unique (and persistent across time/revisions) for the document with name `D065-AG-18-PE-0001` regarding the facility `AHA`.
-So  `ReciprocatingPump-1` can occur in any document not pertaining to `AHA` and in any other document than `D065-AG-18-PE-0001` pertaining to `AHA`. But in any verison of a document `D065-AG-18-PE-0001` about `AHA`we require that `ReciprocatingPump-1` refers to the same object.
+Locally unique persistent IDs for all relevant objects. Locally unique means that the ID must be unique for the combination of aspect + any number of code table values. 
+
+For the example above, usage of `activity:AHA-D065-AG-18-PE-0001-004--ReciprocatingPump-1` requires that`ReciprocatingPump-1` must be a unique activity/function (and persistent across time/revisions) for the document with name `D065-AG-18-PE-0001` regarding the facility `AHA`.
+So the activity `ReciprocatingPump-1` can occur in any document not pertaining to `AHA` and in any other document than `D065-AG-18-PE-0001` pertaining to `AHA`. 
+
+But in any verison of a document `D065-AG-18-PE-0001` about `AHA`we require that `ReciprocatingPump-1` refers to the same object. Also, the implementation of `ReciprocatingPump-1` can use the same local ID, but has a different aspect-url-prefix, so can have different properties, lifetime, etc.
