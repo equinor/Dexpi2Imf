@@ -26,24 +26,28 @@ The chosen solution is to choose one perspective, probably activity, or some "ta
 @prefix imf: <https://ns.imfid.org/imf#> .
 
 # This triple comes from the tag master
-asset:AHA-Tag-20-ABC-01 rdf:type :Tag ;
-                   rdfs:label "20-ABC-01" .
+asset:AHA-Tag-P4712 rdf:type :Tag ;
+                   rdfs:label "P4712" .
 
 # This triple comes from the P&ID. It assumes the P&ID knows what tag is used.
 asset:AHA-D065-AG-18-PE-0001-004--ReciprocatingPump-1 rdf:type <http://data.posccaesar.org/rdl/RDS416969> ;
                                                         rdfs:label "P4712";
-                                                        imf:fulfills asset:AHA-Tag-20-ABC-01 .
+                                                        <http://sandbox.dexpi.org/rdl/TagNameAssignmentClass> "P4712";
+                                                        imf:fulfills asset:AHA-Tag-P4712 .
 
 # This triple comes from the datasheet.
 asset:grundfos-PUMPA12342 rdf:type :Pump;
-            imf:fulfills asset:AHA-Tag-20-ABC-01 ;
+            imf:fulfills asset:AHA-Tag-P4712 ;
             :weightInKiloGrams 1234 .
 
                                                         
 ```
-The first identifier `asset:AHA-Tag-20-ABC-01`is basically just a tag, so the "tag"-perspecitve mentioned above. 
+The example is based on P4712 in https://gitlab.com/dexpi/TrainingTestCases/-/blob/1d87438391911ce06c7c6c84a6063e45f7f4a3a1/dexpi%201.3/example%20pids/C01%20DEXPI%20Reference%20P&ID/C01V04-VER.EX01.xml
 
-The second identifier `asset:AHA-D065-AG-18-PE-0001-004--ReciprocatingPump-1` represents an object in a P&ID-drawing and is built up by document number of the P&ID plus the local ID on the P&ID. 
+
+The first identifier `asset:AHA-Tag-P4712`is basically just a tag (`P4712`) in a facility (Aasta Hansteen - `AHA`), so the "tag"-perspecitve mentioned above. 
+
+The second identifier `asset:AHA-D065-AG-18-PE-0001-004--ReciprocatingPump-1` represents an object in a P&ID-drawing and is built up by document number (`AHA-D065-AG-18-PE-0001-004`) of the P&ID plus the local ID  (`ReciprocatingPump-1`) on the P&ID. 
 
 The third identifier `asset:grundfos-PUMPA12342` is a product catalog id, identifying a specific type of pump from a specific supplier. 
 
