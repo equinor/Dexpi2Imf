@@ -14,9 +14,9 @@ Tags are one of the persistent, and globally understood names in Equinor. Unfort
 - A type of equipment (water pump). Called implementation in IMF
 - A physical piece of equipment. Usually not relevant(?), except for accounting
 
-A solution is to use IRIs that also include the aspect, f.ex. adding Activity/Space/Implementation to the IRI. However, it is not clear that even this is granular enough, as the number of objects can differ between the aspects. 
+A solution is to use IRIs that also include the aspect, f.ex. adding Activity/Space/Implementation to the IRI. This solution is not acceptable, since many systems have objects that do not correspond to tags, or make objects before tags are decided. 
 
-A different solution is to choose one perspective, probably activity, and let the IRI made by facility + tag represent that object, and define relations from the other objects. This is an example of how that could look:
+The chosen solution is to choose one perspective, probably activity, or some "tag"-perspecitve, and let the IRI made by facility + tag represent that object, and define relations between this and the other objects. This is an example of how that could look:
 
 ```turtle
 @prefix : <https://rdf.equinor.com/dexpi#> .
@@ -41,7 +41,11 @@ asset:grundfos-PUMPA12342 rdf:type :Pump;
 
                                                         
 ```
+The first identifier `asset:AHA-Tag-20-ABC-01`is basically just a tag, so the "tag"-perspecitve mentioned above. 
 
+The second identifier `asset:AHA-D065-AG-18-PE-0001-004--ReciprocatingPump-1` represents an object in a P&ID-drawing and is built up by document number of the P&ID plus the local ID on the P&ID. 
+
+The third identifier `asset:grundfos-PUMPA12342` is a product catalog id, identifying a specific type of pump from a specific supplier. 
 
 
 
