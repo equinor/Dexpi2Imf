@@ -24,6 +24,7 @@
 :ElementMap rr:subjectMap [
   rr:template "https://assetid.equinor.com/plantx#{@ID}";
   rr:termType rr:IRI;
+  rr:class "http://ns.imfid.org/imf#AspectElement";
 ].
 
 :ElementMap rr:predicateObjectMap [
@@ -31,17 +32,13 @@
   rr:objectMap [ 
     rml:reference "@ComponentClassURI" ;
     rr:termType rr:IRI
-  ],
-  [ 
-    rr:constant "http://ns.imfid.org/imf#AspectElement" ;
-    rr:termType rr:IRI
   ];
 ].
 
 :ElementMap rr:predicateObjectMap [
   rr:predicate "http://ns.imfid.org/imf#hasAspect";
   rr:objectMap [ 
-    rr:constant "http://ns.imfid.org/imf#functionAspect" ;
+    rr:constant "http://ns.imfid.org/imf#productAspect" ;
     rr:termType rr:IRI
   ];
 ].
@@ -64,35 +61,66 @@
 :PipingNetworkSegmentMap rr:subjectMap [
     rr:template "https://assetid.equinor.com/plantx#{@ID}";
     rr:termType rr:IRI;
-    ].
-
-
-:PipingNetworkSegmentMap rr:predicateObjectMap [
-  rr:predicate rdf:type;
-  rr:objectMap [ 
-    rr:constant "http://ns.imfid.org/imf#Connector" ;
-    rr:termType rr:IRI
-  ];
+    rr:class "https://rdf.equinor.com/dexpi#PipingNetworkSegment", "http://ns.imfid.org/imf#Connector";
 ].
-
 
 :PipingNetworkSegmentMap rr:predicateObjectMap [
   rr:predicate imf:connectedTo;
   rr:objectMap [ 
-    rr:template "https://assetid.equinor.com/plantx#{@FromID}";
+    rr:template "https://assetid.equinor.com/plantx#{Connection/@FromID}-{Connection/@FromNode}";
     rr:termType rr:IRI
   ];
 ].
-
 
 :PipingNetworkSegmentMap rr:predicateObjectMap [
   rr:predicate imf:connectedTo;
   rr:objectMap [ 
-    rr:template "https://assetid.equinor.com/plantx#{@ToID}";
+    rr:parentTriplesMap :ConnectionPointsMap;
+    rr:joinCondition [
+      rr:child "@ToID";
+      rr:parent "../@ID"
+    ];
     rr:termType rr:IRI
   ];
 ].
 
+
+:ConnectionPointsMap a rr:TriplesMap;
+  rml:logicalSource [
+    rml:source "pandid.xml";
+    rml:referenceFormulation ql:XPath;
+    rml:iterator "//ConnectionPoints/Node[@Type='process']"
+  ].
+
+:ConnectionPointsMap rr:subjectMap [
+  rr:template "https://assetid.equinor.com/plantx#{@ID}"
+].
+
+:ConnectionPointsMap rr:predicateObjectMap [
+  rr:predicate dexpi:hasParentNode;
+  rr:objectMap 
+    [ 
+      rr:parentTriplesMap :ElementMap;
+      rr:joinCondition [
+        rr:child "../../@ID";
+        rr:parent "@ID"
+      ]
+    ]; 
+
+].
+
+:ConnectionPointsMap rr:predicateObjectMap [
+  rr:predicate owl:sameAs;
+  rr:objectMap 
+    [ 
+      rr:parentTriplesMap :ElementMap;
+      rr:joinCondition [
+        rr:child "@ID";
+        rr:parent "@ID"
+      ]
+    ]; 
+
+].
 
 :AttributesMap a rr:TriplesMap;
   rml:logicalSource [
