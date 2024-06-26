@@ -1,0 +1,46 @@
+@prefix rml: <http://semweb.mmlab.be/ns/rml#> .
+@prefix rr: <http://www.w3.org/ns/r2rml#> .
+@prefix ql: <http://semweb.mmlab.be/ns/ql#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix : <http://example.org/rules/> .
+@prefix schema: <http://schema.org/> .
+@prefix commonlib: <https://commonlib.equinor.com/Library/> .
+@prefix dexpi: <https://rdf.equinor.com/dexpi#> .
+@prefix asset: <https://assetid.equinor.comm/plantx#> .
+@prefix dbo: <http://dbpedia.org/ontology/> .
+@prefix imf: <http://ns.imfid.org/imf#> .
+
+
+:PipingNetworkSegmentMap a rr:TriplesMap;
+  rml:logicalSource [
+    rml:source "pandid.xml";
+    rml:referenceFormulation ql:XPath;
+    rml:iterator "//PipingNetworkSegment"
+  ].
+
+:PipingNetworkSegmentMap rr:subjectMap [
+    rr:template "https://assetid.equinor.com/plantx#{@ID}";
+    rr:termType rr:IRI;
+    rr:class "https://rdf.equinor.com/dexpi#PipingNetworkSegment", "http://ns.imfid.org/imf#Connector";
+].
+
+:PipingNetworkSegmentMap rr:predicateObjectMap [
+  rr:predicate imf:connectedTo;
+  rr:objectMap [ 
+    rr:template "https://assetid.equinor.com/plantx#{Connection/@FromID}-{Connection/@FromNode}";
+    rr:termType rr:IRI
+  ];
+].
+
+:PipingNetworkSegmentMap rr:predicateObjectMap [
+  rr:predicate imf:connectedTo;
+  rr:objectMap [ 
+    rr:parentTriplesMap :ConnectionPointsMap;
+    rr:joinCondition [
+      rr:child "@ToID";
+      rr:parent "../@ID"
+    ];
+    rr:termType rr:IRI
+  ];
+].
+

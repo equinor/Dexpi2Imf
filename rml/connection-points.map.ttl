@@ -1,0 +1,50 @@
+@prefix rml: <http://semweb.mmlab.be/ns/rml#> .
+@prefix rr: <http://www.w3.org/ns/r2rml#> .
+@prefix ql: <http://semweb.mmlab.be/ns/ql#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix : <http://example.org/rules/> .
+@prefix schema: <http://schema.org/> .
+@prefix commonlib: <https://commonlib.equinor.com/Library/> .
+@prefix dexpi: <https://rdf.equinor.com/dexpi#> .
+@prefix asset: <https://assetid.equinor.comm/plantx#> .
+@prefix dbo: <http://dbpedia.org/ontology/> .
+@prefix imf: <http://ns.imfid.org/imf#> .
+
+
+
+:ConnectionPointsMap a rr:TriplesMap;
+  rml:logicalSource [
+    rml:source "pandid.xml";
+    rml:referenceFormulation ql:XPath;
+    rml:iterator "//ConnectionPoints/Node[@Type='process']"
+  ].
+
+:ConnectionPointsMap rr:subjectMap [
+  rr:template "https://assetid.equinor.com/plantx#{@ID}"
+].
+
+:ConnectionPointsMap rr:predicateObjectMap [
+  rr:predicate dexpi:hasParentNode;
+  rr:objectMap 
+    [ 
+      rr:parentTriplesMap :ElementMap;
+      rr:joinCondition [
+        rr:child "../../@ID";
+        rr:parent "@ID"
+      ]
+    ]; 
+
+].
+
+:ConnectionPointsMap rr:predicateObjectMap [
+  rr:predicate owl:sameAs;
+  rr:objectMap 
+    [ 
+      rr:parentTriplesMap :ElementMap;
+      rr:joinCondition [
+        rr:child "@ID";
+        rr:parent "@ID"
+      ]
+    ]; 
+
+].

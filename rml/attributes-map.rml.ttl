@@ -1,0 +1,50 @@
+@prefix rml: <http://semweb.mmlab.be/ns/rml#> .
+@prefix rr: <http://www.w3.org/ns/r2rml#> .
+@prefix ql: <http://semweb.mmlab.be/ns/ql#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix : <http://example.org/rules/> .
+@prefix schema: <http://schema.org/> .
+@prefix commonlib: <https://commonlib.equinor.com/Library/> .
+@prefix dexpi: <https://rdf.equinor.com/dexpi#> .
+@prefix asset: <https://assetid.equinor.comm/plantx#> .
+@prefix dbo: <http://dbpedia.org/ontology/> .
+@prefix imf: <http://ns.imfid.org/imf#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+
+:AttributesMap a rr:TriplesMap;
+  rml:logicalSource [
+    rml:source "pandid.xml";
+    rml:referenceFormulation ql:XPath;
+    rml:iterator "//GenericAttributes/GenericAttribute"
+  ].
+
+
+:AttributesMap rr:subjectMap [
+  rr:template "https://assetid.equinor.com/plantx#{../../@ID}"
+].
+
+:AttributesMap rr:predicateObjectMap [
+  rr:predicateMap [
+    rml:reference "@AttributeURI";
+  ];
+  rr:objectMap [ 
+    rml:reference "@Value" ;
+    rr:termType rr:Literal
+    ],
+    [ 
+    rml:reference "@ValueURI";
+    rr:termType rr:IRI
+    ]; 
+
+].
+
+:AttributesMap rr:predicateObjectMap [
+  rr:predicateMap [
+    rr:template "https://rdf.equinor.com/dexpi#{@Name}";
+  ];
+  rr:objectMap [ 
+    rml:reference "@Value" ;
+    rr:termType rr:Literal
+    ]; 
+
+].
