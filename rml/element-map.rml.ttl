@@ -17,33 +17,40 @@
     rml:source "pandid.xml";
     rml:referenceFormulation ql:XPath;
     rml:iterator "//*"
-  ].
-:ElementMap rr:subjectMap [
+  ];
+ rr:subjectMap [
   rr:template "https://assetid.equinor.com/plantx#{@ID}";
   rr:termType rr:IRI;
   rr:class "http://ns.imfid.org/imf#AspectElement";
-].
+];
 
-:ElementMap rr:predicateObjectMap [
+ rr:predicateObjectMap [
   rr:predicate rdf:type;
   rr:objectMap [ 
     rml:reference "@ComponentClassURI" ;
     rr:termType rr:IRI
   ];
-].
+],
 
-:ElementMap rr:predicateObjectMap [
+[
   rr:predicate "http://ns.imfid.org/imf#hasAspect";
   rr:objectMap [ 
     rr:constant "http://ns.imfid.org/imf#productAspect" ;
     rr:termType rr:IRI
   ];
-].
+],
 
-:ElementMap rr:predicateObjectMap [
+ [
   rr:predicate "http://ns.imfid.org/imf#partOf";
   rr:objectMap [ 
     rr:template "https://assetid.equinor.com/plantx#{../@ID}";
     rr:termType rr:IRI
   ];
+],
+
+ [
+  rr:predicate rdfs:label;
+  rr:objectMap [ 
+    rml:reference "Label/Text/@String" 
+    ];
 ].

@@ -10,7 +10,7 @@
 
 ## Run 
 ```
-java -jar ../../rmlmapper-java/target/rmlmapper-*-all.jar -m connection-points.map.ttl element-map.rml.ttl attributes-map.rml.ttl piping-network-segment-map.rml.ttl -s trig -o pandid.trig
+java -jar ../../rmlmapper-java/target/rmlmapper-*-all.jar -m *map* -s trig -o pandid.trig
 ``` 
 
 ```

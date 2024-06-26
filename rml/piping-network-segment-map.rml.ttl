@@ -39,6 +39,10 @@
     rr:joinCondition [
       rr:child "@ToID";
       rr:parent "../@ID"
+    ],
+    [
+      rr:child "@ToNode";
+      rr:parent "../@ID"
     ];
     rr:termType rr:IRI
   ];
