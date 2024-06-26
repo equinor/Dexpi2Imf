@@ -20,11 +20,12 @@
   ].
 
 :ConnectionPointsMap rr:subjectMap [
-  rr:template "https://assetid.equinor.com/plantx#{@ID}"
+  rr:template "https://assetid.equinor.com/plantx#{@ID}";
+  rr:class dexpi:ConnectionPointNode
 ].
 
 :ConnectionPointsMap rr:predicateObjectMap [
-  rr:predicate dexpi:hasParentNode;
+  rr:predicate imf:hasParent;
   rr:objectMap 
     [ 
       rr:parentTriplesMap :ElementMap;

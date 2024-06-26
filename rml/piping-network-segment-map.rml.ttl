@@ -27,24 +27,27 @@
 :PipingNetworkSegmentMap rr:predicateObjectMap [
   rr:predicate imf:connectedTo;
   rr:objectMap [ 
-    rr:template "https://assetid.equinor.com/plantx#{Connection/@FromID}-{Connection/@FromNode}";
+    rr:template "https://assetid.equinor.com/plantx#{Connection/@FromID}";
     rr:termType rr:IRI
   ];
-].
-
-:PipingNetworkSegmentMap rr:predicateObjectMap [
+],
+ [
   rr:predicate imf:connectedTo;
   rr:objectMap [ 
-    rr:parentTriplesMap :ConnectionPointsMap;
-    rr:joinCondition [
-      rr:child "@ToID";
-      rr:parent "../@ID"
-    ],
-    [
-      rr:child "@ToNode";
-      rr:parent "../@ID"
-    ];
+    rr:template "https://assetid.equinor.com/plantx#{Connection/@ToID}";
     rr:termType rr:IRI
   ];
-].
+] .
+
+
+# :PipingNetworkSegmentMap rr:predicateObjectMap [
+#   rr:predicate imf:connectedTo;
+#   rr:objectMap [ 
+#     rr:parentTriplesMap :ElementMap;
+#     rr:joinCondition [
+#       rr:child "@ToID";
+#       rr:parent "@ID"
+#     ]
+#   ];
+# ].
 
