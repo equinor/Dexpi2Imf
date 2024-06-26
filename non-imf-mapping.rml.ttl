@@ -14,20 +14,20 @@
     rml:source "pandid.xml";
     rml:referenceFormulation ql:XPath;
     rml:iterator "//*"
-  ].
-:TriplesMap rr:subjectMap [
+  ];
+rr:subjectMap [
   rr:template "https://assetid.equinor.com/plantx#{@ID}";
   rr:termType rr:IRI;
-].
-:TriplesMap rr:predicateObjectMap [
+];
+rr:predicateObjectMap [
   rr:predicate rdf:type;
   rr:objectMap [ 
     rml:reference "@ComponentClassURI" ;
     rr:termType rr:IRI
     ];
-].
+],
 
-:TriplesMap rr:predicateObjectMap [
+[
   rr:predicate rdfs:label;
   rr:objectMap [ 
     rml:reference "Label/Text/@String" 
