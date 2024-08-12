@@ -25,7 +25,7 @@ For each query above, these steps must be done in a loop untill satisified
 
 * Find as simple as possible example Dexpi P&Id where the question makes sense. Start with [the existing example](../rml/README.md)
 
-* Start exressing the query as sparql, starting with a small one. 
+* Start expressing the query as sparql, starting with a small one. 
 
 * Add vocabulary to dexpi.ttl if lacking
 
