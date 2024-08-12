@@ -11,33 +11,33 @@
 @prefix imf: <http://ns.imfid.org/imf#> .
 
 
-:PipingNetworkSegmentMap a rr:TriplesMap;
+:PipingComponentMap a rr:TriplesMap;
   rml:logicalSource [
     rml:source "pandid.xml";
     rml:referenceFormulation ql:XPath;
-    rml:iterator "//PipingNetworkSegment"
+    rml:iterator "//PipingComponent"
   ].
 
-:PipingNetworkSegmentMap rr:subjectMap [
+:PipingComponentMap rr:subjectMap [
     rr:template "https://assetid.equinor.com/plantx#{@ID}";
     rr:termType rr:IRI;
-    rr:class "https://rdf.equinor.com/dexpi#PipingNetworkSegment", "http://ns.imfid.org/imf#Connector";
+    rr:class "https://rdf.equinor.com/dexpi#PipingComponent";
 ].
 
-# :PipingNetworkSegmentMap rr:predicateObjectMap [
-#   rr:predicate imf:connectedTo;
-#   rr:objectMap [ 
-#     rr:template "https://assetid.equinor.com/plantx#{Connection/@FromID}";
-#     rr:termType rr:IRI
-#   ];
-# ],
-#  [
-#   rr:predicate imf:connectedTo;
-#   rr:objectMap [ 
-#     rr:template "https://assetid.equinor.com/plantx#{Connection/@ToID}";
-#     rr:termType rr:IRI
-#   ];
-# ] .
+:PipingComponentMap rr:predicateObjectMap [
+  rr:predicate imf:connectedTo;
+  rr:objectMap [ 
+    rr:template "https://assetid.equinor.com/plantx#{../Connection/@FromID}";
+    rr:termType rr:IRI
+  ];
+],
+ [
+  rr:predicate imf:connectedTo;
+  rr:objectMap [ 
+    rr:template "https://assetid.equinor.com/plantx#{../Connection/@ToID}";
+    rr:termType rr:IRI
+  ];
+] .
 
 
 # :PipingNetworkSegmentMap rr:predicateObjectMap [
