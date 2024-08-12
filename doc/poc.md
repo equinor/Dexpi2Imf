@@ -12,6 +12,7 @@ we suggest creating a command-line based tool that can, after taking a dexpi in 
 
 * Given two equipment IDs in the dexpi diagram, output the list of equipment ids that are between them (The goal is that a UI should be able to color the path)
 
+Currently we do not have example data with spades, so that use case is not recommended. The first case, commissioning/boundary seems the most promising. 
 
 The input is assumed given in the Proteus XML format, and transformed to our own RDF representation of DEXPI P&ID
 
