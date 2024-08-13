@@ -5,9 +5,11 @@ DEXPI at [file:///home/daghovland/Nedlastinger/C01V04-VER.EX01.svg](file:///home
 Boundary: 
 
 * H1007
-* MNc 47127 75HB13 50 Q 80
-* MNc 47125 75HB13 50
+* N6 on T4750
+* N5 on T4750
 * P4712
+
+Also an internal object T4750 is chosen, and the paths are filtered
 
 We are not sure what are the criteria for equipment inside a boundary. Just all IRIs?
 
@@ -33,3 +35,8 @@ har en eller flere PipingNetworkSegments
 som har en eller flere PipingComponent og en Connection
 
  <Connection FromID="PipeReducer-1" FromNode="2" ToID="Nozzle-7" ToNode="1"/>
+
+ ## Example
+ By loading dexpi.rdfox into an RDFox installation and run the query "select * where {?s a data:insideBoundaryX, dexpi:Equipment; rdfs:label ?name.}" we get 
+ PipingComponents, Nozzles and Equipment inside the boundary. 
+ The datalog rule insideBOundaryX is case-specific and made from input from the user. 

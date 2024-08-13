@@ -14,7 +14,6 @@ data:insideBoundaryX [?node] :-
     dexpi:hasConnection [?node1, ?node],
     dexpi:PipingOrEquipment [?node],
     NOT rdfs:label [?node1, "H1007"],
-    NOT rdfs:label [?node1, "N7"],
     NOT FILTER(?node1 = <https://assetid.equinor.com/plantx#Nozzle-12>),
     NOT FILTER(?node1 = <https://assetid.equinor.com/plantx#Nozzle-8>),
     NOT rdfs:label [?node1, "P4712"].
