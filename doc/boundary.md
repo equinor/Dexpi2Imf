@@ -39,4 +39,4 @@ som har en eller flere PipingComponent og en Connection
  ## Example
  By loading dexpi.rdfox into an RDFox installation and run the query "select * where {?s a data:insideBoundaryX, dexpi:Equipment; rdfs:label ?name.}" we get 
  PipingComponents, Nozzles and Equipment inside the boundary. 
- The datalog rule insideBOundaryX is case-specific and made from input from the user. 
+ The datalog rule insideBoundaryX is case-specific and made from input from the user. 
