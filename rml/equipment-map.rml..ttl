@@ -10,24 +10,27 @@
 @prefix dbo: <http://dbpedia.org/ontology/> .
 @prefix imf: <http://ns.imfid.org/imf#> .
 
-
 :EquipmentMap a rr:TriplesMap;
   rml:logicalSource [
     rml:source "pandid.xml";
     rml:referenceFormulation ql:XPath;
     rml:iterator "//Equipment"
-  ].
-
-:EquipmentMap rr:subjectMap [
+  ];
+  rr:subjectMap [
     rr:template "https://assetid.equinor.com/plantx#{@ID}";
     rr:termType rr:IRI;
-    rr:class "https://rdf.equinor.com/dexpi#Equipment";
-].
-
-:EquipmentMap rr:predicateObjectMap [
-  rr:predicate imf:hasTerminal;
-  rr:objectMap [ 
-    rr:template "https://assetid.equinor.com/plantx#{Nozzle/@ID}";
-    rr:termType rr:IRI
+    rr:class <https://rdf.equinor.com/dexpi#Equipment>;
   ];
-] .
+  rr:predicateObjectMap [
+    rr:predicate imf:hasTerminal;
+    rr:objectMap [ 
+      rr:template "https://assetid.equinor.com/plantx#{Nozzle/@ID}";
+      rr:termType rr:IRI;
+    ]
+  ],
+  [
+    rr:predicate rdfs:label;
+    rr:objectMap [ 
+      rml:reference "GenericAttributes/GenericAttribute[@Name='TagNameAssignmentClass']/@Value";
+    ]
+  ].

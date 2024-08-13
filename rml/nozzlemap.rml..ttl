@@ -16,11 +16,16 @@
     rml:source "pandid.xml";
     rml:referenceFormulation ql:XPath;
     rml:iterator "//Nozzle"
-  ].
-
-:NozzleMap rr:subjectMap [
+  ];
+  rr:subjectMap [
     rr:template "https://assetid.equinor.com/plantx#{@ID}";
     rr:termType rr:IRI;
     rr:class "https://rdf.equinor.com/dexpi#Nozzle";
+  ];
+ rr:predicateObjectMap [
+  rr:predicate rdfs:label;
+  rr:objectMap [
+    rml:reference "Label/Text/@String"
+  ]
 ].
 

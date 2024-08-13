@@ -16,13 +16,12 @@
     rml:source "pandid.xml";
     rml:referenceFormulation ql:XPath;
     rml:iterator "//PipingNetworkSegment"
-  ].
-
-:PipingNetworkSegmentMap rr:subjectMap [
+  ];
+  rr:subjectMap [
     rr:template "https://assetid.equinor.com/plantx#{@ID}";
     rr:termType rr:IRI;
     rr:class "https://rdf.equinor.com/dexpi#PipingNetworkSegment", "http://ns.imfid.org/imf#Connector";
-].
+  ].
 
 # :PipingNetworkSegmentMap rr:predicateObjectMap [
 #   rr:predicate imf:connectedTo;

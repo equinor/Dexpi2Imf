@@ -16,28 +16,32 @@
     rml:source "pandid.xml";
     rml:referenceFormulation ql:XPath;
     rml:iterator "//PipingComponent"
-  ].
-
-:PipingComponentMap rr:subjectMap [
+  ];
+ rr:subjectMap [
     rr:template "https://assetid.equinor.com/plantx#{@ID}";
     rr:termType rr:IRI;
     rr:class "https://rdf.equinor.com/dexpi#PipingComponent";
-].
-
-:PipingComponentMap rr:predicateObjectMap [
+  ];
+  rr:predicateObjectMap [
   rr:predicate imf:connectedTo;
   rr:objectMap [ 
     rr:template "https://assetid.equinor.com/plantx#{../Connection/@FromID}";
     rr:termType rr:IRI
-  ];
-],
- [
+    ]
+  ],
+  [
   rr:predicate imf:connectedTo;
   rr:objectMap [ 
     rr:template "https://assetid.equinor.com/plantx#{../Connection/@ToID}";
     rr:termType rr:IRI
-  ];
-] .
+    ]
+  ],
+  [
+  rr:predicate rdfs:label;
+  rr:objectMap [
+    rml:reference "Label/Text/@String"
+    ]
+  ].
 
 
 # :PipingNetworkSegmentMap rr:predicateObjectMap [
