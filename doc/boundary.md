@@ -1,15 +1,23 @@
 # Boundary / commissioning package example
 
-DEXPI at [file:///home/daghovland/Nedlastinger/C01V04-VER.EX01.svg](file:///home/daghovland/Nedlastinger/C01V04-VER.EX01.svg)
+In this example we will investigate how to find all items along the yellow line. This yellow line represents a comission package given the boundaries highlighted in red. 
 
-Boundary: 
+![image](images/example_boundary.png)
 
-* H1007
-* N6 on T4750
-* N5 on T4750
-* P4712
+### Required input
+In order to locate the items inside a boundary the following prerequisites
+must be met:
+1) At which items the boundary is set
+2) We need to know at least one item that exist within the boundary
+ 
+For this example, the boundary is set at the following points:
+* Equipment H1007
+* Nozzle N6 50 
+* Nozzle N5 50 
+* Equipment P4712
 
-Also an internal object T4750 is chosen, and the paths are filtered
+Equipment T4750 is used as the internal item. The need to know at least one internal item is to differentiate between the outside, and the inside of the boundary. 
+
 
 We are not sure what are the criteria for equipment inside a boundary. Just all IRIs?
 
