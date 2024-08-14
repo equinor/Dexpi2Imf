@@ -1,0 +1,36 @@
+@prefix rml: <http://semweb.mmlab.be/ns/rml#> .
+@prefix rr: <http://www.w3.org/ns/r2rml#> .
+@prefix ql: <http://semweb.mmlab.be/ns/ql#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix : <http://example.org/rules/> .
+@prefix schema: <http://schema.org/> .
+@prefix commonlib: <https://commonlib.equinor.com/Library/> .
+@prefix dexpi: <https://rdf.equinor.com/dexpi#> .
+@prefix asset: <https://assetid.equinor.comm/plantx#> .
+@prefix dbo: <http://dbpedia.org/ontology/> .
+@prefix imf: <http://ns.imfid.org/imf#> .
+
+:EquipmentMap a rr:TriplesMap;
+  rml:logicalSource [
+    rml:source "pandid.xml";
+    rml:referenceFormulation ql:XPath;
+    rml:iterator "//Equipment"
+  ];
+  rr:subjectMap [
+    rr:template "https://assetid.equinor.com/plantx#{@ID}";
+    rr:termType rr:IRI;
+    rr:class <https://rdf.equinor.com/dexpi#Equipment>;
+  ];
+  rr:predicateObjectMap [
+    rr:predicate imf:hasTerminal;
+    rr:objectMap [ 
+      rr:template "https://assetid.equinor.com/plantx#{Nozzle/@ID}";
+      rr:termType rr:IRI;
+    ]
+  ],
+  [
+    rr:predicate rdfs:label;
+    rr:objectMap [ 
+      rml:reference "GenericAttributes/GenericAttribute[@Name='TagNameAssignmentClass']/@Value";
+    ]
+  ].

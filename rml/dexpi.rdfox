@@ -10,7 +10,14 @@ prefix commonlib: <https://commonlib.equinor.com/Library/>
 prefix dexpi: <https://rdf.equinor.com/dexpi#> 
 prefix asset: <https://assetid.equinor.comm/plantx#> 
 prefix dbo: <http://dbpedia.org/ontology/> 
+prefix dexpi: <https://rdf.equinor.com/dexpi#> 
+prefix imf: <http://ns.imfid.org/imf#> 
+prefix data: <https://assetid.equinor.com/plantx/document/12345#>
 
+
+tupletable delete connectedWithout force
+tupletable create connectedWithout type triple-table
+import ../datalog/boundary.datalog
 import > asset:axioms dexpi.ttl
 importaxioms  asset:axioms 
 

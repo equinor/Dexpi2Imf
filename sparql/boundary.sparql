@@ -1,0 +1,11 @@
+prefix dexpi: <https://rdf.equinor.com/dexpi#> 
+prefix imf: <http://ns.imfid.org/imf#> 
+
+
+SELECT * WHERE {
+    ?eq1 rdfs:label "T4750".
+
+    ?eq2 rdfs:label "P4712"; 
+        imf:hasTerminal / (imf:connectedTo | ^imf:connectedTo)* ?internal.
+    ?internal rdfs:label ?label.
+}

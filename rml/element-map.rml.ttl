@@ -10,8 +10,6 @@
 @prefix dbo: <http://dbpedia.org/ontology/> .
 @prefix imf: <http://ns.imfid.org/imf#> .
 
-
-
 :ElementMap a rr:TriplesMap;
   rml:logicalSource [
     rml:source "pandid.xml";
@@ -46,11 +44,4 @@
     rr:template "https://assetid.equinor.com/plantx#{../@ID}";
     rr:termType rr:IRI
   ];
-],
-
- [
-  rr:predicate rdfs:label;
-  rr:objectMap [ 
-    rml:reference "Label/Text/@String" 
-    ];
 ].

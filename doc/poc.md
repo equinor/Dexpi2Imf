@@ -18,7 +18,7 @@ The input is assumed given in the Proteus XML format, and transformed to our own
 
 We also want to see if any existing Rdf visualization tools make sense to use over the Rdf representation. 
 
-## Steps
+## Steps                                
 
 As a first step, we will create mappings and queries that can express the information needs from above.
 For each query above, these steps must be done in a loop untill satisified
