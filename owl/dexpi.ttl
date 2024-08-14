@@ -1,4 +1,4 @@
-@prefix : <https://rdf.equinor.com/dexpi#> .
+@prefix dexpi: <https://rdf.equinor.com/dexpi#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix xml: <http://www.w3.org/XML/1998/namespace> .
@@ -13,45 +13,17 @@
 #################################################################
 #    Object Properties
 #################################################################
-
-###  https://rdf.equinor.com/dexpi#hasConnection
-:hasConnection rdf:type owl:ObjectProperty .
-
-
-###  https://rdf.equinor.com/dexpi#hasConnectionFrom
-:hasConnectionFrom rdf:type owl:ObjectProperty ;
-                   rdfs:subPropertyOf :hasConnection .
-
-
-###  https://rdf.equinor.com/dexpi#hasConnectionTo
-:hasConnectionTo rdf:type owl:ObjectProperty ;
-                 rdfs:subPropertyOf :hasConnection .
-
 ###  https://rdf.equinor.com/dexpi#hasNode
-:hasNode rdf:type owl:ObjectProperty ;
+dexpi:hasNode rdf:type owl:ObjectProperty ;
                 rdf:range :Node ;
                 rdfs:subPropertyOf :hasConnection .
 
 ###  https://rdf.equinor.com/dexpi#hasNode
-:hasParentNode rdf:type owl:ObjectProperty ;
+dexpi:hasParentNode rdf:type owl:ObjectProperty ;
                 rdf:domain :Node ;
                 owl:inverseOf :hasNode ;
                 rdfs:subPropertyOf :hasConnection .
 
-imf:connectedTo rdf:type owl:ObjectProperty ;
-                rdfs:subPropertyOf :hasConnection .
-imf:connectedTo rdf:type owl:ObjectProperty ;
-                rdfs:subPropertyOf [
-                    rdf:type owl:ObjectProperty ;
-                    owl:inverseOf dexpi:hasConnection 
-                ].
-imf:hasTerminal rdf:type owl:ObjectProperty ;
-                rdfs:subPropertyOf :hasConnection .
-imf:hasTerminal rdf:type owl:ObjectProperty ;
-                rdfs:subPropertyOf [
-                    rdf:type owl:ObjectProperty ;
-                    owl:inverseOf dexpi:hasConnection 
-                ].
 
 dexpi:PipingOrEquipment rdf:type owl:Class .
 dexpi:PipingComponent rdf:type owl:Class ;

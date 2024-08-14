@@ -20,7 +20,7 @@
   rr:subjectMap [
     rr:template "https://assetid.equinor.com/plantx#{@ID}";
     rr:termType rr:IRI;
-    rr:class "https://rdf.equinor.com/dexpi#PipingNetworkSegment", "http://ns.imfid.org/imf#Connector";
+    rr:class "https://rdf.equinor.com/dexpi#PipingNetworkSegment", "http://ns.imfid.org/imf#Connector, http://ns.imfid.org/imf#Block";
   ].
 
 # :PipingNetworkSegmentMap rr:predicateObjectMap [

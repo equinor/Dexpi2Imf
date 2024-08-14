@@ -20,7 +20,7 @@
   rr:subjectMap [
     rr:template "https://assetid.equinor.com/plantx#{@ID}";
     rr:termType rr:IRI;
-    rr:class "https://rdf.equinor.com/dexpi#Nozzle";
+    rr:class "https://rdf.equinor.com/dexpi#Nozzle", "http://ns.imfid.org/imf#Terminal";
   ];
  rr:predicateObjectMap [
   rr:predicate rdfs:label;
