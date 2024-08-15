@@ -28,3 +28,6 @@ commitproc set commit-procedure.sparql
 import +p "../rml/pandid.trig"
 
 endpoint start
+
+set output out
+select * where {?s a data:insideBoundaryX}

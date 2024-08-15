@@ -15,7 +15,7 @@
 #################################################################
 ###  https://rdf.equinor.com/dexpi#hasNode
 dexpi:hasNode rdf:type owl:ObjectProperty ;
-                rdf:range :Node ;
+                rdf:range dexpi:Node ;
                 rdfs:subPropertyOf dexpi:hasConnection .
 
 ###  https://rdf.equinor.com/dexpi#hasNode
