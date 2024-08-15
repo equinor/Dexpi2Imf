@@ -21,7 +21,10 @@ import ../datalog/boundary.datalog
 import > asset:axioms ../owl/dexpi.ttl
 import > asset:axioms ../owl/imf-ontology.owl.ttl
 importaxioms  asset:axioms 
+import > schema:shacl ../shacl/imf-depi.shacl.ttl
+commitproc set commit-procedure.sparql
 
-import +p "pandid.trig"
+
+import +p "../rml/pandid.trig"
 
 endpoint start

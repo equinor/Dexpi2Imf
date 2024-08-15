@@ -16,13 +16,13 @@
 ###  https://rdf.equinor.com/dexpi#hasNode
 dexpi:hasNode rdf:type owl:ObjectProperty ;
                 rdf:range :Node ;
-                rdfs:subPropertyOf :hasConnection .
+                rdfs:subPropertyOf dexpi:hasConnection .
 
 ###  https://rdf.equinor.com/dexpi#hasNode
 dexpi:hasParentNode rdf:type owl:ObjectProperty ;
-                rdf:domain :Node ;
-                owl:inverseOf :hasNode ;
-                rdfs:subPropertyOf :hasConnection .
+                rdf:domain dexpi:Node ;
+                owl:inverseOf dexpi:hasNode ;
+                rdfs:subPropertyOf dexpi:hasConnection .
 
 
 dexpi:PipingOrEquipment rdf:type owl:Class .
