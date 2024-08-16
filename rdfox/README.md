@@ -23,4 +23,4 @@ and enter f.ex. the query
 `SELECT * WHERE {  ?asset imf:connectedTo ?d  }`
 or
 `select * where {?s a data:insideBoundaryX}`
-Try also Explain Results.
+Try also the `Explain` button on the web console.
