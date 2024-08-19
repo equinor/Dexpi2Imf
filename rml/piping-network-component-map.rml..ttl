@@ -30,28 +30,23 @@
     ]
   ],
   [
-  rr:predicate imf:connectedTo;
+  rr:predicate imf:adjacentTo;
   rr:objectMap [ 
     rr:template "https://assetid.equinor.com/plantx#{../Connection/@ToID}";
     rr:termType rr:IRI
     ]
   ],
+    [
+  rr:predicate imf:partOf;
+  rr:objectMap [ 
+    rr:template "https://assetid.equinor.com/plantx#{../@ID}";
+    rr:termType rr:IRI
+    ]
+    ]
+  ,
   [
   rr:predicate rdfs:label;
   rr:objectMap [
     rml:reference "Label/Text/@String"
     ]
   ].
-
-
-# :PipingNetworkSegmentMap rr:predicateObjectMap [
-#   rr:predicate imf:connectedTo;
-#   rr:objectMap [ 
-#     rr:parentTriplesMap :ElementMap;
-#     rr:joinCondition [
-#       rr:child "@ToID";
-#       rr:parent "@ID"
-#     ]
-#   ];
-# ].
-

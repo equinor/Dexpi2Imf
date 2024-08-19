@@ -18,9 +18,16 @@ prefix data: <https://assetid.equinor.com/plantx/document/12345#>
 tupletable delete connectedWithout force
 tupletable create connectedWithout type triple-table
 import ../datalog/boundary.datalog
-import > asset:axioms dexpi.ttl
+import > asset:axioms ../owl/dexpi.ttl
+import > asset:axioms ../owl/imf-ontology.owl.ttl
 importaxioms  asset:axioms 
+import > schema:shacl ../shacl/imf-depi.shacl.ttl
+commitproc set commit-procedure.sparql
 
-import +p "pandid.trig"
+
+import +p "../rml/pandid.trig"
 
 endpoint start
+
+set output out
+select * where {?s a data:insideBoundaryX}

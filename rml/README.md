@@ -16,14 +16,8 @@
 java -jar ../../rmlmapper-java/target/rmlmapper-*-all.jar -m *map* -s trig -o pandid.trig
 ``` 
 
-```
-RDFox sandbox . dexpi
-```
+## Example files resources
 
-Open a browser at the query  
-[SELECT * WHERE {  ?asset imf:connectedTo ?d  }](http://localhost:12110/console/test?query=SELECT%20%2A%20WHERE%20%7B%20%20%3Fasset%20imf%3AconnectedTo%20%3Fd%20%20%7D) and click "Explore Results"
-
-# Example DEXPI files
 
 * https://github.com/equinor/NOAKADEXPI
 

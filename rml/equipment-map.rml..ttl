@@ -19,7 +19,7 @@
   rr:subjectMap [
     rr:template "https://assetid.equinor.com/plantx#{@ID}";
     rr:termType rr:IRI;
-    rr:class <https://rdf.equinor.com/dexpi#Equipment>;
+    rr:class <https://rdf.equinor.com/dexpi#Equipment>, <http://ns.imfid.org/imf#Block>;
   ];
   rr:predicateObjectMap [
     rr:predicate imf:hasTerminal;

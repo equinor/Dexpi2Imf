@@ -2,16 +2,15 @@ prefix dexpi: <https://rdf.equinor.com/dexpi#>
 prefix imf: <http://ns.imfid.org/imf#> 
 prefix data: <https://assetid.equinor.com/plantx/document/12345#>
 
-dexpi:hasConnection[?n1, ?n2] :- dexpi:hasConnection[?n2, ?n1].
 
 data:insideBoundaryX [?node] :- 
     rdfs:label [?internal, "T4750"],
-    dexpi:hasConnection [?internal, ?node],
+    imf:connectedTo [?internal, ?node],
     dexpi:PipingOrEquipment [?node].
 
 data:insideBoundaryX [?node] :- 
     data:insideBoundaryX [?node1],
-    dexpi:hasConnection [?node1, ?node],
+    imf:connectedTo [?node1, ?node],
     dexpi:PipingOrEquipment [?node],
     NOT rdfs:label [?node1, "H1007"],
     NOT FILTER(?node1 = <https://assetid.equinor.com/plantx#Nozzle-12>),
