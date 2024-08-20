@@ -1,5 +1,3 @@
-prefix dexpi: <https://rdf.equinor.com/dexpi#> 
-prefix imf: <http://ns.imfid.org/imf#> 
 prefix data: <https://assetid.equinor.com/plantx/document/12345#>
 
 

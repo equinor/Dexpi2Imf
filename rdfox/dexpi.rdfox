@@ -1,30 +1,7 @@
-dstore create test
-active test
+boundaries.rdfox
 
-prefix rml: <http://semweb.mmlab.be/ns/rml#> 
-prefix rr: <http://www.w3.org/ns/r2rml#> 
-prefix ql: <http://semweb.mmlab.be/ns/ql#> 
-prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
-prefix schema: <http://schema.org/> 
-prefix commonlib: <https://commonlib.equinor.com/Library/> 
-prefix dexpi: <https://rdf.equinor.com/dexpi#> 
-prefix asset: <https://assetid.equinor.comm/plantx#> 
-prefix dbo: <http://dbpedia.org/ontology/> 
-prefix dexpi: <https://rdf.equinor.com/dexpi#> 
-prefix imf: <http://ns.imfid.org/imf#> 
-prefix data: <https://assetid.equinor.com/plantx/document/12345#>
-
-
-tupletable delete connectedWithout force
 tupletable create connectedWithout type triple-table
 import ../datalog/boundary.datalog
-import > asset:axioms ../owl/dexpi.ttl
-import > asset:axioms ../owl/imf-ontology.owl.ttl
-importaxioms  asset:axioms 
-import > schema:shacl ../shacl/imf-depi.shacl.ttl
-commitproc set commit-procedure.sparql
-
-
 import +p "../rml/pandid.trig"
 
 endpoint start
