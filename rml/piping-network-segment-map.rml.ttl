@@ -23,20 +23,22 @@
     rr:class "https://rdf.equinor.com/dexpi#PipingNetworkSegment", "http://ns.imfid.org/imf#Connector, http://ns.imfid.org/imf#Block";
   ].
 
-# :PipingNetworkSegmentMap rr:predicateObjectMap [
-#   rr:predicate imf:connectedTo;
-#   rr:objectMap [ 
-#     rr:template "https://assetid.equinor.com/plantx#{Connection/@FromID}";
-#     rr:termType rr:IRI
-#   ];
-# ],
-#  [
-#   rr:predicate imf:connectedTo;
-#   rr:objectMap [ 
-#     rr:template "https://assetid.equinor.com/plantx#{Connection/@ToID}";
-#     rr:termType rr:IRI
-#   ];
-# ] .
+:PipingNetworkSegmentMap rr:predicateObjectMap [
+  rr:predicate imf:connectedTo;
+  rr:objectMap [ 
+    rr:template "https://assetid.equinor.com/plantx#{Connection/@FromID}";
+    rr:termType rr:IRI
+  ];
+  rr:predicate imf:connectedTo;
+  rr:objectMap [ 
+    rr:template "https://assetid.equinor.com/plantx#{Connection/@ToID}";
+    rr:termType rr:IRI
+  ];
+  rr:predicate rdfs:label;
+  rr:objectMap [
+    rml:reference "Label/Text/@String"
+  ]
+] .
 
 
 # :PipingNetworkSegmentMap rr:predicateObjectMap [
