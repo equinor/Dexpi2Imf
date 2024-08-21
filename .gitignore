@@ -4,3 +4,5 @@ dexpi.properties
 pandid.xml
 pandid.trig
 imf-ontology.owl.ttl
+rml/segments.trig
+client/.idea
