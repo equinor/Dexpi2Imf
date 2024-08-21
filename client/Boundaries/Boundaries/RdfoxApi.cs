@@ -151,7 +151,8 @@ public class RdfoxApi
             //client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", Convert.ToBase64String(byteArray));
 
             var response = await client.SendAsync(request);
-            response.EnsureSuccessStatusCode();
+            if(!response.IsSuccessStatusCode)
+                throw new Exception(await response.Content.ReadAsStringAsync());
             return await response.Content.ReadAsStringAsync();
         } 
     }

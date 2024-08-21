@@ -8,7 +8,7 @@ public class DatalogCreator
     
     public string CreateCommissioningSparqlQuery()
     {
-        return $"select * where {{?s a <{BoundaryGraph}>}}";
+        return $"select ?s(GROUP_CONCAT(?label; SEPARATOR=',') AS ?labels) where {{?s a <{BoundaryGraph}>; rdfs:label ?label. OPTIONAL{{?s  <http://sandbox.dexpi.org/rdl/TagNameAssignmentClass> ?tag.}} }} GROUP BY (?s)";
     }
     
     public string CreateBoundaryDatalogRule(string internalComponentLabel, IriReference[] borderComponentIris)
@@ -17,7 +17,6 @@ public class DatalogCreator
             .Select(iri => $"NOT FILTER(?node1 = <{iri}>)")
             .Aggregate("", (acc, filter) => acc + ",\n    " + filter);
         return $$"""
-               prefix data: <https://assetid.equinor.com/plantx/document/12345#>
 
                <{{BoundaryGraph}}> [?node] :- 
                    rdfs:label [?internal, "{{internalComponentLabel}}"],

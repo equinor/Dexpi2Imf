@@ -29,12 +29,13 @@ internal class Program
         var datalog = datalogCreator.CreateBoundaryDatalogRule(internalComponentLabel, borderComponentIris);
         var conn = RdfoxApi.GetDefaultConnectionSettings();
         await RdfoxApi.LoadDatalog(conn, datalog);
-        
+        Console.WriteLine(datalog);
         var data = File.ReadAllText(dexpiFilePath);
         await RdfoxApi.LoadData(conn, data);
 
         var queryString = datalogCreator.CreateCommissioningSparqlQuery();
         var result = await RdfoxApi.QuerySparql(conn, queryString);
+        Console.WriteLine("Commissioning package:");
         Console.WriteLine(result);
         
         await RdfoxApi.DeleteData(conn, data);

@@ -15,7 +15,6 @@ public class DatalogCreatorTests
             new IriTools.IriReference("https://assetid.equinor.com/plantx#ReciprocatingPump-1")
         });
         Assert.Equal( $$""" 
-                      prefix data: <https://assetid.equinor.com/plantx/document/12345#>
 
                       <{{graphIri}}> [?node] :- 
                           rdfs:label [?internal, "T4750"],
