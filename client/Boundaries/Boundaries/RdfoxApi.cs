@@ -45,10 +45,7 @@ public class RdfoxApi
             {
                 Content = content
             };
-
-            //var byteArray = Encoding.ASCII.GetBytes($"{conn.Username}:{conn.Password}");
-            //client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", Convert.ToBase64String(byteArray));
-
+            
             var response = await client.SendAsync(request);
             response.EnsureSuccessStatusCode();
         } 
@@ -71,9 +68,7 @@ public class RdfoxApi
                 Content = content
             };
 
-            //var byteArray = Encoding.ASCII.GetBytes($"{conn.Username}:{conn.Password}");
-            //client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", Convert.ToBase64String(byteArray));
-
+            
             var response = await client.SendAsync(request);
             response.EnsureSuccessStatusCode();
         } 
@@ -96,9 +91,7 @@ public class RdfoxApi
                 Content = content
             };
 
-            //var byteArray = Encoding.ASCII.GetBytes($"{conn.Username}:{conn.Password}");
-            //client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", Convert.ToBase64String(byteArray));
-
+            
             var response = await client.SendAsync(request);
             response.EnsureSuccessStatusCode();
         } 
@@ -121,9 +114,7 @@ public class RdfoxApi
                 Content = content
             };
 
-            //var byteArray = Encoding.ASCII.GetBytes($"{conn.Username}:{conn.Password}");
-            //client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", Convert.ToBase64String(byteArray));
-
+            
             var response = await client.SendAsync(request);
             response.EnsureSuccessStatusCode();
         } 
@@ -146,10 +137,7 @@ public class RdfoxApi
             {
                 Content = content
             };
-
-            //var byteArray = Encoding.ASCII.GetBytes($"{conn.Username}:{conn.Password}");
-            //client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", Convert.ToBase64String(byteArray));
-
+            
             var response = await client.SendAsync(request);
             if(!response.IsSuccessStatusCode)
                 throw new Exception(await response.Content.ReadAsStringAsync());
