@@ -8,8 +8,10 @@ internal class Program
     {
         if (args.Length < 3)
         {
-            Console.WriteLine("Usage \"dotnet run filename-for-dexpi-in-rdf \"label-of-internal-componenet\" iri-of-border-component ... iri-of-border-component ");
-            Console.WriteLine("For example \"dotnet run  ../../../rml/pandid.trig \"T4750\" https://assetid.equinor.com/plantx#Nozzle-12 https://assetid.equinor.com/plantx#Nozzle-8 https://assetid.equinor.com/plantx#PlateHeatExchanger-1 https://assetid.equinor.com/plantx#ReciprocatingPump-1");
+            Console.WriteLine(
+                "Usage \"dotnet run filename-for-dexpi-in-rdf \"label-of-internal-componenet\" iri-of-border-component ... iri-of-border-component ");
+            Console.WriteLine(
+                "For example \"dotnet run  ../../../rml/pandid.trig \"T4750\" https://assetid.equinor.com/plantx#Nozzle-12 https://assetid.equinor.com/plantx#Nozzle-8 https://assetid.equinor.com/plantx#PlateHeatExchanger-1 https://assetid.equinor.com/plantx#ReciprocatingPump-1");
             return;
         }
 
@@ -24,8 +26,18 @@ internal class Program
 
         var borderComponentIris = args.Skip(2).Select(iri => new IriReference(iri)).ToArray();
         var datalog = DatalogCreator.CreateBoundaryDatalogRule(internalComponentLabel, borderComponentIris);
-        Console.WriteLine(datalog);
+        var conn = RdfoxApi.GetDefaultConnectionSettings();
+        await RdfoxApi.LoadDatalog(conn, datalog);
         
+        var data = File.ReadAllText(dexpiFilePath);
+        await RdfoxApi.LoadData(conn, data);
+
+        var queryString = DatalogCreator.CreateCommissioningSparqlQuery();
+        var result = await RdfoxApi.QuerySparql(conn, queryString);
+        Console.WriteLine(result);
+        
+        await RdfoxApi.DeleteData(conn, data);
+        await RdfoxApi.DeleteDatalog(conn, datalog);
 
     }
 }

@@ -1,5 +1,5 @@
-dstore create test
-active test
+dstore create boundaries
+active boundaries
 
 prefix rml: <http://semweb.mmlab.be/ns/rml#> 
 prefix rr: <http://www.w3.org/ns/r2rml#> 

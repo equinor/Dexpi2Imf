@@ -1,6 +1,5 @@
 boundaries.rdfox
 
-tupletable create connectedWithout type triple-table
 import ../datalog/boundary.datalog
 import +p "../rml/pandid.trig"
 
