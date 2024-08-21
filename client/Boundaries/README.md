@@ -7,3 +7,5 @@ Start a rdfox server from the folder [../../rdfox/](../../rdfox) with the follow
 ```
 RDFox sandbox ../../rdfox boundaries
 ```
+
+Then rund `dotnet run` and follow instructions
