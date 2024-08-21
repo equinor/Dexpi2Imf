@@ -29,7 +29,7 @@ internal class Program
         var datalog = datalogCreator.CreateBoundaryDatalogRule(internalComponentLabel, borderComponentIris);
         var conn = RdfoxApi.GetDefaultConnectionSettings();
         await RdfoxApi.LoadDatalog(conn, datalog);
-        Console.WriteLine(datalog);
+        
         var data = File.ReadAllText(dexpiFilePath);
         await RdfoxApi.LoadData(conn, data);
 
