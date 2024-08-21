@@ -1,4 +1,5 @@
 using System.Text;
+using IriTools;
 
 namespace Boundaries;
 
@@ -12,6 +13,7 @@ public class RdfoxApi
         public string Username { get; set; }
         public string Password { get; set; }
         public string Datastore { get; set; }
+        
     }
     
     public static ConnectionSettings GetDefaultConnectionSettings()

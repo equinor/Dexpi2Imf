@@ -25,14 +25,15 @@ internal class Program
         }
 
         var borderComponentIris = args.Skip(2).Select(iri => new IriReference(iri)).ToArray();
-        var datalog = DatalogCreator.CreateBoundaryDatalogRule(internalComponentLabel, borderComponentIris);
+        var datalogCreator = new DatalogCreator();
+        var datalog = datalogCreator.CreateBoundaryDatalogRule(internalComponentLabel, borderComponentIris);
         var conn = RdfoxApi.GetDefaultConnectionSettings();
         await RdfoxApi.LoadDatalog(conn, datalog);
         
         var data = File.ReadAllText(dexpiFilePath);
         await RdfoxApi.LoadData(conn, data);
 
-        var queryString = DatalogCreator.CreateCommissioningSparqlQuery();
+        var queryString = datalogCreator.CreateCommissioningSparqlQuery();
         var result = await RdfoxApi.QuerySparql(conn, queryString);
         Console.WriteLine(result);
         
