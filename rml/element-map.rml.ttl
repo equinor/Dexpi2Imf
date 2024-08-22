@@ -36,12 +36,4 @@
     rr:constant "http://ns.imfid.org/imf#productAspect" ;
     rr:termType rr:IRI
   ];
-],
-
- [
-  rr:predicate "http://ns.imfid.org/imf#partOf";
-  rr:objectMap [ 
-    rr:template "https://assetid.equinor.com/plantx#{../@ID}";
-    rr:termType rr:IRI
-  ];
 ].

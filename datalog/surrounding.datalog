@@ -1,0 +1,13 @@
+prefix data: <https://assetid.equinor.com/plantx/document/12345#>
+
+
+data:connectedEquipment [?node] :- 
+    rdfs:label [?internal, "P4712"],
+    imf:connectedTo [?internal, ?node],
+    dexpi:PipingOrEquipment [?node].
+
+data:connectedEquipment [?node] :- 
+    data:connectedEquipment [?node1],
+    imf:connectedTo [?node1, ?node],
+    dexpi:PipingOrEquipment [?node],
+    NOT dexpi:Equipment [?node1].
