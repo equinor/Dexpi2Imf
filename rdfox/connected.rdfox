@@ -1,0 +1,9 @@
+boundaries.rdfox
+
+import ../datalog/surrounding.datalog
+import +p "../rml/pandid.trig"
+
+endpoint start
+
+set output out
+select * where {?s a data:connectedEquipment; <http://sandbox.dexpi.org/rdl/TagNameAssignmentClass> ?tag.}

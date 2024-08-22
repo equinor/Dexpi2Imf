@@ -6,3 +6,9 @@ INSERT {
     TT SHACL_DN { schema:shacl ?s ?p ?o} . 
     FILTER(?p IN (sh:sourceShape, sh:resultMessage, sh:value)) 
 }
+
+INSERT { 
+    ?s a <https://rdfox.com/vocabulary#ConstraintViolation> . 
+} WHERE { 
+    ?s a owl:Nothing.
+}
