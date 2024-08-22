@@ -5,7 +5,7 @@ Run the rml mapper scripts as described in [../rml/README.md](../rml/README.md)
 
 This will create a file [../rml/pandid.trig](../rml/pandid.trig)
 
-## Running the example
+## Running the example commmissioning package
 In this folder, run
 ```
 RDFox sandbox . dexpi
@@ -32,3 +32,12 @@ To run a server for use with [Boundaries cli](../client/Boundaries/Boundaries.sl
 RDFox sandbox . boundaries
 ```
 This will load ontology and prefixes, but no data. 
+
+## Running the pump connections example
+In this folder, run
+```
+RDFox sandbox . connected
+```
+This will load ontology and datalog rules, and in addition load the data in [../rml/pandid.trig](../rml/pandid.trig)
+
+There are a lot of warnings about axioms in the IMF ontology that cannot be handled. This can safely be ignored. Other warnings and errors should be checked, especially if the last output is not the expected commissioning package output
