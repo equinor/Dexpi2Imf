@@ -29,4 +29,25 @@ public class DatalogCreator
                    dexpi:PipingOrEquipment [?node].
                """;
     }
+    
+    
+    public string CreateConnectedSparqlQuery()
+    {
+        return $"select * where {{?s a <{BoundaryGraph}>; <http://sandbox.dexpi.org/rdl/TagNameAssignmentClass> ?tag.}}";
+    }
+    public string CreateConnectedDatalogRule(string internalComponentLabel)
+    {
+        return $$"""
+                 <{{BoundaryGraph}}> [?node] :- 
+                     rdfs:label [?internal, "{{internalComponentLabel}}"],
+                     imf:connectedTo [?internal, ?node],
+                     dexpi:PipingOrEquipment [?node].
+                     
+                 <{{BoundaryGraph}}> [?node] :- 
+                     <{{BoundaryGraph}}> [?node1],
+                     imf:connectedTo [?node1, ?node],
+                     dexpi:PipingOrEquipment [?node],
+                     NOT dexpi:Equipment [?node1].
+                 """;
+    }
 }
