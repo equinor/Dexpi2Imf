@@ -27,6 +27,13 @@ class Program
             xslt.Load(xr);
         }
         
+        // Create an instance of the extension object
+        MathExtensions mathExtensions = new MathExtensions();
+
+        // Create an XsltArgumentList and add the extension object
+        XsltArgumentList xsltArgs = new XsltArgumentList();
+        xsltArgs.AddExtensionObject("urn:math", mathExtensions);
+        
         // Transform XML to SVG with UTF-8 encoding
         XmlWriterSettings settings = xslt.OutputSettings?.Clone() ?? throw new Exception("No xslt output settings found!");
         settings.OmitXmlDeclaration = true;
@@ -34,7 +41,7 @@ class Program
         using (StringWriter sw = new StringWriter())
         using (XmlWriter xw = XmlWriter.Create(sw, settings))
         {
-            xslt.Transform(xmlDoc, xw);
+            xslt.Transform(xmlDoc, xsltArgs, xw);
             string svgOutput = sw.ToString();
 
             // Save or use the SVG output

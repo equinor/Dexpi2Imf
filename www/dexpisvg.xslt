@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:svg="http://www.w3.org/2000/svg">
+<xsl:stylesheet version="1.0" 
+    xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
+    xmlns:svg="http://www.w3.org/2000/svg"
+    xmlns:math="urn:math"
+>
     <xsl:output method="xml" indent="yes"/>
 
     <!-- Root template -->
@@ -28,58 +32,116 @@
         </svg:svg>
     </xsl:template>
 
+
+  <!-- Template to calculate svg transform from proteus Position 
+   For example, input       
+   <Position>
+        <Location X="144" Y="164" Z="0"/>
+        <Axis X="0" Y="0" Z="1"/>
+        <Reference X="1" Y="0" Z="0"/>
+    </Position> 
+    should become transform="translate(144, 75.323817) rotate(0)" -->
+  <xsl:template name="Position">
+    <xsl:param name="height"/>
+    <xsl:param name="PositionNode"/>
+    <xsl:param name="ScaleNode"/>
+    
+    <xsl:variable name="x" select="$PositionNode/Location/@X"/>
+    <xsl:variable name="y" select="$PositionNode/Location/@Y"/>
+    <xsl:variable name="axisX" select="$PositionNode/Axis/@X"/>
+    <xsl:variable name="axisY" select="$PositionNode/Axis/@Y"/>
+    <xsl:variable name="axisZ" select="$PositionNode/Axis/@Z"/>
+    <xsl:variable name="refX" select="$PositionNode/Reference/@X"/>
+    <xsl:variable name="refY" select="$PositionNode/Reference/@Y"/>
+    <xsl:variable name="refZ" select="$PositionNode/Reference/@Z"/>
+    
+    <!-- Calculate the angle using the custom extension function -->
+    <xsl:variable name="angle" select="math:CalculateAngle($axisX, $axisY, $axisZ, $refX, $refY, $refZ)"/>
+
+    <!-- Output the SVG rotate and translate commands --> 
+    <xsl:attribute name="transform">
+        <xsl:if test="$angle != 0">
+            <xsl:text>rotate(</xsl:text>
+            <xsl:value-of select="360 - $angle"/>
+            <xsl:text>, </xsl:text>
+            <xsl:value-of select="$x"/>
+            <xsl:text>, </xsl:text>
+            <xsl:value-of select="$height - $y"/>
+            <xsl:text>) </xsl:text>
+        </xsl:if>
+        <xsl:text>translate(</xsl:text>
+        <xsl:value-of select="$x"/>
+        <xsl:text>, </xsl:text>
+        <xsl:value-of select="$height - $y"/>
+        <xsl:text>) </xsl:text>
+        <xsl:if test="$ScaleNode">
+            <xsl:text> scale</xsl:text>
+            <xsl:value-of select="concat('(',$ScaleNode/@X  , ', ' ,  $ScaleNode/@Y , ')')" />
+        </xsl:if>
+      </xsl:attribute>
+  </xsl:template>
+
     <!-- Template for labels-->
     <xsl:template match="Label">
         <xsl:param name="height"/>
         <svg:text>
-            <xsl:variable name="angle" select="Text/@TextAngle"/>
+            <xsl:variable name="axisX" select="Text/Position/Axis/@X"/>
+            <xsl:variable name="axisY" select="Text/Position/Axis/@Y"/>
+            <xsl:variable name="axisZ" select="Text/Position/Axis/@Z"/>
+            <xsl:variable name="refX" select="Text/Position/Reference/@X"/>
+            <xsl:variable name="refY" select="Text/Position/Reference/@Y"/>
+            <xsl:variable name="refZ" select="Text/Position/Reference/@Z"/>
+            <xsl:variable name="angle" select="Text/@TextAngle + math:CalculateAngle($axisX, $axisY, $axisZ, $refX, $refY, $refZ)"/>
             <xsl:variable name="textlength" select = "string-length(Text/@String)"/>
-            
+            <!-- <xsl:attribute name="rotate">
+                <xsl:value-of select="Text/@TextAngle"/>
+            </xsl:attribute> -->
             <xsl:attribute name="x">
-                <xsl:value-of select="Text/Position/Location/@X - $textlength"/>
+                <xsl:value-of select="Text/Position/Location/@X"/>
             </xsl:attribute>
             <xsl:attribute name="y">
                 <xsl:value-of select="$height - Text/Position/Location/@Y"/>
             </xsl:attribute>
             <xsl:attribute name="font-size">
-                <xsl:value-of select="Text/@Height"/>
+                <xsl:value-of select="concat(Text/@Height, 'px')"/>
             </xsl:attribute>
             <xsl:attribute name="fill">
-                <xsl:value-of select="concat('rgb(', @R*255, ',', @G*255, ',', @B*255, ')')"/>
+                <xsl:text>#000000</xsl:text>
             </xsl:attribute>
             <xsl:attribute name="font-family">
                 <xsl:value-of select="Text/@Font"/>
             </xsl:attribute>
             <xsl:attribute name="text-anchor">
-                <xsl:if test="Text/@Justification = 'CenterCenter'">
-                    <xsl:value-of select="middle"/>
-                </xsl:if>
+                    <xsl:text>middle</xsl:text>
             </xsl:attribute>
             <xsl:attribute name="transform">
-                <xsl:value-of select="concat('rotate(', Text/@TextAngle, ' ', Text/Position/Location/@X, ' ', $height - Text/Position/Location/@Y, ')')"/>
+                <xsl:text>rotate(</xsl:text>
+                <xsl:value-of select="360-$angle"/>
+                <xsl:text>) </xsl:text>
             </xsl:attribute>
             <xsl:value-of select="Text/@String"/>
         </svg:text>
-        
     </xsl:template>
    
-    <!-- Template for Nozzle-->
-     <!-- <xsl:template match="Nozzle">
+    <!-- Template for Equipment, Nozzle,  stuff-->
+     <xsl:template match="*">
         <xsl:param name="height"/>
-        <svg:use>
-            <xsl:attribute name="href">
-                <xsl:value-of select="concat('#', @ComponentName)"/>
-            </xsl:attribute>
-            <xsl:attribute name="transform">
-                <xsl:text>translate</xsl:text>
-                <xsl:value-of select="concat('(',Position/Location/@X , ',' , $height - Position/Location/@Y , ')')" />
-                <xsl:text> scale</xsl:text>
-                <xsl:value-of select="concat('(',Scale/@X , ',' , Scale/@Y , ')')" />
-            </xsl:attribute>
-        </svg:use>
-    </xsl:template>  -->
-
-
+        <xsl:if test="@ComponentName">
+            <svg:use>
+                <xsl:attribute name="href">
+                    <xsl:value-of select="concat('#', @ComponentName)"/>
+                </xsl:attribute>
+                <xsl:call-template name="Position">
+                    <xsl:with-param name="height" select="$height"/>
+                    <xsl:with-param name="PositionNode" select="Position"/>
+                    <xsl:with-param name="ScaleNode" select="Scale"/>
+                </xsl:call-template>
+            </svg:use>
+        </xsl:if>
+        <xsl:apply-templates>
+            <xsl:with-param name="height" select="$height" />
+        </xsl:apply-templates>
+    </xsl:template> 
 
     <!-- Shape catalogue-->
     <xsl:template match="ShapeCatalogue">
@@ -96,9 +158,38 @@
     </xsl:template>
 
 
+    <!-- Template for curves-->
+     <xsl:template match="TrimmedCurve">
+        <xsl:variable name="radius" select="Circle/@Radius" />
+        <xsl:variable name="endAngleRadians" select="@EndAngle * 0.0174532925"/> 
+        <xsl:variable name="startAngleRadians" select="@StartAngle * 0.0174532925"/> 
+        <xsl:variable name="deltax" select="Circle/Position/Location/@X"/>
+        <xsl:variable name="deltay" select="Circle/Position/Location/@Y"/>
+        <svg:path fill="none" stroke="#808000" stroke-linecap="round" stroke-linejoin="round">
+            <xsl:attribute name="stroke-width">
+                <xsl:value-of select="Circle/Presentation/@LineWeight"/>
+            </xsl:attribute>
+            <xsl:attribute name="d">
+                <xsl:text>M </xsl:text>
+                <xsl:value-of select="$radius * math:Cos($endAngleRadians) + $deltax"/>
+                <xsl:text> </xsl:text>
+                <xsl:value-of select="$radius * math:Sin($endAngleRadians) + $deltay"/>
+                <xsl:text> A </xsl:text>
+                <xsl:value-of select="$radius"/>
+                <xsl:text> </xsl:text>
+                <xsl:value-of select="$radius"/>
+                <xsl:text> 0 0 0 </xsl:text>
+                <xsl:value-of select="$radius * math:Cos($startAngleRadians) + $deltax"/>
+                <xsl:text> </xsl:text>
+                <xsl:value-of select="$radius * math:Sin($startAngleRadians) + $deltay"/>
+            </xsl:attribute>
+        </svg:path>
+
+     </xsl:template>
+
      <!-- Template for Circle elements -->
      <xsl:template match="Circle">
-        <svg:circle>
+        <svg:circle fill="none" stroke="#808000" vector-effect="non-scaling-stroke" >
             <xsl:attribute name="r">
                 <xsl:value-of select="@Radius"/>
             </xsl:attribute>
@@ -108,8 +199,8 @@
             <xsl:attribute name="cy">
                 <xsl:value-of select="Position/Location/@Y"/>
             </xsl:attribute>
-            <xsl:attribute name="fill">
-                <xsl:value-of select="concat('rgb(', @R*255, ',', @G*255, ',', @B*255, ')')"/>
+            <xsl:attribute name="stroke-width">
+                <xsl:value-of select="Presentation/@LineWeight"/>
             </xsl:attribute>
         </svg:circle>
     </xsl:template>
