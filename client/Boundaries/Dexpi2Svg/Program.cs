@@ -27,14 +27,13 @@ class Program
             xslt.Load(xr);
         }
         
-        // Create an instance of the extension object
         MathExtensions mathExtensions = new MathExtensions();
-
-        // Create an XsltArgumentList and add the extension object
+        ColorExtensions colorExtensions = new ColorExtensions();
+        
         XsltArgumentList xsltArgs = new XsltArgumentList();
         xsltArgs.AddExtensionObject("urn:math", mathExtensions);
+        xsltArgs.AddExtensionObject("urn:color", colorExtensions);
         
-        // Transform XML to SVG with UTF-8 encoding
         XmlWriterSettings settings = xslt.OutputSettings?.Clone() ?? throw new Exception("No xslt output settings found!");
         settings.OmitXmlDeclaration = true;
         // Transform XML to SVG
