@@ -11,9 +11,12 @@
     <xsl:template match="/PlantModel">
         <svg:svg xmlns:svg="http://www.w3.org/2000/svg">
             <xsl:attribute name="width">
-                <xsl:value-of select="Drawing/Extent/Max/@X"/>
+                <xsl:value-of select="2000"/>
             </xsl:attribute>
-            <xsl:attribute name="height">
+            <xsl:attribute name="viewBox">
+                <xsl:text>0 0 </xsl:text>
+                <xsl:value-of select="Drawing/Extent/Max/@X"/>
+                <xsl:text> </xsl:text>
                 <xsl:value-of select="Drawing/Extent/Max/@Y"/>
             </xsl:attribute>
             <xsl:variable name="height" select="Drawing/Extent/Max/@Y"/>
@@ -112,7 +115,7 @@
     <xsl:attribute name="transform">
         <xsl:if test="$angle != 0">
             <xsl:text>rotate(</xsl:text>
-            <xsl:value-of select="360 - $angle"/>
+            <xsl:value-of select="$angle"/>
             <xsl:text>, </xsl:text>
             <xsl:value-of select="$x"/>
             <xsl:text>, </xsl:text>
@@ -135,19 +138,29 @@
     <xsl:template match="Label">
         <xsl:param name="height"/>
         <svg:text>
-            <xsl:variable name="axisX" select="Text/Position/Axis/@X"/>
-            <xsl:variable name="axisY" select="Text/Position/Axis/@Y"/>
-            <xsl:variable name="axisZ" select="Text/Position/Axis/@Z"/>
-            <xsl:variable name="refX" select="Text/Position/Reference/@X"/>
-            <xsl:variable name="refY" select="Text/Position/Reference/@Y"/>
-            <xsl:variable name="refZ" select="Text/Position/Reference/@Z"/>
+            <xsl:variable name="angleFromPosition">
+                <xsl:choose>
+                    <xsl:when test="Text/Position">
+                        <xsl:variable name="axisX" select="Text/Position/Axis/@X"/>
+                        <xsl:variable name="axisY" select="Text/Position/Axis/@Y"/>
+                        <xsl:variable name="axisZ" select="Text/Position/Axis/@Z"/>
+                        <xsl:variable name="refX" select="Text/Position/Reference/@X"/>
+                        <xsl:variable name="refY" select="Text/Position/Reference/@Y"/>
+                        <xsl:variable name="refZ" select="Text/Position/Reference/@Z"/>
+                        <xsl:value-of select="math:CalculateAngle($axisX, $axisY, $axisZ, $refX, $refY, $refZ)"/>
+                    </xsl:when>         
+                    <xsl:otherwise>
+                        <xsl:value-of select="0"/>
+                    </xsl:otherwise>
+                </xsl:choose>    
+            </xsl:variable>
             <xsl:variable name="angle">
                 <xsl:choose>
                     <xsl:when test="Text/@TextAngle">  
-                        <xsl:value-of select="Text/@TextAngle + math:CalculateAngle($axisX, $axisY, $axisZ, $refX, $refY, $refZ)"/>
+                        <xsl:value-of select="Text/@TextAngle + $angleFromPosition"/>
                     </xsl:when>
                     <xsl:otherwise>
-                        <xsl:value-of select="math:CalculateAngle($axisX, $axisY, $axisZ, $refX, $refY, $refZ)"/>
+                        <xsl:value-of select="$angleFromPosition"/>
                     </xsl:otherwise>
                 </xsl:choose>
             </xsl:variable>

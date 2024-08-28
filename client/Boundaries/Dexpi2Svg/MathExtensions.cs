@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 
 public class MathExtensions
 {
@@ -43,22 +44,36 @@ public class MathExtensions
         /// <returns></returns>
         public double CalculateAngle(double axisX, double axisY, double axisZ, double refX, double refY, double refZ)
         {
-            if (axisX != 0 || axisY != 0 || ! (axisZ == 1 || axisZ == -1) || refZ != 0)
+            var axisLength = Math.Sqrt(axisX*axisX+axisY*axisY+axisZ*axisZ);
+            if (axisLength == 0)
             {
-                throw new NotImplementedException("Only axisZ = 1 or axisZ = -1 is supported");                
+                throw new NotImplementedException("axisX, axisY and axisZ must not be all zero");
             }
-            switch ((refX, refY))
+
+            var rotDirection = Math.Sign(axisZ);
+            double refAxisLength = Math.Sqrt(refX*refX+refY*refY+refZ*refZ);
+            if (refAxisLength == 0)
             {
-                case (0, 1):
-                    return axisZ * 90;
-                case (1, 0):
-                    return 0;
-                case (0, -1):
-                    return axisZ * -90;
-                case (-1, 0):
-                    return 180;
-                default:
-                    throw new NotImplementedException($"Combination of refX={refX} and refY={refY} is not supported");
+                throw new NotImplementedException("refX, refY and refZ must not be all zero");
             }
+
+            var cosTheta = refX / refAxisLength;
+            var sinTheta = refY / refAxisLength;
+            var thetaFromCos = Math.Acos(cosTheta);
+            var thetaFromSin = Math.Asin(sinTheta);
+            var theta = thetaFromCos;
+            if (sinTheta < 0)
+            {
+                if(cosTheta < 0)
+                {
+                    theta = -thetaFromCos;
+                }
+                else
+                {
+                    theta = thetaFromSin;
+                }
+            }
+            return - rotDirection * theta * 180 / Math.PI;
+            
         }
 }
