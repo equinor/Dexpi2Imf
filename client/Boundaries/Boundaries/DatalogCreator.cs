@@ -33,21 +33,25 @@ public class DatalogCreator
     
     public string CreateConnectedSparqlQuery()
     {
-        return $"select * where {{?s a <{BoundaryGraph}>; <http://sandbox.dexpi.org/rdl/TagNameAssignmentClass> ?tag.}}";
+        return $"select * where {{?s a <{BoundaryGraph}>; rdfs:label ?tag.}}";
+        //return $"select * where {{?s a <{BoundaryGraph}>; <http://sandbox.dexpi.org/rdl/TagNameAssignmentClass> ?tag.}}";
     }
     public string CreateConnectedDatalogRule(string internalComponentLabel)
     {
-        return $$"""
-                 <{{BoundaryGraph}}> [?node] :- 
-                     rdfs:label [?internal, "{{internalComponentLabel}}"],
-                     imf:connectedTo [?internal, ?node],
-                     dexpi:PipingOrEquipment [?node].
-                     
-                 <{{BoundaryGraph}}> [?node] :- 
-                     <{{BoundaryGraph}}> [?node1],
-                     imf:connectedTo [?node1, ?node],
-                     dexpi:PipingOrEquipment [?node],
-                     NOT dexpi:Equipment [?node1].
-                 """;
+        return $$$"""
+                  <{{{BoundaryGraph}}}> [?node] :- 
+                    rdfs:label [?node, "{{{internalComponentLabel}}}"].
+                  
+                  <{{{BoundaryGraph}}}> [?node] :- 
+                      rdfs:label [?internal, "{{{internalComponentLabel}}}"],
+                      imf:connectedTo [?internal, ?node],
+                      dexpi:PipingOrEquipment [?node].
+                      
+                  <{{{BoundaryGraph}}}> [?new_node] :- 
+                      <{{{BoundaryGraph}}}> [?existing_node],
+                      imf:connectedTo [?existing_node, ?new_node],
+                      dexpi:PipingOrEquipment [?new_node],
+                      NOT dexpi:Nozzle [?existing_node].
+                  """;
     }
 }
