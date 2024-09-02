@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet version="1.0" 
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
-    xmlns:svg="http://www.w3.org/2000/svg"
+    xmlns="http://www.w3.org/2000/svg"
     xmlns:math="urn:math"
     xmlns:color="urn:color"
 >
@@ -9,7 +9,7 @@
 
     <!-- Root template -->
     <xsl:template match="/PlantModel">
-        <svg:svg xmlns:svg="http://www.w3.org/2000/svg">
+        <svg xmlns:svg="http://www.w3.org/2000/svg">
             <xsl:attribute name="width">
                 <xsl:value-of select="2000"/>
             </xsl:attribute>
@@ -20,42 +20,42 @@
                 <xsl:value-of select="Drawing/Extent/Max/@Y"/>
             </xsl:attribute>
             <xsl:variable name="height" select="Drawing/Extent/Max/@Y"/>
-            <svg:g>
-                <svg:rect x="0" y="0" fill="#ffffff" stroke="none">
+            <g>
+                <rect x="0" y="0" fill="#ffffff" stroke="none">
                     <xsl:attribute name="width">
                         <xsl:value-of select="Drawing/Extent/Max/@X"/>
                     </xsl:attribute>
                     <xsl:attribute name="height">
                         <xsl:value-of select="$height"/>
                     </xsl:attribute>
-                    </svg:rect>
+                    </rect>
                 <xsl:apply-templates>
                     <xsl:with-param name="height" select="$height" />
                 </xsl:apply-templates>
-            </svg:g>
-        </svg:svg>
+            </g>
+        </svg>
     </xsl:template>
 
 
     <!-- Matching piping network system -->
     <xsl:template match="PipingNetworkSystem">
         <xsl:param name="height"/>
-        <svg:g>
+        <g>
             <xsl:apply-templates>
                 <xsl:with-param name="height" select="$height" />
             </xsl:apply-templates>
-        </svg:g>
+        </g>
     </xsl:template>
 
 
     <!-- Matching piping network system -->
     <xsl:template match="PipingNetworkSegment">
         <xsl:param name="height"/>
-        <svg:g>
+        <g>
             <xsl:apply-templates>
                 <xsl:with-param name="height" select="$height" />
             </xsl:apply-templates>
-        </svg:g>
+        </g>
     </xsl:template>
 
 
@@ -63,7 +63,7 @@
     <!-- Matching piping lines -->
     <xsl:template match="CenterLine">
         <xsl:param name="height"/>
-        <svg:path fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <path fill="none" stroke-linecap="round" stroke-linejoin="round">
             <xsl:attribute name="d">
                 <xsl:text>M </xsl:text>
                 <xsl:for-each select="Coordinate">
@@ -81,7 +81,7 @@
             <xsl:attribute name="stroke-width">
                 <xsl:value-of select="Presentation/@LineWeight"/>
             </xsl:attribute>
-        </svg:path>
+        </path>
     </xsl:template>
 
     
@@ -137,7 +137,7 @@
     <!-- Template for labels-->
     <xsl:template match="Label">
         <xsl:param name="height"/>
-        <svg:text>
+        <text>
             <xsl:variable name="angleFromPosition">
                 <xsl:choose>
                     <xsl:when test="Text/Position">
@@ -196,14 +196,14 @@
                 </xsl:if>
             </xsl:attribute>
             <xsl:value-of select="Text/@String"/>
-        </svg:text>
+        </text>
     </xsl:template>
    
     <!-- Template for Equipment, Nozzle,  stuff-->
      <xsl:template match="*">
         <xsl:param name="height"/>
         <xsl:if test="@ComponentName">
-            <svg:use>
+            <use>
                 <xsl:attribute name="href">
                     <xsl:value-of select="concat('#', @ComponentName)"/>
                 </xsl:attribute>
@@ -212,7 +212,7 @@
                     <xsl:with-param name="PositionNode" select="Position"/>
                     <xsl:with-param name="ScaleNode" select="Scale"/>
                 </xsl:call-template>
-            </svg:use>
+            </use>
         </xsl:if>
         <xsl:apply-templates>
             <xsl:with-param name="height" select="$height" />
@@ -221,16 +221,16 @@
 
     <!-- Shape catalogue-->
     <xsl:template match="ShapeCatalogue">
-        <svg:defs>
+        <defs>
             <xsl:for-each select="*">
-                <svg:symbol overflow="visible">
+                <symbol overflow="visible">
                     <xsl:attribute name="id">
                         <xsl:value-of select="@ComponentName"/>
                     </xsl:attribute>
                     <xsl:apply-templates/>
-                </svg:symbol>
+                </symbol>
             </xsl:for-each>
-        </svg:defs>
+        </defs>
     </xsl:template>
 
 
@@ -241,7 +241,7 @@
         <xsl:variable name="startAngleRadians" select="@StartAngle * 0.0174532925"/> 
         <xsl:variable name="deltax" select="Circle/Position/Location/@X"/>
         <xsl:variable name="deltay" select="Circle/Position/Location/@Y"/>
-        <svg:path fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <path fill="none" stroke-linecap="round" stroke-linejoin="round">
             <xsl:attribute name="stroke">
                 <xsl:value-of select="color:RgbToHex(Circle/Presentation/@R, Circle/Presentation/@G, Circle/Presentation/@B)"/>
             </xsl:attribute>
@@ -262,13 +262,13 @@
                 <xsl:text> </xsl:text>
                 <xsl:value-of select="$radius * math:Sin($startAngleRadians) + $deltay"/>
             </xsl:attribute>
-        </svg:path>
+        </path>
 
      </xsl:template>
 
      <!-- Template for Circle elements -->
      <xsl:template match="Circle">
-        <svg:circle fill="none" vector-effect="non-scaling-stroke" >
+        <circle fill="none" vector-effect="non-scaling-stroke" >
             <xsl:attribute name="stroke">
                 <xsl:value-of select="color:RgbToHex(Presentation/@R, Presentation/@G, Presentation/@B)"/>
             </xsl:attribute>
@@ -284,14 +284,14 @@
             <xsl:attribute name="stroke-width">
                 <xsl:value-of select="Presentation/@LineWeight"/>
             </xsl:attribute>
-        </svg:circle>
+        </circle>
     </xsl:template>
 
    
 
     <!-- Template for PolyLine elements -->
     <xsl:template match="PolyLine">
-        <svg:path fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <path fill="none" stroke-linecap="round" stroke-linejoin="round">
             <xsl:attribute name="stroke-width">
                 <xsl:value-of select="Presentation/@LineWeight"/>
             </xsl:attribute>
@@ -312,6 +312,6 @@
             <xsl:attribute name="stroke-width">
                 <xsl:value-of select="Presentation/@LineWeight"/>
             </xsl:attribute>
-        </svg:path>
+        </path>
     </xsl:template>
 </xsl:stylesheet>
