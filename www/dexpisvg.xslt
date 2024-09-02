@@ -138,7 +138,7 @@
     <xsl:template match="Label">
         <xsl:param name="height"/>
         <xsl:variable name="id" select="../@ID"/>
-        <a href="{concat('https://assetid.equinor.com/plantx#', $id)}">
+        <a id="{$id}" class="node">
         <text>
             <xsl:variable name="angleFromPosition">
                 <xsl:choose>
