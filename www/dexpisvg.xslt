@@ -137,6 +137,8 @@
     <!-- Template for labels-->
     <xsl:template match="Label">
         <xsl:param name="height"/>
+        <xsl:variable name="id" select="../@ID"/>
+        <a href="{concat('https://assetid.equinor.com/plantx#', $id)}">
         <text>
             <xsl:variable name="angleFromPosition">
                 <xsl:choose>
@@ -197,11 +199,13 @@
             </xsl:attribute>
             <xsl:value-of select="Text/@String"/>
         </text>
+        </a>
     </xsl:template>
    
     <!-- Template for Equipment, Nozzle,  stuff-->
      <xsl:template match="*">
         <xsl:param name="height"/>
+        <xsl:variable name="id" select="@ID"/>
         <xsl:if test="@ComponentName">
             <use>
                 <xsl:attribute name="href">
