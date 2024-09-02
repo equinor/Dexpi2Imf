@@ -110,7 +110,7 @@
     
     <!-- Calculate the angle using the custom extension function -->
     <xsl:variable name="angle" select="math:CalculateAngle($axisX, $axisY, $axisZ, $refX, $refY, $refZ)"/>
-
+    
     <!-- Output the SVG rotate and translate commands --> 
     <xsl:attribute name="transform">
         <xsl:if test="$angle != 0">
@@ -185,7 +185,10 @@
                     <xsl:text>middle</xsl:text>
             </xsl:attribute>
             <xsl:attribute name="transform">
-                <xsl:if test="$angle != 0">
+                <xsl:attribute name="matrix">
+                    <xsl:value-of select="$costheta $sintheta (-$sintheta) $costheta ($x * (1 - $costheta) + $y * $sintheta) ($y * (1 - $costheta) + $x * $sintheta)"/>
+                </xsl:attribute>
+                <!-- <xsl:if test="$angle != 0">
                     <xsl:text>rotate(</xsl:text>
                     <xsl:value-of select="360 - $angle"/>
                     <xsl:text>, </xsl:text>
@@ -193,7 +196,7 @@
                     <xsl:text>, </xsl:text>
                     <xsl:value-of select="$y"/>
                     <xsl:text>) </xsl:text>
-                </xsl:if>
+                </xsl:if> -->
             </xsl:attribute>
             <xsl:value-of select="Text/@String"/>
         </svg:text>
