@@ -1,0 +1,7 @@
+/* ------ style.css ----- */
+
+svg a:hover text {
+    fill: #FF0000;
+    transition: 0.6s;
+    cursor:pointer;
+}
