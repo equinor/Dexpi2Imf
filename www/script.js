@@ -6,10 +6,27 @@ document.addEventListener("keyup", (event) => {
         var boundaryNodes = document.querySelectorAll('.boundary');
     }
     if(internalNodes.length == 1 && boundaryNodes.length >=2) {
-        // Log IDs of 'internal' nodes
-        internalNodes.forEach(node => { console.log(`internal ${node.id}`); });
-        // Log IDs of 'boundary' nodes
-        boundaryNodes.forEach(node => { console.log(`boundary ${node.id}`); });
+        let insertQuery = `INSERT DATA { asset:${internalNodes[0].id} a data:insideBoundary . `
+        boundaryNodes.forEach(node => { 
+            insertQuery += `asset:${node.id} a data:endOfBoundary . `
+        });
+        insertQuery += '}'
+        console.log(insertQuery)
+
+        fetch('http://localhost:12110/datastores/boundaries/sparql', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+              },
+            body: `update=${insertQuery}`
+          })
+          .then(response => response.text()) 
+          .then(data => {
+            console.log(data); 
+          })
+          .catch(error => {
+            console.error('Error:', error); 
+          });
     }
 });
 

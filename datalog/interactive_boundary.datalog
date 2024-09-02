@@ -1,0 +1,7 @@
+prefix data: <https://assetid.equinor.com/plantx/document/12345#>
+
+data:insideBoundary [?new_node] :- 
+    data:insideBoundary [?node],
+    imf:connectedTo [?node, ?new_node],
+    dexpi:PipingOrEquipment [?new_node],
+    FILTER NOT data:endOfBoundary [?node]
