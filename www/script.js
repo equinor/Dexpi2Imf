@@ -6,11 +6,12 @@ document.addEventListener("keyup", (event) => {
         var boundaryNodes = document.querySelectorAll('.boundary');
     }
     if(internalNodes.length == 1 && boundaryNodes.length >=2) {
-        let insertQuery = `INSERT DATA { asset:${internalNodes[0].id} a data:insideBoundary . `
+        let insertQuery = `INSERT DATA { <${internalNodes[0].id}> a data:insideBoundary . `
         boundaryNodes.forEach(node => { 
-            insertQuery += `asset:${node.id} a data:endOfBoundary . `
+            insertQuery += `<${node.id}> a data:boundary . `
         });
         insertQuery += '}'
+
         console.log(insertQuery)
 
         fetch('http://localhost:12110/datastores/boundaries/sparql', {

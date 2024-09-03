@@ -1,14 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>SVG Display</title>
-    <link rel="stylesheet" href="style.css" type="text/css" />
-</head>
-<body>
-  
-<?xml version='1.0' encoding='UTF-8'?>
-
 <svg width="2000" viewBox="0 0 420 297" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg" xmlns:math="urn:math" xmlns:color="urn:color">
   <g>
     <rect x="0" y="0" fill="#ffffff" stroke="none" width="420" height="297" />
@@ -528,6 +517,3 @@
     </defs>
   </g>
 </svg>
-    <script src="script.js"></script>
-  </body>
-</html>
