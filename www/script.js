@@ -4,9 +4,7 @@ document.addEventListener("keyup", (event) => {
     if (event.key === "Enter") {
         console.log("enter pressed")
         let query = 'SELECT ?node WHERE{?node a data:insideBoundary .}'
-        var result = queryTripleStore(query)
-        console.log(result.payload)
-        console.log("tried to log")
+        result = queryTripleStore(query)
     }
 });
 
@@ -94,14 +92,11 @@ function queryTripleStore(sparql) {
     fetch(`http://localhost:12110/datastores/boundaries/sparql?query=${encoded}`, {
         method: 'GET',
       })
-      .then(response => {
-        console.log("trying to log reposnse")
-        console.log(response.text())})
-      .then(data => {
-        console.log("trying to log response")
-        console.log(data); 
-      })
-      .catch(error => {
-        console.error('Error:', error); 
-      });
+    .then(response => response.text()) 
+    .then(data => {
+      console.log(data); 
+    })
+    .catch(error => {
+      console.error('Error:', error); 
+    });
 }

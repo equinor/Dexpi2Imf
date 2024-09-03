@@ -19,5 +19,5 @@ importaxioms  asset:axioms
 import > schema:shacl ../shacl/imf-dexpi.shacl.ttl
 commitproc set commit-procedure.sparql
 
-set access-control-allow-origin * 
+set endpoint.access-control-allow-origin *
 endpoint start
