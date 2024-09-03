@@ -4,4 +4,4 @@ data:insideBoundary [?new_node] :-
     data:insideBoundary [?node],
     imf:connectedTo [?node, ?new_node],
     dexpi:PipingOrEquipment [?new_node],
-    NOT data:endOfBoundary [?node].
+    NOT data:boundary [?node].
