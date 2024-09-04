@@ -6,7 +6,7 @@
 @prefix schema: <http://schema.org/> .
 @prefix commonlib: <https://commonlib.equinor.com/Library/> .
 @prefix dexpi: <https://rdf.equinor.com/dexpi#> .
-@prefix asset: <https://assetid.equinor.comm/plantx#> .
+@prefix asset: <https://assetid.equinor.com/plantx#> .
 @prefix dbo: <http://dbpedia.org/ontology/> .
 @prefix imf: <http://ns.imfid.org/imf#> .
 

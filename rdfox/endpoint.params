@@ -1,0 +1,2 @@
+#Enable cors
+access-control-allow-origin *

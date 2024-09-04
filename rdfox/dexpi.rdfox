@@ -1,9 +1,8 @@
 boundaries.rdfox
 
 import ../datalog/boundary.datalog
+import ../datalog/interactive_boundary.datalog
 import +p "../rml/pandid.trig"
-
-endpoint start
 
 set output out
 select * where {?s a data:insideBoundaryX}

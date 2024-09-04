@@ -3,6 +3,7 @@ boundaries.rdfox
 import ../datalog/surrounding.datalog
 import +p "../rml/pandid.trig"
 
+set access-control-allow-origin *
 endpoint start
 
 set output out
