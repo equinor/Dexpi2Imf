@@ -1,10 +1,9 @@
-var nodes = document.querySelectorAll(".node");
+let nodes = document.querySelectorAll('.node');
 
-document.addEventListener("keyup", (event) => {
-    if (event.key === "Enter") {
-        console.log("enter pressed")
-        let query = 'SELECT ?node WHERE{?node a data:insideBoundary .}'
-        result = queryTripleStore(query)
+document.addEventListener('keyup', async (event) => {
+    if (event.key === 'Enter') {
+        let query = 'SELECT ?node WHERE{?node a data:insideBoundary .}';
+        let result = await queryTripleStore(query);
     }
 });
 
@@ -21,20 +20,17 @@ document.addEventListener("keyup", (event) => {
  *  *   - Update rdfox, insert the following triple :nodeId a :boundary .
  *      - Update rdfox, delete the following triple :nodeId a :insideBoundary .
  */
-nodes.forEach(function(node) {
-    node.addEventListener('click', () => {
+nodes.forEach( function(node) {
+    node.addEventListener('click', async () => {
         if (node.classList.contains('boundary')) {
             node.classList.remove('boundary');
-            let deleteSparql = `DELETE DATA {<${node.id}> a data:boundary . }`;
-            updateTripleStore(deleteSparql);
+            await makeSparqlAndUpdateStore(node.id, 'delete', 'boundary');
         } else {
             node.classList.add('boundary');
-            let insertSparql = `INSERT DATA { <${node.id}> a data:boundary . }`;
-            updateTripleStore(insertSparql);
-            if(node.classList.contains('internal')){
+            await makeSparqlAndUpdateStore(node.id, 'insert', 'boundary');
+            if (node.classList.contains('internal')) {
                 node.classList.remove('internal');
-                let deleteSparql = `DELETE DATA { <${node.id}> a data:insideBoundary . }`;
-                updateTripleStore(deleteSparql);
+                await makeSparqlAndUpdateStore(node.id, 'delete', 'insideBoundary');
             }
         }
     });
@@ -52,51 +48,54 @@ nodes.forEach(function(node) {
  *  *   - Update rdfox, insert the following triple :nodeId a :insideBoundary .
  *      - Update rdfox, delete the following triple :nodeId a :boundary .
  */
-    node.addEventListener('contextmenu', () => {
+    node.addEventListener('contextmenu', async () => {
         if (node.classList.contains('internal')) {
             node.classList.remove('internal');
-            let deleteSparql = `DELETE DATA {<${node.id}> a data:insideBoundary . }`;
-            updateTripleStore(deleteSparql)
+            await makeSparqlAndUpdateStore(node.id, 'delete', 'insideBoundary');
         } else {
             node.classList.add('internal');
-            let insertSparql = `INSERT DATA { <${node.id}> a data:insideBoundary . }`;
-            updateTripleStore(insertSparql);
+            await makeSparqlAndUpdateStore(node.id, 'insert', 'insideBoundary');
             if(node.classList.contains('boundary')){
                 node.classList.remove('boundary');
-                let deleteSparql = `DELETE DATA {<${node.id}> a data:boundary . }`;
-                updateTripleStore(deleteSparql);
+                await makeSparqlAndUpdateStore(node.id, 'delete', 'boundary');
             }
         }
-    })
+    });
+
+    window.addEventListener('unload', async () => {
+        node.classList.remove('internal', 'boundary', 'inCommissioningPackage');
+        let type = node.classList.contains('internal') ? 'insideBoundary' : 'boundary';
+        await makeSparqlAndUpdateStore(node.id, 'delete', type);
+    });
 });
 
-function updateTripleStore(sparql) {
-    fetch('http://localhost:12110/datastores/boundaries/sparql', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-          },
-        body: `update=${sparql}`
-      })
-      .then(response => response.text()) 
-      .then(data => {
-        console.log(data); 
-      })
-      .catch(error => {
-        console.error('Error:', error); 
-      });
+async function makeSparqlAndUpdateStore(nodeId, action, type) {
+    let sparql = action === 'insert'
+        ? `INSERT DATA { <${nodeId}> a data:${type} . }`
+        : `DELETE DATA { <${nodeId}> a data:${type} . }`;
+    await updateTripleStore(sparql);
 }
 
-function queryTripleStore(sparql) {
-    var encoded = encodeURI(sparql)
-    fetch(`http://localhost:12110/datastores/boundaries/sparql?query=${encoded}`, {
-        method: 'GET',
-      })
-    .then(response => response.text()) 
-    .then(data => {
-      console.log(data); 
-    })
-    .catch(error => {
-      console.error('Error:', error); 
-    });
+async function updateTripleStore(sparql) {
+    try {
+        await fetch('http://localhost:12110/datastores/boundaries/sparql', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded'},
+            body: `update=${sparql}`
+        });
+    } catch (error) {
+        console.error('Error:', error);
+    }
+}
+
+async function queryTripleStore(sparql) {
+    try {
+        let encoded = encodeURI(sparql);
+        let response = await fetch(`http://localhost:12110/datastores/boundaries/sparql?query=${encoded}`, {
+            method: 'GET',
+        });
+        return await response.text();
+    } catch (error) {
+        console.error('Error:', error);
+    }
 }
