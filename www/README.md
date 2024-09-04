@@ -4,4 +4,4 @@
 3) Select the boundary points and an internal component
 - Right click to select or deselect the internal component
 - Left click to select or deselect boundary nodes 
-4) Hit enter to query RDFox for the boundary 
+4) Hit enter to query RDFox for the boundary - the output of the query can be found in the logs.
