@@ -44,7 +44,6 @@ async function updateInCommissioningPackage() {
     let query = 'SELECT ?node WHERE{?node a data:insideBoundary .}';
     let result = await queryTripleStore(query);
     let nodeIds = parseNodeIds(result);
-    console.log('this is nodeIds', nodeIds);
     nodes.forEach(node => {
         if (nodeIds.includes(node.id) && !node.classList.contains('boundary') && !node.classList.contains('insideBoundary')) {
             node.classList.add('inCommissioningPackage');
