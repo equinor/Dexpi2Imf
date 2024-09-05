@@ -2,7 +2,7 @@
 1) Run the dexpi.rdfox script, the documentation for this script is found [here](../rdfox/README.md)
 2) Open the dexpi.html file in a browser
 3) Select the boundary points and an internal component
-   - Right click to select or deselect the internal component
+   - Ctrl+left click to select or deselect the internal component
      1) If the node is not a member of the internal class:
         - Add the node to the internal class to indicate that it is selected 
         - Update rdfox with the following triple :nodeId a :insideBoundary .
@@ -13,8 +13,7 @@
         - Add the node to the internal class, and remove it from the boundary class. 
         - Update rdfox, insert the following triple :nodeId a :insideBoundary . 
         - Update rdfox, delete the following triple :nodeId a :boundary .
-
-   - Ctrl+Right click to select or deselect boundary nodes
+   - Left click to select or deselect boundary nodes
      1) If the node is not a member of the boundary class:
         - Add the node to the boundary class to indicate that it is selected 
         - Update rdfox with the following triple :nodeId a :boundary .
