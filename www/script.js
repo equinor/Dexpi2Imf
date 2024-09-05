@@ -41,6 +41,7 @@ async function handleNodeClick(node, event) {
 }
 
 async function updateInCommissioningPackage() {
+    if (checkOnlyInsideBoundary()) { return ;}
     let query = 'SELECT ?node WHERE{?node a data:insideBoundary .}';
     let result = await queryTripleStore(query);
     let nodeIds = parseNodeIds(result);
@@ -56,6 +57,12 @@ async function updateInCommissioningPackage() {
 function parseNodeIds(result) {
     let lines = result.split('\n').filter(line => line.trim() !== '');
     return lines.slice(1).map(line => line.replace(/[<>]/g, ''));
+}
+
+function checkOnlyInsideBoundary() {
+    let hasBoundary = Array.from(nodes).some(node => node.classList.contains('boundary'));
+    let hasInsideBoundary = Array.from(nodes).some(node => node.classList.contains('insideBoundary'));
+    return hasInsideBoundary && !hasBoundary;
 }
 
 async function handleWindowUnload(node) {
