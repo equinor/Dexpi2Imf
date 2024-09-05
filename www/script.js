@@ -3,7 +3,7 @@ let nodes = document.querySelectorAll('.node');
 nodes.forEach((node) => {
     node.addEventListener('click', async (event) => {
         await handleNodeClick(node, event);
-        await updateInCommissioningPackage(node);
+        await updateInCommissioningPackage();
     });
     window.addEventListener('unload', async () => {
         await handleWindowUnload(node);
@@ -14,41 +14,44 @@ async function handleNodeClick(node, event) {
     // ctrl + left click - select or deselect nodes as insideBoundary
     if (event.ctrlKey) {
         if (node.classList.contains('insideBoundary')) {
-            node.classList.remove('insideBoundary');
+            node.classList.remove('insideBoundary', 'inCommissioningPackage');
             await makeSparqlAndUpdateStore(node.id, 'delete', 'insideBoundary');
         } else {
             node.classList.add('insideBoundary');
             await makeSparqlAndUpdateStore(node.id, 'insert', 'insideBoundary');
             if (node.classList.contains('boundary')) {
-                node.classList.remove('boundary');
+                node.classList.remove('boundary', 'inCommissioningPackage');
                 await makeSparqlAndUpdateStore(node.id, 'delete', 'boundary');
             }
         }
     // left click - select or deselect nodes as boundary
     } else {
         if (node.classList.contains('boundary')) {
-            node.classList.remove('boundary');
+            node.classList.remove('boundary', 'inCommissioningPackage');
             await makeSparqlAndUpdateStore(node.id, 'delete', 'boundary');
         } else {
             node.classList.add('boundary');
             await makeSparqlAndUpdateStore(node.id, 'insert', 'boundary');
             if (node.classList.contains('insideBoundary')) {
-                node.classList.remove('insideBoundary');
+                node.classList.remove('insideBoundary', 'inCommissioningPackage');
                 await makeSparqlAndUpdateStore(node.id, 'delete', 'insideBoundary');
             }
         }
     }
 }
 
-async function updateInCommissioningPackage(node) {
+async function updateInCommissioningPackage() {
     let query = 'SELECT ?node WHERE{?node a data:insideBoundary .}';
     let result = await queryTripleStore(query);
     let nodeIds = parseNodeIds(result);
-    if (nodeIds.includes(node.id)) {
-        node.classList.add('inCommissioningPackage');
-    } else {
-        node.classList.remove('inCommissioningPackage');
-    }
+    console.log('this is nodeIds', nodeIds);
+    nodes.forEach(node => {
+        if (nodeIds.includes(node.id) && !node.classList.contains('boundary') && !node.classList.contains('insideBoundary')) {
+            node.classList.add('inCommissioningPackage');
+        } else {
+            node.classList.remove('inCommissioningPackage');
+        }
+    });
 }
 
 function parseNodeIds(result) {
