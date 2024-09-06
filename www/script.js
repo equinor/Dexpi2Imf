@@ -5,9 +5,14 @@ nodes.forEach((node) => {
         await handleNodeClick(node, event);
         await updateInCommissioningPackage();
     });
-    window.addEventListener('unload', async () => {
-        await handleWindowUnload(node);
-    });
+});
+
+window.addEventListener('load', async () => {
+    for (const node of nodes) {
+        await makeSparqlAndUpdateStore(node.id, 'delete', 'boundary');
+        await makeSparqlAndUpdateStore(node.id, 'delete', 'insideBoundary');
+        node.classList.remove('insideBoundary', 'boundary', 'inCommissioningPackage');
+    }
 });
 
 async function handleNodeClick(node, event) {
@@ -63,12 +68,6 @@ function checkOnlyInsideBoundary() {
     let hasBoundary = Array.from(nodes).some(node => node.classList.contains('boundary'));
     let hasInsideBoundary = Array.from(nodes).some(node => node.classList.contains('insideBoundary'));
     return hasInsideBoundary && !hasBoundary;
-}
-
-async function handleWindowUnload(node) {
-    let type = node.classList.contains('insideBoundary') ? 'insideBoundary' : 'boundary';
-    node.classList.remove('insideBoundary', 'boundary', 'inCommissioningPackage');
-    await makeSparqlAndUpdateStore(node.id, 'delete', type);
 }
 
 async function makeSparqlAndUpdateStore(nodeId, action, type) {
