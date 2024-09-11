@@ -9,23 +9,30 @@
 @prefix asset: <https://assetid.equinor.com/plantx#> .
 @prefix dbo: <http://dbpedia.org/ontology/> .
 @prefix imf: <http://ns.imfid.org/imf#> .
-@predix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 
-:NozzleMap a rr:TriplesMap;
+
+
+:ConnectionPointsMap a rr:TriplesMap;
   rml:logicalSource [
     rml:source "pandid.xml";
     rml:referenceFormulation ql:XPath;
-    rml:iterator "//Nozzle"
-  ];
-  rr:subjectMap [
-    rr:template "https://assetid.equinor.com/plantx#{@ID}";
-    rr:termType rr:IRI;
-    rr:class "https://rdf.equinor.com/dexpi#Nozzle", "http://ns.imfid.org/imf#Terminal";
-  ];
- rr:predicateObjectMap [
-  rr:predicate rdfs:label;
-  rr:objectMap [
-    rml:reference "/GenericAttribute[@Name='ItemTagAssignmentClass']/@Value";
-  ]
+    rml:iterator "//ConnectionPoints/Node[@Type='process']"
+  ].
+
+:ConnectionPointsMap rr:subjectMap [
+  rr:template "https://assetid.equinor.com/plantx#{@ID}";
+  rr:class dexpi:ConnectionPointNode
 ].
 
+:ConnectionPointsMap rr:predicateObjectMap [
+  rr:predicate imf:hasParent;
+  rr:objectMap 
+    [ 
+      rr:parentTriplesMap :ElementMap;
+      rr:joinCondition [
+        rr:child "../../@ID";
+        rr:parent "@ID"
+      ]
+    ]; 
+
+].

@@ -9,7 +9,8 @@
 @prefix asset: <https://assetid.equinor.com/plantx#> .
 @prefix dbo: <http://dbpedia.org/ontology/> .
 @prefix imf: <http://ns.imfid.org/imf#> .
-@predix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
 
 :NozzleMap a rr:TriplesMap;
   rml:logicalSource [
@@ -25,7 +26,7 @@
  rr:predicateObjectMap [
   rr:predicate rdfs:label;
   rr:objectMap [
-    rml:reference "/GenericAttribute[@Name='ItemTagAssignmentClass']/@Value";
+    rml:reference "GenericAttributes/GenericAttribute[@Name='ItemTagAssignmentClass']/@Value";
   ]
 ].
 

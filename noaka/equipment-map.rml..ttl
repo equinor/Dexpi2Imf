@@ -9,23 +9,28 @@
 @prefix asset: <https://assetid.equinor.com/plantx#> .
 @prefix dbo: <http://dbpedia.org/ontology/> .
 @prefix imf: <http://ns.imfid.org/imf#> .
-@predix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 
-:NozzleMap a rr:TriplesMap;
+:EquipmentMap a rr:TriplesMap;
   rml:logicalSource [
     rml:source "pandid.xml";
     rml:referenceFormulation ql:XPath;
-    rml:iterator "//Nozzle"
+    rml:iterator "//Equipment"
   ];
   rr:subjectMap [
     rr:template "https://assetid.equinor.com/plantx#{@ID}";
     rr:termType rr:IRI;
-    rr:class "https://rdf.equinor.com/dexpi#Nozzle", "http://ns.imfid.org/imf#Terminal";
+    rr:class <https://rdf.equinor.com/dexpi#Equipment>, <http://ns.imfid.org/imf#Block>;
   ];
- rr:predicateObjectMap [
-  rr:predicate rdfs:label;
-  rr:objectMap [
-    rml:reference "/GenericAttribute[@Name='ItemTagAssignmentClass']/@Value";
-  ]
-].
-
+  rr:predicateObjectMap [
+    rr:predicate imf:hasTerminal;
+    rr:objectMap [ 
+      rr:template "https://assetid.equinor.com/plantx#{Nozzle/@ID}";
+      rr:termType rr:IRI;
+    ]
+  ],
+  [
+    rr:predicate rdfs:label;
+    rr:objectMap [ 
+      rml:reference "GenericAttributes/GenericAttribute[@Name='TagNameAssignmentClass']/@Value";
+    ]
+  ].
