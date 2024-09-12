@@ -27,6 +27,11 @@
   rr:predicate rdfs:label;
   rr:objectMap [
     rml:reference "GenericAttributes/GenericAttribute[@Name='ItemTagAssignmentClass']/@Value";
+    ]
+] ,
+[
+  rr:predicate imf:hasConnector;
+  rr:objectMap[
+    rml:reference "../../PipingNetworkSystem/PipingNetworkSegment/Connection[@ToID=current()/@ID]/../@ID";
   ]
-].
-
+] .
