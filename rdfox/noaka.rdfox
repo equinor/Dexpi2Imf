@@ -1,5 +1,3 @@
 boundaries.rdfox
 
-import ../datalog/boundary.datalog
-import ../datalog/interactive_boundary.datalog
-import +p "../noaka/pandid.trig"
+import +p "../henriteste/pandid.trig"
