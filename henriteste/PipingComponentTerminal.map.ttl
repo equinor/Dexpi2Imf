@@ -32,6 +32,13 @@
     rr:predicate imf:adjacentTo;
     rr:objectMap [
       rr:template "https://assetid.equinor.com/plantx{../../@ID}";
+      rr:termType rr:IRI;  
+    ]
+  ];
+    rr:predicateObjectMap [
+    rr:predicate imf:hasConnector;
+    rr:objectMap [
+      rr:template "https://assetid.equinor.com/plantx{concat(../../../@ID,'_', ../../following-sibling::PipingComponent[1]/@ID)}";
       rr:termType rr:IRI; 
     ]
   ] .
@@ -58,6 +65,13 @@
     rr:predicate imf:adjacentTo;
     rr:objectMap [
       rr:template "https://assetid.equinor.com/plantx{../../@ID}";
+      rr:termType rr:IRI; 
+    ]
+  ];
+    rr:predicateObjectMap [
+    rr:predicate imf:hasConnector;
+    rr:objectMap [
+      rr:template "https://assetid.equinor.com/plantx{concat(../../../@ID,'_', ../../preceding-sibling::PipingComponent[1]/@ID)}";
       rr:termType rr:IRI; 
     ]
   ] .
