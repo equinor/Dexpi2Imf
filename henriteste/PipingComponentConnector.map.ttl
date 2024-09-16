@@ -11,21 +11,21 @@
 @prefix imf: <http://ns.imfid.org/imf#> .
 
 
-:PipingComponentBlockMap a rr:TriplesMap;
+:PipingComponentConnectorMap a rr:TriplesMap;
   rml:logicalSource [
     rml:source "pandid.xml";
     rml:referenceFormulation ql:XPath;
     rml:iterator "//PipingNetworkSegment/PipingComponent"
   ];
   rr:subjectMap [
-    rr:template "https://assetid.equinor.com/plantx#{concat(../@ID , '_' , @ID)}";
+    rr:template "https://assetid.equinor.com/plantx#{concat(@ID, '-connector')}";
     rr:termType rr:IRI;
     rr:class imf:Connector;
   ] ;
   rr:predicateObjectMap [
     rr:predicate imf:partOf;
     rr:objectMap[
-      rr:template "https://assetid.equinor.com/plantx{../@ID}";
+      rr:template "https://assetid.equinor.com/plantx#{../@ID}";
       rr:termType rr:IRI
     ]
   ] .

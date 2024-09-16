@@ -24,21 +24,27 @@
   rr:predicateObjectMap [
     rr:predicate imf:partOf;
     rr:objectMap [
-      rr:template "https://assetid.equinor.com/plantx{../../@ID}";
+      rr:template "https://assetid.equinor.com/plantx#{../../@ID}";
       rr:termType rr:IRI; 
     ]
   ];
   rr:predicateObjectMap [
     rr:predicate imf:adjacentTo;
     rr:objectMap [
-      rr:template "https://assetid.equinor.com/plantx{../../@ID}";
+      rr:template "https://assetid.equinor.com/plantx#{../../@ID}";
       rr:termType rr:IRI;  
     ]
   ];
     rr:predicateObjectMap [
     rr:predicate imf:hasConnector;
     rr:objectMap [
-      rr:template "https://assetid.equinor.com/plantx{concat(../../../@ID,'_', ../../following-sibling::PipingComponent[1]/@ID)}";
+      rr:template """https://assetid.equinor.com/plantx#{
+      if(../../preceding-sibling::PipingComponent[1]/@ID) then 
+        concat(../../preceding-sibling::PipingComponent[1]/@ID, '-connector') 
+      else if(../../../Connection/@FromID) then
+        concat(../../../Connection/@FromID, '-connector')
+      else()
+        }""";
       rr:termType rr:IRI; 
     ]
   ] .
@@ -57,21 +63,21 @@
   rr:predicateObjectMap [
     rr:predicate imf:partOf;
     rr:objectMap [
-      rr:template "https://assetid.equinor.com/plantx{../../@ID}";
+      rr:template "https://assetid.equinor.com/plantx#{../../@ID}";
       rr:termType rr:IRI; 
     ]
   ];
   rr:predicateObjectMap [
     rr:predicate imf:adjacentTo;
     rr:objectMap [
-      rr:template "https://assetid.equinor.com/plantx{../../@ID}";
+      rr:template "https://assetid.equinor.com/plantx#{../../@ID}";
       rr:termType rr:IRI; 
     ]
   ];
     rr:predicateObjectMap [
     rr:predicate imf:hasConnector;
     rr:objectMap [
-      rr:template "https://assetid.equinor.com/plantx{concat(../../../@ID,'_', ../../preceding-sibling::PipingComponent[1]/@ID)}";
+      rr:template "https://assetid.equinor.com/plantx#{concat(../../@ID, '-connector')}";
       rr:termType rr:IRI; 
     ]
   ] .
