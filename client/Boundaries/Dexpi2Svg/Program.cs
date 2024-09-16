@@ -7,7 +7,8 @@ class Program
 {
     static void Main(string[] args)
     {
-        if(args.Length < 2)
+        AppContext.SetSwitch("Switch.System.Xml.AllowDefaultResolver", true);//added
+        if (args.Length < 2)
         {
             Console.WriteLine("Usage: dotnet run input.xml style.xslt");
             return;
@@ -21,10 +22,20 @@ class Program
         xmlDoc.LoadXml(xmlData);
 
         XslCompiledTransform xslt = new XslCompiledTransform();
+        //XsltSettings xsltSettings = new XsltSettings();
+        //xsltSettings.EnableDocumentFunction = true;
+        //xsltSettings.EnableScript = true;
+        XsltSettings xsltSettings = new XsltSettings(true, true);//Added
+
+        XmlReaderSettings readerSettings = new XmlReaderSettings(); //Added
+        readerSettings.DtdProcessing = DtdProcessing.Parse; //added
+
         using (StringReader sr = new StringReader(xsltData))
-        using (XmlReader xr = XmlReader.Create(sr))
+        //using (XmlReader xr = XmlReader.Create(sr))
+        using (XmlReader xr = XmlReader.Create(sr, readerSettings)) // added
         {
-            xslt.Load(xr);
+            xslt.Load(xr, xsltSettings, new XmlUrlResolver());//added
+            //xslt.Load(xr, xsltSettings, new XmlUrlResolver());
         }
         
         MathExtensions mathExtensions = new MathExtensions();
@@ -36,12 +47,16 @@ class Program
         
         XmlWriterSettings settings = xslt.OutputSettings?.Clone() ?? throw new Exception("No xslt output settings found!");
         settings.OmitXmlDeclaration = true;
+
         // Transform XML to SVG
+        using (StringReader sr = new StringReader(xmlData))//added
+        using (XmlReader xr = XmlReader.Create(sr, readerSettings)) //added
         using (StringWriter sw = new StringWriter())
         using (XmlWriter xw = XmlWriter.Create(sw, settings))
         {
-            xslt.Transform(xmlDoc, xsltArgs, xw);
-            string svgOutput = sw.ToString();
+            xslt.Transform(xr, xsltArgs, xw);
+            //xslt.Transform(xmlDoc, xsltArgs, xw);
+            string svgOutput = sw.ToString();//adedd
 
             // Save or use the SVG output
             Console.WriteLine(svgOutput);

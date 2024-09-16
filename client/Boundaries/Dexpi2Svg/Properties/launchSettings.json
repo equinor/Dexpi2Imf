@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Dexpi2Svg": {
+      "commandName": "Project",
+      "commandLineArgs": "\"C:\\Users\\johannes.telle\\source\\repos\\NOAKADEXPI\\Blueprint\\DISC_EXAMPLE-02\\DagJohannes1.xml\" \"C:\\Users\\johannes.telle\\source\\repos\\ssi-dexpi-tmp\\www\\dexpisvg.xslt\""
+    }
+  }
+}

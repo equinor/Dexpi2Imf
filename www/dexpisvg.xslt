@@ -2,6 +2,7 @@
 <xsl:stylesheet version="1.0" 
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
     xmlns="http://www.w3.org/2000/svg"
+	xmlns:svg="http://www.w3.org/2000/svg"
     xmlns:math="urn:math"
     xmlns:color="urn:color"
 >
@@ -67,7 +68,7 @@
             <xsl:attribute name="d">
                 <xsl:text>M </xsl:text>
                 <xsl:for-each select="Coordinate">
-                    <xsl:value-of select="@X"/>
+                    <xsl:value-of select="@X +6"/>
                     <xsl:text> </xsl:text>
                     <xsl:value-of select="$height - @Y"/>
                     <xsl:if test="position() != last()">
@@ -76,7 +77,7 @@
                 </xsl:for-each>
             </xsl:attribute>
             <xsl:attribute name="stroke">
-                <xsl:value-of select="color:RgbToHex(Presentation/@R, Presentation/@G, Presentation/@B)"/>
+                <xsl:text>#0000FF</xsl:text><!-- Set stroke color to blue<xsl:value-of select="color:RgbToHex(Presentation/@R, Presentation/@G, Presentation/@B)"/>-->
             </xsl:attribute>
             <xsl:attribute name="stroke-width">
                 <xsl:value-of select="Presentation/@LineWeight"/>
@@ -231,6 +232,21 @@
                     <xsl:attribute name="id">
                         <xsl:value-of select="@ComponentName"/>
                     </xsl:attribute>
+                    <xsl:attribute name="shapeName">
+                        <xsl:value-of select="GenericAttributes/GenericAttribute/@Value"/>
+                    </xsl:attribute>
+					<xsl:attribute name="path">
+						<xsl:value-of select="concat('../../../../NOAKADEXPI/Symbols/',GenericAttributes/GenericAttribute/@Value,'.svg')"/>
+					</xsl:attribute>
+
+					<xsl:variable name="attributeValue" select="GenericAttributes/GenericAttribute/@Value"/>
+					<xsl:variable name="docPath" select="concat('../../../../NOAKADEXPI/Symbols/', $attributeValue, '.svg')"/>
+
+					<xsl:if test="not($docPath = '../../../../NOAKADEXPI/Symbols/BORDER_A1.svg')">
+						
+						<xsl:variable name="doc" select="document($docPath)"/>
+						<xsl:copy-of select="$doc//svg:g/*"/>
+					</xsl:if>
                     <xsl:apply-templates/>
                 </symbol>
             </xsl:for-each>
