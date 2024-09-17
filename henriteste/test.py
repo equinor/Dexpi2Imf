@@ -2,12 +2,9 @@ from lxml import etree
 
 
 tree = etree.parse('pandid.xml')
-result = tree.xpath("//PipingComponent/ConnectionPoints/Node")
-lol = "../../following-sibling::PipingComponent[1]/@ID"
+segments = tree.xpath("//PipingNetworkSegment")
 
-for r in result:
-    test = r.xpath("../..")
-    for t in test:
-        print(t.xpath("@ID"))
-        print(f"       {t.xpath("following-sibling::PipingComponent[1]/@ID")}")
+for s in segments:
+   test = s.xpath("Connection/@FromID[not(contains(., 'Nozzle'))]")
+   print(test)
 

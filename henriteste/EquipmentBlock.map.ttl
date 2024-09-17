@@ -9,30 +9,28 @@
 @prefix asset: <https://assetid.equinor.com/plantx#> .
 @prefix dbo: <http://dbpedia.org/ontology/> .
 @prefix imf: <http://ns.imfid.org/imf#> .
-@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 
-:PipingComponentConnectorMap a rr:TriplesMap;
+:EquipmentMap a rr:TriplesMap;
   rml:logicalSource [
     rml:source "pandid.xml";
     rml:referenceFormulation ql:XPath;
-    rml:iterator "//PipingNetworkSegment/PipingComponent"
+    rml:iterator "//Equipment"
   ];
   rr:subjectMap [
-    rr:template "https://assetid.equinor.com/plantx#{concat(@ID, '-connector')}";
+    rr:template "https://assetid.equinor.com/plantx#{@ID}";
     rr:termType rr:IRI;
-    rr:class imf:Connector;
-  ] ;
+    rr:class dexpi:Equipment, imf:Block;
+  ];
   rr:predicateObjectMap [
-    rr:predicate imf:partOf;
-    rr:objectMap[
-      rr:template "https://assetid.equinor.com/plantx#{../@ID}";
-      rr:termType rr:IRI
+    rr:predicate imf:hasTerminal;
+    rr:objectMap [ 
+      rr:template "https://assetid.equinor.com/plantx#{Nozzle/@ID}";
+      rr:termType rr:IRI;
     ]
-  ] ;
-  rr:predicateObjectMap [
+  ],
+  [
     rr:predicate rdfs:label;
-    rr:objectMap[
-      rr:constant "connector";
-      rr:datatype xsd:string
+    rr:objectMap [ 
+      rml:reference "GenericAttributes/GenericAttribute[@Name='TagNameAssignmentClass']/@Value";
     ]
-  ] .
+  ].
