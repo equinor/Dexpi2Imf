@@ -20,11 +20,4 @@
     rr:template "https://assetid.equinor.com/plantx#{@ID}";
     rr:termType rr:IRI;
     rr:class imf:PipingComponent, imf:Block;
-  ];
-  rr:predicateObjectMap [
-    rr:predicate imf:partOf;
-    rr:objectMap [
-      rr:template "https://assetid.equinor.com/plantx#{../@ID}";
-      rr:termType rr:IRI 
-    ]
   ] .
