@@ -27,5 +27,4 @@
   rr:objectMap [
     rml:reference "GenericAttributes/GenericAttribute[@Name='ItemTagAssignmentClass']/@Value";
     ]
-] .
-
+  ] .

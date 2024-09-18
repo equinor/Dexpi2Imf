@@ -14,7 +14,10 @@
   rml:logicalSource [
     rml:source "pandid.xml";
     rml:referenceFormulation ql:XPath;
-    rml:iterator "//PipingComponent/ConnectionPoints/Node[position()=number(../@FlowIn)+1]"
+    rml:iterator """if(//PipingComponent/ConnectionPoints/@FlowIn) then
+                      //PipingComponent/ConnectionPoints/Node[position()=number(../@FlowIn)+1]
+                    else(//PipingComponent/ConnectionPoints/Node[position()=2])
+                 """
   ];
   rr:subjectMap [
     rr:template "https://assetid.equinor.com/plantx#{@ID}";  
@@ -53,7 +56,9 @@
   rml:logicalSource [
     rml:source "pandid.xml";
     rml:referenceFormulation ql:XPath;
-    rml:iterator "//PipingComponent/ConnectionPoints/Node[position()=number(../@FlowOut)+1]"
+    rml:iterator """if(//PipingComponent/ConnectionPoints/@FlowOut) then
+                      //PipingComponent/ConnectionPoints/Node[position()=number(../@FlowOut)+1]
+                    else(//PipingComponent/ConnectionPoints/Node[position()=3])"""
   ] ;
   rr:subjectMap [
     rr:template "https://assetid.equinor.com/plantx#{@ID}";  

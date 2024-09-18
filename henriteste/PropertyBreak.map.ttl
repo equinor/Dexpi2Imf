@@ -1,0 +1,72 @@
+@prefix rml: <http://semweb.mmlab.be/ns/rml#> .
+@prefix rr: <http://www.w3.org/ns/r2rml#> .
+@prefix ql: <http://semweb.mmlab.be/ns/ql#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix : <http://example.org/rules/> .
+@prefix schema: <http://schema.org/> .
+@prefix commonlib: <https://commonlib.equinor.com/Library/> .
+@prefix dexpi: <https://rdf.equinor.com/dexpi#> .
+@prefix asset: <https://assetid.equinor.com/plantx#> .
+@prefix dbo: <http://dbpedia.org/ontology/> .
+@prefix imf: <http://ns.imfid.org/imf#> .
+
+# Mapping to imf:Block
+:PropertyBreakBlockMap a rr:TriplesMap;
+  rml:logicalSource [
+    rml:source "pandid.xml";
+    rml:referenceFormulation ql:XPath;
+    rml:iterator "//PropertyBreak"
+  ] ;
+  rr:subjectMap [
+    rr:template "https://assetid.equinor.com/plantx#{@ID}";
+    rr:termType rr:IRI;
+    rr:class imf:PipingComponent, imf:Block;
+  ] .
+
+#Mapping to imf:InputTerminal
+:PropertyBreakFlowInTerminal a rr:TriplesMap;
+  rml:logicalSource [
+    rml:source "pandid.xml";
+    rml:referenceFormulation ql:XPath;
+    rml:iterator """if(PropertyBreak//ConnectionPoints/@FlowIn) then
+                      //PropertyBreak/ConnectionPoints/Node[position()=number(../@FlowIn)+1]
+                    else(//PropertyBreak/ConnectionPoints/Node[position()=2])
+                 """
+  ] ;
+  rr:subjectMap [
+    rr:template "https://assetid.equinor.com/plantx#{@ID}";  
+    rr:termType rr:IRI;
+    rr:class imf:InputTerminal
+  ] ;
+  rr:predicateObjectMap [
+    rr:predicate imf:adjacentTo;
+    rr:termType rr:IRI;
+    rr:objectMap [
+        rr:template "https://assetid.equinor.com/plantx#{../../@ID}";
+        rr:termType rr:IRI 
+    ]
+  ].
+
+#Mapping to imf:OutputTerminal
+:PropertyBreakFlowOutTerminal a rr:TriplesMap;
+  rml:logicalSource [
+    rml:source "pandid.xml";
+    rml:referenceFormulation ql:XPath;
+    rml:iterator """if(//PropertyBreak/ConnectionPoints/@FlowOut) then
+                      //PropertyBreak/ConnectionPoints/Node[position()=number(../@FlowOut)+1]
+                    else(//PropertyBreak/ConnectionPoints/Node[position()=3])
+                 """
+  ] ;
+  rr:subjectMap [
+    rr:template "https://assetid.equinor.com/plantx#{@ID}";  
+    rr:termType rr:IRI;
+    rr:class imf:OutputTerminal
+  ] ;
+  rr:predicateObjectMap [
+    rr:predicate imf:adjacentTo;
+    rr:termType rr:IRI;
+    rr:objectMap [
+        rr:template "https://assetid.equinor.com/plantx#{../../@ID}";
+        rr:termType rr:IRI 
+    ]
+  ].
