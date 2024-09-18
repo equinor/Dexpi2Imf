@@ -23,13 +23,6 @@
     rr:class imf:Connector;
   ] ;
   rr:predicateObjectMap [
-    rr:predicate imf:partOf;
-    rr:objectMap[
-      rr:template "https://assetid.equinor.com/plantx#{../@ID}";
-      rr:termType rr:IRI
-    ]
-  ] ;
-  rr:predicateObjectMap [
     rr:predicate rdfs:label;
     rr:objectMap[
       rr:constant "connector";
