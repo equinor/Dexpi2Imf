@@ -24,16 +24,20 @@
     rr:termType rr:IRI;
     rr:class imf:InputTerminal
   ];
-    rr:predicateObjectMap [
+  # If there is no preceding-sibling, this must mean that this is the first element in the piping network segment.
+  # When this is the case we use the object IRI :PipingNetworkSegment-ID_toComponentLevel to connect the first element
+  # to the outside.
+  rr:predicateObjectMap [
     rr:predicate imf:hasConnector;
     rr:objectMap [
-      rr:template """https://assetid.equinor.com/plantx#{
-      if(../../preceding-sibling::PipingComponent[1]/@ID) then 
-        concat(../../preceding-sibling::PipingComponent[1]/@ID, '-connector') 
-      else if(../../../Connection/@FromID) then
-        concat(../../../Connection/@FromID, '-connector')
-      else()
-        }""";
+      rr:template """https://assetid.equinor.com/plantx#
+      {
+        if(../../preceding-sibling::PipingComponent[1]/@ID) then 
+          concat(../../preceding-sibling::PipingComponent[1]/@ID, '_connector') 
+        else if(../../../Connection/@FromID) then
+          concat(../../../@ID, '_toComponentLevel')
+        else()
+      }""";
       rr:termType rr:IRI; 
     ]
   ] ;

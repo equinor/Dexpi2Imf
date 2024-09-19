@@ -27,10 +27,16 @@ def PropertyBreak():
       print(flowInDefault)
 
 def FromId():
-   segments = tree.xpath("//PipingNetworkSegment")
-   for s in segments:
-      print()
-      res = s.xpath("Connection[not(contains(@FromID, 'Nozzle'))]/@FromID")
-      print(res)
+   nodes = tree.xpath("//PipingNetworkSegment[@ID='PipingNetworkSegment-11']/PipingComponent/ConnectionPoints/Node")
+   for n in nodes:
+      middle_elem = n.xpath("../../preceding-sibling::PipingComponent[1]/@ID")
+      if( middle_elem != []):
+         connector = n.xpath("concat(../../preceding-sibling::PipingComponent[1]/@ID, '_connector')")
+         print(connector)
+      elif n.xpath("../../../Connection/@FromID"):
+         first_connector = n.xpath("concat(../../../@ID, '_toComponentLevel')")
+         print(first_connector)
+      else:
+         print("nothing happened")
 
 FromId()

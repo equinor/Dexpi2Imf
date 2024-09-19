@@ -21,11 +21,21 @@
     rr:termType rr:IRI;
     rr:class imf:Terminal
   ] ;
+  #For connection between piping network segments
   rr:predicateObjectMap [
     rr:predicate imf:hasConnector;
     rr:termType rr:IRI;
     rr:objectMap[
-      rr:template "https://assetid.equinor.com/plantx#{@ID}"
+      rr:template "https://assetid.equinor.com/plantx#{@ID}";
+      rr:termType rr:IRI 
+    ]
+  ] ;
+  #For connection to the first component on piping network segment
+  rr:predicateObjectMap [
+    rr:predicate imf:hasConnector;
+    rr:termType rr:IRI;
+    rr:objectMap [
+      rr:template "https://assetid.equinor.com/plantx#{concat(@ID, '_toComponentLevel')}"
     ]
   ] .
 
@@ -44,7 +54,8 @@
     rr:predicate imf:hasConnector;
     rr:termType rr:IRI;
     rr:objectMap[
-      rr:template "https://assetid.equinor.com/plantx#{@ID}"
+      rr:template "https://assetid.equinor.com/plantx#{@ID}";
+      rr:termType rr:IRI
     ]
   ] .
 
