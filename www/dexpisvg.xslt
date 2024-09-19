@@ -2,7 +2,7 @@
 <xsl:stylesheet version="1.0" 
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
     xmlns="http://www.w3.org/2000/svg"
-	xmlns:svg="http://www.w3.org/2000/svg"
+    xmlns:svg="http://www.w3.org/2000/svg"
     xmlns:math="urn:math"
     xmlns:color="urn:color"
 >
@@ -29,7 +29,7 @@
                     <xsl:attribute name="height">
                         <xsl:value-of select="$height"/>
                     </xsl:attribute>
-                    </rect>
+                </rect>
                 <xsl:apply-templates>
                     <xsl:with-param name="height" select="$height" />
                 </xsl:apply-templates>
@@ -38,7 +38,7 @@
     </xsl:template>
 
 
-    <!-- Matching piping network system -->
+    <!-- Matching piping network system --> 
     <xsl:template match="PipingNetworkSystem">
         <xsl:param name="height"/>
         <g>
@@ -68,7 +68,7 @@
             <xsl:attribute name="d">
                 <xsl:text>M </xsl:text>
                 <xsl:for-each select="Coordinate">
-                    <xsl:value-of select="@X +6"/>
+                    <xsl:value-of select="@X"/>
                     <xsl:text> </xsl:text>
                     <xsl:value-of select="$height - @Y"/>
                     <xsl:if test="position() != last()">
@@ -135,6 +135,16 @@
       </xsl:attribute>
   </xsl:template>
 
+    <!--Template for genericattributes-->
+<!--     <xsl:template match="GenericAttributes">
+        <xsl:variable name="id" select="../../Equipment/@ID"/>
+        <a id="{concat('https://assetid.equinor.com/plantx#', $id)}" class="Hello">
+            <text>
+                <xsl:value-of select="GenericAttribute[@Name='ObjectDisplayNameAssignmentClass']/@Value"/>
+            </text>
+        </a>
+    </xsl:template> -->
+
     <!-- Template for labels-->
     <xsl:template match="Label">
         <xsl:param name="height"/>
@@ -179,7 +189,7 @@
                 <xsl:value-of select="concat(Text/@Height, 'px')"/>
             </xsl:attribute>
             <xsl:attribute name="fill">
-                <xsl:text>#000000</xsl:text>
+                <xsl:text>#FF0000</xsl:text>
             </xsl:attribute>
             <xsl:attribute name="font-family">
                 <xsl:value-of select="Text/@Font"/>
@@ -198,7 +208,7 @@
                     <xsl:text>) </xsl:text>
                 </xsl:if>
             </xsl:attribute>
-            <xsl:value-of select="Text/@String"/>
+            <xsl:value-of select="../GenericAttributes/GenericAttribute[@Name='ObjectDisplayNameAssignmentClass']/@Value"/>
         </text>
         </a>
     </xsl:template>
@@ -236,16 +246,17 @@
                         <xsl:value-of select="GenericAttributes/GenericAttribute/@Value"/>
                     </xsl:attribute>
 					<xsl:attribute name="path">
-						<xsl:value-of select="concat('../../../../NOAKADEXPI/Symbols/',GenericAttributes/GenericAttribute/@Value,'.svg')"/>
+						<xsl:value-of select="concat('../../../../NOAKADEXPI/Symbols/Origo',GenericAttributes/GenericAttribute/@Value,'_Origo.svg')"/>
 					</xsl:attribute>
 
 					<xsl:variable name="attributeValue" select="GenericAttributes/GenericAttribute/@Value"/>
-					<xsl:variable name="docPath" select="concat('../../../../NOAKADEXPI/Symbols/', $attributeValue, '.svg')"/>
+					<xsl:variable name="docPath" select="concat('../../../../NOAKADEXPI/Symbols/Origo/', $attributeValue, '_Origo.svg')"/>
 
-					<xsl:if test="not($docPath = '../../../../NOAKADEXPI/Symbols/BORDER_A1.svg')">
+					<xsl:if test="not($docPath = '../../../../NOAKADEXPI/Symbols/Origo/BORDER_A1_Origo.svg')">
 						
 						<xsl:variable name="doc" select="document($docPath)"/>
-						<xsl:copy-of select="$doc//svg:g/*"/>
+						<xsl:copy-of select="$doc//svg:g/*">
+                        </xsl:copy-of>
 					</xsl:if>
                     <xsl:apply-templates/>
                 </symbol>
@@ -253,6 +264,11 @@
         </defs>
     </xsl:template>
 
+<!--     <xsl:template match="g">
+        <g>
+            <xsl:apply-templates/>
+        </g>
+    </xsl:template> -->
 
     <!-- Template for curves-->
      <xsl:template match="TrimmedCurve">
