@@ -19,5 +19,12 @@
   rr:subjectMap [
     rr:template "https://assetid.equinor.com/plantx#{@ID}";
     rr:termType rr:IRI;
-    rr:class imf:PipingComponent, imf:Block;
+    rr:class imf:PipingComponent, imf:Block
+  ] ;
+  rr:predicateObjectMap [
+    rr:predicate imf:hasTerminal;
+    rr:objectMap [
+      rr:template "https://assetid.equinor.com/plantx#{ConnectionPoints/Node[position()>1]/@ID}" ;
+      rr:termType rr:IRI 
+    ]
   ] .

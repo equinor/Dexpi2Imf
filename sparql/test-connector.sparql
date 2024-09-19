@@ -1,0 +1,13 @@
+#Test that a nozzle is connected to the first component in a segment. 
+# https://github.com/equinor/NOAKADEXPI/tree/main/Blueprint/DISC_EXAMPLE-02 
+SELECT *
+WHERE {
+    ?s imf:connectedTo* asset:CustomPipingComponent-1 .
+    ?s rdfs:label "D-20VA001"
+}
+
+#When inserting this data we get the expected answer. Have to create these in rml. 
+Insert data {asset:Nozzle-11 imf:hasConnector asset:PipingNetworkSegment-11_component . 
+             asset:PipingNode-30 imf:hasConnector asset:PipingNetworkSegment-11_component .
+             asset:CustomPipingComponent-1 imf:hasTerminal asset:PipingNode-30 .}
+            

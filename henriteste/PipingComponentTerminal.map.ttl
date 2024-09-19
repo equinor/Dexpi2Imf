@@ -17,19 +17,12 @@
     rml:iterator """if(//PipingComponent/ConnectionPoints/@FlowIn) then
                       //PipingComponent/ConnectionPoints/Node[position()=number(../@FlowIn)+1]
                     else(//PipingComponent/ConnectionPoints/Node[position()=2])
-                 """
+                 """ 
   ];
   rr:subjectMap [
     rr:template "https://assetid.equinor.com/plantx#{@ID}";  
     rr:termType rr:IRI;
     rr:class imf:InputTerminal
-  ];
-  rr:predicateObjectMap [
-    rr:predicate imf:adjacentTo;
-    rr:objectMap [
-      rr:template "https://assetid.equinor.com/plantx#{../../@ID}";
-      rr:termType rr:IRI;  
-    ]
   ];
     rr:predicateObjectMap [
     rr:predicate imf:hasConnector;
@@ -64,13 +57,6 @@
     rr:template "https://assetid.equinor.com/plantx#{@ID}";  
     rr:termType rr:IRI;
     rr:class imf:OutputTerminal
-  ] ;
-  rr:predicateObjectMap [
-    rr:predicate imf:adjacentTo;
-    rr:objectMap [
-      rr:template "https://assetid.equinor.com/plantx#{../../@ID}";
-      rr:termType rr:IRI; 
-    ]
   ] ;
     rr:predicateObjectMap [
     rr:predicate imf:hasConnector;
