@@ -5,6 +5,8 @@
     xmlns:svg="http://www.w3.org/2000/svg"
     xmlns:math="urn:math"
     xmlns:color="urn:color"
+    
+    
 >
     <xsl:output method="xml" indent="yes"/>
 
@@ -216,7 +218,7 @@
     <!-- Template for Equipment, Nozzle,  stuff-->
      <xsl:template match="*">
         <xsl:param name="height"/>
-        <xsl:variable name="id" select="@ID"/>
+        <xsl:variable name="id" select="../@ID"/>
         <xsl:if test="@ComponentName">
             <use>
                 <xsl:attribute name="href">
@@ -255,14 +257,34 @@
 					<xsl:if test="not($docPath = '../../../../NOAKADEXPI/Symbols/Origo/BORDER_A1_Origo.svg')">
 						
 						<xsl:variable name="doc" select="document($docPath)"/>
-						<xsl:copy-of select="$doc//svg:g/*">
-                        </xsl:copy-of>
+						<xsl:apply-templates select="$doc//svg:g/*"/>
 					</xsl:if>
                     <xsl:apply-templates/>
                 </symbol>
             </xsl:for-each>
         </defs>
     </xsl:template>
+
+    <xsl:template match="svg:text[@font-family='Helvetica']">
+        <text>
+          <!-- Copy all attributes from the original text element -->
+          <xsl:apply-templates select="@*"/>
+          <!-- Set the new text content -->
+          <xsl:text>Hello World</xsl:text>
+        </text>
+      </xsl:template>
+      
+      <!-- Generic template to copy all other elements as they are -->
+      <xsl:template match="svg:*">
+        <xsl:copy>
+          <xsl:apply-templates select="@*|node()"/>
+        </xsl:copy>
+      </xsl:template>
+      
+      <!-- Generic template to copy attributes as they are -->
+      <xsl:template match="@*">
+        <xsl:copy/>
+      </xsl:template>
 
 <!--     <xsl:template match="g">
         <g>
