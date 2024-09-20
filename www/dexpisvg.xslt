@@ -79,7 +79,7 @@
                 </xsl:for-each>
             </xsl:attribute>
             <xsl:attribute name="stroke">
-                <xsl:text>#0000FF</xsl:text><!-- Set stroke color to blue<xsl:value-of select="color:RgbToHex(Presentation/@R, Presentation/@G, Presentation/@B)"/>-->
+                <xsl:text>#000000</xsl:text><!-- Set stroke color to blue<xsl:value-of select="color:RgbToHex(Presentation/@R, Presentation/@G, Presentation/@B)"/>-->
             </xsl:attribute>
             <xsl:attribute name="stroke-width">
                 <xsl:value-of select="Presentation/@LineWeight"/>
@@ -240,6 +240,8 @@
     <xsl:template match="ShapeCatalogue">
         <defs>
             <xsl:for-each select="*">
+                <xsl:variable name="parentName" select="name()"/>
+                <xsl:variable name="currentComponentName" select="@ComponentName"/>
                 <symbol overflow="visible">
                     <xsl:attribute name="id">
                         <xsl:value-of select="@ComponentName"/>
@@ -250,14 +252,32 @@
 					<xsl:attribute name="path">
 						<xsl:value-of select="concat('../../../../NOAKADEXPI/Symbols/Origo',GenericAttributes/GenericAttribute/@Value,'_Origo.svg')"/>
 					</xsl:attribute>
+                   
+                    <xsl:variable name="matchedElement" select="//*[name() = $parentName and @ComponentName = $currentComponentName]" />
+                    <xsl:variable name="displayNameValue">
+                    <xsl:choose>
+                        <!-- First try to select the 'Value' attribute of the 'GenericAttribute' with the specific 'Name' -->
+                        <xsl:when test="$matchedElement/GenericAttributes/GenericAttribute[@Name='ObjectDisplayNameAssignmentClass']/@Value">
+                        <xsl:value-of select="$matchedElement/GenericAttributes/GenericAttribute[@Name='ObjectDisplayNameAssignmentClass']/@Value" />
+                        </xsl:when>
+                        <!-- If there is no such 'GenericAttribute', select the 'ID' of the element -->
+                        <xsl:otherwise>
+                        <xsl:value-of select="$matchedElement/@ID" />
+                        </xsl:otherwise>
+                    </xsl:choose>
+                    </xsl:variable>
 
 					<xsl:variable name="attributeValue" select="GenericAttributes/GenericAttribute/@Value"/>
 					<xsl:variable name="docPath" select="concat('../../../../NOAKADEXPI/Symbols/Origo/', $attributeValue, '_Origo.svg')"/>
+                    
+                    <xsl:variable name="label" select="GenericAttributes/GenericAttribute[@Name='ObjectDisplayNameAssignmentClass']/@Value"/>    
 
 					<xsl:if test="not($docPath = '../../../../NOAKADEXPI/Symbols/Origo/BORDER_A1_Origo.svg')">
 						
 						<xsl:variable name="doc" select="document($docPath)"/>
-						<xsl:apply-templates select="$doc//svg:g/*"/>
+						<xsl:apply-templates select="$doc//svg:g/*">
+                            <xsl:with-param name="testParam" select="$displayNameValue"/>
+                        </xsl:apply-templates>
 					</xsl:if>
                     <xsl:apply-templates/>
                 </symbol>
@@ -266,14 +286,23 @@
     </xsl:template>
 
     <xsl:template match="svg:text[@font-family='Helvetica']">
+        <xsl:param name="testParam"/>
         <text>
           <!-- Copy all attributes from the original text element -->
-          <xsl:apply-templates select="@*"/>
+          <xsl:apply-templates select="@*[local-name() != 'font-size']"/>
+      <!-- Set the font-size to 20px -->
+      <xsl:attribute name="font-size">20px</xsl:attribute>
           <!-- Set the new text content -->
-          <xsl:text>Hello World</xsl:text>
+          <xsl:value-of select="$testParam"/>
         </text>
       </xsl:template>
       
+      <!-- Template to remove elements with a red stroke, excluding text elements -->
+        <xsl:template match="*[not(self::text)][@stroke='#ff0000']" />
+
+    <!-- Template to remove elements with a red fill, excluding text elements -->
+    <xsl:template match="*[not(self::text)][@fill='#ff0000']" />
+
       <!-- Generic template to copy all other elements as they are -->
       <xsl:template match="svg:*">
         <xsl:copy>
