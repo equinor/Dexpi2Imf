@@ -15,12 +15,12 @@ All dexpi equipment are modeled as blocks im IMF. The dexpi nozzles on the equip
 - 
 `asset:PipingNetworkSegment-4` begins from `dexpi:Nozzle-2` and ends at `asset:Nozzle-3`, hence connecting `asset:RotaryPump-1` to `asset:PlateHeatExhanger-1`. 
 
-The only piping component contained within `asset:PipingNetworkSegment-4` is the piping component block `asset:Flange-3`. Hence, the input terminal `asset:Flange-3` should share the same connector as `dexpi:Nozzle-2`, and the output terminal should share the same connector as `asset:Nozzle-3` :
+The components contained within `asset:PipingNetworkSegment-4` is the piping component blocks `asset:Flange-3` and `asset:Flange-4`. Hence, the input terminal `asset:Flange-3` should share the same connector as `dexpi:Nozzle-2`, and the output terminal of `asset:Flange-4` should share the same connector as `asset:Nozzle-3` :
 
 ```trig
 :Flange-3_input imf:hasConnector imf:connector-1 .
 dexpi:Nozzle-2 imf:hasConnector imf:connector-1 .
-:Flange-3_output imf:hasConnector imf:connector-2 .
+:Flange-4_output imf:hasConnector imf:connector-2 .
 dexpi:Nozzle-3 imf:hasConnector imf:connector-2 . 
 ```
 
@@ -30,7 +30,7 @@ Attempting to connect the first piping component within a piping network segment
 ```SPARQL
 SELECT *
 WHERE {
-    ?block rdfs:label "D-20HA001" .
+    ?block rdfs:label "D-20PA001" .
     ?block imf:connectedTo* asset:Flange-3 .
     asset:Flange-3 imf:hasTerminal ?componentTerminal .
     ?componentTerminal imf:hasConnector ?connector .
@@ -43,7 +43,7 @@ This query should result in the following answer:
 
 | block | componentTerminal | connector | nozzleTerminal |
 |-------|----------|-------------------| ---------------|
-| asset:PressureVessel-1 | asset:PipingNode-7 | asset:Nozzle-2_connector | asset:Nozzle-2 |
+| asset:RotaryPump-1 | asset:PipingNode-7 | asset:Nozzle-2_connector | asset:Nozzle-2 |
 
 When inserting this data into RDFox we get the expected answer.
 ```SPARQL
@@ -62,8 +62,8 @@ Attempting to connect the last piping component within a piping network segment 
 SELECT *
 WHERE {
     ?block rdfs:label "D-20HA001" .
-    ?block imf:connectedTo* asset:Flange-3 .
-    asset:Flange-3 imf:hasTerminal ?componentTerminal .
+    ?block imf:connectedTo* asset:Flange-4 .
+    asset:Flange-4 imf:hasTerminal ?componentTerminal .
     ?componentTerminal imf:hasConnector ?connector .
     ?nozzleTerminal imf:hasConnector ?connector .
     ?block imf:connectedThrough ?connector .
@@ -74,15 +74,15 @@ This query should result in the following answer:
 
 | block | componentTerminal | connector | nozzleTerminal |
 |-------|----------|-------------------| ---------------|
-| asset:PlateHeatExchanger-1 | asset:PipingNode-8 | asset:Nozzle-3_connector | asset:Nozzle-3 |
+| asset:PlateHeatExchanger-1 | asset:PipingNode-10 | asset:Nozzle-3_connector | asset:Nozzle-3 |
 
 When inserting this data into RDFox we get the expected answer
 ```SPARQL
 INSERT DATA {
                 asset:Nozzle- imf:hasConnector asset:Nozzle-2_connector . 
-                asset:PipingNode-7 imf:hasConnector asset:Nozzle-3_connector .
-                asset:Flange-3 imf:hasTerminal asset:PipingNode-7 .
-                asset:PipingNode-7 a imf:OutputTerminal .
+                asset:PipingNode-10 imf:hasConnector asset:Nozzle-3_connector .
+                asset:Flange-4 imf:hasTerminal asset:PipingNode-10 .
+                asset:PipingNode-10 a imf:OutputTerminal .
             }
 ```
 Hence, we need to create these triples in the RML mappings. 

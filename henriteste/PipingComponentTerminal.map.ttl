@@ -24,9 +24,8 @@
     rr:termType rr:IRI;
     rr:class imf:InputTerminal
   ];
-  # If there is no preceding-sibling, this must mean that this is the first element in the piping network segment.
-  # When this is the case we use the object IRI :PipingNetworkSegment-ID_toComponentLevel to connect the first element
-  # to the outside.
+  # If there is no preceding-sibling, then it is the first component in the piping network segment.
+  # The first component is connected to the object that the piping network segment starts from.
   rr:predicateObjectMap [
     rr:predicate imf:hasConnector;
     rr:objectMap [
@@ -61,10 +60,18 @@
     rr:termType rr:IRI;
     rr:class imf:OutputTerminal
   ] ;
+    # If there is no following sibling, then it is the last component in the piping network segment. 
+    # The last component is connected to the object that the piping network segment goes to.
     rr:predicateObjectMap [
     rr:predicate imf:hasConnector;
     rr:objectMap [
-      rr:template "https://assetid.equinor.com/plantx#{concat(../../@ID, '_connector')}";
+      rr:template """https://assetid.equinor.com/plantx#{
+      if(../../following-sibling::PipingComponent[1]/@ID) then 
+        concat(../../following-sibling::PipingComponent[1]/@ID, '_connector') 
+      else if(../../../Connection/@ToID) then
+        concat(../../../Connection/@ToID, '_connector')
+      else()
+        }""";
       rr:termType rr:IRI; 
     ]
   ] ;
