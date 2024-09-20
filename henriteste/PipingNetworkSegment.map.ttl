@@ -14,10 +14,10 @@
   rml:logicalSource [
     rml:source "pandid.xml";
     rml:referenceFormulation ql:XPath;
-    rml:iterator "//PipingNetworkSegment"
+    rml:iterator "//PipingNetworkSegment/Connection[contains(@FromID, 'Nozzle')]"
   ];
   rr:subjectMap [
-    rr:template "https://assetid.equinor.com/plantx#{Connection[contains(@FromID, 'Nozzle')]/@FromID}";
+    rr:template "https://assetid.equinor.com/plantx#{@FromID}";
     rr:termType rr:IRI;
     rr:class imf:Terminal
   ] ;
@@ -26,7 +26,7 @@
     rr:predicate imf:hasConnector;
     rr:termType rr:IRI;
     rr:objectMap[
-      rr:template "https://assetid.equinor.com/plantx#{@ID}";
+      rr:template "https://assetid.equinor.com/plantx#{../@ID}";
       rr:termType rr:IRI 
     ]
   ] ;
@@ -35,7 +35,7 @@
     rr:predicate imf:hasConnector;
     rr:termType rr:IRI;
     rr:objectMap [
-      rr:template "https://assetid.equinor.com/plantx#{concat(@ID, '_toComponentLevel')}"
+      rr:template "https://assetid.equinor.com/plantx#{concat(@FromID, '_connector')}"
     ]
   ] .
 

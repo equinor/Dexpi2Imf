@@ -30,14 +30,13 @@
   rr:predicateObjectMap [
     rr:predicate imf:hasConnector;
     rr:objectMap [
-      rr:template """https://assetid.equinor.com/plantx#
-      {
-        if(../../preceding-sibling::PipingComponent[1]/@ID) then 
-          concat(../../preceding-sibling::PipingComponent[1]/@ID, '_connector') 
-        else if(../../../Connection/@FromID) then
-          concat(../../../@ID, '_toComponentLevel')
-        else()
-      }""";
+      rr:template """https://assetid.equinor.com/plantx#{
+      if(../../preceding-sibling::PipingComponent[1]/@ID) then 
+        concat(../../preceding-sibling::PipingComponent[1]/@ID, '_connector') 
+      else if(../../../Connection/@FromID) then
+        concat(../../../Connection/@FromID, '_connector')
+      else()
+        }""";
       rr:termType rr:IRI; 
     ]
   ] ;
@@ -65,7 +64,7 @@
     rr:predicateObjectMap [
     rr:predicate imf:hasConnector;
     rr:objectMap [
-      rr:template "https://assetid.equinor.com/plantx#{concat(../../@ID, '-connector')}";
+      rr:template "https://assetid.equinor.com/plantx#{concat(../../@ID, '_connector')}";
       rr:termType rr:IRI; 
     ]
   ] ;
