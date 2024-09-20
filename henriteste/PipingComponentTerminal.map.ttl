@@ -10,17 +10,14 @@
 @prefix dbo: <http://dbpedia.org/ontology/> .
 @prefix imf: <http://ns.imfid.org/imf#> .
 
-:PipingComponentFlowInTerminal a rr:TriplesMap;
+:PipingComponentInputTerminal a rr:TriplesMap;
   rml:logicalSource [
     rml:source "pandid.xml";
     rml:referenceFormulation ql:XPath;
-    rml:iterator """if(//PipingComponent/ConnectionPoints/@FlowIn) then
-                      //PipingComponent/ConnectionPoints/Node[position()=number(../@FlowIn)+1]
-                    else(//PipingComponent/ConnectionPoints/Node[position()=2])
-                 """ 
+    rml:iterator "//PipingComponent"
   ];
   rr:subjectMap [
-    rr:template "https://assetid.equinor.com/plantx#{@ID}";  
+    rr:template "https://assetid.equinor.com/plantx#{concat(@ID, '_input')}";  
     rr:termType rr:IRI;
     rr:class imf:InputTerminal
   ];
@@ -30,10 +27,10 @@
     rr:predicate imf:hasConnector;
     rr:objectMap [
       rr:template """https://assetid.equinor.com/plantx#{
-      if(../../preceding-sibling::PipingComponent[1]/@ID) then 
-        concat(../../preceding-sibling::PipingComponent[1]/@ID, '_connector') 
-      else if(../../../Connection/@FromID) then
-        concat(../../../Connection/@FromID, '_connector')
+      if(preceding-sibling::PipingComponent[1]/@ID) then 
+        concat(preceding-sibling::PipingComponent[1]/@ID, '_connector') 
+      else if(../Connection/@FromID) then
+        concat(../Connection/@FromID, '_connector')
       else()
         }""";
       rr:termType rr:IRI; 
@@ -47,16 +44,14 @@
       ]
   ] .
 
-:PipingComponentFlowOutTerminal a rr:TriplesMap;
+:PipingComponentOutputTerminal a rr:TriplesMap;
   rml:logicalSource [
     rml:source "pandid.xml";
     rml:referenceFormulation ql:XPath;
-    rml:iterator """if(//PipingComponent/ConnectionPoints/@FlowOut) then
-                      //PipingComponent/ConnectionPoints/Node[position()=number(../@FlowOut)+1]
-                    else(//PipingComponent/ConnectionPoints/Node[position()=3])"""
+    rml:iterator "//PipingComponent"
   ] ;
   rr:subjectMap [
-    rr:template "https://assetid.equinor.com/plantx#{@ID}";  
+    rr:template "https://assetid.equinor.com/plantx#{concat(@ID, '_output')}";  
     rr:termType rr:IRI;
     rr:class imf:OutputTerminal
   ] ;
@@ -66,10 +61,10 @@
     rr:predicate imf:hasConnector;
     rr:objectMap [
       rr:template """https://assetid.equinor.com/plantx#{
-      if(../../following-sibling::PipingComponent[1]/@ID) then 
-        concat(../../following-sibling::PipingComponent[1]/@ID, '_connector') 
-      else if(../../../Connection/@ToID) then
-        concat(../../../Connection/@ToID, '_connector')
+      if(following-sibling::PipingComponent[1]/@ID) then 
+        concat(following-sibling::PipingComponent[1]/@ID, '_connector') 
+      else if(../Connection/@ToID) then
+        concat(../Connection/@ToID, '_connector')
       else()
         }""";
       rr:termType rr:IRI; 

@@ -24,7 +24,14 @@
   rr:predicateObjectMap [
     rr:predicate imf:hasTerminal;
     rr:objectMap [
-      rr:template "https://assetid.equinor.com/plantx#{ConnectionPoints/Node[position()>1]/@ID}" ;
+      rr:template "https://assetid.equinor.com/plantx#{concat(@ID, '_input')}"; 
+      rr:termType rr:IRI 
+    ]
+  ] ;
+  rr:predicateObjectMap [
+    rr:predicate imf:hasTerminal;
+    rr:objectMap [
+      rr:template "https://assetid.equinor.com/plantx#{concat(@ID, '_output')}"; 
       rr:termType rr:IRI 
     ]
   ] .
