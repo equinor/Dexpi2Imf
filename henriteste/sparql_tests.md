@@ -8,19 +8,31 @@ All dexpi piping components are modeled as blocks in IMF. Each piping component 
 
 All dexpi equipment are modeled as blocks im IMF. The dexpi nozzles on the equipment is modeled as terminals. A dexpi nozzle is connected to a dexpi piping network segments, these piping network segments has been modeled as imf connectors. 
 
-### Mapping the first element to a nozzle
-Attempting to connect the first piping component within a piping network segment to a nozzle.
-The following SPARQL query checks that the first piping component on PipingNetworkSegment-11 is connected to a nozzle. The iri of this piping component is `asset:CustomPipingComponent-1`.
+### Connecting piping components to nozzles 
+`asset:PipingNetworkSegment-4` connects two equipment blocks togehter;
+- `asset:RotaryPump-1` with tag name D-20PA001
+- `asset:PlateHeatExchanger-1` with tag name D-20HA001 
+- 
+`asset:PipingNetworkSegment-4` begins from `dexpi:Nozzle-2` and ends at `asset:Nozzle-3`, hence connecting `asset:RotaryPump-1` to `asset:PlateHeatExhanger-1`. 
 
-The equipment block with label `D-20VA001` has a nozzle terminal with iri `dexpi:Nozzle-11`. 
-Hence, we need to check that there terminal on the equipment block `asset:CustomPipingComponent-1` shares the same connector with the `dexpi:Nozzle-11`.
+The only piping component contained within `asset:PipingNetworkSegment-4` is the piping component block `asset:Flange-3`. Hence, the input terminal `asset:Flange-3` should share the same connector as `dexpi:Nozzle-2`, and the output terminal should share the same connector as `asset:Nozzle-3` :
+
+```trig
+:Flange-3_input imf:hasConnector imf:connector-1 .
+dexpi:Nozzle-2 imf:hasConnector imf:connector-1 .
+:Flange-3_output imf:hasConnector imf:connector-2 .
+dexpi:Nozzle-3 imf:hasConnector imf:connector-2 . 
+```
+
+#### Mapping the first element to a nozzle
+Attempting to connect the first piping component within a piping network segment to a nozzle.
 
 ```SPARQL
 SELECT *
 WHERE {
-    ?block rdfs:label "D-20VA001" .
-    ?block imf:connectedTo* asset:CustomPipingComponent-1 .
-    asset:CustomPipingComponent-1 imf:hasTerminal ?componentTerminal .
+    ?block rdfs:label "D-20HA001" .
+    ?block imf:connectedTo* asset:Flange-3 .
+    asset:Flange-3 imf:hasTerminal ?componentTerminal .
     ?componentTerminal imf:hasConnector ?connector .
     ?nozzleTerminal imf:hasConnector ?connector .
     ?block imf:connectedThrough ?connector .
@@ -31,17 +43,48 @@ This query should result in the following answer:
 
 | block | componentTerminal | connector | nozzleTerminal |
 |-------|----------|-------------------| ---------------|
-| asset:PressureVessel-1 | asset:PipingNode-30 | asset:Nozzle-11_connector | asset:Nozzle-11 |
+| asset:PressureVessel-1 | asset:PipingNode-7 | asset:Nozzle-2_connector | asset:Nozzle-2 |
 
-
-When inserting this data into RDFox we get the expected answer
+When inserting this data into RDFox we get the expected answer.
 ```SPARQL
-INSERT DATA {asset:Nozzle-11 imf:hasConnector asset:Nozzle-11_connector . 
-             asset:PipingNode-30 imf:hasConnector asset:Nozzle-11_connector .
-             asset:CustomPipingComponent-1 imf:hasTerminal asset:PipingNode-30 .}
+INSERT DATA {
+                asset:Nozzle-2 imf:hasConnector asset:Nozzle-2_connector . 
+                asset:PipingNode-7 imf:hasConnector asset:Nozzle-2_connector .
+                asset:Flange-3 imf:hasTerminal asset:PipingNode-7 .
+                asset:PipingNode-7 a imf:InputTerminal .
+            } 
 ```
 Hence, we need to create these triples in the RML mappings. 
 
-### Mapping the first element to a nozzle
+#### Mapping the last element to a nozzle
 Attempting to connect the last piping component within a piping network segment to a nozzle.
-The following SPARQL query checks this connection:
+```SPARQL
+SELECT *
+WHERE {
+    ?block rdfs:label "D-20HA001" .
+    ?block imf:connectedTo* asset:Flange-3 .
+    asset:Flange-3 imf:hasTerminal ?componentTerminal .
+    ?componentTerminal imf:hasConnector ?connector .
+    ?nozzleTerminal imf:hasConnector ?connector .
+    ?block imf:connectedThrough ?connector .
+}
+```
+
+This query should result in the following answer:
+
+| block | componentTerminal | connector | nozzleTerminal |
+|-------|----------|-------------------| ---------------|
+| asset:PlateHeatExchanger-1 | asset:PipingNode-8 | asset:Nozzle-3_connector | asset:Nozzle-3 |
+
+When inserting this data into RDFox we get the expected answer
+```SPARQL
+INSERT DATA {
+                asset:Nozzle- imf:hasConnector asset:Nozzle-2_connector . 
+                asset:PipingNode-7 imf:hasConnector asset:Nozzle-3_connector .
+                asset:Flange-3 imf:hasTerminal asset:PipingNode-7 .
+                asset:PipingNode-7 a imf:OutputTerminal .
+            }
+```
+Hence, we need to create these triples in the RML mappings. 
+
+### Connecting piping components from different piping network segments
