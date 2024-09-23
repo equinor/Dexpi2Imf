@@ -19,7 +19,7 @@
   rr:subjectMap [
     rr:template "https://assetid.equinor.com/plantx#{@ID}";
     rr:termType rr:IRI;
-    rr:class imf:PipingComponent, imf:Block
+    rr:class dexpi:PipingComponent, imf:Block
   ] ;
   rr:predicateObjectMap [
     rr:predicate imf:hasTerminal;

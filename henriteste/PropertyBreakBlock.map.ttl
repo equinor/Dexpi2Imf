@@ -32,11 +32,7 @@
   rr:predicateObjectMap [
     rr:predicate imf:hasTerminal;
     rr:objectMap [
-        rr:template "https://assetid.equinor.com/plantx#{concat(@ID, '_input')}";
-        rr:termType rr:IRI;
-    ];
-    rr:objectMap[
-        rr:template "https://assetid.equinor.com/plantx#{concat(@ID, '_output')}";
+        rr:template "https://assetid.equinor.com/plantx#{concat(@ID, '_terminal')}";
         rr:termType rr:IRI;
     ]
   ] .
