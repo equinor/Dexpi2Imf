@@ -1,3 +1,4 @@
 boundaries.rdfox
 
+import ../datalog/interactive_boundary.datalog
 import +p "../henriteste/pandid.trig"
