@@ -88,12 +88,38 @@ INSERT DATA {
 Hence, we need to create these triples in the RML mappings. 
 
 ### Connecting piping components from different piping network segments
+`asset:PipingNetworkSegment-7`, `asset:PipingNetworkSegment-8` and `asset:PipingNetworkSegment-9` are all connected through `asset:PipeTee-1`:
 
+```xml
+<PipingNetworkSegment ID="PipingNetworkSegment-7">
+    ...
+    <Connection FromID="Nozzle-4" FromNode="1" ToID="PipeTee-1" ToNode="2"/>
+</PipingNetworkSegment>
+<PipingNetworkSegment ID="PipingNetworkSegment-8">
+    ...
+    <Connection FromID="PipeTee-1" FromNode="2" ToID="Nozzle-10" ToNode="1"/>
+</PipingNetworkSegment>
+<PipingNetworkSegment ID="PipingNetworkSegment-9">
+    ...
+    <Connection FromID="PipeTee-1" FromNode="3" ToID="Nozzle-9" ToNode="1"/>
+</PipingNetworkSegment>
+```
+In order to connect the piping components from these network segments the following connection must be created:
+- The last component on `PipingNetworkSegment-7`, `asset:PipeTee-1`, must be connected to the first piping component on `asset:PipingNetworkSegment-8` and `asset:PipingNetworkSegment-9`.
+
+The following SPARQL query verifies this connection:
 ```SPARQL
 SELECT *
 WHERE {
   ?block imf:connectedThrough ?connector .
-  VALUES ?segment { asset:PipingNetworkSegment-9 asset:PipingNetworkSegment-8 asset:PipingNetworkSegment-7 }
+  VALUES ?segment { 
+    asset:PipingNetworkSegment-9 
+    asset:PipingNetworkSegment-8 
+    asset:PipingNetworkSegment-7 
+    }
   ?block imf:partOf ?segment .
 }
 ```
+The query should result in the following answer:
+
+![image](../doc/images/pipetee_result.png)
