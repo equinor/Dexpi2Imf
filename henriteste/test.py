@@ -39,4 +39,10 @@ def FromId():
       else:
          print("nothing happened")
 
-FromId()
+def propertybreaktest():
+   iterator = tree.xpath("//PipingNetworkSegment/PipingComponent[last()]")
+   for node in iterator:
+     print(node.xpath("../@ID"))
+     print(f'       {node.xpath("@ID")}')
+
+propertybreaktest()

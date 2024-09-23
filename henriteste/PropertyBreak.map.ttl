@@ -15,23 +15,20 @@
   rml:logicalSource [
     rml:source "pandid.xml";
     rml:referenceFormulation ql:XPath;
-    rml:iterator "//PropertyBreak"
+    rml:iterator "//PipingNetworkSegment/PropertyBreak"
   ] ;
   rr:subjectMap [
     rr:template "https://assetid.equinor.com/plantx#{@ID}";
     rr:termType rr:IRI;
-    rr:class imf:PipingComponent, imf:Block;
-  ] .
+    rr:class imf:PropertyBreak, imf:Block;
+  ] ;
 
 #Mapping to imf:InputTerminal
 :PropertyBreakFlowInTerminal a rr:TriplesMap;
   rml:logicalSource [
     rml:source "pandid.xml";
     rml:referenceFormulation ql:XPath;
-    rml:iterator """if(PropertyBreak//ConnectionPoints/@FlowIn) then
-                      //PropertyBreak/ConnectionPoints/Node[position()=number(../@FlowIn)+1]
-                    else(//PropertyBreak/ConnectionPoints/Node[position()=2])
-                 """
+    rml:iterator "https://assetid.equinor.com/plantx#{concat(@ID, '_input')}"
   ] ;
   rr:subjectMap [
     rr:template "https://assetid.equinor.com/plantx#{@ID}";  

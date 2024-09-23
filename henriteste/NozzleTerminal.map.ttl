@@ -15,7 +15,7 @@
   rml:logicalSource [
     rml:source "pandid.xml";
     rml:referenceFormulation ql:XPath;
-    rml:iterator "//Nozzle"
+    rml:iterator "//Equipment/Nozzle"
   ];
   rr:subjectMap [
     rr:template "https://assetid.equinor.com/plantx#{@ID}";

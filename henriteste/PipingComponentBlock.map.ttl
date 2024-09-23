@@ -14,7 +14,7 @@
   rml:logicalSource [
     rml:source "pandid.xml";
     rml:referenceFormulation ql:XPath;
-    rml:iterator "//PipingComponent"
+    rml:iterator "//PipingNetworkSegment/PipingComponent"
   ];
   rr:subjectMap [
     rr:template "https://assetid.equinor.com/plantx#{@ID}";
