@@ -21,6 +21,13 @@
     rr:template "https://assetid.equinor.com/plantx#{concat(@ID, '_input')}";
     rr:termType rr:IRI;
     rr:class imf:InputTerminal;
+  ] ;
+  rr:predicateObjectMap [
+    rr:predicate imf:hasConnector;
+    rr:objectMap [
+        rr:template "https://assetid.equinor.com/plantx#{concat(../PipingComponent[last()]/@ID, '_connector')}";
+        rr:termType rr:IRI
+    ]
   ] .
 
 # Mapping to imf:OutputTerminal
@@ -34,4 +41,11 @@
     rr:template "https://assetid.equinor.com/plantx#{concat(@ID, '_output')}";
     rr:termType rr:IRI;
     rr:class imf:OutputTerminal;
+  ] ;
+  rr:predicateObjectMap [
+    rr:predicate imf:hasConnector;
+    rr:objectMap [
+        rr:template "https://assetid.equinor.com/plantx#{concat(@ID, '_connector')}";
+        rr:termType rr:IRI
+    ]
   ] .

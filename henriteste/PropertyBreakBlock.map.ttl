@@ -23,6 +23,13 @@
     rr:class imf:PropertyBreak, imf:Block;
   ] ;
   rr:predicateObjectMap [
+    rr:predicate imf:partOf;
+    rr:objectMap [
+      rr:template "https://assetid.equinor.com/plantx#{../@ID}";
+      rr:termType rr:IRI
+    ]
+  ] ;
+  rr:predicateObjectMap [
     rr:predicate imf:hasTerminal;
     rr:objectMap [
         rr:template "https://assetid.equinor.com/plantx#{concat(@ID, '_input')}";
