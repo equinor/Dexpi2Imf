@@ -62,7 +62,7 @@
     rr:objectMap [
       rr:template """https://assetid.equinor.com/plantx#{
       if(following-sibling::PipingComponent[1]/@ID) then 
-        concat(following-sibling::PipingComponent[1]/@ID, '_connector') 
+        concat(@ID, '_connector') 
       else if(../Connection/@ToID) then
         concat(../Connection/@ToID, '_connector')
       else()

@@ -6,7 +6,7 @@
 ## Noaka DEXPI to IMF RDF
 All dexpi piping components are modeled as blocks in IMF. Each piping component block has two terminals, one input and one output terminal. Each terminal is connected to another terminal with the help of a connector. 
 
-All dexpi equipment are modeled as blocks im IMF. The dexpi nozzles on the equipment is modeled as terminals. A dexpi nozzle is connected to a dexpi piping network segments, these piping network segments has been modeled as imf connectors. 
+All dexpi equipment are modeled as blocks in IMF. The dexpi nozzles on the equipment is modeled as terminals. A dexpi nozzle is connected to dexpi piping network segments, these piping network segments has been modeled as imf connectors. 
 
 ### Connecting piping components to nozzles 
 `asset:PipingNetworkSegment-4` connects two equipment blocks togehter;
@@ -88,3 +88,12 @@ INSERT DATA {
 Hence, we need to create these triples in the RML mappings. 
 
 ### Connecting piping components from different piping network segments
+
+```SPARQL
+SELECT *
+WHERE {
+  ?block imf:connectedThrough ?connector .
+  VALUES ?segment { asset:PipingNetworkSegment-9 asset:PipingNetworkSegment-8 asset:PipingNetworkSegment-7 }
+  ?block imf:partOf ?segment .
+}
+```

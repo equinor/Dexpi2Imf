@@ -34,4 +34,11 @@
       rr:template "https://assetid.equinor.com/plantx#{concat(@ID, '_output')}"; 
       rr:termType rr:IRI 
     ]
+  ] ;
+    rr:predicateObjectMap [
+    rr:predicate imf:partOf;
+    rr:objectMap [
+      rr:template "https://assetid.equinor.com/plantx#{../@ID}"; 
+      rr:termType rr:IRI 
+    ]
   ] .
