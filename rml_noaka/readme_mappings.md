@@ -1,5 +1,7 @@
 # Overview of mappings
-The RML mappings in this folder maps proteus xml to IMF RDF. There is no topology in the IMF RDF, meaning the imf:partOf predicate is not used. 
+This document describes the mappings from proteus XML to IMF RDF contained in this folder.
+
+## Equipment
 
 ## PipingComponents
 Three mapping files have been created for //PipingComponent. 
