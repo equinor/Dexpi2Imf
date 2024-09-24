@@ -21,5 +21,4 @@ java -jar ../../rmlmapper-java/target/rmlmapper-*-all.jar -m *map* -s trig -o pa
 ``` 
 
 ## Example files resources
-
 * https://github.com/equinor/NOAKADEXPI

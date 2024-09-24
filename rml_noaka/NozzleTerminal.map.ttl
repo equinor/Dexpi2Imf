@@ -1,30 +1,30 @@
-@prefix rml: <http://semweb.mmlab.be/ns/rml#> .
-@prefix rr: <http://www.w3.org/ns/r2rml#> .
-@prefix ql: <http://semweb.mmlab.be/ns/ql#> .
-@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-@prefix : <http://example.org/rules/> .
-@prefix schema: <http://schema.org/> .
-@prefix commonlib: <https://commonlib.equinor.com/Library/> .
-@prefix dexpi: <https://rdf.equinor.com/dexpi#> .
-@prefix asset: <https://assetid.equinor.com/plantx#> .
-@prefix dbo: <http://dbpedia.org/ontology/> .
-@prefix imf: <http://ns.imfid.org/imf#> .
-@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+# @prefix rml: <http://semweb.mmlab.be/ns/rml#> .
+# @prefix rr: <http://www.w3.org/ns/r2rml#> .
+# @prefix ql: <http://semweb.mmlab.be/ns/ql#> .
+# @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+# @prefix : <http://example.org/rules/> .
+# @prefix schema: <http://schema.org/> .
+# @prefix commonlib: <https://commonlib.equinor.com/Library/> .
+# @prefix dexpi: <https://rdf.equinor.com/dexpi#> .
+# @prefix asset: <https://assetid.equinor.com/plantx#> .
+# @prefix dbo: <http://dbpedia.org/ontology/> .
+# @prefix imf: <http://ns.imfid.org/imf#> .
+# @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 
-:NozzleMap a rr:TriplesMap;
-  rml:logicalSource [
-    rml:source "pandid.xml";
-    rml:referenceFormulation ql:XPath;
-    rml:iterator "//Equipment/Nozzle"
-  ];
-  rr:subjectMap [
-    rr:template "https://assetid.equinor.com/plantx#{@ID}";
-    rr:termType rr:IRI;
-    rr:class dexpi:Nozzle, imf:Terminal;
-  ];
- rr:predicateObjectMap [
-  rr:predicate rdfs:label;
-  rr:objectMap [
-    rml:reference "GenericAttributes/GenericAttribute[@Name='ItemTagAssignmentClass']/@Value";
-    ]
-  ] .
+# :NozzleMap a rr:TriplesMap;
+#   rml:logicalSource [
+#     rml:source "pandid.xml";
+#     rml:referenceFormulation ql:XPath;
+#     rml:iterator "//Equipment/Nozzle"
+#   ];
+#   rr:subjectMap [
+#     rr:template "https://assetid.equinor.com/plantx#{@ID}";
+#     rr:termType rr:IRI;
+#     rr:class dexpi:Nozzle, imf:Terminal;
+#   ];
+#  rr:predicateObjectMap [
+#   rr:predicate rdfs:label;
+#   rr:objectMap [
+#     rml:reference "GenericAttributes/GenericAttribute[@Name='ItemTagAssignmentClass']/@Value";
+#     ]
+#   ] .
