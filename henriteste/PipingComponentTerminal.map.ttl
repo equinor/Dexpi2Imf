@@ -61,7 +61,7 @@
     rr:predicate imf:hasConnector;
     rr:objectMap [
       rr:template """https://assetid.equinor.com/plantx#{
-      if(following-sibling::PipingComponent[1]/@ID) then 
+      if(following-sibling::PipingComponent[1]/@ID or following-sibling::PropertyBreak/@ID) then 
         concat(@ID, '_connector') 
       else if(../Connection/@ToID) then
         concat(../Connection/@ToID, '_connector')
