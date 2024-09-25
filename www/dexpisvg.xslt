@@ -1,35 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet version="1.0" 
-    xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
+<xsl:stylesheet version="1.0"
+    xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     xmlns="http://www.w3.org/2000/svg"
     xmlns:svg="http://www.w3.org/2000/svg"
     xmlns:math="urn:math"
     xmlns:color="urn:color"
-    
-    
 >
-    <xsl:output method="xml" indent="yes"/>
+    <xsl:output method="xml" indent="yes" />
 
     <!-- Root template -->
     <xsl:template match="/PlantModel">
         <svg xmlns:svg="http://www.w3.org/2000/svg">
             <xsl:attribute name="width">
-                <xsl:value-of select="2000"/>
+                <xsl:value-of select="2000" />
             </xsl:attribute>
             <xsl:attribute name="viewBox">
                 <xsl:text>0 0 </xsl:text>
-                <xsl:value-of select="Drawing/Extent/Max/@X"/>
+                <xsl:value-of select="Drawing/Extent/Max/@X" />
                 <xsl:text> </xsl:text>
-                <xsl:value-of select="Drawing/Extent/Max/@Y"/>
+                <xsl:value-of
+                    select="Drawing/Extent/Max/@Y" />
             </xsl:attribute>
-            <xsl:variable name="height" select="Drawing/Extent/Max/@Y"/>
+            <xsl:variable name="height" select="Drawing/Extent/Max/@Y" />
             <g>
                 <rect x="0" y="0" fill="#ffffff" stroke="none">
                     <xsl:attribute name="width">
-                        <xsl:value-of select="Drawing/Extent/Max/@X"/>
+                        <xsl:value-of select="Drawing/Extent/Max/@X" />
                     </xsl:attribute>
                     <xsl:attribute name="height">
-                        <xsl:value-of select="$height"/>
+                        <xsl:value-of select="$height" />
                     </xsl:attribute>
                 </rect>
                 <xsl:apply-templates>
@@ -40,9 +39,9 @@
     </xsl:template>
 
 
-    <!-- Matching piping network system --> 
+    <!-- Matching piping network system -->
     <xsl:template match="PipingNetworkSystem">
-        <xsl:param name="height"/>
+        <xsl:param name="height" />
         <g>
             <xsl:apply-templates>
                 <xsl:with-param name="height" select="$height" />
@@ -53,7 +52,7 @@
 
     <!-- Matching piping network system -->
     <xsl:template match="PipingNetworkSegment">
-        <xsl:param name="height"/>
+        <xsl:param name="height" />
         <g>
             <xsl:apply-templates>
                 <xsl:with-param name="height" select="$height" />
@@ -62,34 +61,33 @@
     </xsl:template>
 
 
-
     <!-- Matching piping lines -->
     <xsl:template match="CenterLine">
-        <xsl:param name="height"/>
+        <xsl:param name="height" />
         <path fill="none" stroke-linecap="round" stroke-linejoin="round">
             <xsl:attribute name="d">
                 <xsl:text>M </xsl:text>
                 <xsl:for-each select="Coordinate">
-                    <xsl:value-of select="@X"/>
+                    <xsl:value-of select="@X" />
                     <xsl:text> </xsl:text>
-                    <xsl:value-of select="$height - @Y"/>
+                    <xsl:value-of
+                        select="$height - @Y" />
                     <xsl:if test="position() != last()">
                         <xsl:text> L </xsl:text>
                     </xsl:if>
                 </xsl:for-each>
             </xsl:attribute>
             <xsl:attribute name="stroke">
-                <xsl:text>#000000</xsl:text><!-- Set stroke color to blue<xsl:value-of select="color:RgbToHex(Presentation/@R, Presentation/@G, Presentation/@B)"/>-->
+                <xsl:text>#000000</xsl:text>
             </xsl:attribute>
             <xsl:attribute name="stroke-width">
-                <xsl:value-of select="Presentation/@LineWeight"/>
+                <xsl:value-of select="Presentation/@LineWeight" />
             </xsl:attribute>
         </path>
     </xsl:template>
 
-    
 
-  <!-- Template to calculate svg transform from proteus Position 
+    <!-- Template to calculate svg transform from proteus Position 
    For example, input       
    <Position>
         <Location X="144" Y="164" Z="0"/>
@@ -97,307 +95,375 @@
         <Reference X="1" Y="0" Z="0"/>
     </Position> 
     should become transform="translate(144, 75.323817) rotate(0)" -->
-  <xsl:template name="Position">
-    <xsl:param name="height"/>
-    <xsl:param name="PositionNode"/>
-    <xsl:param name="ScaleNode"/>
+    <xsl:template name="Position">
+        <xsl:param name="height" />
+    <xsl:param name="PositionNode" />
+    <xsl:param name="ScaleNode" />
     
-    <xsl:variable name="x" select="$PositionNode/Location/@X"/>
-    <xsl:variable name="y" select="$PositionNode/Location/@Y"/>
-    <xsl:variable name="axisX" select="$PositionNode/Axis/@X"/>
-    <xsl:variable name="axisY" select="$PositionNode/Axis/@Y"/>
-    <xsl:variable name="axisZ" select="$PositionNode/Axis/@Z"/>
-    <xsl:variable name="refX" select="$PositionNode/Reference/@X"/>
-    <xsl:variable name="refY" select="$PositionNode/Reference/@Y"/>
-    <xsl:variable name="refZ" select="$PositionNode/Reference/@Z"/>
-    
-    <!-- Calculate the angle using the custom extension function -->
-    <xsl:variable name="angle" select="math:CalculateAngle($axisX, $axisY, $axisZ, $refX, $refY, $refZ)"/>
+    <xsl:variable
+            name="x" select="$PositionNode/Location/@X" />
+    <xsl:variable name="y"
+            select="$PositionNode/Location/@Y" />
+    <xsl:variable name="axisX"
+            select="$PositionNode/Axis/@X" />
+    <xsl:variable name="axisY"
+            select="$PositionNode/Axis/@Y" />
+    <xsl:variable name="axisZ"
+            select="$PositionNode/Axis/@Z" />
+    <xsl:variable name="refX"
+            select="$PositionNode/Reference/@X" />
+    <xsl:variable name="refY"
+            select="$PositionNode/Reference/@Y" />
+    <xsl:variable name="refZ"
+            select="$PositionNode/Reference/@Z" />
 
-    <!-- Output the SVG rotate and translate commands --> 
-    <xsl:attribute name="transform">
-        <xsl:if test="$angle != 0">
-            <xsl:text>rotate(</xsl:text>
-            <xsl:value-of select="$angle"/>
+        <!-- Calculate the angle using the custom extension function -->
+    <xsl:variable name="angle"
+            select="math:CalculateAngle($axisX, $axisY, $axisZ, $refX, $refY, $refZ)" />
+
+        <!-- Output the SVG rotate and translate commands --> 
+    <xsl:attribute
+            name="transform">
+            <xsl:if test="$angle != 0">
+                <xsl:text>rotate(</xsl:text>
+            <xsl:value-of select="$angle" />
             <xsl:text>, </xsl:text>
-            <xsl:value-of select="$x"/>
+            <xsl:value-of
+                    select="$x" />
             <xsl:text>, </xsl:text>
-            <xsl:value-of select="$height - $y"/>
+            <xsl:value-of select="$height - $y" />
             <xsl:text>) </xsl:text>
-        </xsl:if>
+            </xsl:if>
         <xsl:text>translate(</xsl:text>
-        <xsl:value-of select="$x"/>
+        <xsl:value-of
+                select="$x" />
         <xsl:text>, </xsl:text>
-        <xsl:value-of select="$height - $y"/>
+        <xsl:value-of select="$height - $y" />
         <xsl:text>) </xsl:text>
-        <xsl:if test="$ScaleNode">
-            <xsl:text> scale</xsl:text>
-            <xsl:value-of select="concat('(',$ScaleNode/@X  , ', ' ,  $ScaleNode/@Y , ')')" />
-        </xsl:if>
-      </xsl:attribute>
-  </xsl:template>
+        <xsl:if
+                test="$ScaleNode">
+                <xsl:text> scale</xsl:text>
+            <xsl:value-of
+                    select="concat('(',$ScaleNode/@X  , ', ' ,  $ScaleNode/@Y , ')')" />
+            </xsl:if>
+        </xsl:attribute>
+    </xsl:template>
 
-    <!--Template for genericattributes-->
-<!--     <xsl:template match="GenericAttributes">
-        <xsl:variable name="id" select="../../Equipment/@ID"/>
-        <a id="{concat('https://assetid.equinor.com/plantx#', $id)}" class="Hello">
+
+<!-- Template for labels -->
+<xsl:template match="Label">
+    <xsl:param name="height"/>
+    <xsl:variable name="displayText" select="following-sibling::GenericAttributes/GenericAttribute[@Name='ObjectDisplayNameAssignmentClass' or @Name='LineDescriptionAssignmentClass']/@Value"/>
+    <xsl:if test="$displayText">
+        <a id="{concat('https://assetid.equinor.com/plantx#', @ID)}" class="node">
             <text>
-                <xsl:value-of select="GenericAttribute[@Name='ObjectDisplayNameAssignmentClass']/@Value"/>
+                <xsl:attribute name="x">
+                    <xsl:value-of select="Position/Location/@X"/>
+                </xsl:attribute>
+                <xsl:attribute name="y">
+                    <xsl:value-of select="$height - Position/Location/@Y"/>
+                </xsl:attribute>
+                <xsl:attribute name="font-size">3.3px</xsl:attribute>
+                <xsl:attribute name="font-family">Arial</xsl:attribute>
+                <xsl:attribute name="text-anchor">middle</xsl:attribute>
+                <xsl:attribute name="transform">
+                    <xsl:variable name="refX" select="Position/Reference/@X"/>
+                    <xsl:variable name="refY" select="Position/Reference/@Y"/>
+                    <!-- Assuming that a Reference of (1,0,0) means horizontal text, calculate the rotation angle -->
+                    <xsl:variable name="textRotationAngle">
+                        <xsl:choose>
+                            <xsl:when test="$refX = 0 and $refY = 1">270</xsl:when>
+                            <xsl:when test="$refX = 1 and $refY = 0">0</xsl:when>
+                            <xsl:otherwise>0</xsl:otherwise> <!-- Default rotation angle if not horizontal or vertical -->
+                        </xsl:choose>
+                    </xsl:variable>
+                    <xsl:value-of select="concat('rotate(', $textRotationAngle, ' ', Position/Location/@X, ' ', $height - Position/Location/@Y, ')')"/>
+                </xsl:attribute>
+                <xsl:value-of select="$displayText"/>
+            </text>
+        </a>
+    </xsl:if>
+</xsl:template>
+    <!--     <xsl:template match="Label">
+        <xsl:param name="height" />
+        <xsl:variable name="id" select="../@ID" />
+        <a
+            id="{concat('https://assetid.equinor.com/plantx#', $id)}" class="node">
+            <text>
+                <xsl:variable name="angleFromPosition">
+                    <xsl:choose>
+                        <xsl:when test="Text/Position">
+                            <xsl:variable name="axisX" select="Text/Position/Axis/@X" />
+                        <xsl:variable
+                                name="axisY" select="Text/Position/Axis/@Y" />
+                        <xsl:variable
+                                name="axisZ" select="Text/Position/Axis/@Z" />
+                        <xsl:variable
+                                name="refX" select="Text/Position/Reference/@X" />
+                        <xsl:variable
+                                name="refY" select="Text/Position/Reference/@Y" />
+                        <xsl:variable
+                                name="refZ" select="Text/Position/Reference/@Z" />
+                        <xsl:value-of
+                                select="math:CalculateAngle($axisX, $axisY, $axisZ, $refX, $refY, $refZ)" />
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <xsl:value-of select="0" />
+                        </xsl:otherwise>
+                    </xsl:choose>
+                </xsl:variable>
+                <xsl:variable name="angle">
+                    <xsl:choose>
+                        <xsl:when test="Text/@TextAngle">
+                            <xsl:value-of select="Text/@TextAngle + $angleFromPosition" />
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <xsl:value-of select="$angleFromPosition" />
+                        </xsl:otherwise>
+                    </xsl:choose>
+                </xsl:variable>
+                <xsl:variable name="textlength" select="string-length(Text/@String)" />
+                <xsl:attribute name="x">
+                    <xsl:value-of select="Text/Position/Location/@X" />
+                </xsl:attribute>
+                <xsl:variable name="y"
+                    select="$height - Text/Position/Location/@Y + Text/@Height div 2" />
+                <xsl:attribute name="y">
+                    <xsl:value-of select="$y" />
+                </xsl:attribute>
+                <xsl:attribute name="font-size">
+                    <xsl:value-of select="concat(Text/@Height, 'px')" />
+                </xsl:attribute>
+                <xsl:attribute name="font-family">
+                    <xsl:value-of select="Text/@Font" />
+                </xsl:attribute>
+                <xsl:attribute name="text-anchor">
+                    <xsl:text>middle</xsl:text>
+                </xsl:attribute>
+                <xsl:attribute name="transform">
+                    <xsl:if test="$angle != 0">
+                        <xsl:text>rotate(</xsl:text>
+                    <xsl:value-of select="360 - $angle" />
+                    <xsl:text>, </xsl:text>
+                    <xsl:value-of
+                            select="Text/Position/Location/@X" />
+                    <xsl:text>, </xsl:text>
+                    <xsl:value-of
+                            select="$y" />
+                    <xsl:text>) </xsl:text>
+                    </xsl:if>
+                </xsl:attribute>
+                 <xsl:value-of
+                select="../GenericAttributes/GenericAttribute[@Name='ObjectDisplayNameAssignmentClass']/@Value"/>
             </text>
         </a>
     </xsl:template> -->
 
-    <!-- Template for labels-->
-    <xsl:template match="Label">
-        <xsl:param name="height"/>
-        <xsl:variable name="id" select="../@ID"/>
-        <a id="{concat('https://assetid.equinor.com/plantx#', $id)}" class="node">
-        <text>
-            <xsl:variable name="angleFromPosition">
-                <xsl:choose>
-                    <xsl:when test="Text/Position">
-                        <xsl:variable name="axisX" select="Text/Position/Axis/@X"/>
-                        <xsl:variable name="axisY" select="Text/Position/Axis/@Y"/>
-                        <xsl:variable name="axisZ" select="Text/Position/Axis/@Z"/>
-                        <xsl:variable name="refX" select="Text/Position/Reference/@X"/>
-                        <xsl:variable name="refY" select="Text/Position/Reference/@Y"/>
-                        <xsl:variable name="refZ" select="Text/Position/Reference/@Z"/>
-                        <xsl:value-of select="math:CalculateAngle($axisX, $axisY, $axisZ, $refX, $refY, $refZ)"/>
-                    </xsl:when>         
-                    <xsl:otherwise>
-                        <xsl:value-of select="0"/>
-                    </xsl:otherwise>
-                </xsl:choose>    
-            </xsl:variable>
-            <xsl:variable name="angle">
-                <xsl:choose>
-                    <xsl:when test="Text/@TextAngle">  
-                        <xsl:value-of select="Text/@TextAngle + $angleFromPosition"/>
-                    </xsl:when>
-                    <xsl:otherwise>
-                        <xsl:value-of select="$angleFromPosition"/>
-                    </xsl:otherwise>
-                </xsl:choose>
-            </xsl:variable>
-            <xsl:variable name="textlength" select = "string-length(Text/@String)"/>
-            <xsl:attribute name="x">
-                <xsl:value-of select="Text/Position/Location/@X"/>
-            </xsl:attribute>
-            <xsl:variable name="y" select = "$height - Text/Position/Location/@Y + Text/@Height div 2"/>
-            <xsl:attribute name="y">
-                <xsl:value-of select="$y"/>
-            </xsl:attribute>
-            <xsl:attribute name="font-size">
-                <xsl:value-of select="concat(Text/@Height, 'px')"/>
-            </xsl:attribute>
-            <xsl:attribute name="fill">
-                <xsl:text>#FF0000</xsl:text>
-            </xsl:attribute>
-            <xsl:attribute name="font-family">
-                <xsl:value-of select="Text/@Font"/>
-            </xsl:attribute>
-            <xsl:attribute name="text-anchor">
-                    <xsl:text>middle</xsl:text>
-            </xsl:attribute>
-            <xsl:attribute name="transform">
-                <xsl:if test="$angle != 0">
-                    <xsl:text>rotate(</xsl:text>
-                    <xsl:value-of select="360 - $angle"/>
-                    <xsl:text>, </xsl:text>
-                    <xsl:value-of select="Text/Position/Location/@X"/>
-                    <xsl:text>, </xsl:text>
-                    <xsl:value-of select="$y"/>
-                    <xsl:text>) </xsl:text>
-                </xsl:if>
-            </xsl:attribute>
-            <xsl:value-of select="../GenericAttributes/GenericAttribute[@Name='ObjectDisplayNameAssignmentClass']/@Value"/>
-        </text>
-        </a>
-    </xsl:template>
-   
     <!-- Template for Equipment, Nozzle,  stuff-->
-     <xsl:template match="*">
-        <xsl:param name="height"/>
-        <xsl:variable name="id" select="../@ID"/>
-        <xsl:if test="@ComponentName">
+    <xsl:template match="*">
+        <xsl:param name="height" />
+        <xsl:variable name="id" select="../@ID" />
+        <xsl:if
+            test="@ComponentName">
             <use>
                 <xsl:attribute name="href">
-                    <xsl:value-of select="concat('#', @ComponentName)"/>
+                    <xsl:value-of select="concat('#', @ComponentName)" />
                 </xsl:attribute>
                 <xsl:call-template name="Position">
-                    <xsl:with-param name="height" select="$height"/>
-                    <xsl:with-param name="PositionNode" select="Position"/>
-                    <xsl:with-param name="ScaleNode" select="Scale"/>
+                    <xsl:with-param name="height" select="$height" />
+                    <xsl:with-param name="PositionNode" select="Position" />
+                    <xsl:with-param name="ScaleNode" select="Scale" />
                 </xsl:call-template>
             </use>
         </xsl:if>
         <xsl:apply-templates>
             <xsl:with-param name="height" select="$height" />
         </xsl:apply-templates>
-    </xsl:template> 
+    </xsl:template>
 
     <!-- Shape catalogue-->
     <xsl:template match="ShapeCatalogue">
         <defs>
             <xsl:for-each select="*">
-                <xsl:variable name="parentName" select="name()"/>
-                <xsl:variable name="currentComponentName" select="@ComponentName"/>
+                <xsl:variable name="parentName" select="name()" />
+                <xsl:variable
+                    name="currentComponentName" select="@ComponentName" />
                 <symbol overflow="visible">
                     <xsl:attribute name="id">
-                        <xsl:value-of select="@ComponentName"/>
+                        <xsl:value-of select="@ComponentName" />
                     </xsl:attribute>
                     <xsl:attribute name="shapeName">
-                        <xsl:value-of select="GenericAttributes/GenericAttribute/@Value"/>
+                        <xsl:value-of select="GenericAttributes/GenericAttribute/@Value" />
                     </xsl:attribute>
-					<xsl:attribute name="path">
-						<xsl:value-of select="concat('../../../../NOAKADEXPI/Symbols/Origo',GenericAttributes/GenericAttribute/@Value,'_Origo.svg')"/>
-					</xsl:attribute>
-                   
-                    <xsl:variable name="matchedElement" select="//*[name() = $parentName and @ComponentName = $currentComponentName]" />
+                    <xsl:attribute name="path">
+                        <xsl:value-of
+                            select="concat('../../../../NOAKADEXPI/Symbols/Origo/',GenericAttributes/GenericAttribute/@Value,'_Origo.svg')" />
+                    </xsl:attribute>
+
+                    <xsl:variable name="matchedElement"
+                        select="//*[name() = $parentName and @ComponentName = $currentComponentName]" />
                     <xsl:variable name="displayNameValue">
-                    <xsl:choose>
-                        <!-- First try to select the 'Value' attribute of the 'GenericAttribute' with the specific 'Name' -->
-                        <xsl:when test="$matchedElement/GenericAttributes/GenericAttribute[@Name='ObjectDisplayNameAssignmentClass']/@Value">
-                        <xsl:value-of select="$matchedElement/GenericAttributes/GenericAttribute[@Name='ObjectDisplayNameAssignmentClass']/@Value" />
-                        </xsl:when>
-                        <!-- If there is no such 'GenericAttribute', select the 'ID' of the element -->
-                        <xsl:otherwise>
-                        <xsl:value-of select="$matchedElement/@ID" />
-                        </xsl:otherwise>
-                    </xsl:choose>
+                        <xsl:choose>
+                            <!-- First try to select the 'Value' attribute of the 'GenericAttribute'
+                            with the specific 'Name' -->
+                            <xsl:when
+                                test="$matchedElement/GenericAttributes/GenericAttribute[@Name='ObjectDisplayNameAssignmentClass']/@Value">
+                                <xsl:value-of
+                                    select="$matchedElement/GenericAttributes/GenericAttribute[@Name='ObjectDisplayNameAssignmentClass']/@Value" />
+                            </xsl:when>
+                              <!-- Selects the text for the offpageconnectors -->
+                            <xsl:when test="$matchedElement/*/GenericAttributes/GenericAttribute[@Name='ReferencedDrawingNumberAssignmentClass']/@Value">
+                                <xsl:value-of select="$matchedElement/*/GenericAttributes/GenericAttribute[@Name='ReferencedDrawingNumberAssignmentClass']/@Value" />
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <xsl:value-of select="$matchedElement/@ID" />
+                            </xsl:otherwise>
+                        </xsl:choose>
                     </xsl:variable>
 
-					<xsl:variable name="attributeValue" select="GenericAttributes/GenericAttribute/@Value"/>
-					<xsl:variable name="docPath" select="concat('../../../../NOAKADEXPI/Symbols/Origo/', $attributeValue, '_Origo.svg')"/>
-                    
-                    <xsl:variable name="label" select="GenericAttributes/GenericAttribute[@Name='ObjectDisplayNameAssignmentClass']/@Value"/>    
+                    <xsl:variable name="attributeValue"
+                        select="GenericAttributes/GenericAttribute/@Value" />
+                    <xsl:variable name="docPath"
+                        select="concat('../../../../NOAKADEXPI/Symbols/Origo/', $attributeValue, '_Origo.svg')" />
 
-					<xsl:if test="not($docPath = '../../../../NOAKADEXPI/Symbols/Origo/BORDER_A1_Origo.svg')">
-						
-						<xsl:variable name="doc" select="document($docPath)"/>
-						<xsl:apply-templates select="$doc//svg:g/*">
-                            <xsl:with-param name="testParam" select="$displayNameValue"/>
+                    <xsl:variable name="label"
+                        select="GenericAttributes/GenericAttribute[@Name='ObjectDisplayNameAssignmentClass']/@Value" />
+
+                    <xsl:if
+                        test="not($docPath = '../../../../NOAKADEXPI/Symbols/Origo/BORDER_A1_Origo.svg')">
+
+                        <xsl:variable name="doc" select="document($docPath)" />
+						<xsl:apply-templates
+                            select="$doc//svg:g/*">
+                            <xsl:with-param name="testParam" select="$displayNameValue" />
                         </xsl:apply-templates>
-					</xsl:if>
-                    <xsl:apply-templates/>
+                    </xsl:if>
+                    <xsl:apply-templates />
                 </symbol>
             </xsl:for-each>
         </defs>
     </xsl:template>
 
-    <xsl:template match="svg:text[@font-family='Helvetica']">
-        <xsl:param name="testParam"/>
-        <text>
-          <!-- Copy all attributes from the original text element -->
-          <xsl:apply-templates select="@*[local-name() != 'font-size']"/>
-      <!-- Set the font-size to 20px -->
-      <xsl:attribute name="font-size">20px</xsl:attribute>
-          <!-- Set the new text content -->
-          <xsl:value-of select="$testParam"/>
+    <xsl:template match="svg:text[@font-family='Helvetica'][1]">
+        <xsl:param name="testParam" />
+    <text>
+            <!-- Copy all attributes from the original text element, except for font-size and fill -->
+            <xsl:apply-templates select="@*[local-name() != 'font-size' and local-name() != 'fill']" />
+            <xsl:attribute name="font-size">25px</xsl:attribute>
+            <xsl:attribute name="fill">#000000</xsl:attribute>
+            <xsl:value-of select="$testParam" />
         </text>
-      </xsl:template>
-      
-      <!-- Template to remove elements with a red stroke, excluding text elements -->
-        <xsl:template match="*[not(self::text)][@stroke='#ff0000']" />
+    </xsl:template>
 
-    <!-- Template to remove elements with a red fill, excluding text elements -->
-    <xsl:template match="*[not(self::text)][@fill='#ff0000']" />
+    <!-- Template to remove elements with a red or green stroke, excluding text elements -->
+    <xsl:template match="*[not(self::text)][@stroke='#ff0000' or @stroke='#00ff00']" />
 
-      <!-- Generic template to copy all other elements as they are -->
-      <xsl:template match="svg:*">
+    <!-- Template to remove elements with a red or green fill, excluding text elements -->
+    <xsl:template match="*[not(self::text)][@fill='#ff0000' or @fill='#00ff00']" />
+
+    <!-- Generic template to copy all other elements as they are -->
+    <xsl:template match="svg:*">
         <xsl:copy>
-          <xsl:apply-templates select="@*|node()"/>
+            <xsl:apply-templates select="@*|node()" />
         </xsl:copy>
-      </xsl:template>
-      
-      <!-- Generic template to copy attributes as they are -->
-      <xsl:template match="@*">
-        <xsl:copy/>
-      </xsl:template>
+    </xsl:template>
 
-<!--     <xsl:template match="g">
-        <g>
-            <xsl:apply-templates/>
-        </g>
-    </xsl:template> -->
+    <!-- Generic template to copy attributes as they are -->
+    <xsl:template match="@*">
+        <xsl:copy />
+    </xsl:template>
 
-    <!-- Template for curves-->
-     <xsl:template match="TrimmedCurve">
+
+    <!-- Template for curves (Not relevant?)-->
+    <xsl:template match="TrimmedCurve">
         <xsl:variable name="radius" select="Circle/@Radius" />
-        <xsl:variable name="endAngleRadians" select="@EndAngle * 0.0174532925"/> 
-        <xsl:variable name="startAngleRadians" select="@StartAngle * 0.0174532925"/> 
-        <xsl:variable name="deltax" select="Circle/Position/Location/@X"/>
-        <xsl:variable name="deltay" select="Circle/Position/Location/@Y"/>
-        <path fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <xsl:variable name="endAngleRadians"
+            select="@EndAngle * 0.0174532925" /> 
+        <xsl:variable name="startAngleRadians"
+            select="@StartAngle * 0.0174532925" /> 
+        <xsl:variable name="deltax"
+            select="Circle/Position/Location/@X" />
+        <xsl:variable name="deltay"
+            select="Circle/Position/Location/@Y" />
+        <path fill="none" stroke-linecap="round"
+            stroke-linejoin="round">
             <xsl:attribute name="stroke">
-                <xsl:value-of select="color:RgbToHex(Circle/Presentation/@R, Circle/Presentation/@G, Circle/Presentation/@B)"/>
+                <xsl:value-of
+                    select="color:RgbToHex(Circle/Presentation/@R, Circle/Presentation/@G, Circle/Presentation/@B)" />
             </xsl:attribute>
             <xsl:attribute name="stroke-width">
-                <xsl:value-of select="Circle/Presentation/@LineWeight"/>
+                <xsl:value-of select="Circle/Presentation/@LineWeight" />
             </xsl:attribute>
             <xsl:attribute name="d">
                 <xsl:text>M </xsl:text>
-                <xsl:value-of select="$radius * math:Cos($endAngleRadians) + $deltax"/>
+                <xsl:value-of
+                    select="$radius * math:Cos($endAngleRadians) + $deltax" />
                 <xsl:text> </xsl:text>
-                <xsl:value-of select="$radius * math:Sin($endAngleRadians) + $deltay"/>
+                <xsl:value-of
+                    select="$radius * math:Sin($endAngleRadians) + $deltay" />
                 <xsl:text> A </xsl:text>
-                <xsl:value-of select="$radius"/>
+                <xsl:value-of
+                    select="$radius" />
                 <xsl:text> </xsl:text>
-                <xsl:value-of select="$radius"/>
+                <xsl:value-of select="$radius" />
                 <xsl:text> 0 0 0 </xsl:text>
-                <xsl:value-of select="$radius * math:Cos($startAngleRadians) + $deltax"/>
+                <xsl:value-of
+                    select="$radius * math:Cos($startAngleRadians) + $deltax" />
                 <xsl:text> </xsl:text>
-                <xsl:value-of select="$radius * math:Sin($startAngleRadians) + $deltay"/>
+                <xsl:value-of
+                    select="$radius * math:Sin($startAngleRadians) + $deltay" />
             </xsl:attribute>
         </path>
 
-     </xsl:template>
+    </xsl:template>
 
-     <!-- Template for Circle elements -->
-     <xsl:template match="Circle">
-        <circle fill="none" vector-effect="non-scaling-stroke" >
+    <!-- Template for Circle elements NOt relevant(?)-->
+    <xsl:template match="Circle">
+        <circle fill="none" vector-effect="non-scaling-stroke">
             <xsl:attribute name="stroke">
-                <xsl:value-of select="color:RgbToHex(Presentation/@R, Presentation/@G, Presentation/@B)"/>
+                <xsl:value-of
+                    select="color:RgbToHex(Presentation/@R, Presentation/@G, Presentation/@B)" />
             </xsl:attribute>
             <xsl:attribute name="r">
-                <xsl:value-of select="@Radius"/>
+                <xsl:value-of select="@Radius" />
             </xsl:attribute>
             <xsl:attribute name="cx">
-                <xsl:value-of select="Position/Location/@X"/>
+                <xsl:value-of select="Position/Location/@X" />
             </xsl:attribute>
             <xsl:attribute name="cy">
-                <xsl:value-of select="Position/Location/@Y"/>
+                <xsl:value-of select="Position/Location/@Y" />
             </xsl:attribute>
             <xsl:attribute name="stroke-width">
-                <xsl:value-of select="Presentation/@LineWeight"/>
+                <xsl:value-of select="Presentation/@LineWeight" />
             </xsl:attribute>
         </circle>
     </xsl:template>
 
-   
 
-    <!-- Template for PolyLine elements -->
+    <!-- Template for PolyLine elements (Not relevant?) -->
     <xsl:template match="PolyLine">
         <path fill="none" stroke-linecap="round" stroke-linejoin="round">
             <xsl:attribute name="stroke-width">
-                <xsl:value-of select="Presentation/@LineWeight"/>
+                <xsl:value-of select="Presentation/@LineWeight" />
             </xsl:attribute>
             <xsl:attribute name="stroke">
-                <xsl:value-of select="color:RgbToHex(Presentation/@R, Presentation/@G, Presentation/@B)"/>
+                <xsl:value-of
+                    select="color:RgbToHex(Presentation/@R, Presentation/@G, Presentation/@B)" />
             </xsl:attribute>
             <xsl:attribute name="d">
                 <xsl:text>M </xsl:text>
                 <xsl:for-each select="Coordinate">
-                    <xsl:value-of select="@X"/>
+                    <xsl:value-of select="@X" />
                     <xsl:text> </xsl:text>
-                    <xsl:value-of select="-@Y"/>
-                    <xsl:if test="position() != last()">
+                    <xsl:value-of select="-@Y" />
+                    <xsl:if
+                        test="position() != last()">
                         <xsl:text> L </xsl:text>
                     </xsl:if>
                 </xsl:for-each>
             </xsl:attribute>
             <xsl:attribute name="stroke-width">
-                <xsl:value-of select="Presentation/@LineWeight"/>
+                <xsl:value-of select="Presentation/@LineWeight" />
             </xsl:attribute>
         </path>
     </xsl:template>
