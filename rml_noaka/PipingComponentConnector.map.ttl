@@ -4,12 +4,9 @@
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix : <http://example.org/rules/> .
 @prefix schema: <http://schema.org/> .
-@prefix commonlib: <https://commonlib.equinor.com/Library/> .
 @prefix dexpi: <https://rdf.equinor.com/dexpi#> .
 @prefix asset: <https://assetid.equinor.com/plantx#> .
-@prefix dbo: <http://dbpedia.org/ontology/> .
 @prefix imf: <http://ns.imfid.org/imf#> .
-@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 
 :PipingComponentConnectorMap a rr:TriplesMap;
   rml:logicalSource [

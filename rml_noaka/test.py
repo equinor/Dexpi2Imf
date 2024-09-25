@@ -40,10 +40,16 @@ def FromId():
          print("nothing happened")
 
 def zestytesty():
-   iterator = tree.xpath("//PipingNetworkSystem[@ID='PipingNetworkSystem-16']")
+   iterator = tree.xpath("//PipingNetworkSystem/PipingNetworkSegment/PropertyBreak")
    for node in iterator:
-     print(node.xpath("@ID"))
-     print(node.xpath("PipingNetworkSegment/@ID"))
-
-
+     object_name = node.xpath("GenericAttributes/GenericAttribute[@Name='ObjectDisplayNameAssignmentClass']/@Value")
+     tag_name = node.xpath("GenericAttributes/GenericAttribute[@Name='ItemTagAssignmentClass']/@Value")
+     if(len(object_name) > 0 or len(tag_name) > 0 ):
+         print()
+         print((node.xpath("@ID")[0]).upper())
+         print("---ObjectDisplayNameClass---")
+         print(object_name)
+         print("---ItemTagAssignmentClass---")
+         print(tag_name)
+                              
 zestytesty()

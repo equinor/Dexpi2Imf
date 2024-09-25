@@ -4,10 +4,8 @@
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix : <http://example.org/rules/> .
 @prefix schema: <http://schema.org/> .
-@prefix commonlib: <https://commonlib.equinor.com/Library/> .
 @prefix dexpi: <https://rdf.equinor.com/dexpi#> .
 @prefix asset: <https://assetid.equinor.com/plantx#> .
-@prefix dbo: <http://dbpedia.org/ontology/> .
 @prefix imf: <http://ns.imfid.org/imf#> .
 
 :PipingComponentSegmentFromNozzleConnectorMap a rr:TriplesMap;
@@ -19,7 +17,7 @@
   rr:subjectMap [
     rr:template "https://assetid.equinor.com/plantx#{@FromID}";
     rr:termType rr:IRI;
-    rr:class imf:Terminal
+    rr:class imf:Terminal, dexpi:Nozzle
   ] ;
   #For connection between piping network segments
   rr:predicateObjectMap [
@@ -48,7 +46,7 @@
   rr:subjectMap [
     rr:template "https://assetid.equinor.com/plantx#{@ToID}";
     rr:termType rr:IRI;
-    rr:class imf:Terminal
+    rr:class imf:Terminal, dexpi:Nozzle
   ] ;
   #For connection between piping network segments
   rr:predicateObjectMap [
@@ -89,7 +87,7 @@
     ]
   ] .
 
-:PipingComponentSegmentToConnectorMap a rr:TriplesMap;
+:PipingComponentToConnectorMap a rr:TriplesMap;
   rml:logicalSource [
     rml:source "pandid.xml";
     rml:referenceFormulation ql:XPath;
