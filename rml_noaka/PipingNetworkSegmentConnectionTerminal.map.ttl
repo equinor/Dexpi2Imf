@@ -10,7 +10,7 @@
 @prefix dbo: <http://dbpedia.org/ontology/> .
 @prefix imf: <http://ns.imfid.org/imf#> .
 
-:PipingComponentFromNozzleConnectorMap a rr:TriplesMap;
+:PipingComponentSegmentFromNozzleConnectorMap a rr:TriplesMap;
   rml:logicalSource [
     rml:source "pandid.xml";
     rml:referenceFormulation ql:XPath;
@@ -39,7 +39,7 @@
     ]
   ] .
 
-:PipingComponentToNozzleConnectorMap a rr:TriplesMap;
+:PipingComponentSegmentToNozzleConnectorMap a rr:TriplesMap;
   rml:logicalSource [
     rml:source "pandid.xml";
     rml:referenceFormulation ql:XPath;
@@ -65,5 +65,47 @@
     rr:termType rr:IRI;
     rr:objectMap [
       rr:template "https://assetid.equinor.com/plantx#{concat(@ToID, '_connector')}"
+    ]
+  ] .
+
+:PipingComponentSegmentFromConnectorMap a rr:TriplesMap;
+  rml:logicalSource [
+    rml:source "pandid.xml";
+    rml:referenceFormulation ql:XPath;
+    rml:iterator "//PipingNetworkSegment/Connection[not (contains(@ToID, 'Nozzle'))]"
+  ];
+  rr:subjectMap [
+    rr:template "https://assetid.equinor.com/plantx#{concat(@ToID, '_input')}";
+    rr:termType rr:IRI;
+    rr:class imf:Terminal
+  ] ;
+  #For connection between piping network segments
+  rr:predicateObjectMap [
+    rr:predicate imf:hasConnector;
+    rr:termType rr:IRI;
+    rr:objectMap[
+      rr:template "https://assetid.equinor.com/plantx#{../@ID}";
+      rr:termType rr:IRI 
+    ]
+  ] .
+
+:PipingComponentSegmentToConnectorMap a rr:TriplesMap;
+  rml:logicalSource [
+    rml:source "pandid.xml";
+    rml:referenceFormulation ql:XPath;
+    rml:iterator "//PipingNetworkSegment/Connection[not (contains(@FromID, 'Nozzle'))]"
+  ];
+  rr:subjectMap [
+    rr:template "https://assetid.equinor.com/plantx#{concat(@FromID, '_output')}";
+    rr:termType rr:IRI;
+    rr:class imf:Terminal
+  ] ;
+  #For connection between piping network segments
+  rr:predicateObjectMap [
+    rr:predicate imf:hasConnector;
+    rr:termType rr:IRI;
+    rr:objectMap[
+      rr:template "https://assetid.equinor.com/plantx#{../@ID}";
+      rr:termType rr:IRI 
     ]
   ] .

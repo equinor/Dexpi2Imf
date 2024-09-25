@@ -4,3 +4,7 @@ data:insideBoundary [?new_node] :-
     data:insideBoundary [?node] ,
     imf:adjacentTo [?node, ?new_node] ,
     NOT data:boundary [?node] .
+
+data:insideBoundary [?new_node] :- 
+    data:insideBoundary [?node],
+    imf:hasPart[?new_node, ?node] .

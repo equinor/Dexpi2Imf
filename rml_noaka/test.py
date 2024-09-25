@@ -39,12 +39,11 @@ def FromId():
       else:
          print("nothing happened")
 
-def propertybreaktest():
-   iterator = tree.xpath("//PipingNetworkSegment/PipingComponent[@ID='CheckValve-1']")
+def zestytesty():
+   iterator = tree.xpath("//PipingNetworkSystem[@ID='PipingNetworkSystem-16']")
    for node in iterator:
-     print(node.xpath("../@ID"))
-     print(f'       {node.xpath("@ID")}')
-     print(node.xpath('following-sibling::PipingComponent/@ID'))
-     print(node.xpath('following-sibling::PropertyBreak/@ID')) #IMPORTANT
+     print(node.xpath("@ID"))
+     print(node.xpath("PipingNetworkSegment/@ID"))
 
-propertybreaktest()
+
+zestytesty()
