@@ -8,7 +8,7 @@
 @prefix asset: <https://assetid.equinor.com/plantx#> .
 @prefix imf: <http://ns.imfid.org/imf#> .
 
-:EquipmentMap a rr:TriplesMap;
+:EquipmentBlockMap a rr:TriplesMap;
   rml:logicalSource [
     rml:source "pandid.xml";
     rml:referenceFormulation ql:XPath;
