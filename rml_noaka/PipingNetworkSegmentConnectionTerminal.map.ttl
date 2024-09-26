@@ -12,6 +12,7 @@
   rml:logicalSource [
     rml:source "pandid.xml";
     rml:referenceFormulation ql:XPath;
+## TODO: Not hardcoded nozzle id part
     rml:iterator "//PipingNetworkSegment/Connection[contains(@FromID, 'Nozzle')]"
   ];
   rr:subjectMap [
