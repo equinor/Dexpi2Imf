@@ -31,7 +31,7 @@ terminal_x-->connector_z
 terminal_y-->connector_z
 ```
 
-The mappings from Proteus XML to IMF tries to achieve these connections by mapping the elements to blocks, terminals and connectors.
+The mappings from Proteus XML to IMF tries to achieve these connections by mapping some of the tags in Proteus to blocks, terminals and connectors.
 
 ## Equipment
 ### [EquipmentBlock.map.ttl](EquipmentBlock.map.ttl)
