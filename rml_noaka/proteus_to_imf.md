@@ -36,7 +36,7 @@ The mappings from Proteus XML to IMF tries to achieve these connections by mappi
 ## Equipment
 ### [EquipmentBlock.map.ttl](EquipmentBlock.map.ttl)
 #### :EquipmentBlockMap
-This mapping iterates over all `Equipment` tags and selects the value of the ID attribute as subject. The subject is given the type `dexpi:Equipment` and `imf:Block`. Furthermore, the Nozzle tags contained within an Equipment tag is assigned to be the terminal of the equipment with the predicate `imf:hasTerminal`. 
+This mapping iterates over all `Equipment` tags and creates the subject IRI using the value of the ID attribute. The subject is given the type `dexpi:Equipment` and `imf:Block`. Furthermore, the Nozzle tags contained within an Equipment tag is assigned to be the terminal of the equipment with the predicate `imf:hasTerminal`. 
 
 ## PipingComponent
 
