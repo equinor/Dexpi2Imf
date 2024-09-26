@@ -8,7 +8,7 @@
 @prefix asset: <https://assetid.equinor.com/plantx#> .
 @prefix imf: <http://ns.imfid.org/imf#> .
 
-:PipingComponentFromNozzleConnectorMap a rr:TriplesMap;
+:PipingNetworkSystemConnector a rr:TriplesMap;
   rml:logicalSource [
     rml:source "pandid.xml";
     rml:referenceFormulation ql:XPath;

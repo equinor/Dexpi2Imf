@@ -201,3 +201,60 @@ graph LR
 ```
 ****
 #### :PipingComponentSegmentFromConnectorMap & :PipingComponentToConnectorMap
+```xml
+<PipingNetworkSegment ID="PipingNetworkSegment-1">
+        <PipingComponent ID="PipingComponent-1">
+                ...
+        </PipingComponent>
+        <Connection FromID="Nozzle-1" ToID="PropertyBreak-1" />
+</PipingNetworkSegment>
+<PipingNetworkSegment ID="PipingNetworkSegment-2">
+        <PipingComponent ID="PipingComponent-2">
+                ...
+        </PipingComponent>
+        </PropertyBreak ID="PropertyBreak-1">
+        <Connection FromID="PropertyBreak-1" ToID="PipeTee-1" />
+</PipingNetworkSegment>
+```
+A `PipingNetworkSegment` does not always start or end in a `Nozzle`, they can also start and end in a `PropertyBreak` or a `PipingComponent`. The property breaks and piping components is already been modeled as `imf:Block`. 
+Because of this connecting piping network segments together when they do not end in a nozzle must be handled differently. The `PropertyBreak` and `PipingComponent` elements have been assigned two terminals each, one input and one output terminal. Hence, the following triples for are created given the xml example above:
+
+#### For connection between piping network segments and equipment
+```trig
+:Nozzle-1 :hasConnector :PipingNetworkSegment-1 .
+:PropertyBreak-1_input :hasConnector :PipingNetworkSegment-1 .
+:PropertyBreak-2_output :hasConnector :PipingNetworkSegment-2 .
+:PipeTee-1_input :hasConnector :PipingNetworkSegment-2 .
+```
+
+The mappings for creating a connection to the first and last piping component on the piping network segment when it does not end in a nozzle is already handled by the [PipingComponentTerminal.map.ttl](PipingComponentTerminal.map.ttl). 
+
+## PipingNetworkSystem
+### [PipingNetworkSystemConnector.map.ttl](PipingNetworkSegmentConnectionTerminal.map.ttl)
+#### :PipingNetworkSystemConnector
+This mapping iterates over all `PipingNetwork` tags and selects the value of the ID attribute as subject. The subject is given the type `dexpi:PipingNetworkSystem` and `imf:Connector`. Furthermore, a `PipingNetworkSegment` is a part of the `PipingNetwork`. Resulting in the following triple being created for each `PipingNetworkSegment` contained within a `PipingNetwork`:
+-  `:PipingNetworkSystem-ID imf:hasPart :PipingNetworkSegment-ID .`
+
+## Calculating the commissioning package
+```datalog
+prefix data: <https://assetid.equinor.com/plantx/document/12345#>
+
+data:insideBoundary [?new_node] :- 
+    data:insideBoundary [?node] ,
+    imf:adjacentTo [?node, ?new_node] ,
+    NOT data:boundary [?node] .
+
+data:insideBoundary [?new_node] :- 
+    data:insideBoundary [?node],
+    imf:hasPart[?new_node, ?node] .
+```
+The following datalog rule is used to calculate the commissioning package when a boundary is set in NOAKA dexpi mapped to IMF RDF.
+
+A new rule is added to account for the following hierarchy:
+```mermaid
+graph TB
+:PipingNetworkSystem-1--imf:hasPart-->:PipingNetworkSegment-1
+:PipingNetworkSegment-1--imf:hasPart-->:PipingComponent-1
+```
+Hence, if `:PipingComponent-1` is inside the boundary, then it results in `:PipingNetworkSegment-1` and `:PipingNetworkSystem-1` to be considered as being inside the boundary as well. 
+
