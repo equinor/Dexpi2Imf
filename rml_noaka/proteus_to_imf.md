@@ -139,3 +139,65 @@ Given the xml example above the following triples are created:
 :PropertyBreak-1_input imf:hasConnector :PipingComponent-2_connector .
 :PropertyBreak-1_output imf:hasConnector :PropertyBreak-1_connector .
 ```
+
+The output terminal IRI is always on the following form `:PropertyBreak-ID_connector`. For the input terminal, however, 
+the ID of the last element of the `PipingComponent` is selected - `:PipingComponent-ID_connector`. 
+
+## PipingNetworkSegment 
+### [PipingNetworkSegmentConnectionTerminal.map.ttl](PipingNetworkSegmentConnectionTerminal.map.ttl)
+#### :PipingComponentSegmentFromNozzleConnectorMap & :PipingComponentSegmentToNozzleConnectorMap
+
+```xml
+<Equipment ID="Equipment-1">
+        ...
+        </Nozzle ID="Nozzle-1">
+        ...
+</Equipment>
+<Equipment ID="Equipment-2">
+        ...
+        </Nozzle ID="Nozzle-2">
+        ...
+</Equipment>
+<PipingNetworkSegment ID="PipingNetworkSegment-1">
+        <PipingComponent ID="PipingComponent-1">
+                ...
+        </PipingComponent>
+         <PipingComponent ID="PipingComponent-2">
+                ...
+        </PipingComponent>
+        <Connection FromID="Nozzle-1" ToID="Nozzle-2" />
+</PipingNetworkSegment>
+```
+
+The xml example above shows how Proteus XML connects `PipingNetworkSegments` to surronding elements. PipingNetworkSegment-1 starts from Nozzle-1 and ends in Nozzle-2. 
+There are two connections that needs to be created:
+1) Connecting Equipment-1 and Equipment-2 togehter by PipingNetworkSegment-1
+2) Connecting Nozzle-1 to the first element on the `PipingNetworkSegment`, and connecting Nozzle-2 to the last element on the `PipingNetworkSegment`. 
+
+Nozzles are connecting points on equipment, hence they are terminals in IMF. The mappings iterate through each connection point on the `PipingNetworkSegment` that contains the word "Nozzle" and selects the Nozzle-ID as subject IRI. The subject is assigned the class `imf:Terminal` and `dexpi:Nozzle`. The mapping will then assign the correct connector to the 'nozzle-terminals' to ensure that the necessary connections is created. 
+
+#### For connection between piping network segments and equipment
+```mermaid
+graph LR
+:Equipment-1 --:hasTerminal--> :Nozzle-1 
+:Equipment-2 --:hasTerminal--> :Nozzle-2
+:Nozzle-1 --:hasConnector--> :PipingNetworkSegment-1
+:Nozzle-2 --:hasConnector--> :PipingNetworkSegment-1
+```
+
+#### For connection to the first and last piping component on the piping network segment
+```mermaid
+graph LR
+:PipingComponent-1--hasTerminal-->:PipingComponent-1_input
+:PipingComponent-1--hasTerminal-->:PipingComponent-1_output
+:PipingComponent-2--hasTerminal-->:PipingComponent-2_input
+:PipingComponent-2--hasTerminal-->:PipingComponent-2_output
+:Nozzle-1 --:hasConnector--> :Nozzle-1_connector
+:PipingComponent-1_input--:hasConnector--> :Nozzle-1_connector 
+:PipingComponent-1_output--:hasConnector--> :PipingComponent-1_connector
+:PipingComponent-2_input--:hasConnector--> :PipingComponent-1_connector
+:PipingComponent-2_output--:hasConnector--> :Nozzle-2_connector
+:Nozzle-2 --:hasConnector--> :Nozzle-2_connector
+```
+****
+#### :PipingComponentSegmentFromConnectorMap & :PipingComponentToConnectorMap
