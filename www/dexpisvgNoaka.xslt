@@ -86,15 +86,6 @@
         </path>
     </xsl:template>
 
-
-    <!-- Template to calculate svg transform from proteus Position 
-   For example, input       
-   <Position>
-        <Location X="144" Y="164" Z="0"/>
-        <Axis X="0" Y="0" Z="1"/>
-        <Reference X="1" Y="0" Z="0"/>
-    </Position> 
-    should become transform="translate(144, 75.323817) rotate(0)" -->
     <xsl:template name="Position">
         <xsl:param name="height" />
     <xsl:param name="PositionNode" />
@@ -184,80 +175,6 @@
         </a>
     </xsl:if>
 </xsl:template>
-    <!--     <xsl:template match="Label">
-        <xsl:param name="height" />
-        <xsl:variable name="id" select="../@ID" />
-        <a
-            id="{concat('https://assetid.equinor.com/plantx#', $id)}" class="node">
-            <text>
-                <xsl:variable name="angleFromPosition">
-                    <xsl:choose>
-                        <xsl:when test="Text/Position">
-                            <xsl:variable name="axisX" select="Text/Position/Axis/@X" />
-                        <xsl:variable
-                                name="axisY" select="Text/Position/Axis/@Y" />
-                        <xsl:variable
-                                name="axisZ" select="Text/Position/Axis/@Z" />
-                        <xsl:variable
-                                name="refX" select="Text/Position/Reference/@X" />
-                        <xsl:variable
-                                name="refY" select="Text/Position/Reference/@Y" />
-                        <xsl:variable
-                                name="refZ" select="Text/Position/Reference/@Z" />
-                        <xsl:value-of
-                                select="math:CalculateAngle($axisX, $axisY, $axisZ, $refX, $refY, $refZ)" />
-                        </xsl:when>
-                        <xsl:otherwise>
-                            <xsl:value-of select="0" />
-                        </xsl:otherwise>
-                    </xsl:choose>
-                </xsl:variable>
-                <xsl:variable name="angle">
-                    <xsl:choose>
-                        <xsl:when test="Text/@TextAngle">
-                            <xsl:value-of select="Text/@TextAngle + $angleFromPosition" />
-                        </xsl:when>
-                        <xsl:otherwise>
-                            <xsl:value-of select="$angleFromPosition" />
-                        </xsl:otherwise>
-                    </xsl:choose>
-                </xsl:variable>
-                <xsl:variable name="textlength" select="string-length(Text/@String)" />
-                <xsl:attribute name="x">
-                    <xsl:value-of select="Text/Position/Location/@X" />
-                </xsl:attribute>
-                <xsl:variable name="y"
-                    select="$height - Text/Position/Location/@Y + Text/@Height div 2" />
-                <xsl:attribute name="y">
-                    <xsl:value-of select="$y" />
-                </xsl:attribute>
-                <xsl:attribute name="font-size">
-                    <xsl:value-of select="concat(Text/@Height, 'px')" />
-                </xsl:attribute>
-                <xsl:attribute name="font-family">
-                    <xsl:value-of select="Text/@Font" />
-                </xsl:attribute>
-                <xsl:attribute name="text-anchor">
-                    <xsl:text>middle</xsl:text>
-                </xsl:attribute>
-                <xsl:attribute name="transform">
-                    <xsl:if test="$angle != 0">
-                        <xsl:text>rotate(</xsl:text>
-                    <xsl:value-of select="360 - $angle" />
-                    <xsl:text>, </xsl:text>
-                    <xsl:value-of
-                            select="Text/Position/Location/@X" />
-                    <xsl:text>, </xsl:text>
-                    <xsl:value-of
-                            select="$y" />
-                    <xsl:text>) </xsl:text>
-                    </xsl:if>
-                </xsl:attribute>
-                 <xsl:value-of
-                select="../GenericAttributes/GenericAttribute[@Name='ObjectDisplayNameAssignmentClass']/@Value"/>
-            </text>
-        </a>
-    </xsl:template> -->
 
     <!-- Template for Equipment, Nozzle,  stuff-->
     <xsl:template match="*">
@@ -316,7 +233,7 @@
                                 <xsl:value-of select="$matchedElement/*/GenericAttributes/GenericAttribute[@Name='ReferencedDrawingNumberAssignmentClass']/@Value" />
                             </xsl:when>
                             <xsl:otherwise>
-                                <xsl:value-of select="$matchedElement/@ID" />
+                                <xsl:value-of select="$matchedElement/GenericAttributes/GenericAttribute[@Name='TagTypeAssignmentClass']/@Value" />
                             </xsl:otherwise>
                         </xsl:choose>
                     </xsl:variable>
@@ -373,98 +290,4 @@
         <xsl:copy />
     </xsl:template>
 
-
-    <!-- Template for curves (Not relevant?)-->
-    <xsl:template match="TrimmedCurve">
-        <xsl:variable name="radius" select="Circle/@Radius" />
-        <xsl:variable name="endAngleRadians"
-            select="@EndAngle * 0.0174532925" /> 
-        <xsl:variable name="startAngleRadians"
-            select="@StartAngle * 0.0174532925" /> 
-        <xsl:variable name="deltax"
-            select="Circle/Position/Location/@X" />
-        <xsl:variable name="deltay"
-            select="Circle/Position/Location/@Y" />
-        <path fill="none" stroke-linecap="round"
-            stroke-linejoin="round">
-            <xsl:attribute name="stroke">
-                <xsl:value-of
-                    select="color:RgbToHex(Circle/Presentation/@R, Circle/Presentation/@G, Circle/Presentation/@B)" />
-            </xsl:attribute>
-            <xsl:attribute name="stroke-width">
-                <xsl:value-of select="Circle/Presentation/@LineWeight" />
-            </xsl:attribute>
-            <xsl:attribute name="d">
-                <xsl:text>M </xsl:text>
-                <xsl:value-of
-                    select="$radius * math:Cos($endAngleRadians) + $deltax" />
-                <xsl:text> </xsl:text>
-                <xsl:value-of
-                    select="$radius * math:Sin($endAngleRadians) + $deltay" />
-                <xsl:text> A </xsl:text>
-                <xsl:value-of
-                    select="$radius" />
-                <xsl:text> </xsl:text>
-                <xsl:value-of select="$radius" />
-                <xsl:text> 0 0 0 </xsl:text>
-                <xsl:value-of
-                    select="$radius * math:Cos($startAngleRadians) + $deltax" />
-                <xsl:text> </xsl:text>
-                <xsl:value-of
-                    select="$radius * math:Sin($startAngleRadians) + $deltay" />
-            </xsl:attribute>
-        </path>
-
-    </xsl:template>
-
-    <!-- Template for Circle elements NOt relevant(?)-->
-    <xsl:template match="Circle">
-        <circle fill="none" vector-effect="non-scaling-stroke">
-            <xsl:attribute name="stroke">
-                <xsl:value-of
-                    select="color:RgbToHex(Presentation/@R, Presentation/@G, Presentation/@B)" />
-            </xsl:attribute>
-            <xsl:attribute name="r">
-                <xsl:value-of select="@Radius" />
-            </xsl:attribute>
-            <xsl:attribute name="cx">
-                <xsl:value-of select="Position/Location/@X" />
-            </xsl:attribute>
-            <xsl:attribute name="cy">
-                <xsl:value-of select="Position/Location/@Y" />
-            </xsl:attribute>
-            <xsl:attribute name="stroke-width">
-                <xsl:value-of select="Presentation/@LineWeight" />
-            </xsl:attribute>
-        </circle>
-    </xsl:template>
-
-
-    <!-- Template for PolyLine elements (Not relevant?) -->
-    <xsl:template match="PolyLine">
-        <path fill="none" stroke-linecap="round" stroke-linejoin="round">
-            <xsl:attribute name="stroke-width">
-                <xsl:value-of select="Presentation/@LineWeight" />
-            </xsl:attribute>
-            <xsl:attribute name="stroke">
-                <xsl:value-of
-                    select="color:RgbToHex(Presentation/@R, Presentation/@G, Presentation/@B)" />
-            </xsl:attribute>
-            <xsl:attribute name="d">
-                <xsl:text>M </xsl:text>
-                <xsl:for-each select="Coordinate">
-                    <xsl:value-of select="@X" />
-                    <xsl:text> </xsl:text>
-                    <xsl:value-of select="-@Y" />
-                    <xsl:if
-                        test="position() != last()">
-                        <xsl:text> L </xsl:text>
-                    </xsl:if>
-                </xsl:for-each>
-            </xsl:attribute>
-            <xsl:attribute name="stroke-width">
-                <xsl:value-of select="Presentation/@LineWeight" />
-            </xsl:attribute>
-        </path>
-    </xsl:template>
 </xsl:stylesheet>
