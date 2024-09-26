@@ -1,0 +1,110 @@
+@prefix rml: <http://semweb.mmlab.be/ns/rml#> .
+@prefix rr: <http://www.w3.org/ns/r2rml#> .
+@prefix ql: <http://semweb.mmlab.be/ns/ql#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix : <http://example.org/rules/> .
+@prefix schema: <http://schema.org/> .
+@prefix dexpi: <https://rdf.equinor.com/dexpi#> .
+@prefix asset: <https://assetid.equinor.com/plantx#> .
+@prefix imf: <http://ns.imfid.org/imf#> .
+
+:PipingComponentSegmentFromNozzleConnectorMap a rr:TriplesMap;
+  rml:logicalSource [
+    rml:source "pandid.xml";
+    rml:referenceFormulation ql:XPath;
+## TODO: Not hardcoded nozzle id part
+    rml:iterator "//PipingNetworkSegment/Connection[contains(@FromID, 'Nozzle')]"
+  ];
+  rr:subjectMap [
+    rr:template "https://assetid.equinor.com/plantx#{@FromID}";
+    rr:termType rr:IRI;
+    rr:class imf:Terminal, dexpi:Nozzle
+  ] ;
+  #For connection between piping network segments
+  rr:predicateObjectMap [
+    rr:predicate imf:hasConnector;
+    rr:termType rr:IRI;
+    rr:objectMap[
+      rr:template "https://assetid.equinor.com/plantx#{../@ID}";
+      rr:termType rr:IRI 
+    ]
+  ] ;
+  #For connection to the first component on piping network segment
+  rr:predicateObjectMap [
+    rr:predicate imf:hasConnector;
+    rr:termType rr:IRI;
+    rr:objectMap [
+      rr:template "https://assetid.equinor.com/plantx#{concat(@FromID, '_connector')}"
+    ]
+  ] .
+
+:PipingComponentSegmentToNozzleConnectorMap a rr:TriplesMap;
+  rml:logicalSource [
+    rml:source "pandid.xml";
+    rml:referenceFormulation ql:XPath;
+    rml:iterator "//PipingNetworkSegment/Connection[contains(@ToID, 'Nozzle')]"
+  ];
+  rr:subjectMap [
+    rr:template "https://assetid.equinor.com/plantx#{@ToID}";
+    rr:termType rr:IRI;
+    rr:class imf:Terminal, dexpi:Nozzle
+  ] ;
+  #For connection between piping network segments
+  rr:predicateObjectMap [
+    rr:predicate imf:hasConnector;
+    rr:termType rr:IRI;
+    rr:objectMap[
+      rr:template "https://assetid.equinor.com/plantx#{../@ID}";
+      rr:termType rr:IRI
+    ]
+  ] ;
+  #For connection to the last component on piping network segment
+  rr:predicateObjectMap [
+    rr:predicate imf:hasConnector;
+    rr:termType rr:IRI;
+    rr:objectMap [
+      rr:template "https://assetid.equinor.com/plantx#{concat(@ToID, '_connector')}"
+    ]
+  ] .
+
+:PipingComponentSegmentFromConnectorMap a rr:TriplesMap;
+  rml:logicalSource [
+    rml:source "pandid.xml";
+    rml:referenceFormulation ql:XPath;
+    rml:iterator "//PipingNetworkSegment/Connection[not (contains(@ToID, 'Nozzle'))]"
+  ];
+  rr:subjectMap [
+    rr:template "https://assetid.equinor.com/plantx#{concat(@ToID, '_input')}";
+    rr:termType rr:IRI;
+    rr:class imf:Terminal
+  ] ;
+  #For connection between piping network segments
+  rr:predicateObjectMap [
+    rr:predicate imf:hasConnector;
+    rr:termType rr:IRI;
+    rr:objectMap[
+      rr:template "https://assetid.equinor.com/plantx#{../@ID}";
+      rr:termType rr:IRI 
+    ]
+  ] .
+
+:PipingComponentToConnectorMap a rr:TriplesMap;
+  rml:logicalSource [
+    rml:source "pandid.xml";
+    rml:referenceFormulation ql:XPath;
+    rml:iterator "//PipingNetworkSegment/Connection[not (contains(@FromID, 'Nozzle'))]"
+  ];
+  rr:subjectMap [
+    rr:template "https://assetid.equinor.com/plantx#{concat(@FromID, '_output')}";
+    rr:termType rr:IRI;
+    rr:class imf:Terminal
+  ] ;
+  #For connection between piping network segments
+  rr:predicateObjectMap [
+    rr:predicate imf:hasConnector;
+    rr:termType rr:IRI;
+    rr:objectMap[
+      rr:template "https://assetid.equinor.com/plantx#{../@ID}";
+      rr:termType rr:IRI 
+    ]
+  ] .

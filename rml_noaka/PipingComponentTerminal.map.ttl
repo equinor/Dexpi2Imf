@@ -1,0 +1,77 @@
+@prefix rml: <http://semweb.mmlab.be/ns/rml#> .
+@prefix rr: <http://www.w3.org/ns/r2rml#> .
+@prefix ql: <http://semweb.mmlab.be/ns/ql#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix : <http://example.org/rules/> .
+@prefix schema: <http://schema.org/> .
+@prefix dexpi: <https://rdf.equinor.com/dexpi#> .
+@prefix asset: <https://assetid.equinor.com/plantx#> .
+@prefix imf: <http://ns.imfid.org/imf#> .
+
+:PipingComponentInputTerminal a rr:TriplesMap;
+  rml:logicalSource [
+    rml:source "pandid.xml";
+    rml:referenceFormulation ql:XPath;
+    rml:iterator "//PipingNetworkSegment/PipingComponent"
+  ];
+  rr:subjectMap [
+    rr:template "https://assetid.equinor.com/plantx#{concat(@ID, '_input')}";  
+    rr:termType rr:IRI;
+    rr:class imf:InputTerminal
+  ];
+  # If there is no preceding-sibling, then it is the first component in the piping network segment.
+  # The first component is connected to the object that the piping network segment starts from.
+  rr:predicateObjectMap [
+    rr:predicate imf:hasConnector;
+    rr:objectMap [
+      rr:template """https://assetid.equinor.com/plantx#{
+      if(preceding-sibling::PipingComponent[1]/@ID) then 
+        concat(preceding-sibling::PipingComponent[1]/@ID, '_connector') 
+      else if(../Connection/@FromID) then
+        concat(../Connection/@FromID, '_connector')
+      else()
+        }""";
+      rr:termType rr:IRI; 
+    ]
+  ] ;
+    rr:predicateObjectMap [
+      rr:predicate rdfs:label;
+      rr:objectMap [
+        rr:constant "input";
+        rr:datatype xsd:string
+      ]
+  ] .
+
+:PipingComponentOutputTerminal a rr:TriplesMap;
+  rml:logicalSource [
+    rml:source "pandid.xml";
+    rml:referenceFormulation ql:XPath;
+    rml:iterator "//PipingComponent"
+  ] ;
+  rr:subjectMap [
+    rr:template "https://assetid.equinor.com/plantx#{concat(@ID, '_output')}";  
+    rr:termType rr:IRI;
+    rr:class imf:OutputTerminal
+  ] ;
+    # If there is no following sibling, then it is the last component in the piping network segment. 
+    # The last component is connected to the object that the piping network segment goes to.
+    rr:predicateObjectMap [
+    rr:predicate imf:hasConnector;
+    rr:objectMap [
+      rr:template """https://assetid.equinor.com/plantx#{
+      if(following-sibling::PipingComponent[1]/@ID or following-sibling::PropertyBreak/@ID) then 
+        concat(@ID, '_connector') 
+      else if(../Connection/@ToID) then
+        concat(../Connection/@ToID, '_connector')
+      else()
+        }""";
+      rr:termType rr:IRI; 
+    ]
+  ] ;
+    rr:predicateObjectMap [
+    rr:predicate rdfs:label;
+    rr:objectMap [
+        rr:constant "output";
+        rr:datatype xsd:string
+    ]
+  ] .

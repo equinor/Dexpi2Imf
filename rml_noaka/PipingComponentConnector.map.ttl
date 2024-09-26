@@ -4,28 +4,25 @@
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix : <http://example.org/rules/> .
 @prefix schema: <http://schema.org/> .
-@prefix commonlib: <https://commonlib.equinor.com/Library/> .
 @prefix dexpi: <https://rdf.equinor.com/dexpi#> .
 @prefix asset: <https://assetid.equinor.com/plantx#> .
-@prefix dbo: <http://dbpedia.org/ontology/> .
 @prefix imf: <http://ns.imfid.org/imf#> .
-@predix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 
-:NozzleMap a rr:TriplesMap;
+:PipingComponentConnectorMap a rr:TriplesMap;
   rml:logicalSource [
     rml:source "pandid.xml";
     rml:referenceFormulation ql:XPath;
-    rml:iterator "//Nozzle"
+    rml:iterator "//PipingNetworkSegment/PipingComponent"
   ];
   rr:subjectMap [
-    rr:template "https://assetid.equinor.com/plantx#{@ID}";
+    rr:template "https://assetid.equinor.com/plantx#{concat(@ID, '_connector')}";
     rr:termType rr:IRI;
-    rr:class "https://rdf.equinor.com/dexpi#Nozzle", "http://ns.imfid.org/imf#Terminal";
-  ];
- rr:predicateObjectMap [
-  rr:predicate rdfs:label;
-  rr:objectMap [
-    rml:reference "Label/Text/@String";
-  ]
-].
-
+    rr:class imf:Connector;
+  ] ;
+  rr:predicateObjectMap [
+    rr:predicate rdfs:label;
+    rr:objectMap[
+      rr:constant "connector";
+      rr:datatype xsd:string
+    ]
+  ] .
