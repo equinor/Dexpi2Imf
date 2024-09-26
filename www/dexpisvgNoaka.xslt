@@ -144,11 +144,13 @@
     <!-- Template for labels -->
     <xsl:template match="Label">
         <xsl:param name="height" />
+
+        <xsl:variable name="IDX" select="../@ID" />
     <xsl:variable name="displayText"
             select="following-sibling::GenericAttributes/GenericAttribute[@Name='ObjectDisplayNameAssignmentClass' or @Name='LineDescriptionAssignmentClass']/@Value" />
     <xsl:if
             test="$displayText">
-            <a id="{concat('https://assetid.equinor.com/plantx#', @ID)}" class="node">
+            <a id="{concat('https://assetid.equinor.com/plantx#', $IDX)}" class="node">
                 <text>
                     <xsl:attribute name="x">
                         <xsl:value-of select="Position/Location/@X" />
@@ -163,15 +165,13 @@
                         <xsl:variable name="refX" select="Position/Reference/@X" />
                     <xsl:variable
                             name="refY" select="Position/Reference/@Y" />
-                        <!-- Assuming that a Reference of (1,0,0) means horizontal text, calculate
-                        the rotation angle -->
+                        <!-- Assuming that a Reference of (1,0,0) means horizontal text, calculate the rotation angle -->
                     <xsl:variable
                             name="textRotationAngle">
                             <xsl:choose>
                                 <xsl:when test="$refX = 0 and $refY = 1">270</xsl:when>
                                 <xsl:when test="$refX = 1 and $refY = 0">0</xsl:when>
-                                <xsl:otherwise>0</xsl:otherwise> <!-- Default rotation angle if not
-                                horizontal or vertical -->
+                                <xsl:otherwise>0</xsl:otherwise> <!-- Default rotation angle if not horizontal or vertical -->
                             </xsl:choose>
                         </xsl:variable>
                     <xsl:value-of
@@ -248,6 +248,7 @@
                         </xsl:choose>
                     </xsl:variable>
 
+                    <xsl:variable name="IDXX" select="$matchedElement/@ID" />
                     <xsl:variable name="attributeValue"
                         select="GenericAttributes/GenericAttribute/@Value" />
                     <xsl:variable name="docPath"
@@ -263,6 +264,7 @@
 						<xsl:apply-templates
                             select="$doc//svg:g/*">
                             <xsl:with-param name="testParam" select="$displayNameValue" />
+                            <xsl:with-param name="idx" select="$IDXX" />
                         </xsl:apply-templates>
                     </xsl:if>
                     <xsl:apply-templates />
@@ -273,13 +275,18 @@
 
     <xsl:template match="svg:text[@font-family='Helvetica'][1]">
         <xsl:param name="testParam" />
-    <text>
-            <!-- Copy all attributes from the original text element, except for font-size and fill -->
-            <xsl:apply-templates select="@*[local-name() != 'font-size' and local-name() != 'fill']" />
-            <xsl:attribute name="font-size">25px</xsl:attribute>
-            <xsl:attribute name="fill">#000000</xsl:attribute>
-            <xsl:value-of select="$testParam" />
-        </text>
+        <xsl:param name="idx" />
+        <xsl:if test="string-length($testParam) > 0">
+            <a id="{concat('https://assetid.equinor.com/plantx#', $idx)}" class="node">
+                <text>
+                    <!-- Copy all attributes from the original text element, except for font-size and fill -->
+                    <xsl:apply-templates select="@*[local-name() != 'font-size' and local-name() != 'fill']" />
+                    <xsl:attribute name="font-size">25px</xsl:attribute>
+                    <xsl:attribute name="fill">#000000</xsl:attribute>
+                    <xsl:value-of select="$testParam" />
+                </text>
+            </a>
+        </xsl:if>
     </xsl:template>
 
     <!-- Template to remove elements with a red or green stroke, excluding text elements -->
