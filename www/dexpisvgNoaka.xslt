@@ -141,40 +141,47 @@
     </xsl:template>
 
 
-<!-- Template for labels -->
-<xsl:template match="Label">
-    <xsl:param name="height"/>
-    <xsl:variable name="displayText" select="following-sibling::GenericAttributes/GenericAttribute[@Name='ObjectDisplayNameAssignmentClass' or @Name='LineDescriptionAssignmentClass']/@Value"/>
-    <xsl:if test="$displayText">
-        <a id="{concat('https://assetid.equinor.com/plantx#', @ID)}" class="node">
-            <text>
-                <xsl:attribute name="x">
-                    <xsl:value-of select="Position/Location/@X"/>
-                </xsl:attribute>
-                <xsl:attribute name="y">
-                    <xsl:value-of select="$height - Position/Location/@Y"/>
-                </xsl:attribute>
-                <xsl:attribute name="font-size">3.3px</xsl:attribute>
-                <xsl:attribute name="font-family">Arial</xsl:attribute>
-                <xsl:attribute name="text-anchor">middle</xsl:attribute>
-                <xsl:attribute name="transform">
-                    <xsl:variable name="refX" select="Position/Reference/@X"/>
-                    <xsl:variable name="refY" select="Position/Reference/@Y"/>
-                    <!-- Assuming that a Reference of (1,0,0) means horizontal text, calculate the rotation angle -->
-                    <xsl:variable name="textRotationAngle">
-                        <xsl:choose>
-                            <xsl:when test="$refX = 0 and $refY = 1">270</xsl:when>
-                            <xsl:when test="$refX = 1 and $refY = 0">0</xsl:when>
-                            <xsl:otherwise>0</xsl:otherwise> <!-- Default rotation angle if not horizontal or vertical -->
-                        </xsl:choose>
-                    </xsl:variable>
-                    <xsl:value-of select="concat('rotate(', $textRotationAngle, ' ', Position/Location/@X, ' ', $height - Position/Location/@Y, ')')"/>
-                </xsl:attribute>
-                <xsl:value-of select="$displayText"/>
-            </text>
-        </a>
-    </xsl:if>
-</xsl:template>
+    <!-- Template for labels -->
+    <xsl:template match="Label">
+        <xsl:param name="height" />
+    <xsl:variable name="displayText"
+            select="following-sibling::GenericAttributes/GenericAttribute[@Name='ObjectDisplayNameAssignmentClass' or @Name='LineDescriptionAssignmentClass']/@Value" />
+    <xsl:if
+            test="$displayText">
+            <a id="{concat('https://assetid.equinor.com/plantx#', @ID)}" class="node">
+                <text>
+                    <xsl:attribute name="x">
+                        <xsl:value-of select="Position/Location/@X" />
+                    </xsl:attribute>
+                    <xsl:attribute name="y">
+                        <xsl:value-of select="$height - Position/Location/@Y" />
+                    </xsl:attribute>
+                    <xsl:attribute name="font-size">3.3px</xsl:attribute>
+                    <xsl:attribute name="font-family">Arial</xsl:attribute>
+                    <xsl:attribute name="text-anchor">middle</xsl:attribute>
+                    <xsl:attribute name="transform">
+                        <xsl:variable name="refX" select="Position/Reference/@X" />
+                    <xsl:variable
+                            name="refY" select="Position/Reference/@Y" />
+                        <!-- Assuming that a Reference of (1,0,0) means horizontal text, calculate
+                        the rotation angle -->
+                    <xsl:variable
+                            name="textRotationAngle">
+                            <xsl:choose>
+                                <xsl:when test="$refX = 0 and $refY = 1">270</xsl:when>
+                                <xsl:when test="$refX = 1 and $refY = 0">0</xsl:when>
+                                <xsl:otherwise>0</xsl:otherwise> <!-- Default rotation angle if not
+                                horizontal or vertical -->
+                            </xsl:choose>
+                        </xsl:variable>
+                    <xsl:value-of
+                            select="concat('rotate(', $textRotationAngle, ' ', Position/Location/@X, ' ', $height - Position/Location/@Y, ')')" />
+                    </xsl:attribute>
+                    <xsl:value-of select="$displayText" />
+                </text>
+            </a>
+        </xsl:if>
+    </xsl:template>
 
     <!-- Template for Equipment, Nozzle,  stuff-->
     <xsl:template match="*">
@@ -228,12 +235,15 @@
                                 <xsl:value-of
                                     select="$matchedElement/GenericAttributes/GenericAttribute[@Name='ObjectDisplayNameAssignmentClass']/@Value" />
                             </xsl:when>
-                              <!-- Selects the text for the offpageconnectors -->
-                            <xsl:when test="$matchedElement/*/GenericAttributes/GenericAttribute[@Name='ReferencedDrawingNumberAssignmentClass']/@Value">
-                                <xsl:value-of select="$matchedElement/*/GenericAttributes/GenericAttribute[@Name='ReferencedDrawingNumberAssignmentClass']/@Value" />
+                            <!-- Selects the text for the offpageconnectors -->
+                            <xsl:when
+                                test="$matchedElement/*/GenericAttributes/GenericAttribute[@Name='ReferencedDrawingNumberAssignmentClass']/@Value">
+                                <xsl:value-of
+                                    select="$matchedElement/*/GenericAttributes/GenericAttribute[@Name='ReferencedDrawingNumberAssignmentClass']/@Value" />
                             </xsl:when>
                             <xsl:otherwise>
-                                <xsl:value-of select="$matchedElement/GenericAttributes/GenericAttribute[@Name='TagTypeAssignmentClass']/@Value" />
+                                <xsl:value-of
+                                    select="$matchedElement/GenericAttributes/GenericAttribute[@Name='TagTypeAssignmentClass']/@Value" />
                             </xsl:otherwise>
                         </xsl:choose>
                     </xsl:variable>
