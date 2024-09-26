@@ -146,36 +146,46 @@
         <xsl:param name="height" />
 
         <xsl:variable name="IDX" select="../@ID" />
-    <xsl:variable name="displayText"
+    <xsl:variable
+            name="displayText"
             select="following-sibling::GenericAttributes/GenericAttribute[@Name='ObjectDisplayNameAssignmentClass' or @Name='LineDescriptionAssignmentClass']/@Value" />
     <xsl:if
             test="$displayText">
             <a id="{concat('https://assetid.equinor.com/plantx#', $IDX)}" class="node">
                 <text>
                     <xsl:attribute name="x">
-                        <xsl:value-of select="Position/Location/@X" />
+                        <xsl:value-of select="Position/Location/@X | Text/Position/Location/@X" />
                     </xsl:attribute>
                     <xsl:attribute name="y">
-                        <xsl:value-of select="$height - Position/Location/@Y" />
+                        <xsl:value-of
+                            select="$height - (Position/Location/@Y | Text/Position/Location/@Y)" />
                     </xsl:attribute>
                     <xsl:attribute name="font-size">3.3px</xsl:attribute>
                     <xsl:attribute name="font-family">Arial</xsl:attribute>
                     <xsl:attribute name="text-anchor">middle</xsl:attribute>
                     <xsl:attribute name="transform">
-                        <xsl:variable name="refX" select="Position/Reference/@X" />
+                        <xsl:variable name="refX"
+                            select="Position/Reference/@X | Text/Position/Reference/@X" />
                     <xsl:variable
-                            name="refY" select="Position/Reference/@Y" />
-                        <!-- Assuming that a Reference of (1,0,0) means horizontal text, calculate the rotation angle -->
+                            name="refY" select="Position/Reference/@Y | Text/Position/Reference/@Y" />
+                        <!-- Assuming that a Reference of (1,0,0) means horizontal text, calculate
+                        the rotation angle -->
+
+                        <xsl:variable
+                            name="posX" select="Position/Location/@X | Text/Position/Location/@X" />
+    <xsl:variable
+                            name="posY" select="Position/Location/@Y | Text/Position/Location/@Y" />
                     <xsl:variable
                             name="textRotationAngle">
                             <xsl:choose>
                                 <xsl:when test="$refX = 0 and $refY = 1">270</xsl:when>
                                 <xsl:when test="$refX = 1 and $refY = 0">0</xsl:when>
-                                <xsl:otherwise>0</xsl:otherwise> <!-- Default rotation angle if not horizontal or vertical -->
+                                <xsl:otherwise>0</xsl:otherwise> <!-- Default rotation angle if not
+                                horizontal or vertical -->
                             </xsl:choose>
                         </xsl:variable>
                     <xsl:value-of
-                            select="concat('rotate(', $textRotationAngle, ' ', Position/Location/@X, ' ', $height - Position/Location/@Y, ')')" />
+                            select="concat('rotate(', $textRotationAngle, ' ', $posX, ' ', $height - $posY, ')')" />
                     </xsl:attribute>
                     <xsl:value-of select="$displayText" />
                 </text>
@@ -276,11 +286,14 @@
     <xsl:template match="svg:text[@font-family='Helvetica'][1]">
         <xsl:param name="testParam" />
         <xsl:param name="idx" />
-        <xsl:if test="string-length($testParam) > 0">
+        <xsl:if
+            test="string-length($testParam) > 0">
             <a id="{concat('https://assetid.equinor.com/plantx#', $idx)}" class="node">
                 <text>
-                    <!-- Copy all attributes from the original text element, except for font-size and fill -->
-                    <xsl:apply-templates select="@*[local-name() != 'font-size' and local-name() != 'fill']" />
+                    <!-- Copy all attributes from the original text element, except for font-size
+                    and fill -->
+                    <xsl:apply-templates
+                        select="@*[local-name() != 'font-size' and local-name() != 'fill']" />
                     <xsl:attribute name="font-size">25px</xsl:attribute>
                     <xsl:attribute name="fill">#000000</xsl:attribute>
                     <xsl:value-of select="$testParam" />
