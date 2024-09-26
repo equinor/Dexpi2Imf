@@ -25,7 +25,7 @@
  rr:predicateObjectMap [
   rr:predicate rdfs:label;
   rr:objectMap [
-    rml:reference "/GenericAttribute[@Name='ItemTagAssignmentClass']/@Value";
+    rml:reference "Label/Text/@String";
   ]
 ].
 
