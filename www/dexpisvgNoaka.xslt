@@ -287,7 +287,7 @@
         <xsl:param name="testParam" />
         <xsl:param name="idx" />
         <xsl:if
-            test="string-length($testParam) > 0">
+            test="string-length($testParam) > 0 and not(contains($idx, 'Nozzle'))">
             <a id="{concat('https://assetid.equinor.com/plantx#', $idx)}" class="node">
                 <text>
                     <!-- Copy all attributes from the original text element, except for font-size
