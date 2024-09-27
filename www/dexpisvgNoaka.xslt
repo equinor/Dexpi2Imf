@@ -59,8 +59,7 @@
             </xsl:apply-templates>
         </g>
     </xsl:template>
-
-
+  
     <!-- Matching piping lines -->
     <xsl:template match="CenterLine">
         <xsl:param name="height" />
@@ -70,8 +69,7 @@
                 <xsl:for-each select="Coordinate">
                     <xsl:value-of select="@X" />
                     <xsl:text> </xsl:text>
-                    <xsl:value-of
-                        select="$height - @Y" />
+                    <xsl:value-of select="$height - @Y" />
                     <xsl:if test="position() != last()">
                         <xsl:text> L </xsl:text>
                     </xsl:if>
@@ -83,6 +81,15 @@
             <xsl:attribute name="stroke-width">
                 <xsl:value-of select="Presentation/@LineWeight" />
             </xsl:attribute>
+            <xsl:choose>
+                <xsl:when test="parent::InformationFlow">
+                    <xsl:attribute name="stroke-dasharray">
+                        <xsl:text>1,4</xsl:text>
+                    </xsl:attribute>
+                </xsl:when>
+                <xsl:when test="parent::PipingComponent">
+                </xsl:when>
+            </xsl:choose>
         </path>
     </xsl:template>
 
