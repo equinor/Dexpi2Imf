@@ -11,7 +11,8 @@ window.addEventListener('load', async () => {
     for (const node of nodes) {
         await makeSparqlAndUpdateStore(node.id, 'delete', 'boundary');
         await makeSparqlAndUpdateStore(node.id, 'delete', 'insideBoundary');
-        node.classList.remove('insideBoundary', 'boundary', 'inCommissioningPackage');
+        node.classList.remove('insideBoundary', 'boundary');
+        removeCommissionHighlight(node);
     }
 });
 
@@ -19,30 +20,61 @@ async function handleNodeClick(node, event) {
     // ctrl + left click - select or deselect nodes as insideBoundary
     if (event.ctrlKey) {
         if (node.classList.contains('insideBoundary')) {
-            node.classList.remove('insideBoundary', 'inCommissioningPackage');
+            node.classList.remove('insideBoundary');
+            removeCommissionHighlight(node);
             await makeSparqlAndUpdateStore(node.id, 'delete', 'insideBoundary');
         } else {
             node.classList.add('insideBoundary');
             await makeSparqlAndUpdateStore(node.id, 'insert', 'insideBoundary');
             if (node.classList.contains('boundary')) {
-                node.classList.remove('boundary', 'inCommissioningPackage');
+                node.classList.remove('boundary');
+                removeCommissionHighlight(node);
                 await makeSparqlAndUpdateStore(node.id, 'delete', 'boundary');
             }
         }
     // left click - select or deselect nodes as boundary
     } else {
         if (node.classList.contains('boundary')) {
-            node.classList.remove('boundary', 'inCommissioningPackage');
+            node.classList.remove('boundary');
+            removeCommissionHighlight(node);
             await makeSparqlAndUpdateStore(node.id, 'delete', 'boundary');
         } else {
             node.classList.add('boundary');
             await makeSparqlAndUpdateStore(node.id, 'insert', 'boundary');
             if (node.classList.contains('insideBoundary')) {
-                node.classList.remove('insideBoundary', 'inCommissioningPackage');
+                node.classList.remove('insideBoundary');
+                removeCommissionHighlight(node);
                 await makeSparqlAndUpdateStore(node.id, 'delete', 'insideBoundary');
             }
         }
     }
+}
+
+function createHighlightBox(node) {
+    var highlightRects = node.querySelectorAll('.commissionHighlight');
+    if (highlightRects.length !== 0)
+        return;
+    var bbox = node.getBBox();
+
+    // Create a new rect element
+    var highlightRect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+    highlightRect.setAttribute('x', bbox.x);
+    highlightRect.setAttribute('y', bbox.y);
+    highlightRect.setAttribute('width', bbox.width);
+    highlightRect.setAttribute('height', bbox.height);
+    highlightRect.setAttribute('fill', 'yellow'); // Highlight color
+    highlightRect.setAttribute('fill-opacity', '0.2'); // Semi-transparent
+    highlightRect.setAttribute('class', 'commissionHighlight');
+    node.appendChild(highlightRect);
+}
+
+function addCommissionHighlight(node){
+    createHighlightBox(node);
+}
+
+function removeCommissionHighlight(node) {
+    var highlightRects = node.querySelectorAll('.commissionHighlight');
+    highlightRects.forEach(rect => rect.remove());
 }
 
 async function updateInCommissioningPackage() {
@@ -52,9 +84,9 @@ async function updateInCommissioningPackage() {
     let nodeIds = parseNodeIds(result);
     nodes.forEach(node => {
         if (nodeIds.includes(node.id) && !node.classList.contains('boundary') && !node.classList.contains('insideBoundary')) {
-            node.classList.add('inCommissioningPackage');
+            addCommissionHighlight(node);
         } else {
-            node.classList.remove('inCommissioningPackage');
+            removeCommissionHighlight(node);
         }
     });
 }
