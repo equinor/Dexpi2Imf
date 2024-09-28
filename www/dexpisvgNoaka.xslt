@@ -37,28 +37,6 @@
             </g>
         </svg>
     </xsl:template>
-
-
-    <!-- Matching piping network system -->
-    <xsl:template match="PipingNetworkSystem">
-        <xsl:param name="height" />
-        <g>
-            <xsl:apply-templates>
-                <xsl:with-param name="height" select="$height" />
-            </xsl:apply-templates>
-        </g>
-    </xsl:template>
-
-
-    <!-- Matching piping network system -->
-    <xsl:template match="PipingNetworkSegment">
-        <xsl:param name="height" />
-        <g>
-            <xsl:apply-templates>
-                <xsl:with-param name="height" select="$height" />
-            </xsl:apply-templates>
-        </g>
-    </xsl:template>
   
     <!-- Matching piping lines -->
     <xsl:template match="CenterLine">
@@ -147,9 +125,9 @@
         </xsl:attribute>
     </xsl:template>
 
-
-    <!-- Template for labels -->
-    <xsl:template match="Label">
+    
+    <!-- Template for PipingNetworkSystem -->
+    <xsl:template match="PipingNetworkSystem/Label">
         <xsl:param name="height" />
 
         <xsl:variable name="IDX" select="../@ID" />
@@ -203,7 +181,6 @@
     <!-- Template for Equipment, Nozzle,  stuff-->
     <xsl:template match="*">
         <xsl:param name="height" />
-        <xsl:variable name="id" select="../@ID" />
         <xsl:if
             test="@ComponentName">
             <use>
@@ -222,13 +199,56 @@
         </xsl:apply-templates>
     </xsl:template>
 
+    <!-- Template for Nozzle shapes -->
+    <xsl:template match="Equipment/Nozzle">
+        <xsl:param name="height" />
+        <xsl:variable name="id" select="@ID"></xsl:variable>
+        <xsl:variable name="componentName" select="@ComponentName"></xsl:variable>
+        <xsl:variable name="shapeId" select="concat($id, '-', $componentName)"/>
+        <xsl:variable name="nozzleName" select="GenericAttributes/GenericAttribute[@Name='ObjectDisplayNameAssignmentClass']/@Value"/>
+        <xsl:variable name="shapeValue" select="//ShapeCatalogue/Nozzle[@ComponentName=$componentName]/GenericAttributes/GenericAttribute/@Value"/>
+        <xsl:variable name="path" select="concat('../../../../NOAKADEXPI/Symbols/Origo/', $shapeValue, '_Origo.svg')" />
+        <defs>
+            <symbol overflow="visible">
+                <xsl:attribute name="id">
+                    <xsl:value-of select="$shapeId" />
+                </xsl:attribute>
+                <xsl:attribute name="shapeName">
+                    <xsl:value-of select="$shapeValue"/>
+                </xsl:attribute>
+                <xsl:attribute name="path">
+                    <xsl:value-of select="$path" />
+                </xsl:attribute>
+                <xsl:if test="not($path = '../../../../NOAKADEXPI/Symbols/Origo/_Origo.svg')">
+                    <xsl:variable name="doc" select="document($path)" />
+                    <xsl:apply-templates
+                        select="$doc//svg:g/*">
+                        <xsl:with-param name="testParam" select="$nozzleName" />
+                        <xsl:with-param name="idx" select="$id" />
+                    </xsl:apply-templates>
+                </xsl:if>
+                <xsl:apply-templates />
+            </symbol>
+        </defs>
+        <xsl:if test="$componentName">
+            <use>
+                <xsl:attribute name="href">
+                    <xsl:value-of select="concat('#', $shapeId)" />
+                </xsl:attribute>
+                <xsl:call-template name="Position">
+                    <xsl:with-param name="height" select="$height" />
+                    <xsl:with-param name="PositionNode" select="Position" />
+                </xsl:call-template>
+            </use>
+    </xsl:if>
+    </xsl:template>
+
     <!-- Shape catalogue-->
     <xsl:template match="ShapeCatalogue">
         <defs>
-            <xsl:for-each select="*">
+            <xsl:for-each select="*[not(self::Nozzle)]">
                 <xsl:variable name="parentName" select="name()" />
-                <xsl:variable
-                    name="currentComponentName" select="@ComponentName" />
+                <xsl:variable name="currentComponentName" select="@ComponentName" />
                 <symbol overflow="visible">
                     <xsl:attribute name="id">
                         <xsl:value-of select="@ComponentName" />
@@ -237,10 +257,8 @@
                         <xsl:value-of select="GenericAttributes/GenericAttribute/@Value" />
                     </xsl:attribute>
                     <xsl:attribute name="path">
-                        <xsl:value-of
-                            select="concat('../../../../NOAKADEXPI/Symbols/Origo/',GenericAttributes/GenericAttribute/@Value,'_Origo.svg')" />
+                        <xsl:value-of select="concat('../../../../NOAKADEXPI/Symbols/Origo/',GenericAttributes/GenericAttribute/@Value,'_Origo.svg')" />
                     </xsl:attribute>
-
                     <xsl:variable name="matchedElement"
                         select="//*[name() = $parentName and @ComponentName = $currentComponentName]" />
                     <xsl:variable name="displayNameValue">
@@ -260,23 +278,17 @@
                             </xsl:when>
                             <xsl:otherwise>
                                 <xsl:value-of
-                                    select="$matchedElement/GenericAttributes/GenericAttribute[@Name='TagTypeAssignmentClass']/@Value" />
+                                    select="$matchedElement/GenericAttributes/GenericAttribute[@Name='ItemTagAssignmentClass']/@Value" />
                             </xsl:otherwise>
                         </xsl:choose>
                     </xsl:variable>
 
                     <xsl:variable name="IDXX" select="$matchedElement/@ID" />
-                    <xsl:variable name="attributeValue"
-                        select="GenericAttributes/GenericAttribute/@Value" />
-                    <xsl:variable name="docPath"
-                        select="concat('../../../../NOAKADEXPI/Symbols/Origo/', $attributeValue, '_Origo.svg')" />
-
-                    <xsl:variable name="label"
-                        select="GenericAttributes/GenericAttribute[@Name='ObjectDisplayNameAssignmentClass']/@Value" />
-
+                    <xsl:variable name="attributeValue" select="GenericAttributes/GenericAttribute/@Value" />
+                    <xsl:variable name="docPath" select="concat('../../../../NOAKADEXPI/Symbols/Origo/', $attributeValue, '_Origo.svg')" />
+                    <xsl:variable name="label" select="GenericAttributes/GenericAttribute[@Name='ObjectDisplayNameAssignmentClass']/@Value" />
                     <xsl:if
                         test="not($docPath = '../../../../NOAKADEXPI/Symbols/Origo/BORDER_A1_Origo.svg')">
-
                         <xsl:variable name="doc" select="document($docPath)" />
 						<xsl:apply-templates
                             select="$doc//svg:g/*">
@@ -290,19 +302,16 @@
         </defs>
     </xsl:template>
 
-    <xsl:template match="svg:text[@font-family='Helvetica'][1]">
+    <xsl:template match="svg:text[not(preceding::svg:text)]">
         <xsl:param name="testParam" />
         <xsl:param name="idx" />
         <xsl:if
-            test="string-length($testParam) > 0 and not(contains($idx, 'Nozzle'))">
+            test="string-length($testParam > 0)">
             <a id="{concat('https://assetid.equinor.com/plantx#', $idx)}" class="node">
-                <text>
-                    <!-- Copy all attributes from the original text element, except for font-size
-                    and fill -->
-                    <xsl:apply-templates
-                        select="@*[local-name() != 'font-size' and local-name() != 'fill']" />
-                    <xsl:attribute name="font-size">25px</xsl:attribute>
-                    <xsl:attribute name="fill">#000000</xsl:attribute>
+                <text fill="#000000" font-family="Helvetica" font-size="40px" x="{@x - 70}" y="{@y+15}" transform="{@transform}">
+                    <xsl:attribute name="vector-effect">non-scaling-stroke</xsl:attribute>
+                    <xsl:attribute name="stroke-linecap">round</xsl:attribute>
+                    <xsl:attribute name="stroke-linejoin">round</xsl:attribute>
                     <xsl:value-of select="$testParam" />
                 </text>
             </a>
