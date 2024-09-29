@@ -74,7 +74,7 @@
     rml:iterator "//PipingNetworkSegment/Connection[not (contains(@ToID, 'Nozzle'))]"
   ];
   rr:subjectMap [
-    rr:template "https://assetid.equinor.com/plantx#{concat(@ToID, '_input')}";
+    rr:template "if(@ToID) then https://assetid.equinor.com/plantx#{concat(@ToID, '_input')}";
     rr:termType rr:IRI;
     rr:class imf:Terminal
   ] ;
@@ -95,7 +95,7 @@
     rml:iterator "//PipingNetworkSegment/Connection[not (contains(@FromID, 'Nozzle'))]"
   ];
   rr:subjectMap [
-    rr:template "https://assetid.equinor.com/plantx#{concat(@FromID, '_output')}";
+    rr:template "if(@FromID) then https://assetid.equinor.com/plantx#{concat(@FromID, '_output')}";
     rr:termType rr:IRI;
     rr:class imf:Terminal
   ] ;
