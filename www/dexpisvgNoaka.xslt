@@ -200,37 +200,43 @@
     </xsl:template>
 
     <!-- Template for Nozzle shapes -->
-    <xsl:template match="Equipment/Nozzle">
+    <xsl:template match="Equipment/Nozzle | PipingComponent">
         <xsl:param name="height" />
         <xsl:variable name="id" select="@ID"></xsl:variable>
         <xsl:variable name="componentName" select="@ComponentName"></xsl:variable>
         <xsl:variable name="shapeId" select="concat($id, '-', $componentName)"/>
-        <xsl:variable name="nozzleName" select="GenericAttributes/GenericAttribute[@Name='ObjectDisplayNameAssignmentClass']/@Value"/>
-        <xsl:variable name="shapeValue" select="//ShapeCatalogue/Nozzle[@ComponentName=$componentName]/GenericAttributes/GenericAttribute/@Value"/>
+        <xsl:variable name="label">
+            <xsl:choose>
+                <xsl:when test="GenericAttributes/GenericAttribute[@Name='ObjectDisplayNameAssignmentClass']/@Value">
+                    <xsl:value-of select="GenericAttributes/GenericAttribute[@Name='ObjectDisplayNameAssignmentClass']/@Value" />
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:value-of select="GenericAttributes/GenericAttribute[@Name='ItemTagAssignmentClass']/@Value"/>
+                </xsl:otherwise>
+            </xsl:choose>
+        </xsl:variable> 
+        <xsl:variable name="shapeValue" select="//ShapeCatalogue/*[@ComponentName=$componentName]/GenericAttributes/GenericAttribute/@Value"/>
         <xsl:variable name="path" select="concat('../../../../NOAKADEXPI/Symbols/Origo/', $shapeValue, '_Origo.svg')" />
-        <defs>
-            <symbol overflow="visible">
-                <xsl:attribute name="id">
-                    <xsl:value-of select="$shapeId" />
-                </xsl:attribute>
-                <xsl:attribute name="shapeName">
-                    <xsl:value-of select="$shapeValue"/>
-                </xsl:attribute>
-                <xsl:attribute name="path">
-                    <xsl:value-of select="$path" />
-                </xsl:attribute>
-                <xsl:if test="not($path = '../../../../NOAKADEXPI/Symbols/Origo/_Origo.svg')">
+        <xsl:if test="$shapeValue">
+            <defs>
+                <symbol overflow="visible">
+                    <xsl:attribute name="id">
+                        <xsl:value-of select="$shapeId" />
+                    </xsl:attribute>
+                    <xsl:attribute name="shapeName">
+                        <xsl:value-of select="$shapeValue"/>
+                    </xsl:attribute>
+                    <xsl:attribute name="path">
+                        <xsl:value-of select="$path" />
+                    </xsl:attribute>
                     <xsl:variable name="doc" select="document($path)" />
                     <xsl:apply-templates
                         select="$doc//svg:g/*">
-                        <xsl:with-param name="testParam" select="$nozzleName" />
+                        <xsl:with-param name="testParam" select="$label" />
                         <xsl:with-param name="idx" select="$id" />
                     </xsl:apply-templates>
-                </xsl:if>
-                <xsl:apply-templates />
-            </symbol>
-        </defs>
-        <xsl:if test="$componentName">
+                </symbol>
+            </defs>
             <use>
                 <xsl:attribute name="href">
                     <xsl:value-of select="concat('#', $shapeId)" />
@@ -240,13 +246,13 @@
                     <xsl:with-param name="PositionNode" select="Position" />
                 </xsl:call-template>
             </use>
-    </xsl:if>
+        </xsl:if>
     </xsl:template>
 
     <!-- Shape catalogue-->
     <xsl:template match="ShapeCatalogue">
         <defs>
-            <xsl:for-each select="*[not(self::Nozzle)]">
+            <xsl:for-each select="*[not(self::Nozzle) and not(self::PipingComponent)]">
                 <xsl:variable name="parentName" select="name()" />
                 <xsl:variable name="currentComponentName" select="@ComponentName" />
                 <symbol overflow="visible">
