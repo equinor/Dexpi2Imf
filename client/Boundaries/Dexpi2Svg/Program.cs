@@ -35,7 +35,6 @@ class Program
         using (XmlReader xr = XmlReader.Create(sr, readerSettings)) // added
         {
             xslt.Load(xr, xsltSettings, new XmlUrlResolver());//added
-            //xslt.Load(xr, xsltSettings, new XmlUrlResolver());
         }
         
         MathExtensions mathExtensions = new MathExtensions();
