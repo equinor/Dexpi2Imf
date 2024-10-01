@@ -130,13 +130,13 @@
     <xsl:template match="PipingNetworkSystem/Label">
         <xsl:param name="height" />
 
-        <xsl:variable name="IDX" select="../@ID" />
+        <xsl:variable name="IDValue" select="../@ID" />
     <xsl:variable
             name="displayText"
             select="following-sibling::GenericAttributes/GenericAttribute[@Name='ObjectDisplayNameAssignmentClass' or @Name='LineDescriptionAssignmentClass']/@Value" />
     <xsl:if
             test="$displayText">
-            <a id="{concat('https://assetid.equinor.com/plantx#', $IDX)}" class="node">
+            <a id="{concat('https://assetid.equinor.com/plantx#', $IDValue)}" class="node">
                 <text>
                     <xsl:attribute name="x">
                         <xsl:value-of select="Position/Location/@X | Text/Position/Location/@X" />
@@ -232,8 +232,8 @@
                     <xsl:variable name="doc" select="document($path)" />
                     <xsl:apply-templates
                         select="$doc//svg:g/*">
-                        <xsl:with-param name="testParam" select="$label" />
-                        <xsl:with-param name="idx" select="$id" />
+                        <xsl:with-param name="labelParam" select="$label" />
+                        <xsl:with-param name="idValue" select="$id" />
                     </xsl:apply-templates>
                 </symbol>
             </defs>
@@ -289,7 +289,7 @@
                         </xsl:choose>
                     </xsl:variable>
 
-                    <xsl:variable name="IDXX" select="$matchedElement/@ID" />
+                    <xsl:variable name="IDValue" select="$matchedElement/@ID" />
                     <xsl:variable name="attributeValue" select="GenericAttributes/GenericAttribute/@Value" />
                     <xsl:variable name="docPath" select="concat('../../../../NOAKADEXPI/Symbols/Origo/', $attributeValue, '_Origo.svg')" />
                     <xsl:variable name="label" select="GenericAttributes/GenericAttribute[@Name='ObjectDisplayNameAssignmentClass']/@Value" />
@@ -298,8 +298,8 @@
                         <xsl:variable name="doc" select="document($docPath)" />
 						<xsl:apply-templates
                             select="$doc//svg:g/*">
-                            <xsl:with-param name="testParam" select="$displayNameValue" />
-                            <xsl:with-param name="idx" select="$IDXX" />
+                            <xsl:with-param name="labelParam" select="$displayNameValue" />
+                            <xsl:with-param name="idValue" select="$IDValue" />
                         </xsl:apply-templates>
                     </xsl:if>
                     <xsl:apply-templates />
@@ -309,16 +309,16 @@
     </xsl:template>
 
     <xsl:template match="svg:text[not(preceding::svg:text)]">
-        <xsl:param name="testParam" />
-        <xsl:param name="idx" />
+        <xsl:param name="labelParam" />
+        <xsl:param name="idValue" />
         <xsl:if
-            test="string-length($testParam > 0)">
-            <a id="{concat('https://assetid.equinor.com/plantx#', $idx)}" class="node">
+            test="string-length($labelParam > 0)">
+            <a id="{concat('https://assetid.equinor.com/plantx#', $idValue)}" class="node">
                 <text fill="#000000" font-family="Helvetica" font-size="40px" x="{@x - 70}" y="{@y+15}" transform="{@transform}">
                     <xsl:attribute name="vector-effect">non-scaling-stroke</xsl:attribute>
                     <xsl:attribute name="stroke-linecap">round</xsl:attribute>
                     <xsl:attribute name="stroke-linejoin">round</xsl:attribute>
-                    <xsl:value-of select="$testParam" />
+                    <xsl:value-of select="$labelParam" />
                 </text>
             </a>
         </xsl:if>

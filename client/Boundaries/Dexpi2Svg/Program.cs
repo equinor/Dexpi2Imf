@@ -22,20 +22,15 @@ class Program
         xmlDoc.LoadXml(xmlData);
 
         XslCompiledTransform xslt = new XslCompiledTransform();
-        //XsltSettings xsltSettings = new XsltSettings();
-        //xsltSettings.EnableDocumentFunction = true;
-        //xsltSettings.EnableScript = true;
         XsltSettings xsltSettings = new XsltSettings(true, true);//Added
 
         XmlReaderSettings readerSettings = new XmlReaderSettings(); //Added
         readerSettings.DtdProcessing = DtdProcessing.Parse; //added
 
         using (StringReader sr = new StringReader(xsltData))
-        //using (XmlReader xr = XmlReader.Create(sr))
         using (XmlReader xr = XmlReader.Create(sr, readerSettings)) // added
         {
             xslt.Load(xr, xsltSettings, new XmlUrlResolver());//added
-            //xslt.Load(xr, xsltSettings, new XmlUrlResolver());
         }
         
         MathExtensions mathExtensions = new MathExtensions();
