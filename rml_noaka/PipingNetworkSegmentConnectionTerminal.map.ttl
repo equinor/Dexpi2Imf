@@ -12,11 +12,10 @@
   rml:logicalSource [
     rml:source "pandid.xml";
     rml:referenceFormulation ql:XPath;
-## TODO: Not hardcoded nozzle id part
-    rml:iterator "//PipingNetworkSegment/Connection[contains(@FromID, 'Nozzle')]"
+    rml:iterator "//PipingNetworkSegment"
   ];
   rr:subjectMap [
-    rr:template "https://assetid.equinor.com/plantx#{@FromID}";
+    rr:template "https://assetid.equinor.com/plantx#{Connection[@FromID = //Equipment/Nozzle/@ID]/@FromID}";
     rr:termType rr:IRI;
     rr:class imf:Terminal, dexpi:Nozzle
   ] ;
@@ -25,7 +24,7 @@
     rr:predicate imf:hasConnector;
     rr:termType rr:IRI;
     rr:objectMap[
-      rr:template "https://assetid.equinor.com/plantx#{../@ID}";
+      rr:template "https://assetid.equinor.com/plantx#{@ID}";
       rr:termType rr:IRI 
     ]
   ] ;
@@ -34,7 +33,7 @@
     rr:predicate imf:hasConnector;
     rr:termType rr:IRI;
     rr:objectMap [
-      rr:template "https://assetid.equinor.com/plantx#{concat(@FromID, '_connector')}"
+      rr:template "https://assetid.equinor.com/plantx#{concat(Connection[@FromID = //Equipment/Nozzle/@ID]/@FromID, '_connector')}"
     ]
   ] .
 
@@ -42,10 +41,10 @@
   rml:logicalSource [
     rml:source "pandid.xml";
     rml:referenceFormulation ql:XPath;
-    rml:iterator "//PipingNetworkSegment/Connection[contains(@ToID, 'Nozzle')]"
+    rml:iterator "//PipingNetworkSegment"
   ];
   rr:subjectMap [
-    rr:template "https://assetid.equinor.com/plantx#{@ToID}";
+    rr:template "https://assetid.equinor.com/plantx#{Connection[@ToID = //Equipment/Nozzle/@ID]/@ToID}";
     rr:termType rr:IRI;
     rr:class imf:Terminal, dexpi:Nozzle
   ] ;
@@ -54,7 +53,7 @@
     rr:predicate imf:hasConnector;
     rr:termType rr:IRI;
     rr:objectMap[
-      rr:template "https://assetid.equinor.com/plantx#{../@ID}";
+      rr:template "https://assetid.equinor.com/plantx#{@ID}";
       rr:termType rr:IRI
     ]
   ] ;
@@ -63,18 +62,18 @@
     rr:predicate imf:hasConnector;
     rr:termType rr:IRI;
     rr:objectMap [
-      rr:template "https://assetid.equinor.com/plantx#{concat(@ToID, '_connector')}"
+      rr:template "https://assetid.equinor.com/plantx#{concat(Connection[@ToID = //Equipment/Nozzle/@ID]/@ToID, '_connector')}"
     ]
   ] .
 
-:PipingComponentSegmentFromConnectorMap a rr:TriplesMap;
+:PipingComponentSegmentToConnectorMap a rr:TriplesMap;
   rml:logicalSource [
     rml:source "pandid.xml";
     rml:referenceFormulation ql:XPath;
-    rml:iterator "//PipingNetworkSegment/Connection[not (contains(@ToID, 'Nozzle'))]"
+    rml:iterator "//PipingNetworkSegment"
   ];
   rr:subjectMap [
-    rr:template "https://assetid.equinor.com/plantx#{concat(@ToID, '_input')}";
+    rr:template "https://assetid.equinor.com/plantx#{concat(Connection[not(@ToID = //Equipment/Nozzle/@ID)]/@ToID, '_input')}";
     rr:termType rr:IRI;
     rr:class imf:Terminal
   ] ;
@@ -83,19 +82,19 @@
     rr:predicate imf:hasConnector;
     rr:termType rr:IRI;
     rr:objectMap[
-      rr:template "https://assetid.equinor.com/plantx#{../@ID}";
+      rr:template "https://assetid.equinor.com/plantx#{@ID}";
       rr:termType rr:IRI 
     ]
   ] .
 
-:PipingComponentToConnectorMap a rr:TriplesMap;
+:PipingComponentFromConnectorMap a rr:TriplesMap;
   rml:logicalSource [
     rml:source "pandid.xml";
     rml:referenceFormulation ql:XPath;
-    rml:iterator "//PipingNetworkSegment/Connection[not (contains(@FromID, 'Nozzle'))]"
+    rml:iterator "//PipingNetworkSegment"
   ];
   rr:subjectMap [
-    rr:template "https://assetid.equinor.com/plantx#{concat(@FromID, '_output')}";
+    rr:template "https://assetid.equinor.com/plantx#{concat(Connection[not(@FromID = //Equipment/Nozzle/@ID)]/@FromID, '_output')}";
     rr:termType rr:IRI;
     rr:class imf:Terminal
   ] ;
@@ -104,7 +103,7 @@
     rr:predicate imf:hasConnector;
     rr:termType rr:IRI;
     rr:objectMap[
-      rr:template "https://assetid.equinor.com/plantx#{../@ID}";
+      rr:template "https://assetid.equinor.com/plantx#{@ID}";
       rr:termType rr:IRI 
     ]
   ] .
