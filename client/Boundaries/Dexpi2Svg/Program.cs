@@ -22,9 +22,6 @@ class Program
         xmlDoc.LoadXml(xmlData);
 
         XslCompiledTransform xslt = new XslCompiledTransform();
-        //XsltSettings xsltSettings = new XsltSettings();
-        //xsltSettings.EnableDocumentFunction = true;
-        //xsltSettings.EnableScript = true;
         XsltSettings xsltSettings = new XsltSettings(true, true);//Added
 
         XmlReaderSettings readerSettings = new XmlReaderSettings(); //Added
