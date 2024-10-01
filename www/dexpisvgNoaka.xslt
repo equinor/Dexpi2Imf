@@ -200,7 +200,7 @@
     </xsl:template>
 
     <!-- Template for Nozzle shapes -->
-    <xsl:template match="Equipment/Nozzle | PipingComponent">
+    <xsl:template match="Equipment/Nozzle | PipingComponent | Equipment">
         <xsl:param name="height" />
         <xsl:variable name="id" select="@ID"></xsl:variable>
         <xsl:variable name="componentName" select="@ComponentName"></xsl:variable>
@@ -247,12 +247,15 @@
                 </xsl:call-template>
             </use>
         </xsl:if>
+        <xsl:apply-templates>
+            <xsl:with-param name="height" select="$height" />
+        </xsl:apply-templates>
     </xsl:template>
 
     <!-- Shape catalogue-->
     <xsl:template match="ShapeCatalogue">
         <defs>
-            <xsl:for-each select="*[not(self::Nozzle) and not(self::PipingComponent)]">
+            <xsl:for-each select="*[not(self::Nozzle) and not(self::PipingComponent) and not(self::Equipment)]">
                 <xsl:variable name="parentName" select="name()" />
                 <xsl:variable name="currentComponentName" select="@ComponentName" />
                 <symbol overflow="visible">
