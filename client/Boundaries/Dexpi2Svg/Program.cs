@@ -31,7 +31,6 @@ class Program
         readerSettings.DtdProcessing = DtdProcessing.Parse; //added
 
         using (StringReader sr = new StringReader(xsltData))
-        //using (XmlReader xr = XmlReader.Create(sr))
         using (XmlReader xr = XmlReader.Create(sr, readerSettings)) // added
         {
             xslt.Load(xr, xsltSettings, new XmlUrlResolver());//added
