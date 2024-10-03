@@ -217,39 +217,41 @@
         </xsl:variable> 
         <xsl:variable name="shapeValue" select="//ShapeCatalogue/*[@ComponentName=$componentName]/GenericAttributes/GenericAttribute/@Value"/>
         <xsl:variable name="path" select="concat('../../../../NOAKADEXPI/Symbols/Origo/', $shapeValue, '_Origo.svg')" />
-        <xsl:if test="$shapeValue">
-            <defs>
-                <symbol overflow="visible">
-                    <xsl:attribute name="id">
-                        <xsl:value-of select="$shapeId" />
+        <xsl:if test="not($path = '../../../../NOAKADEXPI/Symbols/Origo/BORDER_A1_Origo.svg')">
+            <xsl:if test="$shapeValue">
+                <defs>
+                    <symbol overflow="visible">
+                        <xsl:attribute name="id">
+                            <xsl:value-of select="$shapeId" />
+                        </xsl:attribute>
+                        <xsl:attribute name="shapeName">
+                            <xsl:value-of select="$shapeValue"/>
+                        </xsl:attribute>
+                        <xsl:attribute name="path">
+                            <xsl:value-of select="$path" />
+                        </xsl:attribute>
+                        <xsl:variable name="doc" select="document($path)" />
+                        <xsl:apply-templates
+                            select="$doc//svg:g/*">
+                            <xsl:with-param name="labelParam" select="$label" />
+                            <xsl:with-param name="idValue" select="$id" />
+                        </xsl:apply-templates>
+                    </symbol>
+                </defs>
+                <use>
+                    <xsl:attribute name="href">
+                        <xsl:value-of select="concat('#', $shapeId)" />
                     </xsl:attribute>
-                    <xsl:attribute name="shapeName">
-                        <xsl:value-of select="$shapeValue"/>
-                    </xsl:attribute>
-                    <xsl:attribute name="path">
-                        <xsl:value-of select="$path" />
-                    </xsl:attribute>
-                    <xsl:variable name="doc" select="document($path)" />
-                    <xsl:apply-templates
-                        select="$doc//svg:g/*">
-                        <xsl:with-param name="labelParam" select="$label" />
-                        <xsl:with-param name="idValue" select="$id" />
-                    </xsl:apply-templates>
-                </symbol>
-            </defs>
-            <use>
-                <xsl:attribute name="href">
-                    <xsl:value-of select="concat('#', $shapeId)" />
-                </xsl:attribute>
-                <xsl:call-template name="Position">
-                    <xsl:with-param name="height" select="$height" />
-                    <xsl:with-param name="PositionNode" select="Position" />
-                </xsl:call-template>
-            </use>
+                    <xsl:call-template name="Position">
+                        <xsl:with-param name="height" select="$height" />
+                        <xsl:with-param name="PositionNode" select="Position" />
+                    </xsl:call-template>
+                </use>
+            </xsl:if>
+            <xsl:apply-templates>
+                <xsl:with-param name="height" select="$height" />
+            </xsl:apply-templates>
         </xsl:if>
-        <xsl:apply-templates>
-            <xsl:with-param name="height" select="$height" />
-        </xsl:apply-templates>
     </xsl:template>
 
     <!-- Shape catalogue-->
