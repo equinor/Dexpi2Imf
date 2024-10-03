@@ -8,3 +8,8 @@ data:insideBoundary [?new_node] :-
 data:insideBoundary [?new_node] :- 
     data:insideBoundary [?node],
     imf:hasPart[?new_node, ?node] .
+
+
+data:boundary [?new_node] :- 
+    data:boundary [?node],
+    imf:hasPart[?new_node, ?node] .
