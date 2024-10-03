@@ -200,7 +200,7 @@
     </xsl:template>
 
     <!-- Template for Nozzle shapes -->
-    <xsl:template match="Equipment/Nozzle | PipingComponent | Equipment">
+    <xsl:template match="*">
         <xsl:param name="height" />
         <xsl:variable name="id" select="@ID"></xsl:variable>
         <xsl:variable name="componentName" select="@ComponentName"></xsl:variable>
