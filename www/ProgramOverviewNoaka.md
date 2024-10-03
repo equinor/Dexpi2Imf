@@ -14,6 +14,9 @@ This document outlines the components of the XSLT stylesheet designed to transfo
 - **Positioning and Transformations**: It calculates the correct positioning and rotation for SVG elements.
 - **Template for PipingNetworkSystem**: Manages the creation of text labels on the lines, and its text orientation.
 - **Shape Catalog Template**:  defines SVG symbols. It locates the appropriate `_Origo.svg` file based on the `shapeValue` and then processes text elements, passing their values as arguments to populate text fields within the Symbol SVG. Before appyling another template to the symbols.
+  - **Style-Based Exclusions (`Style-Based Filtering` Section)**: Elements with specific stroke or fill colors are excluded from the output, which is a deliberate filtering process to manage the visual output when showing the symbols.
+  - **Direct Element Copying (`Generic Copying` Section)**: To ensure all SVG elements not explicitly matched by other templates are included in the output, a generic copying process is employed.
+
 
 ### Special Considerations and Notes
 
@@ -26,9 +29,6 @@ This document outlines the components of the XSLT stylesheet designed to transfo
 ### Known Issues and Limitations
   - Not all nozzles are present in the provided data.
 
-
-- **Style-Based Exclusions (`Style-Based Filtering` Section)**: Elements with specific stroke or fill colors are excluded from the output, which is a deliberate filtering process to manage the visual output when showing the symbols.
-- **Direct Element Copying (`Generic Copying` Section)**: To ensure all SVG elements not explicitly matched by other templates are included in the output, a generic copying process is employed.
 
 
 
