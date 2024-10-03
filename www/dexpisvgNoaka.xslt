@@ -218,8 +218,6 @@
         <xsl:variable name="shapeValue" select="//ShapeCatalogue/*[@ComponentName=$componentName]/GenericAttributes/GenericAttribute/@Value"/>
         <xsl:variable name="path" select="concat('../../../../NOAKADEXPI/Symbols/Origo/', $shapeValue, '_Origo.svg')" />
         <xsl:if test="not($path = '../../../../NOAKADEXPI/Symbols/Origo/BORDER_A1_Origo.svg')">
-
-        
             <xsl:if test="$shapeValue">
                 <defs>
                     <symbol overflow="visible">
