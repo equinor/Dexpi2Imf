@@ -73,7 +73,7 @@
     rml:iterator "//PipingNetworkSegment"
   ];
   rr:subjectMap [
-    rr:template "https://assetid.equinor.com/plantx#{concat(Connection[not(@ToID = //Equipment/Nozzle/@ID)]/@ToID, '_input')}";
+    rr:template "https://assetid.equinor.com/plantx#{Connection[not(@ToID = //Equipment/Nozzle/@ID) and string-length(normalize-space(@ToID)) > 0]/concat(@ToID, '_input')}";
     rr:termType rr:IRI;
     rr:class imf:Terminal
   ] ;
@@ -94,7 +94,7 @@
     rml:iterator "//PipingNetworkSegment"
   ];
   rr:subjectMap [
-    rr:template "https://assetid.equinor.com/plantx#{concat(Connection[not(@FromID = //Equipment/Nozzle/@ID)]/@FromID, '_output')}";
+    rr:template "https://assetid.equinor.com/plantx#{Connection[not(@FromID = //Equipment/Nozzle/@FromID) and string-length(normalize-space(@FromID)) > 0]/concat(@FromID, '_output')}";
     rr:termType rr:IRI;
     rr:class imf:Terminal
   ] ;
