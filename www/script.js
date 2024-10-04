@@ -72,8 +72,9 @@ function createHighlightBox(node) {
 
 
 function addPipeHighlight(pipe) {
-    let highlightRects = pipe.querySelectorAll('.commissionHighlight');
-    if (highlightRects.length !== 0)
+    let connectorId = pipe.id + '_highlight';
+    let existingHighlightRect = document.getElementById(connectorId);
+    if (existingHighlightRect)
         return;
     let d = pipe.getAttribute('d');
 
@@ -81,6 +82,7 @@ function addPipeHighlight(pipe) {
     let highlightRect = document.createElementNS("http://www.w3.org/2000/svg", "path");
 
     highlightRect.setAttribute('d', d);
+    highlightRect.setAttribute('id', connectorId)
     highlightRect.setAttribute('fill', 'none');
     highlightRect.setAttribute('stroke-linecap', 'round');
     highlightRect.setAttribute('stroke-linejoin', 'round');
@@ -93,8 +95,11 @@ function addPipeHighlight(pipe) {
 
 
 function removePipeHighlight(pipe) {
-    let highlightRects = pipe.querySelectorAll('.commissionHighlight');
-    highlightRects.forEach(rect => rect.remove());
+
+    let connectorId = pipe.id + '_highlight';
+    let highlightRect = document.getElementById(connectorId);
+    if (highlightRect)
+        highlightRect.remove();
 }
 
 function addCommissionHighlight(node){
