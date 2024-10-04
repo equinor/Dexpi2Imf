@@ -1,4 +1,5 @@
 let nodes = document.querySelectorAll('.node');
+let pipes = document.querySelectorAll('.piping');
 
 nodes.forEach((node) => {
     node.addEventListener('click', async (event) => {
@@ -60,7 +61,7 @@ function createHighlightBox(node) {
     var highlightRect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
     highlightRect.setAttribute('x', bbox.x);
     highlightRect.setAttribute('y', bbox.y);
-    highlightRect.setAttribute('width', bbox.width*1.5);
+    highlightRect.setAttribute('width', bbox.width);
     highlightRect.setAttribute('height', bbox.height);
     highlightRect.setAttribute('fill', 'yellow'); // Highlight color
     highlightRect.setAttribute('fill-opacity', '0.2'); // Semi-transparent
@@ -68,12 +69,40 @@ function createHighlightBox(node) {
     node.appendChild(highlightRect);
 }
 
+
+
+function addPipeHighlight(pipe) {
+    let highlightRects = pipe.querySelectorAll('.commissionHighlight');
+    if (highlightRects.length !== 0)
+        return;
+    let d = pipe.getAttribute('d');
+
+    // Create a new rect element
+    let highlightRect = document.createElementNS("http://www.w3.org/2000/svg", "path");
+
+    highlightRect.setAttribute('d', d);
+    highlightRect.setAttribute('fill', 'none');
+    highlightRect.setAttribute('stroke-linecap', 'round');
+    highlightRect.setAttribute('stroke-linejoin', 'round');
+    highlightRect.setAttribute('stroke', 'yellow'); // Highlight color
+    highlightRect.setAttribute('stroke-width', '5'); // Semi-transparent
+    highlightRect.setAttribute('stroke-opacity', '0.5'); // Semi-transparent
+    highlightRect.setAttribute('class', 'commissionHighlight');
+    pipe.parentNode.appendChild(highlightRect);
+}
+
+
+function removePipeHighlight(pipe) {
+    let highlightRects = pipe.querySelectorAll('.commissionHighlight');
+    highlightRects.forEach(rect => rect.remove());
+}
+
 function addCommissionHighlight(node){
     createHighlightBox(node);
 }
 
 function removeCommissionHighlight(node) {
-    var highlightRects = node.querySelectorAll('.commissionHighlight');
+    let highlightRects = node.querySelectorAll('.commissionHighlight');
     highlightRects.forEach(rect => rect.remove());
 }
 
@@ -89,6 +118,13 @@ async function updateInCommissioningPackage() {
             removeCommissionHighlight(node);
         }
     });
+    pipes.forEach(pipe => {
+        if (nodeIds.includes(pipe.id) && !pipe.classList.contains('boundary') && !pipe.classList.contains('insideBoundary')) {
+            addPipeHighlight(pipe);
+        } else {
+            removePipeHighlight(pipe);
+        }
+    })
 }
 
 function parseNodeIds(result) {

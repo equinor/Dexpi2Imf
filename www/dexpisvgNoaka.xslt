@@ -41,7 +41,7 @@
     <!-- Matching piping lines -->
     <xsl:template match="CenterLine">
         <xsl:param name="height" />
-        <path fill="none" stroke-linecap="round" stroke-linejoin="round" class="node">
+        <path fill="none" stroke-linecap="round" stroke-linejoin="round" class="piping">
             <xsl:variable name="connectorId">
                 <xsl:choose>
                     <xsl:when test="preceding-sibling::PipingComponent[1]/@ID">
@@ -215,8 +215,8 @@
     <!-- Template for Nozzle shapes -->
     <xsl:template match="*">
         <xsl:param name="height" />
-        <xsl:variable name="id" select="@ID"></xsl:variable>
-        <xsl:variable name="componentName" select="@ComponentName"></xsl:variable>
+        <xsl:variable name="id" select="@ID" />
+        <xsl:variable name="componentName" select="@ComponentName" />
         <xsl:variable name="shapeId" select="concat($id, '-', $componentName)"/>
         <xsl:variable name="label">
             <xsl:choose>
