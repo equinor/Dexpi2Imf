@@ -60,7 +60,7 @@ function createHighlightBox(node) {
     var highlightRect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
     highlightRect.setAttribute('x', bbox.x);
     highlightRect.setAttribute('y', bbox.y);
-    highlightRect.setAttribute('width', bbox.width);
+    highlightRect.setAttribute('width', bbox.width*1.5);
     highlightRect.setAttribute('height', bbox.height);
     highlightRect.setAttribute('fill', 'yellow'); // Highlight color
     highlightRect.setAttribute('fill-opacity', '0.2'); // Semi-transparent
