@@ -12,23 +12,32 @@
   rml:logicalSource [
     rml:source "pandid.xml";
     rml:referenceFormulation ql:XPath;
-    rml:iterator "//PipingNetworkSegment/PipingComponent"
+    rml:iterator "//PipingNetworkSegment/PipingComponent/ConnectionPoints[position() > 1]"
   ];
   rr:subjectMap [
-    rr:template "https://assetid.equinor.com/plantx#{concat(@ID, '_input')}";  
-    rr:termType rr:IRI;
-    rr:class imf:InputTerminal
+    rr:template "https://assetid.equinor.com/plantx#{concat(@ID, position())}";  
+    rr:termType rr:IRI
   ];
+  # This could use the FLowIn, FlowOut and position() to calculate InputTerminal and OutputTerminal 
+  # but we do not have a use case that requires this.
+  rr:predicateObjectMap [
+    rr:predicate rdf:type;
+    rr:objectMap [
+      rr:constant imf:Terminal;
+      rr:termType rr:IRI
+    ]
+  ];
+                              
   # If there is no preceding-sibling, then it is the first component in the piping network segment.
   # The first component is connected to the object that the piping network segment starts from.
   rr:predicateObjectMap [
     rr:predicate imf:hasConnector;
     rr:objectMap [
       rr:template """https://assetid.equinor.com/plantx#{
-      if(preceding-sibling::PipingComponent[1]/@ID) then 
-        concat(preceding-sibling::PipingComponent[1]/@ID, '_connector') 
-      else if(../Connection/@FromID) then
-        concat(../Connection/@FromID, '_',  ../Connection/@FromNode, '_connector')
+      if(../preceding-sibling::PipingComponent[1]/@ID) then 
+        concat(../preceding-sibling::PipingComponent[1]/@ID, '_connector') 
+      else if(../../Connection/@FromID) then
+        concat(../../Connection/@FromID, '_',  ../../Connection/@FromNode, '_connector')
       else()
         }""";
       rr:termType rr:IRI; 
