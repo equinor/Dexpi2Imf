@@ -34,7 +34,7 @@
     rr:predicate imf:hasConnector;
     rr:termType rr:IRI;
     rr:objectMap [
-      rr:template "https://assetid.equinor.com/plantx#{concat(@FromID, '_connector')}"
+      rr:template "https://assetid.equinor.com/plantx#{concat(@FromID,'_', @FromNode, '_connector')}"
     ]
   ] .
 
@@ -63,7 +63,7 @@
     rr:predicate imf:hasConnector;
     rr:termType rr:IRI;
     rr:objectMap [
-      rr:template "https://assetid.equinor.com/plantx#{concat(@ToID, '_connector')}"
+      rr:template "https://assetid.equinor.com/plantx#{concat(@ToID, '_', @ToNode, '_connector')}"
     ]
   ] .
 

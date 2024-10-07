@@ -23,7 +23,7 @@
   rr:predicateObjectMap [
     rr:predicate imf:hasConnector;
     rr:objectMap [
-        rr:template "https://assetid.equinor.com/plantx#{concat(../PipingComponent[last()]/@ID, '_connector')}";
+        rr:template """https://assetid.equinor.com/plantx#{concat(../PipingComponent[last()]/@ID, '_connector')}""";
         rr:termType rr:IRI
     ]
   ] .
@@ -43,7 +43,7 @@
   rr:predicateObjectMap [
     rr:predicate imf:hasConnector;
     rr:objectMap [
-        rr:template "https://assetid.equinor.com/plantx#{concat(@ID, '_connector')}";
+        rr:template "https://assetid.equinor.com/plantx#{concat(@ID,'_','2', '_connector')}";
         rr:termType rr:IRI
     ]
   ] .

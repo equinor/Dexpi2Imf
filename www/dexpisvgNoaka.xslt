@@ -48,7 +48,7 @@
                         <xsl:value-of select="preceding-sibling::PipingComponent[1]/@ID" />
                     </xsl:when>
                     <xsl:when test="../Connection/@FromID">
-                        <xsl:value-of select="../Connection/@FromID" />
+                        <xsl:value-of select="concat(../Connection/@FromID,'_', ../Connection/@FromNode)" />
                     </xsl:when>
                 </xsl:choose>
             </xsl:variable>
