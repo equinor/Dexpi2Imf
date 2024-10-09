@@ -200,7 +200,6 @@
     </xsl:template>
 
     <!-- Template for Nozzle shapes -->
-	<!-- This must be changed -->
 	<xsl:template match="*">
         <xsl:param name="height" />
         <xsl:variable name="id" select="@ID"></xsl:variable>
@@ -210,6 +209,12 @@
             <xsl:choose>
                 <xsl:when test="GenericAttributes/GenericAttribute[@Name='ObjectDisplayNameAssignmentClass']/@Value">
                     <xsl:value-of select="GenericAttributes/GenericAttribute[@Name='ObjectDisplayNameAssignmentClass']/@Value" />
+                </xsl:when>
+                <xsl:when test="PipeOffPageConnectorReference/GenericAttributes/GenericAttribute[@Name='ReferencedDrawingNumberAssignmentClass']/@Value">
+                    <xsl:value-of select="PipeOffPageConnectorReference/GenericAttributes/GenericAttribute[@Name='ReferencedDrawingNumberAssignmentClass']/@Value" />
+                </xsl:when>
+                <xsl:when test="SignalOffPageConnectorReference/GenericAttributes/GenericAttribute[@Name='ReferencedDrawingNumberAssignmentClass']/@Value">
+                    <xsl:value-of select="SignalOffPageConnectorReference/GenericAttributes/GenericAttribute[@Name='ReferencedDrawingNumberAssignmentClass']/@Value" />
                 </xsl:when>
                 <xsl:otherwise>
                     <xsl:value-of select="GenericAttributes/GenericAttribute[@Name='ItemTagAssignmentClass']/@Value"/>
