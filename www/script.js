@@ -1,4 +1,5 @@
 let nodes = document.querySelectorAll('.node');
+let pipes = document.querySelectorAll('.piping');
 
 nodes.forEach((node) => {
     node.addEventListener('click', async (event) => {
@@ -68,12 +69,45 @@ function createHighlightBox(node) {
     node.appendChild(highlightRect);
 }
 
+
+
+function addPipeHighlight(pipe) {
+    let connectorId = pipe.id + '_highlight';
+    let existingHighlightRect = document.getElementById(connectorId);
+    if (existingHighlightRect)
+        return;
+    let d = pipe.getAttribute('d');
+
+    // Create a new rect element
+    let highlightRect = document.createElementNS("http://www.w3.org/2000/svg", "path");
+
+    highlightRect.setAttribute('d', d);
+    highlightRect.setAttribute('id', connectorId)
+    highlightRect.setAttribute('fill', 'none');
+    highlightRect.setAttribute('stroke-linecap', 'round');
+    highlightRect.setAttribute('stroke-linejoin', 'round');
+    highlightRect.setAttribute('stroke', 'yellow'); // Highlight color
+    highlightRect.setAttribute('stroke-width', '5'); // Semi-transparent
+    highlightRect.setAttribute('stroke-opacity', '0.5'); // Semi-transparent
+    highlightRect.setAttribute('class', 'commissionHighlight');
+    pipe.parentNode.appendChild(highlightRect);
+}
+
+
+function removePipeHighlight(pipe) {
+
+    let connectorId = pipe.id + '_highlight';
+    let highlightRect = document.getElementById(connectorId);
+    if (highlightRect)
+        highlightRect.remove();
+}
+
 function addCommissionHighlight(node){
     createHighlightBox(node);
 }
 
 function removeCommissionHighlight(node) {
-    var highlightRects = node.querySelectorAll('.commissionHighlight');
+    let highlightRects = node.querySelectorAll('.commissionHighlight');
     highlightRects.forEach(rect => rect.remove());
 }
 
@@ -89,6 +123,13 @@ async function updateInCommissioningPackage() {
             removeCommissionHighlight(node);
         }
     });
+    pipes.forEach(pipe => {
+        if (nodeIds.includes(pipe.id) && !pipe.classList.contains('boundary') && !pipe.classList.contains('insideBoundary')) {
+            addPipeHighlight(pipe);
+        } else {
+            removePipeHighlight(pipe);
+        }
+    })
 }
 
 function parseNodeIds(result) {

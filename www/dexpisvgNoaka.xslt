@@ -41,7 +41,20 @@
     <!-- Matching piping lines -->
     <xsl:template match="CenterLine">
         <xsl:param name="height" />
-        <path fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <path fill="none" stroke-linecap="round" stroke-linejoin="round" class="piping">
+            <xsl:variable name="connectorId">
+                <xsl:choose>
+                    <xsl:when test="preceding-sibling::PipingComponent[1]/@ID">
+                        <xsl:value-of select="preceding-sibling::PipingComponent[1]/@ID" />
+                    </xsl:when>
+                    <xsl:when test="../Connection/@FromID">
+                        <xsl:value-of select="../Connection/@FromID" />
+                    </xsl:when>
+                </xsl:choose>
+            </xsl:variable>
+            <xsl:attribute name="id">
+                <xsl:value-of select="concat('https://assetid.equinor.com/plantx#', $connectorId, '_connector')" />
+            </xsl:attribute>
             <xsl:attribute name="d">
                 <xsl:text>M </xsl:text>
                 <xsl:for-each select="Coordinate">
@@ -201,11 +214,9 @@
     <!-- Template for * shapes except lines -->
     <xsl:template match="*">
         <xsl:param name="height" />
-        <xsl:variable name="id" select="@ID"></xsl:variable>
-        <xsl:variable
-            name="componentName" select="@ComponentName"></xsl:variable>
-        <xsl:variable name="shapeId"
-            select="concat($id, '-', $componentName)" />
+        <xsl:variable name="id" select="@ID" />
+        <xsl:variable name="componentName" select="@ComponentName" />
+        <xsl:variable name="shapeId" select="concat($id, '-', $componentName)"/>
         <xsl:variable name="label">
             <xsl:choose>
                 <xsl:when
