@@ -8,6 +8,16 @@
 @prefix asset: <https://assetid.equinor.com/plantx#> .
 @prefix imf: <http://ns.imfid.org/imf#> .
 
+
+:PredObjMap1 
+    rr:predicate imf:hasConnector;
+    rr:termType rr:IRI;
+    rr:objectMap[
+      rr:template "https://assetid.equinor.com/plantx#{@ID}";
+      rr:termType rr:IRI 
+    ] .
+  
+
 :PipingComponentSegmentFromTerminalMap a rr:TriplesMap;
   rml:logicalSource [
     rml:source "pandid.xml";
@@ -15,19 +25,18 @@
     rml:iterator "//PipingNetworkSystem/PipingNetworkSegment"
   ];
   rr:subjectMap [
-    rr:template """https://assetid.equinor.com/plantx#{Connection/@FromID}-node{Connection/@FromNode}""";
+    rr:template """https://assetid.equinor.com/plantx#{
+    if(Connection/@FromID) then
+      if ( Connection[@FromID = //Equipment/Nozzle/@ID] ) then 
+        Connection/@FromID
+      else(concat(Connection/@FromID, '-node', Connection/@FromNode))
+    else ()
+      }""";
     rr:termType rr:IRI;
     rr:class imf:Terminal
   ] ;
 
-  rr:predicateObjectMap [
-    rr:predicate imf:hasConnector;
-    rr:termType rr:IRI;
-    rr:objectMap[
-      rr:template "https://assetid.equinor.com/plantx#{@ID}";
-      rr:termType rr:IRI 
-    ]
-  ] ;
+  rr:predicateObjectMap :PredObjMap1 ;
     
   rr:predicateObjectMap [
     rr:predicate imf:hasConnector;
@@ -44,18 +53,17 @@
     rml:iterator "//PipingNetworkSegment"
   ];
   rr:subjectMap [
-    rr:template "https://assetid.equinor.com/plantx#{Connection/@ToID}-node{Connection/@ToNode}";
+    rr:template """https://assetid.equinor.com/plantx#{
+    if(Connection/@ToID) then
+      if (Connection[@ToID = //Equipment/Nozzle/@ID]) then
+        Connection/@ToID
+      else ( concat ( Connection/@ToID, '-node', Connection/@ToNode))
+    else ()
+    }""";
     rr:termType rr:IRI;
     rr:class imf:Terminal
   ] ;
-  rr:predicateObjectMap [
-    rr:predicate imf:hasConnector;
-    rr:termType rr:IRI;
-    rr:objectMap[
-      rr:template "https://assetid.equinor.com/plantx#{@ID}";
-      rr:termType rr:IRI
-    ]
-  ] ;
+  rr:predicateObjectMap :PredObjMap1 ;
   rr:predicateObjectMap [
     rr:predicate imf:hasConnector;
     rr:termType rr:IRI;
