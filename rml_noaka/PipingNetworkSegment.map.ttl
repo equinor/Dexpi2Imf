@@ -9,7 +9,7 @@
 @prefix imf: <http://ns.imfid.org/imf#> .
 
 
-:PredObjMap1 
+:hasNetworkSegmentConnector 
     rr:predicate imf:hasConnector;
     rr:termType rr:IRI;
     rr:objectMap[
@@ -36,7 +36,7 @@
     rr:class imf:Terminal
   ] ;
 
-  rr:predicateObjectMap :PredObjMap1 ;
+  rr:predicateObjectMap :hasNetworkSegmentConnector ;
     
   rr:predicateObjectMap [
     rr:predicate imf:hasConnector;
@@ -63,7 +63,9 @@
     rr:termType rr:IRI;
     rr:class imf:Terminal
   ] ;
-  rr:predicateObjectMap :PredObjMap1 ;
+    
+  rr:predicateObjectMap :hasNetworkSegmentConnector ;¨
+
   rr:predicateObjectMap [
     rr:predicate imf:hasConnector;
     rr:termType rr:IRI;
