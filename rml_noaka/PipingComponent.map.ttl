@@ -1,0 +1,78 @@
+@prefix rml: <http://semweb.mmlab.be/ns/rml#> .
+@prefix rr: <http://www.w3.org/ns/r2rml#> .
+@prefix ql: <http://semweb.mmlab.be/ns/ql#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix : <http://example.org/rules/> .
+@prefix schema: <http://schema.org/> .
+@prefix dexpi: <https://rdf.equinor.com/dexpi#> .
+@prefix asset: <https://assetid.equinor.com/plantx#> .
+@prefix imf: <http://ns.imfid.org/imf#> .
+
+:PipingComponentTerminalMap a rr:TriplesMap;
+  rml:logicalSource [
+    rml:source "pandid.xml";
+    rml:referenceFormulation ql:XPath;
+    rml:iterator "//PipingNetworkSegment/PipingComponent/ConnectionPoints/Node[@Type='process'] | //PipingNetworkSegment/PropertyBreak/ConnectionPoints/Node[@Type='process']"
+  ];
+  rr:subjectMap [
+    rr:template "https://assetid.equinor.com/plantx#{concat(../../@ID, '-node', count(preceding-sibling::*))}";  
+    rr:termType rr:IRI;
+    rr:class imf:Terminal
+  ];
+
+  rr:predicateObjectMap [
+    rr:predicate imf:hasConnector;
+    rr:objectMap [
+      rr:template """https://assetid.equinor.com/plantx#{
+      if(count(preceding-sibling::*) = 1) then
+        if(../../preceding-sibling::PipingComponent) then 
+          concat(../../preceding-sibling::PipingComponent[1]/@ID, '-node2-connector') 
+        else if(../../../Connection/@FromID) then
+          concat(../../../Connection/@FromID, '-node',  ../../../Connection/@FromNode, '-connector')
+        else()
+      else if(count(preceding-sibling::*) = 2) then
+        if(../../following-sibling::PipingComponent or following-sibling::PropertyBreak) then
+          concat(../../@ID , '-node2-connector')
+        else if(../../../Connection/@ToID) then
+          concat(../../../Connection/@ToID, '-node', ../../../Connection/@ToNode, '-connector')
+        else( concat(../../@ID , '-node2-connector') )
+      else()
+        }""";
+      rr:termType rr:IRI; 
+    ]
+  ] .
+
+:PipingComponentBlockMap a rr:TriplesMap;
+  rml:logicalSource [
+    rml:source "pandid.xml";
+    rml:referenceFormulation ql:XPath;
+    rml:iterator "//PipingNetworkSegment/PipingComponent | //PipingNetworkSegment/PropertyBreak"
+  ];
+  rr:subjectMap [
+    rr:template "https://assetid.equinor.com/plantx#{@ID}";
+    rr:termType rr:IRI;
+    rr:class dexpi:PipingComponent, imf:Block
+  ] ;
+  rr:predicateObjectMap [
+     rr:predicate imf:partOf;
+     rr:objectMap [
+      rr:template "https://assetid.equinor.com/plantx#{../@ID}"; 
+      rr:termType rr:IRI 
+    ]
+  ] ;
+  rr:predicateObjectMap [
+    rr:predicate rdfs:label ;
+    rr:objectMap [
+      rml:reference "GenericAttributes/GenericAttribute[@Name='ItemTagAssignmentClass']/@Value"
+    ]
+  ] ;
+  rr:predicateObjectMap [
+    rr:predicate imf:hasTerminal;
+    rr:objectMap [
+      rr:parentTriplesMap :PipingComponentTerminalMap;
+      rr:joinCondition [
+        rr:child "@ID";
+        rr:parent "../../@ID";
+      ];
+    ];
+    ] .

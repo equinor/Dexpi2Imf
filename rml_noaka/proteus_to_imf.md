@@ -1,6 +1,9 @@
 # Overview of mappings
 This document describes the RML mappings from proteus XML to IMF RDF contained in this folder.
 
+## NOTE
+*This documentation is outdated as the mappings have changed. There are no longer input and output terminals. All terminals are now of type imf:Terminal.*
+
 ## Connecting elements in IMF
 In IMF a block is connected to a terminal, and a terminal is connected to a connector. 
 

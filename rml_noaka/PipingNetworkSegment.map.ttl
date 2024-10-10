@@ -1,0 +1,75 @@
+@prefix rml: <http://semweb.mmlab.be/ns/rml#> .
+@prefix rr: <http://www.w3.org/ns/r2rml#> .
+@prefix ql: <http://semweb.mmlab.be/ns/ql#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix : <http://example.org/rules/> .
+@prefix schema: <http://schema.org/> .
+@prefix dexpi: <https://rdf.equinor.com/dexpi#> .
+@prefix asset: <https://assetid.equinor.com/plantx#> .
+@prefix imf: <http://ns.imfid.org/imf#> .
+
+
+:hasNetworkSegmentConnector 
+    rr:predicate imf:hasConnector;
+    rr:termType rr:IRI;
+    rr:objectMap[
+      rr:template "https://assetid.equinor.com/plantx#{@ID}";
+      rr:termType rr:IRI 
+    ] .
+  
+
+:PipingComponentSegmentFromTerminalMap a rr:TriplesMap;
+  rml:logicalSource [
+    rml:source "pandid.xml";
+    rml:referenceFormulation ql:XPath;
+    rml:iterator "//PipingNetworkSystem/PipingNetworkSegment"
+  ];
+  rr:subjectMap [
+    rr:template """https://assetid.equinor.com/plantx#{
+    if(Connection/@FromID) then
+      if ( Connection[@FromID = //Equipment/Nozzle/@ID] ) then 
+        Connection/@FromID
+      else(concat(Connection/@FromID, '-node', Connection/@FromNode))
+    else ()
+      }""";
+    rr:termType rr:IRI;
+    rr:class imf:Terminal
+  ] ;
+
+  rr:predicateObjectMap :hasNetworkSegmentConnector ;
+    
+  rr:predicateObjectMap [
+    rr:predicate imf:hasConnector;
+    rr:termType rr:IRI;
+    rr:objectMap [
+      rr:template "https://assetid.equinor.com/plantx#{concat(Connection/@FromID, '-node' , Connection/@FromNode , '-connector')}"
+    ]
+  ] .
+
+:PipingComponentSegmentToTerminalMap a rr:TriplesMap;
+  rml:logicalSource [
+    rml:source "pandid.xml";
+    rml:referenceFormulation ql:XPath;
+    rml:iterator "//PipingNetworkSegment"
+  ];
+  rr:subjectMap [
+    rr:template """https://assetid.equinor.com/plantx#{
+    if(Connection/@ToID) then
+      if (Connection[@ToID = //Equipment/Nozzle/@ID]) then
+        Connection/@ToID
+      else ( concat ( Connection/@ToID, '-node', Connection/@ToNode))
+    else ()
+    }""";
+    rr:termType rr:IRI;
+    rr:class imf:Terminal
+  ] ;
+    
+  rr:predicateObjectMap :hasNetworkSegmentConnector ;¨
+
+  rr:predicateObjectMap [
+    rr:predicate imf:hasConnector;
+    rr:termType rr:IRI;
+    rr:objectMap [
+      rr:template "https://assetid.equinor.com/plantx#{concat(Connection/@ToID, '-node' , Connection/@ToNode , '-connector')}"
+    ]
+  ] .
