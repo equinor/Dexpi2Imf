@@ -329,6 +329,30 @@
         </xsl:if>
     </xsl:template>
 
+    <!-- Template for PolyLine elements -->
+    <xsl:template match="PolyLine">
+        <xsl:param name="height" />
+        <path fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <xsl:attribute name="d">
+                <xsl:text>M </xsl:text>
+                <xsl:for-each select="Coordinate">
+                    <xsl:value-of select="@X" />
+                    <xsl:text> </xsl:text>
+                    <xsl:value-of select="$height - @Y" />
+                    <xsl:if test="position() != last()">
+                        <xsl:text> L </xsl:text>
+                    </xsl:if>
+                </xsl:for-each>
+            </xsl:attribute>
+            <xsl:attribute name="stroke">
+                <xsl:text>#000000</xsl:text>
+            </xsl:attribute>
+            <xsl:attribute name="stroke-width">
+                <xsl:value-of select="Presentation/@LineWeight"/>
+            </xsl:attribute>
+        </path>
+    </xsl:template>
+
     <!-- Template to remove elements with a red or green stroke, excluding text elements -->
     <xsl:template match="*[not(self::text)][@stroke='#ff0000' or @stroke='#00ff00']" />
 
