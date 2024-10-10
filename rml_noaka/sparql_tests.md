@@ -1,5 +1,8 @@
-
 # SPARQL tests 
+
+## NOTE
+*These sparql tests are outdated as the mappings have changed. They can still be used for reference*
+
 - These tests are based on the data found in this [document](https://github.com/equinor/NOAKADEXPI/tree/main/Blueprint/DISC_EXAMPLE-02).
 - The SPARQL queries without documentation can be found [here](#TODO). 
 
