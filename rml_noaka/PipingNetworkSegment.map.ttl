@@ -15,7 +15,7 @@
     rml:iterator "//PipingNetworkSystem/PipingNetworkSegment"
   ];
   rr:subjectMap [
-    rr:template "https://assetid.equinor.com/plantx#{Connection/@FromID}";
+    rr:template """https://assetid.equinor.com/plantx#{Connection/@FromID}-node{Connection/@FromNode}""";
     rr:termType rr:IRI;
     rr:class imf:Terminal
   ] ;
@@ -44,7 +44,7 @@
     rml:iterator "//PipingNetworkSegment"
   ];
   rr:subjectMap [
-    rr:template "https://assetid.equinor.com/plantx#{Connection/@ToID}";
+    rr:template "https://assetid.equinor.com/plantx#{Connection/@ToID}-node{Connection/@ToNode}";
     rr:termType rr:IRI;
     rr:class imf:Terminal
   ] ;

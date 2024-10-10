@@ -35,7 +35,7 @@
           concat(../../@ID , '-node2-connector')
         else if(../../../Connection/@ToID) then
           concat(../../../Connection/@ToID, '-node', ../../../Connection/@ToNode, '-connector')
-        else()
+        else( concat(../../@ID , '-node2-connector') )
       else()
         }""";
       rr:termType rr:IRI; 

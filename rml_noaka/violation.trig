@@ -28,3 +28,25 @@
         <http://ns.imfid.org/imf#contains> <https://assetid.equinor.com/plantx#PipeTee-6>;
         rdf:type <http://ns.imfid.org/imf#Connector>, <http://ns.imfid.org/imf#InformationArtefact>, owl:Nothing, ...;
         ... .
+
+  asset:PipeTee-6 a imf:Block, imf:Terminal, dexpi:PipingComponent;
+    imf:hasConnector asset:PipeTee-6-node2-connector, asset:PipeTee-6-node3-connector,
+      asset:PipingNetworkSegment-23, asset:PipingNetworkSegment-24, asset:PipingNetworkSegment-25;
+    imf:hasTerminal asset:PipeTee-6-node1, asset:PipeTee-6-node2, asset:PipeTee-6-node3;
+    imf:partOf asset:PipingNetworkSegment-23 .
+
+DETTE ER HELT FEIL! PipeTee-6 skal KUN være imf:Block -> den skal IKKE ha connector - den skal kun ha terminaler. 
+Hvilken mapping er det som lager denne trippelen? 
+
+prøving og feiling 
+- slette object map fra pipingcomponentblockmap som kaller parent map -> IKKE fix 
+
+OK! Hvilken maps har ansvar for å lage subject av typen terminal og assigne imf:hasConnector ? 
+- PipingComponentTerminalMap 
+- PipingComponentSegmentFromTerminalMap | PipingComponentSegmentToMap -> DENNE ER SKYLDING! 
+
+Fjernes PipingComponentSegmentFromTerminalMap | PipingComponentSegmentToMap  så blir dette resultatet: 
+  
+  asset:PipeTee-6 a imf:Block, dexpi:PipingComponent;
+    imf:hasTerminal asset:PipeTee-6-node1, asset:PipeTee-6-node2, asset:PipeTee-6-node3;
+    imf:partOf asset:PipingNetworkSegment-23 .
