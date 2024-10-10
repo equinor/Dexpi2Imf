@@ -57,7 +57,7 @@
                 <xsl:text>#000000</xsl:text>
             </xsl:attribute>
             <xsl:attribute name="stroke-width">
-                <xsl:value-of select="Presentation/@LineWeight" />
+                <xsl:text>0.5</xsl:text>
             </xsl:attribute>
             <xsl:choose>
                 <xsl:when test="parent::InformationFlow">
@@ -348,7 +348,7 @@
                 <xsl:text>#000000</xsl:text>
             </xsl:attribute>
             <xsl:attribute name="stroke-width">
-                <xsl:value-of select="Presentation/@LineWeight"/>
+                <xsl:text>0.5</xsl:text>
             </xsl:attribute>
         </path>
     </xsl:template>
