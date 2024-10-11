@@ -44,16 +44,22 @@
         <path fill="none" stroke-linecap="round" stroke-linejoin="round" class="piping">
             <xsl:variable name="connectorId">
                 <xsl:choose>
-                    <xsl:when test="preceding-sibling::PipingComponent[1]/@ID">
-                        <xsl:value-of select="preceding-sibling::PipingComponent[1]/@ID" />
+                    <xsl:when test="../Connection/@ToID and not (following-sibling::PipingComponent or following-sibling::PropertyBreak)">
+                        <xsl:value-of select="concat(../Connection/@ToID,'-node', ../Connection/@ToNode)" />
+                    </xsl:when>
+                    <xsl:when test="preceding-sibling::PipingComponent">
+                        <xsl:value-of select="concat(preceding-sibling::PipingComponent[1]/@ID, '-node2')" />
                     </xsl:when>
                     <xsl:when test="../Connection/@FromID">
-                        <xsl:value-of select="../Connection/@FromID" />
+                        <xsl:value-of select="concat(../Connection/@FromID,'-node', ../Connection/@FromNode)" />
+                    </xsl:when>
+                    <xsl:when test="../Connection/@ToID">
+                        <xsl:value-of select="concat(../Connection/@ToID,'-node', ../Connection/@ToNode)" />
                     </xsl:when>
                 </xsl:choose>
             </xsl:variable>
             <xsl:attribute name="id">
-                <xsl:value-of select="concat('https://assetid.equinor.com/plantx#', $connectorId, '_connector')" />
+                <xsl:value-of select="concat('https://assetid.equinor.com/plantx#', $connectorId, '-connector')" />
             </xsl:attribute>
             <xsl:attribute name="d">
                 <xsl:text>M </xsl:text>
