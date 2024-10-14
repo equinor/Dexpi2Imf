@@ -266,15 +266,15 @@
         </xsl:for-each>
     </xsl:template>
 
-     <!-- Template for * shapes except lines -->
-     <xsl:template match="*">
+    <!-- Template for * shapes except lines -->
+    <xsl:template match="*">
         <xsl:param name="height" />
-        <xsl:variable name="id" select="@ID" />
-        <xsl:variable
+            <xsl:variable name="id" select="@ID" />
+            <xsl:variable
             name="componentName" select="@ComponentName" />
-        <xsl:variable name="shapeId"
+            <xsl:variable name="shapeId"
             select="concat($id, '-', $componentName)" />
-        <xsl:variable name="label">
+            <xsl:variable name="label">
             <xsl:choose>
                 <xsl:when
                     test="GenericAttributes/GenericAttribute[@Name='ObjectDisplayNameAssignmentClass']/@Value">
@@ -297,13 +297,13 @@
                 </xsl:otherwise>
             </xsl:choose>
         </xsl:variable> 
-        <xsl:variable
+            <xsl:variable
             name="shapeValue"
             select="//ShapeCatalogue/*[@ComponentName=$componentName]/GenericAttributes/GenericAttribute/@Value" />
-        <xsl:variable
+            <xsl:variable
             name="path"
             select="concat('../../../../NOAKADEXPI/Symbols/Origo/', $shapeValue, '_Origo.svg')" />
-        <xsl:if
+            <xsl:if
             test="not($path = '../../../../NOAKADEXPI/Symbols/Origo/BORDER_A1_Origo.svg')">
             <xsl:if test="$shapeValue">
                 <symbol overflow="visible">
@@ -317,20 +317,14 @@
                         <xsl:value-of select="$path" />
                     </xsl:attribute>
                     <xsl:variable name="doc" select="document($path)" />
-                    <xsl:apply-templates select="$doc//svg:g"/>
-                    <!-- <xsl:choose>
-                        <xsl:when test="svg:g[@data-label='origo']">
-                            <a id="{concat('https://assetid.equinor.com/plantx#', $id)}" class="node">
-                                <xsl:apply-templates select="$doc//svg:g/*">
-                                </xsl:apply-templates>
-                            </a>
-                        </xsl:when>
-                        <xsl:otherwise>
-
-                        </xsl:otherwise>
-                    </xsl:choose> -->
+                    <!-- WE ARE HERE -->
+                    <xsl:apply-templates
+                        select="$doc//svg:g">
+                        <xsl:with-param name="labelParam" select="$label" />
+                        <xsl:with-param name="idValue" select="$id" />
+                    </xsl:apply-templates>
                 </symbol>
-                <use>
+                    <use>
                     <xsl:attribute name="href">
                         <xsl:value-of select="concat('#', $shapeId)" />
                     </xsl:attribute>
@@ -340,16 +334,27 @@
                     </xsl:call-template>
                 </use>
             </xsl:if>
-            <xsl:apply-templates>
+                <xsl:apply-templates>
                 <xsl:with-param name="height" select="$height" />
             </xsl:apply-templates>
         </xsl:if>
     </xsl:template>
 
-    <xsl:template match="svg:text[not(preceding::svg:text)]">
+    <xsl:template match="svg:*">
         <xsl:param name="labelParam" />
-        <xsl:if
-            test="string-length($labelParam > 0)">
+        <xsl:param name="idValue" />
+        <xsl:copy>
+            <xsl:apply-templates select="@*|node()">
+                <xsl:with-param name="labelParam" select="$labelParam" />
+                <xsl:with-param name="idValue" select="$idValue" />
+            </xsl:apply-templates>
+        </xsl:copy>
+    </xsl:template>
+
+    <xsl:template match="svg:text">
+        <xsl:param name="labelParam" />
+        <xsl:param name="idValue" />
+        <a id="{concat('https://assetid.equinor.com/plantx#', $idValue)}" class="node">
             <text fill="#000000" font-family="Helvetica" font-size="40px" x="{@x - 70}"
                 y="{@y+15}" transform="{@transform}">
                 <xsl:attribute name="vector-effect">non-scaling-stroke</xsl:attribute>
@@ -357,16 +362,10 @@
                 <xsl:attribute name="stroke-linejoin">round</xsl:attribute>
                 <xsl:value-of select="$labelParam" />
             </text>
-        </xsl:if>
+        </a>
     </xsl:template>
 
-    <xsl:template match="svg:*">
-        <xsl:copy>
-            <xsl:apply-templates select="@*|node()" />
-        </xsl:copy>
-    </xsl:template>
-
-    <!--Template to copy the attributes of the xml document-->
+    <!-- Generic template to copy attributes as they are -->
     <xsl:template match="@*">
         <xsl:copy />
     </xsl:template>
