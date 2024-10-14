@@ -351,19 +351,27 @@
         </xsl:copy>
     </xsl:template>
 
-    <xsl:template match="svg:text">
+    <xsl:template match="svg:text[not(preceding::svg:text)]">
         <xsl:param name="labelParam" />
-        <xsl:param name="idValue" />
+            <text fill="#000000" font-family="Helvetica" font-size="40px"
+            x="{@x - 70}"
+            y="{@y+15}" transform="{@transform}">
+            <xsl:attribute name="vector-effect">non-scaling-stroke</xsl:attribute>
+            <xsl:attribute name="stroke-linecap">round</xsl:attribute>
+            <xsl:attribute name="stroke-linejoin">round</xsl:attribute>
+            <xsl:value-of select="$labelParam" />
+        </text>
+    </xsl:template>
+
+    <xsl:template match="svg:g[@data-label='origo']">
+        <xsl:param name="idValue"/>
         <a id="{concat('https://assetid.equinor.com/plantx#', $idValue)}" class="node">
-            <text fill="#000000" font-family="Helvetica" font-size="40px" x="{@x - 70}"
-                y="{@y+15}" transform="{@transform}">
-                <xsl:attribute name="vector-effect">non-scaling-stroke</xsl:attribute>
-                <xsl:attribute name="stroke-linecap">round</xsl:attribute>
-                <xsl:attribute name="stroke-linejoin">round</xsl:attribute>
-                <xsl:value-of select="$labelParam" />
-            </text>
+            <xsl:copy>
+                <xsl:apply-templates select="@*|node()"/>
+            </xsl:copy>
         </a>
     </xsl:template>
+
 
     <!-- Generic template to copy attributes as they are -->
     <xsl:template match="@*">
