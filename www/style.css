@@ -16,3 +16,42 @@
 .inCommissioningPackage text {
     fill: rgb(112 237 240);
 }
+
+
+#download-btn {
+    padding: 10px 20px;
+    margin: 10px 0;
+    cursor: pointer;
+    /* Add more styles as needed */
+}
+
+/* Flex container */
+.container {
+    display: flex;
+}
+
+/* Flex item styles */
+#inside-boundary-table-container {
+    width: 50%; 
+
+}
+
+#boundary-table-container {
+    width: 50%; 
+
+}
+
+
+table {
+    width: 100%; 
+    border-collapse: collapse;
+}
+
+table, th, td {
+    border: 1px solid black;
+}
+
+th, td {
+    padding: 8px;
+    text-align: left;
+}

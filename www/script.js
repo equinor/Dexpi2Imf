@@ -116,6 +116,39 @@ async function updateInCommissioningPackage() {
     let query = 'SELECT ?node WHERE{?node a data:insideBoundary .}';
     let result = await queryTripleStore(query);
     let nodeIds = parseNodeIds(result);
+    // Insideboundary query
+    let queryInside = `
+    SELECT * WHERE {
+        ?node a data:insideBoundary . 
+        ?node <http://sandbox.dexpi.org/rdl/TagNameAssignmentClass> ?o .
+    }
+    `;
+    let queryBoundary = `
+    SELECT DISTINCT  ?node ?tagNr WHERE {
+    ?node a data:boundary . 
+    ?node <http://noaka.org/rdl/SequenceAssignmentClass> ?o .
+    {
+        { ?node <http://sandbox.dexpi.org/rdl/TagNameAssignmentClass> ?tagNr. }
+        UNION
+        { ?node <http://noaka.org/rdl/ObjectDisplayNameAssignmentClass> ?tagNr. }
+    }
+}
+    `;
+    let resultInside = await queryTripleStore(queryInside);
+    let nodeIdsInside = parseNodeIds(resultInside);
+    let resultBoundary = await queryTripleStore(queryBoundary);
+    let nodeIdsBoundary = parseNodeIds(resultBoundary);
+
+    if (nodeIdsInside.length > 0) {
+        //Make a check so that you remove the elemnts from the inside boundary that are also in the boundary
+        nodeIdsInside = nodeIdsInside.filter(nodeId => !nodeIdsBoundary.includes(nodeId));
+        displayBoundaryTable(nodeIdsInside, 'Inside Boundary', 'inside-boundary-table-container');
+        displayBoundaryTable(nodeIdsBoundary, 'Boundary', 'boundary-table-container');
+    }
+    else {
+        document.getElementById('boundary-table-container').innerHTML = '';
+
+    }
     nodes.forEach(node => {
         if (nodeIds.includes(node.id) && !node.classList.contains('boundary') && !node.classList.contains('insideBoundary')) {
             addCommissionHighlight(node);
@@ -129,7 +162,7 @@ async function updateInCommissioningPackage() {
         } else {
             removePipeHighlight(pipe);
         }
-    })
+    });
 }
 
 function parseNodeIds(result) {
@@ -173,3 +206,50 @@ async function queryTripleStore(sparql) {
         console.error('Error:', error);
     }
 }
+
+function displayBoundaryTable(nodeIds, headerTitle, containerId) {
+    const tableContainer = document.getElementById(containerId);
+    // Clear any existing content in the container
+    tableContainer.innerHTML = '';
+
+    let header = document.createElement('h2');
+    header.textContent = headerTitle;
+    header.style.textAlign = 'center';
+
+    // Create a download button
+    let downloadButton = document.createElement('button');
+    downloadButton.textContent = 'Download Data';
+    downloadButton.id = `${containerId}-download-btn`;
+    downloadButton.onclick = function() {
+        downloadTableAsCSV(`${containerId}-table`, `${headerTitle.replace(/\s+/g, '_')}_data.csv`);
+    };
+    // Add styles to the download button if necessary
+    downloadButton.style.margin = '10px';
+    downloadButton.style.padding = '5px 10px';
+    downloadButton.style.cursor = 'pointer';
+
+    // Create a table element
+    let table = document.createElement('table');
+    table.id = `${containerId}-table`;
+
+    // Add table headers
+    let thead = table.createTHead();
+    let headerRow = thead.insertRow();
+    let th = document.createElement('th');
+    th.textContent = 'Node ID';
+    headerRow.appendChild(th);
+
+    // Add rows to the table
+    nodeIds.forEach(nodeId => {
+        let tr = table.insertRow();
+        let td = tr.insertCell();
+        let shortNodeId = nodeId.split('#').pop();
+        td.textContent = shortNodeId;
+    });
+
+    // Append the header, download button, and table to the container
+    tableContainer.appendChild(header);
+    tableContainer.appendChild(downloadButton);
+    tableContainer.appendChild(table);
+}
+
