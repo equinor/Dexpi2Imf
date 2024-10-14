@@ -139,15 +139,16 @@ async function updateInCommissioningPackage() {
     let resultBoundary = await queryTripleStore(queryBoundary);
     let nodeIdsBoundary = parseNodeIds(resultBoundary);
 
-    if (nodeIdsInside.length > 0) {
-        //Make a check so that you remove the elemnts from the inside boundary that are also in the boundary
+    if (nodeIdsInside.length > 0 || nodeIdsBoundary.length > 0) {
+        // Remove elements that are in both inside boundary and boundary
         nodeIdsInside = nodeIdsInside.filter(nodeId => !nodeIdsBoundary.includes(nodeId));
-        displayBoundaryTable(nodeIdsInside, 'Inside Boundary', 'inside-boundary-table-container');
-        displayBoundaryTable(nodeIdsBoundary, 'Boundary', 'boundary-table-container');
-    }
-    else {
-        document.getElementById('boundary-table-container').innerHTML = '';
 
+        // Display both tables and the download button
+        displayTablesAndDownloadButton(nodeIdsInside, 'Inside Boundary', 'inside-boundary-table-container', nodeIdsBoundary, 'Boundary', 'boundary-table-container');
+    } else {
+        // Clear the container if there are no nodes
+        document.getElementById('inside-boundary-table-container').innerHTML = '';
+        document.getElementById('boundary-table-container').innerHTML = '';
     }
     nodes.forEach(node => {
         if (nodeIds.includes(node.id) && !node.classList.contains('boundary') && !node.classList.contains('insideBoundary')) {
@@ -207,6 +208,54 @@ async function queryTripleStore(sparql) {
     }
 }
 
+function displayTablesAndDownloadButton(nodeIdsInside, headerTitleInside, containerIdInside, nodeIdsBoundary, headerTitleBoundary, containerIdBoundary) {
+    // Create tables for inside boundary and boundary nodes
+    createTable(nodeIdsInside, headerTitleInside, containerIdInside);
+    createTable(nodeIdsBoundary, headerTitleBoundary, containerIdBoundary);
+
+    // Create a single download button for both tables
+    const downloadButtonContainer = document.getElementById(containerIdInside); // Assuming you want the button in this container
+    let downloadButton = document.createElement('button');
+    downloadButton.textContent = 'Download Excel';
+    downloadButton.style.margin = '10px';
+    downloadButton.style.padding = '5px 10px';
+    downloadButton.style.cursor = 'pointer';
+    downloadButton.onclick = function() {
+        downloadWorkbook(nodeIdsInside, nodeIdsBoundary, 'node_data.xlsx');
+    };
+
+    // Append the download button to the container
+    downloadButtonContainer.appendChild(downloadButton);
+}
+
+function createTable(nodeIds, headerTitle, containerId) {
+    const tableContainer = document.getElementById(containerId);
+    tableContainer.innerHTML = ''; // Clear any existing content
+
+    let header = document.createElement('h2');
+    header.textContent = headerTitle;
+    header.style.textAlign = 'center';
+
+    let table = document.createElement('table');
+    table.id = `${containerId}-table`;
+
+    let thead = table.createTHead();
+    let headerRow = thead.insertRow();
+    let th = document.createElement('th');
+    th.textContent = 'Node ID';
+    headerRow.appendChild(th);
+
+    nodeIds.forEach(nodeId => {
+        let tr = table.insertRow();
+        let td = tr.insertCell();
+        let shortNodeId = nodeId.split('#').pop();
+        td.textContent = shortNodeId;
+    });
+
+    tableContainer.appendChild(header);
+    tableContainer.appendChild(table);
+}
+
 function displayBoundaryTable(nodeIds, headerTitle, containerId) {
     const tableContainer = document.getElementById(containerId);
     // Clear any existing content in the container
@@ -251,5 +300,32 @@ function displayBoundaryTable(nodeIds, headerTitle, containerId) {
     tableContainer.appendChild(header);
     tableContainer.appendChild(downloadButton);
     tableContainer.appendChild(table);
+}
+
+function downloadWorkbook(nodeIdsInside, nodeIdsBoundary, filename) {
+    const wb = XLSX.utils.book_new();
+
+    const wsInside = XLSX.utils.json_to_sheet(nodeIdsInside.map(id => ({ 'Node ID': id })));
+    XLSX.utils.book_append_sheet(wb, wsInside, 'Inside Boundary');
+
+    const wsBoundary = XLSX.utils.json_to_sheet(nodeIdsBoundary.map(id => ({ 'Node ID': id })));
+    XLSX.utils.book_append_sheet(wb, wsBoundary, 'Boundary');
+
+    const combinedData = nodeIdsInside.concat(nodeIdsBoundary);
+    const wsCombined = XLSX.utils.json_to_sheet(combinedData.map(id => ({ 'Node ID': id })));
+    XLSX.utils.book_append_sheet(wb, wsCombined, 'Combined');
+
+    const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'binary' });
+    
+    function s2ab(s) {
+        const buffer = new ArrayBuffer(s.length);
+        const view = new Uint8Array(buffer);
+        for (let i = 0; i < s.length; i++) {
+            view[i] = s.charCodeAt(i) & 0xFF;
+        }
+        return buffer;
+    }
+
+    saveAs(new Blob([s2ab(wbout)], { type: "application/octet-stream" }), filename);
 }
 
