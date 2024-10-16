@@ -24,8 +24,10 @@ async function handleNodeClick(node, event) {
             node.classList.remove('insideBoundary');
             removeCommissionHighlight(node);
             await makeSparqlAndUpdateStore(node.id, 'delete', 'insideBoundary');
+            console.log("NODE CLICKED")
         } else {
             node.classList.add('insideBoundary');
+            console.log("NODE CLICKED")
             await makeSparqlAndUpdateStore(node.id, 'insert', 'insideBoundary');
             if (node.classList.contains('boundary')) {
                 node.classList.remove('boundary');

@@ -366,9 +366,12 @@
     <xsl:template match="svg:g[@data-label='origo']">
         <xsl:param name="idValue"/>
         <a id="{concat('https://assetid.equinor.com/plantx#', $idValue)}" class="node">
-            <xsl:copy>
-                <xsl:apply-templates select="@*|node()"/>
-            </xsl:copy>
+        <xsl:copy>
+            <!-- Apply templates to all attributes of the g element -->
+            <xsl:apply-templates select="@*"/>
+            <!-- Apply templates to all child nodes of the g element -->
+            <xsl:apply-templates select="node()"/>
+        </xsl:copy>
         </a>
     </xsl:template>
 

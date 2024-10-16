@@ -1,6 +1,6 @@
 /* ------ style.css ----- */
 
-.node:hover text {
+.node:hover * {
     transition: 0.6s;
     cursor:pointer;
 }
@@ -16,3 +16,4 @@
 .inCommissioningPackage text {
     fill: rgb(112 237 240);
 }
+

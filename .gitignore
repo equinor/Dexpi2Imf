@@ -17,3 +17,5 @@ client/Boundaries/TestBoundaries/obj
 client/Boundaries/TestBoundaries/bin
 aibel_dexpi/*
 aibel_dexpi.xml
+output.svg
+local
