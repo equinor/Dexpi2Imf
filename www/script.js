@@ -116,7 +116,6 @@ async function updateInCommissioningPackage() {
     let query = 'SELECT ?node WHERE{?node a data:insideBoundary .}';
     let result = await queryTripleStore(query);
     let nodeIds = parseNodeIds(result);
-    // Insideboundary query
     let queryInside = `
     SELECT * WHERE {
         ?node a data:insideBoundary . 
@@ -127,12 +126,14 @@ async function updateInCommissioningPackage() {
     SELECT DISTINCT  ?node ?tagNr WHERE {
     ?node a data:boundary . 
     ?node <http://noaka.org/rdl/SequenceAssignmentClass> ?o .
-    {
-        { ?node <http://sandbox.dexpi.org/rdl/TagNameAssignmentClass> ?tagNr. }
-        UNION
-        { ?node <http://noaka.org/rdl/ObjectDisplayNameAssignmentClass> ?tagNr. }
+        {
+            { ?node <http://sandbox.dexpi.org/rdl/TagNameAssignmentClass> ?tagNr. }
+            UNION
+            { ?node <http://noaka.org/rdl/ObjectDisplayNameAssignmentClass> ?tagNr. }
+            UNION 
+            { ?node <http://noaka.org/rdl/ItemTagAssignmentClass> ?tagNr. }
+        }
     }
-}
     `;
     let resultInside = await queryTripleStore(queryInside);
     let nodeIdsInside = parseNodeIds(resultInside);
@@ -142,8 +143,6 @@ async function updateInCommissioningPackage() {
     if (nodeIdsInside.length > 0 || nodeIdsBoundary.length > 0) {
         // Remove elements that are in both inside boundary and boundary
         nodeIdsInside = nodeIdsInside.filter(nodeId => !nodeIdsBoundary.includes(nodeId));
-
-        // Display both tables and the download button
         displayTablesAndDownloadButton(nodeIdsInside, 'Inside Boundary', 'inside-boundary-table-container', nodeIdsBoundary, 'Boundary', 'boundary-table-container');
     } else {
         // Clear the container if there are no nodes
@@ -209,12 +208,11 @@ async function queryTripleStore(sparql) {
 }
 
 function displayTablesAndDownloadButton(nodeIdsInside, headerTitleInside, containerIdInside, nodeIdsBoundary, headerTitleBoundary, containerIdBoundary) {
-    // Create tables for inside boundary and boundary nodes
     createTable(nodeIdsInside, headerTitleInside, containerIdInside);
     createTable(nodeIdsBoundary, headerTitleBoundary, containerIdBoundary);
 
     // Create a single download button for both tables
-    const downloadButtonContainer = document.getElementById(containerIdInside); // Assuming you want the button in this container
+    const downloadButtonContainer = document.getElementById(containerIdInside); 
     let downloadButton = document.createElement('button');
     downloadButton.textContent = 'Download Excel';
     downloadButton.style.margin = '10px';
@@ -256,63 +254,17 @@ function createTable(nodeIds, headerTitle, containerId) {
     tableContainer.appendChild(table);
 }
 
-function displayBoundaryTable(nodeIds, headerTitle, containerId) {
-    const tableContainer = document.getElementById(containerId);
-    // Clear any existing content in the container
-    tableContainer.innerHTML = '';
-
-    let header = document.createElement('h2');
-    header.textContent = headerTitle;
-    header.style.textAlign = 'center';
-
-    // Create a download button
-    let downloadButton = document.createElement('button');
-    downloadButton.textContent = 'Download Data';
-    downloadButton.id = `${containerId}-download-btn`;
-    downloadButton.onclick = function() {
-        downloadTableAsCSV(`${containerId}-table`, `${headerTitle.replace(/\s+/g, '_')}_data.csv`);
-    };
-    // Add styles to the download button if necessary
-    downloadButton.style.margin = '10px';
-    downloadButton.style.padding = '5px 10px';
-    downloadButton.style.cursor = 'pointer';
-
-    // Create a table element
-    let table = document.createElement('table');
-    table.id = `${containerId}-table`;
-
-    // Add table headers
-    let thead = table.createTHead();
-    let headerRow = thead.insertRow();
-    let th = document.createElement('th');
-    th.textContent = 'Node ID';
-    headerRow.appendChild(th);
-
-    // Add rows to the table
-    nodeIds.forEach(nodeId => {
-        let tr = table.insertRow();
-        let td = tr.insertCell();
-        let shortNodeId = nodeId.split('#').pop();
-        td.textContent = shortNodeId;
-    });
-
-    // Append the header, download button, and table to the container
-    tableContainer.appendChild(header);
-    tableContainer.appendChild(downloadButton);
-    tableContainer.appendChild(table);
-}
-
 function downloadWorkbook(nodeIdsInside, nodeIdsBoundary, filename) {
     const wb = XLSX.utils.book_new();
 
-    const wsInside = XLSX.utils.json_to_sheet(nodeIdsInside.map(id => ({ 'Node ID': id })));
+    const wsInside = XLSX.utils.json_to_sheet(nodeIdsInside.map(id => ({ 'Inside boundary': id })));
     XLSX.utils.book_append_sheet(wb, wsInside, 'Inside Boundary');
 
-    const wsBoundary = XLSX.utils.json_to_sheet(nodeIdsBoundary.map(id => ({ 'Node ID': id })));
+    const wsBoundary = XLSX.utils.json_to_sheet(nodeIdsBoundary.map(id => ({ 'Boundary': id })));
     XLSX.utils.book_append_sheet(wb, wsBoundary, 'Boundary');
 
     const combinedData = nodeIdsInside.concat(nodeIdsBoundary);
-    const wsCombined = XLSX.utils.json_to_sheet(combinedData.map(id => ({ 'Node ID': id })));
+    const wsCombined = XLSX.utils.json_to_sheet(combinedData.map(id => ({ 'Combined': id })));
     XLSX.utils.book_append_sheet(wb, wsCombined, 'Combined');
 
     const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'binary' });
