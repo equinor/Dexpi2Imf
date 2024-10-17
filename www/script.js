@@ -136,7 +136,12 @@ async function updateInCommissioningPackage() {
     let queryInside = `
     SELECT * WHERE {
         ?node a data:insideBoundary . 
-        ?node <http://sandbox.dexpi.org/rdl/TagNameAssignmentClass> ?o .
+        ?node <http://noaka.org/rdl/SequenceAssignmentClass> ?o .
+        { ?node <http://sandbox.dexpi.org/rdl/TagNameAssignmentClass> ?tagNr. }
+            UNION
+            { ?node <http://noaka.org/rdl/ItemTagAssignmentClass> ?tagNr. }
+          FILTER NOT EXISTS { ?node a imf:Terminal . }
+
     }
     `;
     let queryBoundary = `
