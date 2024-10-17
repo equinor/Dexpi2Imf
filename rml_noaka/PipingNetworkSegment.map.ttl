@@ -63,9 +63,7 @@
     rr:termType rr:IRI;
     rr:class imf:Terminal
   ] ;
-    
-  rr:predicateObjectMap :hasNetworkSegmentConnector ;¨
-
+                                     
   rr:predicateObjectMap [
     rr:predicate imf:hasConnector;
     rr:termType rr:IRI;
