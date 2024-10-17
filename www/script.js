@@ -52,6 +52,15 @@ async function handleNodeClick(node, event) {
 }
 
 function createHighlightBox(node) {
+    var parentElement = node.parentNode;
+    if(parentElement.tagName === 'symbol'){
+        var internalPaths = parentElement.querySelectorAll('path, ellipse, rect, circle');
+        internalPaths.forEach(path => {
+            path.setAttribute('fill', 'yellow');
+            path.setAttribute('fill-opacity', '0.2');
+        });
+    } 
+
     var highlightRects = node.querySelectorAll('.commissionHighlight');
     if (highlightRects.length !== 0)
         return;
@@ -107,6 +116,14 @@ function addCommissionHighlight(node){
 }
 
 function removeCommissionHighlight(node) {
+    var parentElement = node.parentNode;
+    if(parentElement.tagName === 'symbol'){
+        var internalPaths = parentElement.querySelectorAll('path, ellipse, rect, circle');
+        internalPaths.forEach(path => {
+            path.setAttribute('fill', 'none');
+            path.setAttribute('fill-opacity', '0.0');
+        });
+    }
     let highlightRects = node.querySelectorAll('.commissionHighlight');
     highlightRects.forEach(rect => rect.remove());
 }
@@ -119,7 +136,12 @@ async function updateInCommissioningPackage() {
     let queryInside = `
     SELECT * WHERE {
         ?node a data:insideBoundary . 
-        ?node <http://sandbox.dexpi.org/rdl/TagNameAssignmentClass> ?o .
+        ?node <http://noaka.org/rdl/SequenceAssignmentClass> ?o .
+        { ?node <http://sandbox.dexpi.org/rdl/TagNameAssignmentClass> ?tagNr. }
+            UNION
+            { ?node <http://noaka.org/rdl/ItemTagAssignmentClass> ?tagNr. }
+          FILTER NOT EXISTS { ?node a imf:Terminal . }
+
     }
     `;
     let queryBoundary = `
@@ -150,7 +172,7 @@ async function updateInCommissioningPackage() {
         document.getElementById('boundary-table-container').innerHTML = '';
     }
     nodes.forEach(node => {
-        if (nodeIds.includes(node.id) && !node.classList.contains('boundary') && !node.classList.contains('insideBoundary')) {
+        if (nodeIds.includes(node.id) && !node.classList.contains('boundary')) {
             addCommissionHighlight(node);
         } else {
             removeCommissionHighlight(node);
