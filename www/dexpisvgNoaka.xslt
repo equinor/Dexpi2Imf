@@ -77,7 +77,7 @@
                 <xsl:text>#000000</xsl:text>
             </xsl:attribute>
             <xsl:attribute name="stroke-width">
-                <xsl:value-of select="Presentation/@LineWeight" />
+                <xsl:text>0.5</xsl:text>
             </xsl:attribute>
             <xsl:choose>
                 <xsl:when test="parent::InformationFlow">
@@ -370,6 +370,30 @@
                 </text>
             </a>
         </xsl:if>
+    </xsl:template>
+
+    <!-- Template for PolyLine elements -->
+    <xsl:template match="PolyLine">
+        <xsl:param name="height" />
+        <path fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <xsl:attribute name="d">
+                <xsl:text>M </xsl:text>
+                <xsl:for-each select="Coordinate">
+                    <xsl:value-of select="@X" />
+                    <xsl:text> </xsl:text>
+                    <xsl:value-of select="$height - @Y" />
+                    <xsl:if test="position() != last()">
+                        <xsl:text> L </xsl:text>
+                    </xsl:if>
+                </xsl:for-each>
+            </xsl:attribute>
+            <xsl:attribute name="stroke">
+                <xsl:text>#000000</xsl:text>
+            </xsl:attribute>
+            <xsl:attribute name="stroke-width">
+                <xsl:text>0.5</xsl:text>
+            </xsl:attribute>
+        </path>
     </xsl:template>
 
     <!-- Template to remove elements with a red or green stroke, excluding text elements -->
