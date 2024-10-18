@@ -2,30 +2,22 @@
 
 
 .node ellipse:hover {
-    cursor: pointer;                 
-    pointer-events: all;         
-    fill: green; 
-    stroke: green; 
-    width: 10px;
-    height: 10px ;
+    cursor: pointer; 
+    opacity: 100;                
 }
 
 .node ellipse {
-    fill: yellow;
-    pointer-events: all;
-    stroke: yellow;                                  
+    /* Opacity = 0 -> hidden until selected or hovered. Commented out for now so that it is easier for the next person to take over this task   */
+    /* opacity: 0; */
+    stroke-width: 8;   
 }
 
-.boundary text {
-    fill: #FF0000;
-}
-
-.insideBoundary text {
-    fill: rgb(34 244 18);
-}
-
-.inCommissioningPackage text {
-    fill: rgb(112 237 240);
+/* TODO 
+Clearly display that an element is chosen as internal. Maybe mark the entire element at once, rather then just the ellipse? 
+*/
+.insideBoundary ellipse {
+    stroke: rgb(37, 18, 244);
+    opacity: 100;
 }
 
 /*START. Style for the table and the dowload button */
