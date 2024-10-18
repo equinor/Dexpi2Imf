@@ -1,8 +1,10 @@
 let nodes = document.querySelectorAll('.node');
 let pipes = document.querySelectorAll('.piping');
 
+
 nodes.forEach((node) => {
     node.addEventListener('click', async (event) => {
+        console.log("NODE CLICKED")
         await handleNodeClick(node, event);
         await updateInCommissioningPackage();
     });
@@ -24,10 +26,8 @@ async function handleNodeClick(node, event) {
             node.classList.remove('insideBoundary');
             removeCommissionHighlight(node);
             await makeSparqlAndUpdateStore(node.id, 'delete', 'insideBoundary');
-            console.log("NODE CLICKED")
         } else {
             node.classList.add('insideBoundary');
-            console.log("NODE CLICKED")
             await makeSparqlAndUpdateStore(node.id, 'insert', 'insideBoundary');
             if (node.classList.contains('boundary')) {
                 node.classList.remove('boundary');
