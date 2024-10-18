@@ -1,8 +1,19 @@
 /* ------ style.css ----- */
 
-.node:hover * {
-    transition: 0.6s;
-    cursor:pointer;
+
+.node ellipse:hover {
+    cursor: pointer;                 
+    pointer-events: all;         
+    fill: green; 
+    stroke: green; 
+    width: 10px;
+    height: 10px ;
+}
+
+.node ellipse {
+    fill: yellow;
+    pointer-events: all;
+    stroke: yellow;                                  
 }
 
 .boundary text {
@@ -17,3 +28,6 @@
     fill: rgb(112 237 240);
 }
 
+use {
+    pointer-events: none;
+}
