@@ -243,28 +243,6 @@
                 </xsl:otherwise>
             </xsl:choose>
         </xsl:variable> 
-        
-        
-        <xsl:variable name="inputTerminal">
-            <xsl:choose>
-                <xsl:when  test="$componentType='PipingComponent'">
-                    <xsl:value-of select="'inputTerminal'"/>
-                </xsl:when>
-                <xsl:otherwise>                    
-                </xsl:otherwise>
-            </xsl:choose>
-        </xsl:variable>
-        
-        <xsl:variable name="outputTerminal">
-            <xsl:choose>
-                <xsl:when  test="$componentType='PipingComponent'">
-                    <xsl:value-of select="'outputTerminal'"/>
-                </xsl:when>
-                 <xsl:otherwise>                    
-                </xsl:otherwise>
-            </xsl:choose>
-        </xsl:variable>
-        
         <xsl:variable
             name="shapeValue"
             select="//ShapeCatalogue/*[@ComponentName=$componentName]/GenericAttributes/GenericAttribute/@Value" />
@@ -296,8 +274,6 @@
                         <xsl:with-param name="label" select="$label" />
                         <xsl:with-param name="id" select="$id" />
                         <xsl:with-param name="componentType" select="$componentType"></xsl:with-param>
-                        <xsl:with-param name="inputTerminal" select="$inputTerminal"/>
-                        <xsl:with-param name="outputTerminal" select="$outputTerminal"/>
                     </xsl:apply-templates>
                 </g>
             </xsl:if>
@@ -310,15 +286,11 @@
     <xsl:template match="svg:*">
         <xsl:param name="label" />
         <xsl:param name="id" />
-        <xsl:param name="inputTerminal"/>
-        <xsl:param name="outputTerminal"/>
         <xsl:param name="componentType"/>
         <xsl:copy>
             <xsl:apply-templates select="@*|node()">
                 <xsl:with-param name="label" select="$label" />
                 <xsl:with-param name="id" select="$id" />
-                <xsl:with-param name="inputTerminal" select="$inputTerminal"/>
-                <xsl:with-param name="outputTerminal" select="$outputTerminal"/>
                 <xsl:with-param name="componentType" select="$componentType" />
             </xsl:apply-templates>
         </xsl:copy>
@@ -327,8 +299,6 @@
     <xsl:template match="svg:g[@data-label]">
         <xsl:param name="id" />
         <xsl:param name="componentType" />
-        <xsl:param name="inputTerminal"/>
-        <xsl:param name="outputTerminal"/>
         <xsl:choose>
             <xsl:when test="$componentType='Nozzle' and @data-label='Connection' and @data-Direction='0'">
                 <a id="{concat('https://assetid.equinor.com/plantx#', $id)}" class="node">
@@ -347,12 +317,12 @@
                     </a>
                 </xsl:if>
                 <xsl:if test="@data-label='Connection' and @data-Direction='0'">
-                    <a id="{concat('https://assetid.equinor.com/plantx#', $inputTerminal)}" class="terminal">
+                    <a id="{concat('https://assetid.equinor.com/plantx#', $id, '-node1')}" class="terminal">
                         <xsl:call-template name="copy-attributes-and-children"/>
                     </a>
                 </xsl:if>
                 <xsl:if test="@data-label='Connection' and @data-Direction='180'">
-                    <a id="{concat('https://assetid.equinor.com/plantx#', $outputTerminal)}" class="terminal">
+                    <a id="{concat('https://assetid.equinor.com/plantx#', $id, '-node2')}" class="terminal">
                         <xsl:call-template name="copy-attributes-and-children"/>
                     </a>
                 </xsl:if>
