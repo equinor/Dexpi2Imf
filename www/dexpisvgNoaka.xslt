@@ -300,32 +300,38 @@
         <xsl:param name="id" />
         <xsl:param name="componentType" />
         <xsl:choose>
+        <!-- For nozzle use the connection point on the 'T' -->
             <xsl:when test="$componentType='Nozzle' and @data-label='Connection' and @data-Direction='0'">
                 <a id="{concat('https://assetid.equinor.com/plantx#', $id)}" class="node">
                     <xsl:call-template name="copy-attributes-and-children"/>
                 </a>
             </xsl:when>
+            <!-- We do not bother with terminals on the equipment, since the nozzles connected to the equipment is the terminals. -->
             <xsl:when test="$componentType='Equipment' and @data-label='origo'">
                 <a id="{concat('https://assetid.equinor.com/plantx#', $id)}" class="node">
                     <xsl:call-template name="copy-attributes-and-children"/>
                 </a>
             </xsl:when>
-            <xsl:otherwise>
+            <xsl:when test="$componentType='PipingComponent'">
                 <xsl:if test="@data-label='origo'">
                     <a id="{concat('https://assetid.equinor.com/plantx#', $id)}" class="node">
                         <xsl:call-template name="copy-attributes-and-children"/>
                     </a>
                 </xsl:if>
+                <!-- Terminal on the left side of a piping component -->
                 <xsl:if test="@data-label='Connection' and @data-Direction='0'">
-                    <a id="{concat('https://assetid.equinor.com/plantx#', $id, '-node1')}" class="terminal">
+                    <a id="{concat('https://assetid.equinor.com/plantx#', $id, '-node1')}" class="node">
                         <xsl:call-template name="copy-attributes-and-children"/>
                     </a>
                 </xsl:if>
+                <!-- Terminal on the right side of a piping component -->
                 <xsl:if test="@data-label='Connection' and @data-Direction='180'">
-                    <a id="{concat('https://assetid.equinor.com/plantx#', $id, '-node2')}" class="terminal">
+                    <a id="{concat('https://assetid.equinor.com/plantx#', $id, '-node2')}" class="node">
                         <xsl:call-template name="copy-attributes-and-children"/>
                     </a>
                 </xsl:if>
+            </xsl:when>
+            <xsl:otherwise>
             </xsl:otherwise>
         </xsl:choose>
     </xsl:template>
