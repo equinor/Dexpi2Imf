@@ -84,7 +84,7 @@
                 <xsl:text>#000000</xsl:text>
             </xsl:attribute>
             <xsl:attribute name="stroke-width">
-                <xsl:value-of select="Presentation/@LineWeight" />
+                <xsl:text>0.5</xsl:text>
             </xsl:attribute>
             <xsl:choose>
                 <xsl:when test="parent::InformationFlow">
@@ -293,14 +293,43 @@
 
     <xsl:template match="svg:text[not(preceding::svg:text)]">
         <xsl:param name="labelParam" />
-            <text fill="#000000" font-family="Helvetica" font-size="40px"
-            x="{@x - 70}"
-            y="{@y+15}" transform="{@transform}">
-            <xsl:attribute name="vector-effect">non-scaling-stroke</xsl:attribute>
-            <xsl:attribute name="stroke-linecap">round</xsl:attribute>
-            <xsl:attribute name="stroke-linejoin">round</xsl:attribute>
-            <xsl:value-of select="$labelParam" />
-        </text>
+        <xsl:param name="idValue" />
+        <xsl:if
+            test="string-length($labelParam > 0)">
+            <a id="{concat('https://assetid.equinor.com/plantx#', $idValue)}" class="node">
+                <text fill="#000000" font-family="Helvetica" font-size="40px" x="{@x - 70}"
+                    y="{@y+15}" transform="{@transform}">
+                    <xsl:attribute name="vector-effect">non-scaling-stroke</xsl:attribute>
+                    <xsl:attribute name="stroke-linecap">round</xsl:attribute>
+                    <xsl:attribute name="stroke-linejoin">round</xsl:attribute>
+                    <xsl:value-of select="$labelParam" />
+                </text>
+            </a>
+        </xsl:if>
+    </xsl:template>
+
+    <!-- Template for PolyLine elements -->
+    <xsl:template match="PolyLine">
+        <xsl:param name="height" />
+        <path fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <xsl:attribute name="d">
+                <xsl:text>M </xsl:text>
+                <xsl:for-each select="Coordinate">
+                    <xsl:value-of select="@X" />
+                    <xsl:text> </xsl:text>
+                    <xsl:value-of select="$height - @Y" />
+                    <xsl:if test="position() != last()">
+                        <xsl:text> L </xsl:text>
+                    </xsl:if>
+                </xsl:for-each>
+            </xsl:attribute>
+            <xsl:attribute name="stroke">
+                <xsl:text>#000000</xsl:text>
+            </xsl:attribute>
+            <xsl:attribute name="stroke-width">
+                <xsl:text>0.5</xsl:text>
+            </xsl:attribute>
+        </path>
     </xsl:template>
 
     <xsl:template match="svg:g[@data-label='origo']">

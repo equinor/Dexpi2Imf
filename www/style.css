@@ -28,6 +28,39 @@
     fill: rgb(112 237 240);
 }
 
-use {
-    pointer-events: none;
+/*START. Style for the table and the dowload button */
+#download-btn {
+    padding: 10px 20px;
+    margin: 10px 0;
+    cursor: pointer;
 }
+
+.container {
+    display: flex;
+}
+
+#inside-boundary-table-container {
+    width: 50%; 
+
+}
+
+#boundary-table-container {
+    width: 50%; 
+
+}
+
+
+table {
+    width: 100%; 
+    border-collapse: collapse;
+}
+
+table, th, td {
+    border: 1px solid black;
+}
+
+th, td {
+    padding: 8px;
+    text-align: left;
+}
+/*END. Style for the table and the dowload button */
