@@ -43,8 +43,8 @@ async function handleNodeClick(node, event) {
         } else {
             node.classList.add('boundary');
             await makeSparqlAndUpdateStore(node.id, boundary_actions.insert, boundary_parts.boundary);
-            if (node.classList.contains('boundary')) {
-                node.classList.remove('boundary');
+            if (node.classList.contains('insideBoundary')) {
+                node.classList.remove('insideBoundary');
                 removeCommissionHighlight(node);
                 await makeSparqlAndUpdateStore(node.id, boundary_actions.delete, boundary_parts.insideBoundary);
             }
