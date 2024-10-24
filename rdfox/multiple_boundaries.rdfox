@@ -1,8 +1,0 @@
-boundaries.rdfox
-prefix comp: <https://rdf.equinor.com/completion#>
-
-import > asset:axioms ../owl/boundary.ttl
-importaxioms  asset:axioms 
-
-import ../datalog/multiple_boundaries.datalog
-import +p "../rml_noaka/pandid.trig"
