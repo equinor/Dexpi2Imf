@@ -13,7 +13,7 @@ window.addEventListener('load', async () => {
     for (const node of nodes) {
         await makeSparqlAndUpdateStore(node.id, boundary_actions.delete, boundary_parts.boundary);
         await makeSparqlAndUpdateStore(node.id, boundary_actions.delete, boundary_parts.insideBoundary);
-        node.classList.remove(boundary_parts.insideBoundary, boundary_parts.boundary);
+        node.classList.remove('insideBoundary', 'boundary');
         removeCommissionHighlight(node);
     }
 });
@@ -21,30 +21,30 @@ window.addEventListener('load', async () => {
 async function handleNodeClick(node, event) {
     // ctrl + left click - select or deselect nodes as insideBoundary
     if (event.ctrlKey) {
-        if (node.classList.contains(boundary_parts.insideBoundary)) {
-            node.classList.remove(boundary_parts.insideBoundary);
+        if (node.classList.contains('insideBoundary')) {
+            node.classList.remove('insideBoundary');
             removeCommissionHighlight(node);
             await makeSparqlAndUpdateStore(node.id, boundary_actions.delete, boundary_parts.insideBoundary);
         } else {
-            node.classList.add(boundary_parts.insideBoundary);
+            node.classList.add('insideBoundary');
             await makeSparqlAndUpdateStore(node.id, boundary_actions.insert, boundary_parts.insideBoundary);
-            if (node.classList.contains(boundary_parts.boundary)) {
-                node.classList.remove(boundary_parts.boundary);
+            if (node.classList.contains('boundary')) {
+                node.classList.remove('boundary');
                 removeCommissionHighlight(node);
                 await makeSparqlAndUpdateStore(node.id, boundary_actions.delete, boundary_parts.boundary);
             }
         }
     // left click - select or deselect nodes as boundary
     } else {
-        if (node.classList.contains(boundary_parts.boundary)) {
-            node.classList.remove(boundary_parts.boundary);
+        if (node.classList.contains('boundary')) {
+            node.classList.remove('boundary');
             removeCommissionHighlight(node);
             await makeSparqlAndUpdateStore(node.id, boundary_actions.delete, boundary_parts.boundary);
         } else {
-            node.classList.add(boundary_parts.boundary);
+            node.classList.add('boundary');
             await makeSparqlAndUpdateStore(node.id, boundary_actions.insert, boundary_parts.boundary);
-            if (node.classList.contains(boundary_parts.insideBoundary)) {
-                node.classList.remove(boundary_parts.insideBoundary);
+            if (node.classList.contains('boundary')) {
+                node.classList.remove('boundary');
                 removeCommissionHighlight(node);
                 await makeSparqlAndUpdateStore(node.id, boundary_actions.delete, boundary_parts.insideBoundary);
             }
@@ -174,14 +174,14 @@ async function updateInCommissioningPackage() {
         document.getElementById('boundary-table-container').innerHTML = '';
     }
     nodes.forEach(node => {
-        if (nodeIds.includes(node.id) && !node.classList.contains(boundary_parts.boundary)) {
+        if (nodeIds.includes(node.id) && !node.classList.contains('boundary')) {
             addCommissionHighlight(node);
         } else {
             removeCommissionHighlight(node);
         }
     });
     pipes.forEach(pipe => {
-        if (nodeIds.includes(pipe.id) && !pipe.classList.contains(boundary_parts.boundary) && !pipe.classList.contains(boundary_parts.insideBoundary)) {
+        if (nodeIds.includes(pipe.id) && !pipe.classList.contains('boundary') && !pipe.classList.contains('insideBoundary')) {
             addPipeHighlight(pipe);
         } else {
             removePipeHighlight(pipe);
@@ -195,8 +195,8 @@ function parseNodeIds(result) {
 }
 
 function checkOnlyInsideBoundary() {
-    let hasBoundary = Array.from(nodes).some(node => node.classList.contains(boundary_parts.boundary));
-    let hasInsideBoundary = Array.from(nodes).some(node => node.classList.contains(boundary_parts.insideBoundary));
+    let hasBoundary = Array.from(nodes).some(node => node.classList.contains('boundary'));
+    let hasInsideBoundary = Array.from(nodes).some(node => node.classList.contains('insideBoundary'));
     return hasInsideBoundary && !hasBoundary;
 }
 
