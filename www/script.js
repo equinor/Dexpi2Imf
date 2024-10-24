@@ -170,6 +170,7 @@ async function updateInCommissioningPackage() {
         displayTablesAndDownloadButton(nodeIdsInside, 'Inside Boundary', 'inside-boundary-table-container', nodeIdsBoundary, 'Boundary', 'boundary-table-container');
     } else {
         // Clear the container if there are no nodes
+
         document.getElementById('inside-boundary-table-container').innerHTML = '';
         document.getElementById('boundary-table-container').innerHTML = '';
     }
