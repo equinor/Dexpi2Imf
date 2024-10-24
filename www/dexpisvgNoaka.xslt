@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet version="1.0"
-    xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-    xmlns="http://www.w3.org/2000/svg"
-    xmlns:svg="http://www.w3.org/2000/svg"
-    xmlns:math="urn:math"
-    xmlns:color="urn:color"
+                xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+                xmlns="http://www.w3.org/2000/svg"
+                xmlns:svg="http://www.w3.org/2000/svg"
+                xmlns:math="urn:math"
+                xmlns:color="urn:color" xmlns:html="http://www.w3.org/1999/xhtml"
 >
     <xsl:output method="xml" indent="yes" />
 
@@ -333,6 +333,10 @@
                         </xsl:choose>
                     </xsl:variable>
 
+                    <xsl:variable name="displayNameValueA">
+                        <xsl:value-of select="$matchedElement/../GenericAttributes/GenericAttribute[@Name='TagTypeAssignmentClass']/@Value" />
+                    </xsl:variable>
+
                     <xsl:variable name="IDValue" select="$matchedElement/@ID" />
                     <xsl:variable name="attributeValue"
                         select="GenericAttributes/GenericAttribute/@Value" />
@@ -346,6 +350,7 @@
 						<xsl:apply-templates
                             select="$doc//svg:g/*">
                             <xsl:with-param name="labelParam" select="$displayNameValue" />
+                            <xsl:with-param name="labelParamA" select="$displayNameValueA" />
                             <xsl:with-param name="idValue" select="$IDValue" />
                         </xsl:apply-templates>
                     </xsl:if>
@@ -355,7 +360,7 @@
         </defs>
     </xsl:template>
 
-    <xsl:template match="svg:text[not(preceding::svg:text)]">
+    <xsl:template match="svg:text">
         <xsl:param name="labelParam" />
         <xsl:param name="idValue" />
         <xsl:if
@@ -367,6 +372,23 @@
                     <xsl:attribute name="stroke-linecap">round</xsl:attribute>
                     <xsl:attribute name="stroke-linejoin">round</xsl:attribute>
                     <xsl:value-of select="$labelParam" />
+                </text>
+            </a>
+        </xsl:if>
+    </xsl:template>
+
+    <xsl:template match="svg:text[../../@data-LabelIndex='A']">
+        <xsl:param name="labelParamA" />
+        <xsl:param name="idValue" />
+        <xsl:if
+                test="string-length($labelParamA > 0)">
+            <a id="{concat('https://assetid.equinor.com/plantx#', $idValue)}" class="node">
+                <text fill="#000000" font-family="Helvetica" font-size="40px" x="{@x - 70}"
+                      y="{@y+15}" transform="{@transform}">
+                    <xsl:attribute name="vector-effect">non-scaling-stroke</xsl:attribute>
+                    <xsl:attribute name="stroke-linecap">round</xsl:attribute>
+                    <xsl:attribute name="stroke-linejoin">round</xsl:attribute>
+                    <xsl:value-of select="$labelParamA" />
                 </text>
             </a>
         </xsl:if>
@@ -395,6 +417,9 @@
             </xsl:attribute>
         </path>
     </xsl:template>
+
+
+
 
     <!-- Template to remove elements with a red or green stroke, excluding text elements -->
     <xsl:template match="*[not(self::text)][@stroke='#ff0000' or @stroke='#00ff00']" />
