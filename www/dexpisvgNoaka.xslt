@@ -196,27 +196,6 @@
         </xsl:if>
     </xsl:template>
 
-    <!-- Template for Equipment, Nozzle,  stuff-->
-    <xsl:template match="*">
-        <xsl:param name="height" />
-        <xsl:if
-            test="@ComponentName">
-            <use>
-                <xsl:attribute name="href">
-                    <xsl:value-of select="concat('#', @ComponentName)" />
-                </xsl:attribute>
-                <xsl:call-template name="Position">
-                    <xsl:with-param name="height" select="$height" />
-                    <xsl:with-param name="PositionNode" select="Position" />
-                    <xsl:with-param name="ScaleNode" select="Scale" />
-                </xsl:call-template>
-            </use>
-        </xsl:if>
-        <xsl:apply-templates>
-            <xsl:with-param name="height" select="$height" />
-        </xsl:apply-templates>
-    </xsl:template>
-
     <!-- Template for * shapes except lines -->
     <xsl:template match="*">
         <xsl:param name="height" />
@@ -245,7 +224,19 @@
                         select="GenericAttributes/GenericAttribute[@Name='ItemTagAssignmentClass']/@Value" />
                 </xsl:otherwise>
             </xsl:choose>
-        </xsl:variable> 
+        </xsl:variable>
+
+        <xsl:variable name="labelA">
+            <xsl:value-of select="name()" />
+<!--            <xsl:value-of select="concat(GenericAttributes/GenericAttribute[@Name='ProcessPlantIdentificationCodeAssignmentClass']/@Value, '-', GenericAttributes/GenericAttribute[@Name='PlantSystemIdentificationCodeAssignmentClass']/@Value)" />-->
+        </xsl:variable>
+        <xsl:variable name="labelB">
+            <xsl:value-of select="../GenericAttributes/GenericAttribute[@Name='TagTypeAssignmentClass']/@Value" />
+        </xsl:variable>
+        <xsl:variable name="labelC">
+            <xsl:value-of select="../GenericAttributes/GenericAttribute[@Name='SequenceAssignmentClass']/@Value" />
+        </xsl:variable>
+
         <xsl:variable
             name="shapeValue"
             select="//ShapeCatalogue/*[@ComponentName=$componentName]/GenericAttributes/GenericAttribute/@Value" />
@@ -271,6 +262,9 @@
                             select="$doc//svg:g/*">
                             <xsl:with-param name="labelParam" select="$label" />
                             <xsl:with-param name="idValue" select="$id" />
+                            <xsl:with-param name="labelParamA" select="$labelA" />
+                            <xsl:with-param name="labelParamB" select="$labelB" />
+                            <xsl:with-param name="labelParamC" select="$labelC" />
                         </xsl:apply-templates>
                     </symbol>
                 </defs>
@@ -333,10 +327,6 @@
                         </xsl:choose>
                     </xsl:variable>
 
-                    <xsl:variable name="displayNameValueA">
-                        <xsl:value-of select="$matchedElement/../GenericAttributes/GenericAttribute[@Name='TagTypeAssignmentClass']/@Value" />
-                    </xsl:variable>
-
                     <xsl:variable name="IDValue" select="$matchedElement/@ID" />
                     <xsl:variable name="attributeValue"
                         select="GenericAttributes/GenericAttribute/@Value" />
@@ -350,7 +340,6 @@
 						<xsl:apply-templates
                             select="$doc//svg:g/*">
                             <xsl:with-param name="labelParam" select="$displayNameValue" />
-                            <xsl:with-param name="labelParamA" select="$displayNameValueA" />
                             <xsl:with-param name="idValue" select="$IDValue" />
                         </xsl:apply-templates>
                     </xsl:if>
@@ -360,7 +349,7 @@
         </defs>
     </xsl:template>
 
-    <xsl:template match="svg:text">
+    <xsl:template match="svg:text" name="svgText">
         <xsl:param name="labelParam" />
         <xsl:param name="idValue" />
         <xsl:if
@@ -378,20 +367,34 @@
     </xsl:template>
 
     <xsl:template match="svg:text[../../@data-LabelIndex='A']">
-        <xsl:param name="labelParamA" />
+        <xsl:param name="labelParamA"/>
         <xsl:param name="idValue" />
-        <xsl:if
-                test="string-length($labelParamA > 0)">
-            <a id="{concat('https://assetid.equinor.com/plantx#', $idValue)}" class="node">
-                <text fill="#000000" font-family="Helvetica" font-size="40px" x="{@x - 70}"
-                      y="{@y+15}" transform="{@transform}">
-                    <xsl:attribute name="vector-effect">non-scaling-stroke</xsl:attribute>
-                    <xsl:attribute name="stroke-linecap">round</xsl:attribute>
-                    <xsl:attribute name="stroke-linejoin">round</xsl:attribute>
-                    <xsl:value-of select="$labelParamA" />
-                </text>
-            </a>
-        </xsl:if>
+        <xsl:call-template name="svgText">
+            <xsl:with-param name="labelParam" select="$labelParamA" />
+            <xsl:with-param name="idValue" select="$idValue" />
+        </xsl:call-template>
+
+    </xsl:template>
+
+    <xsl:template match="svg:text[../../@data-LabelIndex='B']">
+        <xsl:param name="labelParamB"/>
+        <xsl:param name="idValue" />
+        <xsl:call-template name="svgText">
+            <xsl:with-param name="labelParam" select="$labelParamB" />
+            <xsl:with-param name="idValue" select="$idValue" />
+        </xsl:call-template>
+
+    </xsl:template>
+
+
+    <xsl:template match="svg:text[../../@data-LabelIndex='C']">
+        <xsl:param name="labelParamC"/>
+        <xsl:param name="idValue" />
+        <xsl:call-template name="svgText">
+            <xsl:with-param name="labelParam" select="$labelParamC" />
+            <xsl:with-param name="idValue" select="$idValue" />
+        </xsl:call-template>
+
     </xsl:template>
 
     <!-- Template for PolyLine elements -->
