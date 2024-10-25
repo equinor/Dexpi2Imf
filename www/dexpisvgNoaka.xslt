@@ -363,11 +363,20 @@
                         select="Text/@Font" />
                     </xsl:attribute>
                     <xsl:attribute name="text-anchor">
-                        if Justification = CenterCenter output middle
-                        If Justification = RightCenter output right
-                        
-                        <xsl:value-of
-                        select="Text/@Justification" />
+                        <xsl:choose>
+                            <xsl:when test="Text/@Justification = 'RightCenter'">
+                                <xsl:text>End</xsl:text>
+                            </xsl:when>
+                            <xsl:when test="Text/@Justification = 'LeftCenter'">
+                                <xsl:text>Start</xsl:text>
+                            </xsl:when>
+                            <xsl:when test="Text/@Justification = 'CenterCenter'">
+                                <xsl:text>Middle</xsl:text>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <xsl:text>Middle</xsl:text>
+                            </xsl:otherwise>
+                        </xsl:choose>
                     </xsl:attribute>
                     <xsl:attribute name="transform">
                         <xsl:variable name="refX"
