@@ -363,6 +363,9 @@
                         select="Text/@Font" />
                     </xsl:attribute>
                     <xsl:attribute name="text-anchor">
+                        if Justification = CenterCenter output middle
+                        If Justification = RightCenter output right
+                        
                         <xsl:value-of
                         select="Text/@Justification" />
                     </xsl:attribute>
@@ -379,15 +382,10 @@
                             name="posY" select="Text/Position/Location/@Y" />
                         <xsl:variable
                             name="textRotationAngle">
-                            <xsl:choose>
-                                <xsl:when test="$refX = 0 and $refY = 1">270</xsl:when>
-                                <xsl:when test="$refX = 1 and $refY = 0">0</xsl:when>
-                                <xsl:otherwise>0</xsl:otherwise> <!-- Default rotation angle if not
-                                horizontal or vertical -->
-                            </xsl:choose>
+                            <xsl:value-of select="Text/@TextAngle" />
                         </xsl:variable>
                     <xsl:value-of
-                            select="concat('rotate(', $textRotationAngle, ' ', $posX, ' ', $height - $posY, ')')" />
+                            select="concat('rotate(', 360 - $textRotationAngle, ' ', $posX, ' ', $height - $posY, ')')" />
                     </xsl:attribute>
                     <xsl:value-of select="$displayText" />
                 </text>
