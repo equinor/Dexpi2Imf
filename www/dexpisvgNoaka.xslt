@@ -197,32 +197,12 @@
         </xsl:if>
     </xsl:template>
 
-    <!-- Template for Equipment, Nozzle,  stuff-->
-<!--     <xsl:template match="*">
-        <xsl:param name="height" />
-        <xsl:if
-            test="@ComponentName">
-            <use>
-                <xsl:attribute name="href">
-                    <xsl:value-of select="concat('#', @ComponentName)" />
-                </xsl:attribute>
-                <xsl:call-template name="Position">
-                    <xsl:with-param name="height" select="$height" />
-                    <xsl:with-param name="PositionNode" select="Position" />
-                    <xsl:with-param name="ScaleNode" select="Scale" />
-                </xsl:call-template>
-            </use>
-        </xsl:if>
-        <xsl:apply-templates>
-            <xsl:with-param name="height" select="$height" />
-        </xsl:apply-templates>
-    </xsl:template> -->
-
     <!-- Template for * shapes except lines -->
     <xsl:template match="*">
         <xsl:param name="height" />
         <xsl:variable name="id" select="@ID" />
         <xsl:variable name="componentName" select="@ComponentName" />
+        <xsl:variable name="componentClass" select="@ComponentClass" />
         <xsl:variable name="shapeId" select="concat($id, '-', $componentName)"/>
         <xsl:variable name="label">
             <xsl:choose>
@@ -272,6 +252,7 @@
                             select="$doc//svg:g/*">
                             <xsl:with-param name="labelParam" select="$label" />
                             <xsl:with-param name="idValue" select="$id" />
+                            <xsl:with-param name="componentClass" select="$componentClass" />
                         </xsl:apply-templates>
                     </symbol>
                 </defs>
@@ -298,8 +279,9 @@
     <xsl:template match="svg:text[not(preceding::svg:text)]">
         <xsl:param name="labelParam" />
         <xsl:param name="idValue" />
+        <xsl:param name="componentClass" />
         <xsl:if
-            test="string-length($labelParam) > 0 and not(contains($idValue, 'Nozzle'))">
+            test="string-length($labelParam) > 0 and not(contains($componentClass, 'Nozzle'))">
             <a id="{concat('https://assetid.equinor.com/plantx#', $idValue)}" class="node">
                 <text fill="#000000" font-family="Helvetica" font-size="40px" x="{@x - 70}"
                     y="{@y+15}" transform="{@transform}">
@@ -373,9 +355,17 @@
                         <xsl:value-of
                             select="$height - (Position/Location/@Y | Text/Position/Location/@Y)" />
                     </xsl:attribute>
-                    <xsl:attribute name="font-size">3.3px</xsl:attribute>
-                    <xsl:attribute name="font-family">Arial</xsl:attribute>
-                    <xsl:attribute name="text-anchor">middle</xsl:attribute>
+                    <xsl:attribute name="font-size">
+                        <xsl:value-of select="Text/@Height" />
+                    </xsl:attribute>
+                    <xsl:attribute name="font-family">
+                        <xsl:value-of
+                        select="Text/@Font" />
+                    </xsl:attribute>
+                    <xsl:attribute name="text-anchor">
+                        <xsl:value-of
+                        select="Text/@Justification" />
+                    </xsl:attribute>
                     <xsl:attribute name="transform">
                         <xsl:variable name="refX"
                             select="Position/Reference/@X | Text/Position/Reference/@X" />
@@ -384,9 +374,9 @@
                         <!-- Assuming that a Reference of (1,0,0) means horizontal text, calculate
                         the rotation angle -->
                         <xsl:variable
-                            name="posX" select="Position/Location/@X | Text/Position/Location/@X" />
+                            name="posX" select="Text/Position/Location/@X" />
                         <xsl:variable
-                            name="posY" select="Position/Location/@Y | Text/Position/Location/@Y" />
+                            name="posY" select="Text/Position/Location/@Y" />
                         <xsl:variable
                             name="textRotationAngle">
                             <xsl:choose>
