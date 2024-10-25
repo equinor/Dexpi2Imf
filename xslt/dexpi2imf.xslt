@@ -46,7 +46,7 @@
     </xsl:template>
     
     
-    <xsl:template match="//PipingNetworkSegment/PipingComponent/ConnectionPoints/Node[@Type='process'] | //PipingNetworkSegment/PropertyBreak/ConnectionPoints/Node[@Type='process']">
+    <xsl:template name="PipingComponentTerminalMap" match="//PipingNetworkSegment/PipingComponent/ConnectionPoints/Node[@Type='process'] | //PipingNetworkSegment/PropertyBreak/ConnectionPoints/Node[@Type='process']">
         <rdf:Description>
             <xsl:attribute name="rdf:about">
                 <xsl:value-of select="concat('https://assetid.equinor.com/plantx#', ../../@ID, '-node', count(preceding-sibling::*))" />
@@ -81,6 +81,34 @@
                 <xsl:value-of select="concat('https://assetid.equinor.com/plantx#', $connectorId)" />         
             </imf:hasConnector>
         </rdf:Description>
+        <xsl:apply-templates />
+    </xsl:template>
+    
+    
+    <xsl:template match="//PipingNetworkSegment/PipingComponent | //PipingNetworkSegment/PropertyBreak">
+        <rdf:Description>
+            <xsl:attribute name="rdf:about">
+                <xsl:value-of select="concat('https://assetid.equinor.com/plantx#', @ID)" />
+            </xsl:attribute>
+            <rdf:type>
+                <imf:Block/>
+                <dexpi:PipingComponent/>
+            </rdf:type>
+            <imf:partOf>
+                <rdf:Description>
+                    <xsl:attribute name="rdf:about">
+                        <xsl:value-of select="concat('https://assetid.equinor.com/plantx#', ../@ID)" />
+                    </xsl:attribute>
+                </rdf:Description>
+            </imf:partOf>
+            <rdfs:label>
+                <xsl:value-of select="GenericAttributes/GenericAttribute[@Name='ItemTagAssignmentClass']/@Value" />
+            </rdfs:label>
+            <imf:hasTerminal>
+<!--                <xsl:call-template name="PipingComponentTerminalMap " />-->
+            </imf:hasTerminal>
+        </rdf:Description>
+        
     </xsl:template>
     
 </xsl:stylesheet>   
