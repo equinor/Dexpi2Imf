@@ -1,5 +1,6 @@
 let nodes = document.querySelectorAll('.node');
 let pipes = document.querySelectorAll('.piping');
+let completionPackageIri = 'asset:Package1';
 
 nodes.forEach((node) => {
     node.addEventListener('click', async (event) => {
@@ -10,8 +11,8 @@ nodes.forEach((node) => {
 
 window.addEventListener('load', async () => {
     for (const node of nodes) {
-        await makeSparqlAndUpdateStore(node.id, 'delete', 'boundary');
-        await makeSparqlAndUpdateStore(node.id, 'delete', 'insideBoundary');
+        await makeSparqlAndUpdateStore(node.id, boundary_actions.delete, boundary_parts.boundary);
+        await makeSparqlAndUpdateStore(node.id, boundary_actions.delete, boundary_parts.insideBoundary);
         node.classList.remove('insideBoundary', 'boundary');
         removeCommissionHighlight(node);
     }
@@ -23,14 +24,14 @@ async function handleNodeClick(node, event) {
         if (node.classList.contains('insideBoundary')) {
             node.classList.remove('insideBoundary');
             removeCommissionHighlight(node);
-            await makeSparqlAndUpdateStore(node.id, 'delete', 'insideBoundary');
+            await makeSparqlAndUpdateStore(node.id, boundary_actions.delete, boundary_parts.insideBoundary);
         } else {
             node.classList.add('insideBoundary');
-            await makeSparqlAndUpdateStore(node.id, 'insert', 'insideBoundary');
+            await makeSparqlAndUpdateStore(node.id, boundary_actions.insert, boundary_parts.insideBoundary);
             if (node.classList.contains('boundary')) {
                 node.classList.remove('boundary');
                 removeCommissionHighlight(node);
-                await makeSparqlAndUpdateStore(node.id, 'delete', 'boundary');
+                await makeSparqlAndUpdateStore(node.id, boundary_actions.delete, boundary_parts.boundary);
             }
         }
     // left click - select or deselect nodes as boundary
@@ -38,14 +39,14 @@ async function handleNodeClick(node, event) {
         if (node.classList.contains('boundary')) {
             node.classList.remove('boundary');
             removeCommissionHighlight(node);
-            await makeSparqlAndUpdateStore(node.id, 'delete', 'boundary');
+            await makeSparqlAndUpdateStore(node.id, boundary_actions.delete, boundary_parts.boundary);
         } else {
             node.classList.add('boundary');
-            await makeSparqlAndUpdateStore(node.id, 'insert', 'boundary');
+            await makeSparqlAndUpdateStore(node.id, boundary_actions.insert, boundary_parts.boundary);
             if (node.classList.contains('insideBoundary')) {
                 node.classList.remove('insideBoundary');
                 removeCommissionHighlight(node);
-                await makeSparqlAndUpdateStore(node.id, 'delete', 'insideBoundary');
+                await makeSparqlAndUpdateStore(node.id, boundary_actions.delete, boundary_parts.insideBoundary);
             }
         }
     }
@@ -130,12 +131,12 @@ function removeCommissionHighlight(node) {
 
 async function updateInCommissioningPackage() {
     if (checkOnlyInsideBoundary()) { return ;}
-    let query = 'SELECT ?node WHERE{?node a data:insideBoundary .}';
+    let query = 'SELECT ?node WHERE{?node comp:isInPackage ' + completionPackageIri + ' .}';
     let result = await queryTripleStore(query);
     let nodeIds = parseNodeIds(result);
     let queryInside = `
     SELECT * WHERE {
-        ?node a data:insideBoundary . 
+        ?node comp:isInPackage ${completionPackageIri} . 
         ?node <http://noaka.org/rdl/SequenceAssignmentClass> ?o .
         { ?node <http://sandbox.dexpi.org/rdl/TagNameAssignmentClass> ?tagNr. }
             UNION
@@ -144,9 +145,10 @@ async function updateInCommissioningPackage() {
 
     }
     `;
+
     let queryBoundary = `
     SELECT DISTINCT  ?node ?tagNr WHERE {
-    ?node a data:boundary . 
+    ?node comp:isBoundaryOf ${completionPackageIri} . 
     ?node <http://noaka.org/rdl/SequenceAssignmentClass> ?o .
         {
             { ?node <http://sandbox.dexpi.org/rdl/TagNameAssignmentClass> ?tagNr. }
@@ -199,10 +201,18 @@ function checkOnlyInsideBoundary() {
     return hasInsideBoundary && !hasBoundary;
 }
 
+const boundary_actions = {
+    'insert': 'INSERT DATA ',
+    'delete': 'DELETE DATA '
+}
+
+const boundary_parts = {
+    'insideBoundary': 'comp:isInPackage',
+    'boundary': 'comp:isBoundaryOf'
+}
+
 async function makeSparqlAndUpdateStore(nodeId, action, type) {
-    let sparql = action === 'insert'
-        ? `INSERT DATA { <${nodeId}> a data:${type} . }`
-        : `DELETE DATA { <${nodeId}> a data:${type} . }`;
+    let sparql = `${action} { <${nodeId}> ${type} ${completionPackageIri} . }`;
     await updateTripleStore(sparql);
 }
 
