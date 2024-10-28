@@ -227,14 +227,13 @@
         </xsl:variable>
 
         <xsl:variable name="labelA">
-            <xsl:value-of select="name()" />
-<!--            <xsl:value-of select="concat(GenericAttributes/GenericAttribute[@Name='ProcessPlantIdentificationCodeAssignmentClass']/@Value, '-', GenericAttributes/GenericAttribute[@Name='PlantSystemIdentificationCodeAssignmentClass']/@Value)" />-->
+            <xsl:value-of select="concat(../../../../PlantStructureItem/GenericAttributes/GenericAttribute[@Name='ProcessPlantIdentificationCodeAssignmentClass']/@Value, '-', ../../../../PlantStructureItem/GenericAttributes/GenericAttribute[@Name='PlantSystemIdentificationCodeAssignmentClass']/@Value)" />
         </xsl:variable>
         <xsl:variable name="labelB">
             <xsl:value-of select="../GenericAttributes/GenericAttribute[@Name='TagTypeAssignmentClass']/@Value" />
         </xsl:variable>
         <xsl:variable name="labelC">
-            <xsl:value-of select="../GenericAttributes/GenericAttribute[@Name='SequenceAssignmentClass']/@Value" />
+            <xsl:value-of select="concat(../GenericAttributes/GenericAttribute[@Name='SequenceAssignmentClass']/@Value, ../GenericAttributes/GenericAttribute[@Name='TagSuffixAssignmentClass']/@Value)" />
         </xsl:variable>
 
         <xsl:variable
@@ -373,7 +372,6 @@
             <xsl:with-param name="labelParam" select="$labelParamA" />
             <xsl:with-param name="idValue" select="$idValue" />
         </xsl:call-template>
-
     </xsl:template>
 
     <xsl:template match="svg:text[../../@data-LabelIndex='B']">
@@ -383,9 +381,7 @@
             <xsl:with-param name="labelParam" select="$labelParamB" />
             <xsl:with-param name="idValue" select="$idValue" />
         </xsl:call-template>
-
     </xsl:template>
-
 
     <xsl:template match="svg:text[../../@data-LabelIndex='C']">
         <xsl:param name="labelParamC"/>
@@ -394,7 +390,6 @@
             <xsl:with-param name="labelParam" select="$labelParamC" />
             <xsl:with-param name="idValue" select="$idValue" />
         </xsl:call-template>
-
     </xsl:template>
 
     <!-- Template for PolyLine elements -->
@@ -420,9 +415,6 @@
             </xsl:attribute>
         </path>
     </xsl:template>
-
-
-
 
     <!-- Template to remove elements with a red or green stroke, excluding text elements -->
     <xsl:template match="*[not(self::text)][@stroke='#ff0000' or @stroke='#00ff00']" />
