@@ -9,8 +9,13 @@
     cursor: pointer; 
 }
 
+.insideBoundary path {
+    stroke-width: 0.5;
+    stroke: rgb(0, 255, 98);
+}
+
 .boundary path {
-   stroke: rgb(242, 141, 41);
+   stroke: rgb(242, 71, 41);
    stroke-width: 0.5;
 }
 
