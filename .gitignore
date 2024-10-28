@@ -18,3 +18,5 @@ client/Boundaries/TestBoundaries/bin
 aibel_dexpi/*
 aibel_dexpi.xml
 
+/owl/boundary.properties
+/owl/catalog-v001.xml

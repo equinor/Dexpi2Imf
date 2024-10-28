@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet version="1.0"
-                xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-                xmlns="http://www.w3.org/2000/svg"
-                xmlns:svg="http://www.w3.org/2000/svg"
-                xmlns:math="urn:math"
-                xmlns:color="urn:color" xmlns:html="http://www.w3.org/1999/xhtml"
+    xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+    xmlns="http://www.w3.org/2000/svg"
+    xmlns:svg="http://www.w3.org/2000/svg"
+    xmlns:math="urn:math"
+    xmlns:color="urn:color"
+    xmlns:html="http://www.w3.org/1999/xhtml"
 >
     <xsl:output method="xml" indent="yes" />
 
@@ -201,6 +202,7 @@
         <xsl:param name="height" />
         <xsl:variable name="id" select="@ID" />
         <xsl:variable name="componentName" select="@ComponentName" />
+        <xsl:variable name="componentClass" select="@ComponentClass" />
         <xsl:variable name="shapeId" select="concat($id, '-', $componentName)"/>
         <xsl:variable name="label">
             <xsl:choose>
@@ -261,6 +263,7 @@
                             select="$doc//svg:g/*">
                             <xsl:with-param name="labelParam" select="$label" />
                             <xsl:with-param name="idValue" select="$id" />
+                            <xsl:with-param name="componentClass" select="$componentClass" />
                             <xsl:with-param name="labelParamA" select="$labelA" />
                             <xsl:with-param name="labelParamB" select="$labelB" />
                             <xsl:with-param name="labelParamC" select="$labelC" />
@@ -283,76 +286,16 @@
         </xsl:if>
     </xsl:template>
 
-    <!-- Shape catalogue-->
+    <!-- Shape catalogue, is kept empty so that no other template matches on shapecatalogue.-->
     <xsl:template match="ShapeCatalogue">
-        <defs>
-            <xsl:for-each
-                select="*[not(self::Nozzle) and not(self::PipingComponent) and not(self::Equipment)]">
-                <xsl:variable name="parentName" select="name()" />
-                <xsl:variable
-                    name="currentComponentName" select="@ComponentName" />
-                <symbol overflow="visible">
-                    <xsl:attribute name="id">
-                        <xsl:value-of select="@ComponentName" />
-                    </xsl:attribute>
-                    <xsl:attribute name="shapeName">
-                        <xsl:value-of select="GenericAttributes/GenericAttribute/@Value" />
-                    </xsl:attribute>
-                    <xsl:attribute name="path">
-                        <xsl:value-of
-                            select="concat('../../../../NOAKADEXPI/Symbols/Origo/',GenericAttributes/GenericAttribute/@Value,'_Origo.svg')" />
-                    </xsl:attribute>
-                    <xsl:variable name="matchedElement"
-                        select="//*[name() = $parentName and @ComponentName = $currentComponentName]" />
-                    <xsl:variable name="displayNameValue">
-                        <xsl:choose>
-                            <!-- First try to select the 'Value' attribute of the 'GenericAttribute'
-                            with the specific 'Name' -->
-                            <xsl:when
-                                test="$matchedElement/GenericAttributes/GenericAttribute[@Name='ObjectDisplayNameAssignmentClass']/@Value">
-                                <xsl:value-of
-                                    select="$matchedElement/GenericAttributes/GenericAttribute[@Name='ObjectDisplayNameAssignmentClass']/@Value" />
-                            </xsl:when>
-                            <!-- Selects the text for the offpageconnectors -->
-                            <xsl:when
-                                test="$matchedElement/*/GenericAttributes/GenericAttribute[@Name='ReferencedDrawingNumberAssignmentClass']/@Value">
-                                <xsl:value-of
-                                    select="$matchedElement/*/GenericAttributes/GenericAttribute[@Name='ReferencedDrawingNumberAssignmentClass']/@Value" />
-                            </xsl:when>
-                            <xsl:otherwise>
-                                <xsl:value-of
-                                    select="$matchedElement/GenericAttributes/GenericAttribute[@Name='ItemTagAssignmentClass']/@Value" />
-                            </xsl:otherwise>
-                        </xsl:choose>
-                    </xsl:variable>
-
-                    <xsl:variable name="IDValue" select="$matchedElement/@ID" />
-                    <xsl:variable name="attributeValue"
-                        select="GenericAttributes/GenericAttribute/@Value" />
-                    <xsl:variable name="docPath"
-                        select="concat('../../../../NOAKADEXPI/Symbols/Origo/', $attributeValue, '_Origo.svg')" />
-                    <xsl:variable name="label"
-                        select="GenericAttributes/GenericAttribute[@Name='ObjectDisplayNameAssignmentClass']/@Value" />
-                    <xsl:if
-                        test="not($docPath = '../../../../NOAKADEXPI/Symbols/Origo/BORDER_A1_Origo.svg')">
-                        <xsl:variable name="doc" select="document($docPath)" />
-						<xsl:apply-templates
-                            select="$doc//svg:g/*">
-                            <xsl:with-param name="labelParam" select="$displayNameValue" />
-                            <xsl:with-param name="idValue" select="$IDValue" />
-                        </xsl:apply-templates>
-                    </xsl:if>
-                    <xsl:apply-templates />
-                </symbol>
-            </xsl:for-each>
-        </defs>
     </xsl:template>
 
     <xsl:template match="svg:text" name="svgText">
         <xsl:param name="labelParam" />
         <xsl:param name="idValue" />
+        <xsl:param name="componentClass" />
         <xsl:if
-            test="string-length($labelParam > 0)">
+            test="string-length($labelParam) > 0 and not(contains($componentClass, 'Nozzle'))">
             <a id="{concat('https://assetid.equinor.com/plantx#', $idValue)}" class="node">
                 <text fill="#000000" font-family="Helvetica" font-size="40px" x="{@x - 70}"
                     y="{@y+15}" transform="{@transform}">
@@ -432,6 +375,72 @@
     <!-- Generic template to copy attributes as they are -->
     <xsl:template match="@*">
         <xsl:copy />
+    </xsl:template>
+
+
+    <!-- Template for labels(only nozzles have labels in NOAKADEXPI) -->
+    <xsl:template match="Nozzle/Label">
+        <xsl:param name="height" />
+        <xsl:variable name="ID" select="../@ID" />
+    <xsl:variable
+            name="displayText"
+            select="following-sibling::GenericAttributes/GenericAttribute[@Name='ObjectDisplayNameAssignmentClass' or @Name='LineDescriptionAssignmentClass']/@Value" />
+    <xsl:if
+            test="$displayText">
+            <a id="{concat('https://assetid.equinor.com/plantx#', $ID)}" class="node">
+                <text>
+                    <xsl:attribute name="x">
+                        <xsl:value-of select="Position/Location/@X | Text/Position/Location/@X" />
+                    </xsl:attribute>
+                    <xsl:attribute name="y">
+                        <xsl:value-of
+                            select="$height - (Position/Location/@Y | Text/Position/Location/@Y)" />
+                    </xsl:attribute>
+                    <xsl:attribute name="font-size">
+                        <xsl:value-of select="Text/@Height" />
+                    </xsl:attribute>
+                    <xsl:attribute name="font-family">
+                        <xsl:value-of
+                        select="Text/@Font" />
+                    </xsl:attribute>
+                    <xsl:attribute name="text-anchor">
+                        <xsl:choose>
+                            <xsl:when test="Text/@Justification = 'RightCenter'">
+                                <xsl:text>End</xsl:text>
+                            </xsl:when>
+                            <xsl:when test="Text/@Justification = 'LeftCenter'">
+                                <xsl:text>Start</xsl:text>
+                            </xsl:when>
+                            <xsl:when test="Text/@Justification = 'CenterCenter'">
+                                <xsl:text>Middle</xsl:text>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <xsl:text>Middle</xsl:text>
+                            </xsl:otherwise>
+                        </xsl:choose>
+                    </xsl:attribute>
+                    <xsl:attribute name="transform">
+                        <xsl:variable name="refX"
+                            select="Position/Reference/@X | Text/Position/Reference/@X" />
+                    <xsl:variable
+                            name="refY" select="Position/Reference/@Y | Text/Position/Reference/@Y" />
+                        <!-- Assuming that a Reference of (1,0,0) means horizontal text, calculate
+                        the rotation angle -->
+                        <xsl:variable
+                            name="posX" select="Text/Position/Location/@X" />
+                        <xsl:variable
+                            name="posY" select="Text/Position/Location/@Y" />
+                        <xsl:variable
+                            name="textRotationAngle">
+                            <xsl:value-of select="Text/@TextAngle" />
+                        </xsl:variable>
+                    <xsl:value-of
+                            select="concat('rotate(', 360 - $textRotationAngle, ' ', $posX, ' ', $height - $posY, ')')" />
+                    </xsl:attribute>
+                    <xsl:value-of select="$displayText" />
+                </text>
+            </a>
+        </xsl:if>
     </xsl:template>
 
 </xsl:stylesheet>

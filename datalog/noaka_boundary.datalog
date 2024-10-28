@@ -1,14 +1,14 @@
-prefix data: <https://assetid.equinor.com/plantx/document/12345#>
+prefix comp: <https://rdf.equinor.com/completion#>
 
-data:insideBoundary [?new_node] :- 
-    data:insideBoundary [?node] ,
+comp:isInPackage [?new_node, ?boundary] :- 
+    comp:isInPackage [?node, ?boundary] ,
     imf:adjacentTo [?node, ?new_node] ,
-    NOT data:boundary [?node] .
+    NOT comp:isBoundaryOf [?node, ?boundary] .
 
-data:insideBoundary [?new_node] :- 
-    data:insideBoundary [?node],
+comp:isInPackage [?new_node, ?boundary] :- 
+    comp:isInPackage [?node, ?boundary],
     imf:hasPart[?new_node, ?node] .
 
-data:boundary [?new_node] :- 
-    data:boundary [?node],
+comp:isBoundaryOf [?new_node, ?boundary] :- 
+    comp:isBoundaryOf [?node, ?boundary],
     imf:hasPart[?new_node, ?node] .

@@ -12,9 +12,11 @@ prefix asset: <https://assetid.equinor.com/plantx#>
 prefix dbo: <http://dbpedia.org/ontology/> 
 prefix imf: <http://ns.imfid.org/imf#> 
 prefix data: <https://assetid.equinor.com/plantx/document/12345#>
+prefix comp: <https://rdf.equinor.com/completion#>
 
 import > asset:axioms ../owl/dexpi.ttl
 import > asset:axioms ../owl/imf-ontology.owl.ttl
+import > asset:axioms ../owl/boundary.ttl
 importaxioms  asset:axioms 
 import > schema:shacl ../shacl/imf-dexpi.shacl.ttl
 commitproc set commit-procedure.sparql
