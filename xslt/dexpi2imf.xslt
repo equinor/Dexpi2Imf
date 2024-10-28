@@ -20,24 +20,18 @@
         
     </xsl:template>
             
-    <xsl:template match="Equipment">
+    <xsl:template match="PlantModel/Equipment" name="EquipmentBlockMap">
         <rdf:Description>
             <xsl:attribute name="rdf:about">
                 <xsl:value-of select="concat('https://assetid.equinor.com/plantx#', @ID)" />
             </xsl:attribute>
-            <rdf:type>
-                <imf:Block/>
-                <dexpi:Equipment/>
-            </rdf:type>
+            <rdf:type rdf:resource="imf:Block"/>
+            <rdf:type rdf:resource="dexpi:Equipment"/>
+            <rdfs:label>Equipment</rdfs:label>
             <imf:hasTerminal>
-                <rdf:Description>
-                    <xsl:attribute name="rdf:about">
+                    <xsl:attribute name="rdf:resource">
                         <xsl:value-of select="concat('https://assetid.equinor.com/plantx#', Nozzle/@ID)" />
                     </xsl:attribute>
-                    <rdf:type>
-                        <imf:Terminal />
-                    </rdf:type>
-                </rdf:Description>
             </imf:hasTerminal>
             <rdfs:label>
                 <xsl:value-of select="GenericAttributes/GenericAttribute[@Name='TagNameAssignmentClass']/@Value" />
@@ -51,9 +45,8 @@
             <xsl:attribute name="rdf:about">
                 <xsl:value-of select="concat('https://assetid.equinor.com/plantx#', ../../@ID, '-node', count(preceding-sibling::*))" />
             </xsl:attribute>
-            <rdf:type>
-                <imf:Terminal/>
-            </rdf:type>
+            <rdf:type rdf:resource="imf:Terminal" />
+            <rdfs:label>Piping Component Terminal</rdfs:label>
             <xsl:variable name="connectorId">
                 <xsl:if test="count(preceding-sibling::*) = 1">
                     <xsl:if test="../../preceding-sibling::PipingComponent">
@@ -69,7 +62,7 @@
                             <xsl:value-of select="concat(../../@ID , '-node2-connector')" />
                         </xsl:when>
                         <xsl:when test="../../../Connection/@ToID" >
-                            <xsl:value-of select="concat(../../../Connection/@ToID, '-node', ../../../Connection/@ToNode, '-connector')" />"
+                            <xsl:value-of select="concat(../../../Connection/@ToID, '-node', ../../../Connection/@ToNode, '-connector')" />
                         </xsl:when>
                         <xsl:otherwise>
                             <xsl:value-of select="concat(../../@ID , '-node2-connector')" />
@@ -78,37 +71,40 @@
                 </xsl:if>
             </xsl:variable>
             <imf:hasConnector>
-                <xsl:value-of select="concat('https://assetid.equinor.com/plantx#', $connectorId)" />         
+                <xsl:attribute name="rdf:resource">
+                    <xsl:value-of select="concat('https://assetid.equinor.com/plantx#', $connectorId)" />
+                </xsl:attribute>
             </imf:hasConnector>
         </rdf:Description>
         <xsl:apply-templates />
     </xsl:template>
     
     
-    <xsl:template match="//PipingNetworkSegment/PipingComponent | //PipingNetworkSegment/PropertyBreak">
+    <xsl:template match="//PipingNetworkSegment/PipingComponent | //PipingNetworkSegment/PropertyBreak" name="PipingComponentBlockMap">
         <rdf:Description>
             <xsl:attribute name="rdf:about">
                 <xsl:value-of select="concat('https://assetid.equinor.com/plantx#', @ID)" />
             </xsl:attribute>
-            <rdf:type>
-                <imf:Block/>
-                <dexpi:PipingComponent/>
-            </rdf:type>
+            <rdf:type rdf:resource="imf:Block"/>
+            <rdf:type rdf:resource="dexpi:PipingComponent"/>
+            <rdfs:label>Piping Component</rdfs:label>
             <imf:partOf>
-                <rdf:Description>
-                    <xsl:attribute name="rdf:about">
+                    <xsl:attribute name="rdf:resource">
                         <xsl:value-of select="concat('https://assetid.equinor.com/plantx#', ../@ID)" />
                     </xsl:attribute>
-                </rdf:Description>
             </imf:partOf>
             <rdfs:label>
                 <xsl:value-of select="GenericAttributes/GenericAttribute[@Name='ItemTagAssignmentClass']/@Value" />
             </rdfs:label>
             <imf:hasTerminal>
-<!--                <xsl:call-template name="PipingComponentTerminalMap " />-->
+                <xsl:attribute name="rdf:resource">
+                    <xsl:value-of select="concat('https://assetid.equinor.com/plantx#', @ID, '-node', count(preceding-sibling::*))" />                    
+                </xsl:attribute>                
+
             </imf:hasTerminal>
         </rdf:Description>
-        
+        <xsl:apply-templates />
+
     </xsl:template>
     
 </xsl:stylesheet>   
