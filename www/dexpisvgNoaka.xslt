@@ -4,8 +4,6 @@
     xmlns="http://www.w3.org/2000/svg"
     xmlns:svg="http://www.w3.org/2000/svg"
     xmlns:math="urn:math"
-    xmlns:color="urn:color"
-    xmlns:html="http://www.w3.org/1999/xhtml"
 >
     <xsl:output method="xml" indent="yes" />
 
@@ -95,7 +93,7 @@
         <xsl:param name="height" />
     <xsl:param name="PositionNode" />
     <xsl:param name="ScaleNode" />
-    
+
     <xsl:variable
             name="x" select="$PositionNode/Location/@X" />
     <xsl:variable name="y"
@@ -113,11 +111,11 @@
     <xsl:variable name="refZ"
             select="$PositionNode/Reference/@Z" />
 
-        <!-- Calculate the angle using the custom extension function -->
+    <!-- Calculate the angle using the custom extension function -->
     <xsl:variable name="angle"
             select="math:CalculateAngle($axisX, $axisY, $axisZ, $refX, $refY, $refZ)" />
 
-        <!-- Output the SVG rotate and translate commands --> 
+    <!-- Output the SVG rotate and translate commands -->
     <xsl:attribute
             name="transform">
             <xsl:if test="$angle != 0">
@@ -311,27 +309,33 @@
     <xsl:template match="svg:text[../../@data-LabelIndex='A']">
         <xsl:param name="labelParamA"/>
         <xsl:param name="idValue" />
+        <xsl:variable name="componentClass" select="@ComponentClass" />
         <xsl:call-template name="svgText">
             <xsl:with-param name="labelParam" select="$labelParamA" />
             <xsl:with-param name="idValue" select="$idValue" />
+            <xsl:with-param name="componentClass" select="$componentClass" />
         </xsl:call-template>
     </xsl:template>
 
     <xsl:template match="svg:text[../../@data-LabelIndex='B']">
         <xsl:param name="labelParamB"/>
         <xsl:param name="idValue" />
+        <xsl:variable name="componentClass" select="@ComponentClass" />
         <xsl:call-template name="svgText">
             <xsl:with-param name="labelParam" select="$labelParamB" />
             <xsl:with-param name="idValue" select="$idValue" />
+            <xsl:with-param name="componentClass" select="$componentClass" />
         </xsl:call-template>
     </xsl:template>
 
     <xsl:template match="svg:text[../../@data-LabelIndex='C']">
         <xsl:param name="labelParamC"/>
         <xsl:param name="idValue" />
+        <xsl:variable name="componentClass" select="@ComponentClass" />
         <xsl:call-template name="svgText">
             <xsl:with-param name="labelParam" select="$labelParamC" />
             <xsl:with-param name="idValue" select="$idValue" />
+            <xsl:with-param name="componentClass" select="$componentClass" />
         </xsl:call-template>
     </xsl:template>
 
@@ -376,7 +380,6 @@
     <xsl:template match="@*">
         <xsl:copy />
     </xsl:template>
-
 
     <!-- Template for labels(only nozzles have labels in NOAKADEXPI) -->
     <xsl:template match="Nozzle/Label">
