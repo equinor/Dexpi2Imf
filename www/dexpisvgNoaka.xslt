@@ -211,7 +211,6 @@
         <xsl:variable name="componentName" select="@ComponentName" />
         <xsl:variable name="componentClass" select="@ComponentClass" />
         <xsl:variable name="shapeId" select="concat($id, '-', $componentName)"/>
-        <xsl:variable name="componentType" select="name()"></xsl:variable>
         <xsl:variable name="label">
             <xsl:choose>
                 <xsl:when
@@ -244,31 +243,32 @@
         <xsl:if
             test="not($path = '../../../../NOAKADEXPI/Symbols/Origo/BORDER_A1_Origo.svg')">
             <xsl:if test="$shapeValue">
-                <g>
-                    <xsl:attribute name="id">
-                        <xsl:value-of select="$shapeId" />
-                    </xsl:attribute>
-                    <xsl:attribute name="shapeName">
-                        <xsl:value-of select="$shapeValue" />
-                    </xsl:attribute>
-                    <xsl:attribute name="path">
-                        <xsl:value-of select="$path" />
-                    </xsl:attribute>
-                    
-                    <xsl:call-template name="Position">
-                        <xsl:with-param name="height" select="$height" />
-                        <xsl:with-param name="PositionNode" select="Position" />
-                    </xsl:call-template>
-                    
-                    <xsl:variable name="doc" select="document($path)" />
-                    <xsl:apply-templates
-                        select="$doc//svg:g">
-                        <xsl:with-param name="label" select="$label" />
-                        <xsl:with-param name="id" select="$id" />
-                        <xsl:with-param name="componentType" select="$componentType"></xsl:with-param>
-                        <xsl:with-param name="componentClass" select="$componentClass"></xsl:with-param>
-                    </xsl:apply-templates>
-                </g> 
+                <a id="{concat('https://assetid.equinor.com/plantx#', $id)}" class="node">
+                    <g>
+                        <xsl:attribute name="id">
+                            <xsl:value-of select="$shapeId" />
+                        </xsl:attribute>
+                        <xsl:attribute name="shapeName">
+                            <xsl:value-of select="$shapeValue" />
+                        </xsl:attribute>
+                        <xsl:attribute name="path">
+                            <xsl:value-of select="$path" />
+                        </xsl:attribute>
+                        
+                        <xsl:call-template name="Position">
+                            <xsl:with-param name="height" select="$height" />
+                            <xsl:with-param name="PositionNode" select="Position" />
+                        </xsl:call-template>
+                        
+                        <xsl:variable name="doc" select="document($path)" />
+                        <xsl:apply-templates
+                            select="$doc//svg:g">
+                            <xsl:with-param name="label" select="$label" />
+                            <xsl:with-param name="id" select="$id" />
+                            <xsl:with-param name="componentClass" select="$componentClass"></xsl:with-param>
+                        </xsl:apply-templates>
+                    </g> 
+                </a>
             </xsl:if>
             <xsl:apply-templates>
                 <xsl:with-param name="height" select="$height" />
@@ -279,62 +279,13 @@
     <xsl:template match="svg:*">
         <xsl:param name="label" />
         <xsl:param name="id" />
-        <xsl:param name="componentType"/>
         <xsl:param name="componentClass"/>
         <xsl:copy>
             <xsl:apply-templates select="@*|node()">
                 <xsl:with-param name="label" select="$label" />
                 <xsl:with-param name="id" select="$id" />
-                <xsl:with-param name="componentType" select="$componentType" />
                 <xsl:with-param name="componentClass" select="$componentClass" />
             </xsl:apply-templates>
-        </xsl:copy>
-    </xsl:template>
-    
-    <xsl:template match="svg:g[@data-label]">
-        <xsl:param name="id" />
-        <xsl:param name="componentType" />
-        <xsl:choose>
-            <!-- For nozzle use the connection point on the 'T' -->
-            <xsl:when test="$componentType='Nozzle' and @data-label='Connection' and @data-Direction='0'">
-                <a id="{concat('https://assetid.equinor.com/plantx#', $id)}" class="node">
-                    <xsl:call-template name="copy-attributes-and-children"/>
-                </a>
-            </xsl:when>
-            <!-- We do not bother with terminals on the equipment, since the nozzles connected to the equipment is the terminals. -->
-            <xsl:when test="$componentType='Equipment' and @data-label='origo'">
-                <a id="{concat('https://assetid.equinor.com/plantx#', $id)}" class="node">
-                    <xsl:call-template name="copy-attributes-and-children"/>
-                </a>
-            </xsl:when>
-            <xsl:when test="$componentType='PipingComponent'">
-                <xsl:if test="@data-label='origo'">
-                    <a id="{concat('https://assetid.equinor.com/plantx#', $id)}" class="node">
-                        <xsl:call-template name="copy-attributes-and-children"/>
-                    </a>
-                </xsl:if>
-                <!-- Terminal on the right side of a piping component -->
-                <xsl:if test="@data-label='Connection' and @data-Direction='0'">
-                    <a id="{concat('https://assetid.equinor.com/plantx#', $id, '-node2')}" class="node">
-                        <xsl:call-template name="copy-attributes-and-children"/>
-                    </a>
-                </xsl:if>
-                <!-- Terminal on the left side of a piping component -->
-                <xsl:if test="@data-label='Connection' and @data-Direction='180'">
-                    <a id="{concat('https://assetid.equinor.com/plantx#', $id, '-node1')}" class="node">
-                        <xsl:call-template name="copy-attributes-and-children"/>
-                    </a>
-                </xsl:if>
-            </xsl:when>
-            <xsl:otherwise>
-            </xsl:otherwise>
-        </xsl:choose>
-    </xsl:template>
-    
-    <xsl:template name="copy-attributes-and-children">
-        <xsl:copy>
-            <xsl:apply-templates select="@*" />
-            <xsl:apply-templates select="node()" />
         </xsl:copy>
     </xsl:template>
     
@@ -382,12 +333,6 @@
         </path>
     </xsl:template>
     
-    <!-- Generic template to copy attributes as they are -->
-    <xsl:template match="@*">
-        <xsl:copy />
-    </xsl:template>
-    
-    
     <!-- Template for labels(only nozzles have labels in NOAKADEXPI) -->
     <xsl:template match="Nozzle/Label">
         <xsl:param name="height" />
@@ -430,10 +375,6 @@
                         </xsl:choose>
                     </xsl:attribute>
                     <xsl:attribute name="transform">
-                        <xsl:variable name="refX"
-                            select="Position/Reference/@X | Text/Position/Reference/@X" />
-                        <xsl:variable
-                            name="refY" select="Position/Reference/@Y | Text/Position/Reference/@Y" />
                         <!-- Assuming that a Reference of (1,0,0) means horizontal text, calculate
                              the rotation angle -->
                         <xsl:variable
@@ -451,6 +392,18 @@
                 </text>
             </a>
         </xsl:if>
+    </xsl:template>
+    
+    
+    <!-- Template to remove elements with a red or green stroke, excluding text elements -->
+    <xsl:template match="*[not(self::text)][@stroke='#ff0000' or @stroke='#00ff00']" />
+    
+    <!-- Template to remove elements with a red or green fill, excluding text elements -->
+    <xsl:template match="*[not(self::text)][@fill='#ff0000' or @fill='#00ff00']" />
+    
+    <!-- Generic template to copy attributes as they are -->
+    <xsl:template match="@*">
+        <xsl:copy />
     </xsl:template>
     
 </xsl:stylesheet>
