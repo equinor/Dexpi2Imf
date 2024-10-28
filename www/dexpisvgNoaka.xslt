@@ -250,6 +250,22 @@
                 <xsl:otherwise/>
             </xsl:choose>
         </xsl:variable>
+        <xsl:variable name="labelD">
+            <xsl:choose>
+                <xsl:when test="$componentName = 'IM005B_SHAPE'">
+                    <xsl:value-of select="../GenericAttributes/GenericAttribute[@Name='TypicalReferenceAssignmentClass']/@Value" />
+                </xsl:when>
+                <xsl:otherwise/>
+            </xsl:choose>
+        </xsl:variable>
+        <xsl:variable name="labelE">
+            <xsl:choose>
+                <xsl:when test="$componentName = 'IM005B_SHAPE'">
+                    <xsl:value-of select="../GenericAttributes/GenericAttribute[@Name='SetPoint']/@Value" />
+                </xsl:when>
+                <xsl:otherwise/>
+            </xsl:choose>
+        </xsl:variable>
 
         <xsl:variable
             name="shapeValue"
@@ -281,6 +297,8 @@
                             <xsl:with-param name="labelParamA" select="$labelA" />
                             <xsl:with-param name="labelParamB" select="$labelB" />
                             <xsl:with-param name="labelParamC" select="$labelC" />
+                            <xsl:with-param name="labelParamD" select="$labelD" />
+                            <xsl:with-param name="labelParamE" select="$labelE" />
                         </xsl:apply-templates>
                     </symbol>
                 </defs>
@@ -364,6 +382,32 @@
         <xsl:param name="componentName" />
         <xsl:call-template name="svgText">
             <xsl:with-param name="labelParam" select="$labelParamC" />
+            <xsl:with-param name="idValue" select="$idValue" />
+            <xsl:with-param name="componentClass" select="$componentClass" />
+            <xsl:with-param name="componentName" select="$componentName" />
+        </xsl:call-template>
+    </xsl:template>
+
+    <xsl:template match="svg:text[../../@data-LabelIndex='D']">
+        <xsl:param name="labelParamD"/>
+        <xsl:param name="idValue" />
+        <xsl:param name="componentClass" />
+        <xsl:param name="componentName" />
+        <xsl:call-template name="svgText">
+            <xsl:with-param name="labelParam" select="$labelParamD" />
+            <xsl:with-param name="idValue" select="$idValue" />
+            <xsl:with-param name="componentClass" select="$componentClass" />
+            <xsl:with-param name="componentName" select="$componentName" />
+        </xsl:call-template>
+    </xsl:template>
+
+    <xsl:template match="svg:text[../../@data-LabelIndex='E']">
+        <xsl:param name="labelParamE"/>
+        <xsl:param name="idValue" />
+        <xsl:param name="componentClass" />
+        <xsl:param name="componentName" />
+        <xsl:call-template name="svgText">
+            <xsl:with-param name="labelParam" select="$labelParamE" />
             <xsl:with-param name="idValue" select="$idValue" />
             <xsl:with-param name="componentClass" select="$componentClass" />
             <xsl:with-param name="componentName" select="$componentName" />
