@@ -7,7 +7,7 @@
 
 .piping:hover {
     cursor: pointer; 
-    stroke-width: 1;
+    stroke-width: 4;
     stroke: yellow;
 }
 

@@ -2,6 +2,21 @@ let nodes = document.querySelectorAll('.node');
 let pipes = document.querySelectorAll('.piping');
 let completionPackageIri = 'asset:Package1';
 
+window.addEventListener('load', async () => {
+    for (const node of nodes) {
+        await makeSparqlAndUpdateStore(node.id, boundary_actions.delete, boundary_parts.boundary);
+        await makeSparqlAndUpdateStore(node.id, boundary_actions.delete, boundary_parts.insideBoundary);
+        node.classList.remove('insideBoundary', 'boundary');
+        removeCommissionHighlight(node);
+    }
+
+    for (const pipe of pipes) {
+        await makeSparqlAndUpdateStore(pipe.id, boundary_actions.delete, boundary_parts.boundary);
+        pipe.classList.remove('boundary', 'insideBoundary');
+        removePipeHighlight(pipe);
+    }
+});
+
 nodes.forEach((node) => {
     node.addEventListener('click', async (event) => {
         await handleNodeClick(node, event);
@@ -15,25 +30,16 @@ pipes.forEach((pipe) => {
     });
 });
 
-window.addEventListener('load', async () => {
-    
-    for (const node of nodes) {
-        await makeSparqlAndUpdateStore(node.id, boundary_actions.delete, boundary_parts.boundary);
-        await makeSparqlAndUpdateStore(node.id, boundary_actions.delete, boundary_parts.insideBoundary);
-        node.classList.remove('insideBoundary', 'boundary');
-        removeCommissionHighlight(node);
-    }
-
-    for (const pipe of pipes) {
-        await makeSparqlAndUpdateStore(pipe.id, boundary_actions.delete, boundary_parts.boundary);
-        node.classList.remove('boundary');
-        removePipeHighlight(pipe);
-    }
-});
-
 async function handlePipeClick(pipe) {
-    pipe.classList.add('boundary');
-    await makeSparqlAndUpdateStore(pipe.id, boundary_actions.insert, boundary_parts.boundary);
+    if(pipe.classList.contains('boundary', 'insideBoundary')){
+        pipe.classList.remove('boundary', 'insideBoundary');
+        await makeSparqlAndUpdateStore(pipe.id, boundary_actions.delete, boundary_parts.boundary);
+        removePipeHighlight(pipe)
+    }    else {
+        pipe.classList.add('boundary', 'insideBoundary');
+        await makeSparqlAndUpdateStore(pipe.id, boundary_actions.insert, boundary_parts.boundary);
+        addPipeHighlight(pipe)
+    }
 }
 
 async function handleNodeClick(node, event) {
