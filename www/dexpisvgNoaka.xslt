@@ -203,7 +203,7 @@
             </a>
         </xsl:if>
     </xsl:template>
-
+    
     <!-- Template for * shapes except lines -->
     <xsl:template match="*">
         <xsl:param name="height" />
@@ -211,7 +211,7 @@
         <xsl:variable name="componentName" select="@ComponentName" />
         <xsl:variable name="componentClass" select="@ComponentClass" />
         <xsl:variable name="shapeId" select="concat($id, '-', $componentName)"/>
-		<xsl:variable name="componentType" select="name()"></xsl:variable>
+        <xsl:variable name="componentType" select="name()"></xsl:variable>
         <xsl:variable name="label">
             <xsl:choose>
                 <xsl:when
@@ -244,30 +244,17 @@
         <xsl:if
             test="not($path = '../../../../NOAKADEXPI/Symbols/Origo/BORDER_A1_Origo.svg')">
             <xsl:if test="$shapeValue">
-                <defs>
-                    <symbol overflow="visible">
-                        <xsl:attribute name="id">
-                            <xsl:value-of select="$shapeId" />
-                        </xsl:attribute>
-                        <xsl:attribute name="shapeName">
-                            <xsl:value-of select="$shapeValue" />
-                        </xsl:attribute>
-                        <xsl:attribute name="path">
-                            <xsl:value-of select="$path" />
-                        </xsl:attribute>
-                        <xsl:variable name="doc" select="document($path)" />
-                        <xsl:apply-templates
-                            select="$doc//svg:g/*">
-                            <xsl:with-param name="labelParam" select="$label" />
-                            <xsl:with-param name="idValue" select="$id" />
-                            <xsl:with-param name="componentClass" select="$componentClass" />
-                        </xsl:apply-templates>
-                    </symbol>
-                </defs>
-                <use>
-                    <xsl:attribute name="href">
-                        <xsl:value-of select="concat('#', $shapeId)" />
+                <g>
+                    <xsl:attribute name="id">
+                        <xsl:value-of select="$shapeId" />
                     </xsl:attribute>
+                    <xsl:attribute name="shapeName">
+                        <xsl:value-of select="$shapeValue" />
+                    </xsl:attribute>
+                    <xsl:attribute name="path">
+                        <xsl:value-of select="$path" />
+                    </xsl:attribute>
+                    
                     <xsl:call-template name="Position">
                         <xsl:with-param name="height" select="$height" />
                         <xsl:with-param name="PositionNode" select="Position" />
@@ -279,9 +266,9 @@
                         <xsl:with-param name="label" select="$label" />
                         <xsl:with-param name="id" select="$id" />
                         <xsl:with-param name="componentType" select="$componentType"></xsl:with-param>
-						<xsl:with-param name="componentClass" select="$componentClass"></xsl:with-param>
+                        <xsl:with-param name="componentClass" select="$componentClass"></xsl:with-param>
                     </xsl:apply-templates>
-                </g>
+                </g> 
             </xsl:if>
             <xsl:apply-templates>
                 <xsl:with-param name="height" select="$height" />
@@ -293,11 +280,13 @@
         <xsl:param name="label" />
         <xsl:param name="id" />
         <xsl:param name="componentType"/>
+        <xsl:param name="componentClass"/>
         <xsl:copy>
             <xsl:apply-templates select="@*|node()">
                 <xsl:with-param name="label" select="$label" />
                 <xsl:with-param name="id" select="$id" />
                 <xsl:with-param name="componentType" select="$componentType" />
+                <xsl:with-param name="componentClass" select="$componentClass" />
             </xsl:apply-templates>
         </xsl:copy>
     </xsl:template>
@@ -306,7 +295,7 @@
         <xsl:param name="id" />
         <xsl:param name="componentType" />
         <xsl:choose>
-        <!-- For nozzle use the connection point on the 'T' -->
+            <!-- For nozzle use the connection point on the 'T' -->
             <xsl:when test="$componentType='Nozzle' and @data-label='Connection' and @data-Direction='0'">
                 <a id="{concat('https://assetid.equinor.com/plantx#', $id)}" class="node">
                     <xsl:call-template name="copy-attributes-and-children"/>
@@ -324,15 +313,15 @@
                         <xsl:call-template name="copy-attributes-and-children"/>
                     </a>
                 </xsl:if>
-                <!-- Terminal on the left side of a piping component -->
+                <!-- Terminal on the right side of a piping component -->
                 <xsl:if test="@data-label='Connection' and @data-Direction='0'">
-                    <a id="{concat('https://assetid.equinor.com/plantx#', $id, '-node1')}" class="node">
+                    <a id="{concat('https://assetid.equinor.com/plantx#', $id, '-node2')}" class="node">
                         <xsl:call-template name="copy-attributes-and-children"/>
                     </a>
                 </xsl:if>
-                <!-- Terminal on the right side of a piping component -->
+                <!-- Terminal on the left side of a piping component -->
                 <xsl:if test="@data-label='Connection' and @data-Direction='180'">
-                    <a id="{concat('https://assetid.equinor.com/plantx#', $id, '-node2')}" class="node">
+                    <a id="{concat('https://assetid.equinor.com/plantx#', $id, '-node1')}" class="node">
                         <xsl:call-template name="copy-attributes-and-children"/>
                     </a>
                 </xsl:if>
@@ -348,26 +337,23 @@
             <xsl:apply-templates select="node()" />
         </xsl:copy>
     </xsl:template>
-
-	<!-- Shape catalogue, is kept empty so that no other template matches on shapecatalogue.-->
-	<xsl:template match="ShapeCatalogue">
-	</xsl:template>
-	
+    
+    <!-- Shape catalogue, is kept empty so that no other template matches on shapecatalogue.-->
+    <xsl:template match="ShapeCatalogue">
+    </xsl:template>
+    
     <xsl:template match="svg:text[not(preceding::svg:text)]">
-        <xsl:param name="labelParam" />
-        <xsl:param name="idValue" />
+        <xsl:param name="label" />
         <xsl:param name="componentClass" />
         <xsl:if
-            test="string-length($labelParam) > 0 and not(contains($componentClass, 'Nozzle'))">
-            <a id="{concat('https://assetid.equinor.com/plantx#', $idValue)}" class="node">
-                <text fill="#000000" font-family="Helvetica" font-size="40px" x="{@x - 70}"
-                    y="{@y+15}" transform="{@transform}">
-                    <xsl:attribute name="vector-effect">non-scaling-stroke</xsl:attribute>
-                    <xsl:attribute name="stroke-linecap">round</xsl:attribute>
-                    <xsl:attribute name="stroke-linejoin">round</xsl:attribute>
-                    <xsl:value-of select="$labelParam" />
-                </text>
-            </a>
+            test="string-length($label) > 0 and not(contains($componentClass, 'Nozzle'))">
+            <text fill="#000000" font-family="Helvetica" font-size="40px" x="{@x - 70}"
+                  y="{@y+15}" transform="{@transform}">
+                <xsl:attribute name="vector-effect">non-scaling-stroke</xsl:attribute>
+                <xsl:attribute name="stroke-linecap">round</xsl:attribute>
+                <xsl:attribute name="stroke-linejoin">round</xsl:attribute>
+                <xsl:value-of select="$label" />
+            </text>
         </xsl:if>
     </xsl:template>
     
@@ -400,16 +386,16 @@
     <xsl:template match="@*">
         <xsl:copy />
     </xsl:template>
-
-
+    
+    
     <!-- Template for labels(only nozzles have labels in NOAKADEXPI) -->
     <xsl:template match="Nozzle/Label">
         <xsl:param name="height" />
         <xsl:variable name="ID" select="../@ID" />
-    <xsl:variable
+        <xsl:variable
             name="displayText"
             select="following-sibling::GenericAttributes/GenericAttribute[@Name='ObjectDisplayNameAssignmentClass' or @Name='LineDescriptionAssignmentClass']/@Value" />
-    <xsl:if
+        <xsl:if
             test="$displayText">
             <a id="{concat('https://assetid.equinor.com/plantx#', $ID)}" class="node">
                 <text>
@@ -425,7 +411,7 @@
                     </xsl:attribute>
                     <xsl:attribute name="font-family">
                         <xsl:value-of
-                        select="Text/@Font" />
+                            select="Text/@Font" />
                     </xsl:attribute>
                     <xsl:attribute name="text-anchor">
                         <xsl:choose>
@@ -446,10 +432,10 @@
                     <xsl:attribute name="transform">
                         <xsl:variable name="refX"
                             select="Position/Reference/@X | Text/Position/Reference/@X" />
-                    <xsl:variable
+                        <xsl:variable
                             name="refY" select="Position/Reference/@Y | Text/Position/Reference/@Y" />
                         <!-- Assuming that a Reference of (1,0,0) means horizontal text, calculate
-                        the rotation angle -->
+                             the rotation angle -->
                         <xsl:variable
                             name="posX" select="Text/Position/Location/@X" />
                         <xsl:variable
@@ -458,7 +444,7 @@
                             name="textRotationAngle">
                             <xsl:value-of select="Text/@TextAngle" />
                         </xsl:variable>
-                    <xsl:value-of
+                        <xsl:value-of
                             select="concat('rotate(', 360 - $textRotationAngle, ' ', $posX, ' ', $height - $posY, ')')" />
                     </xsl:attribute>
                     <xsl:value-of select="$displayText" />
@@ -466,5 +452,5 @@
             </a>
         </xsl:if>
     </xsl:template>
-
+    
 </xsl:stylesheet>

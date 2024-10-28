@@ -6,10 +6,8 @@
     opacity: 100;                
 }
 
-.node ellipse {
-    /* Opacity = 0 -> hidden until selected or hovered. Commented out for now so that it is easier for the next person to take over this task   */
-    /* opacity: 0; */
-    stroke-width: 8;   
+.piping:hover {
+    cursor: pointer; 
 }
 
 /* TODO 
@@ -17,6 +15,12 @@ Clearly display that an element is chosen as internal. Maybe mark the entire ele
 */
 .insideBoundary ellipse {
     stroke: rgb(37, 18, 244);
+    opacity: 100;
+}
+
+.boundary ellipse {
+    stroke: rgb(244, 240, 18);
+    fill: rgb(244, 240, 18);
     opacity: 100;
 }
 

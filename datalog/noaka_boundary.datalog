@@ -1,14 +1,14 @@
 prefix comp: <https://rdf.equinor.com/completion#>
 
-comp:isInPackage [?new_node, ?boundary] :- 
-    comp:isInPackage [?node, ?boundary] ,
+comp:isInPackage [?new_node, ?package] :- 
+    comp:isInPackage [?node, ?package] ,
     imf:adjacentTo [?node, ?new_node] ,
-    NOT comp:isBoundaryOf [?node, ?boundary] .
+    NOT comp:isBoundaryOf [?node, ?package] .
 
-comp:isInPackage [?new_node, ?boundary] :- 
-    comp:isInPackage [?node, ?boundary],
+comp:isInPackage [?new_node, ?package] :- 
+    comp:isInPackage [?node, ?package],
     imf:hasPart[?new_node, ?node] .
 
-comp:isBoundaryOf [?new_node, ?boundary] :- 
-    comp:isBoundaryOf [?node, ?boundary],
+comp:isBoundaryOf [?new_node, ?package] :- 
+    comp:isBoundaryOf [?node, ?package],
     imf:hasPart[?new_node, ?node] .
