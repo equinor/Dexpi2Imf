@@ -9,14 +9,32 @@ nodes.forEach((node) => {
     });
 });
 
+pipes.forEach((pipe) => {
+    pipe.addEventListener('click', async () => {
+        await handlePipeClick(pipe)
+    });
+});
+
 window.addEventListener('load', async () => {
+    
     for (const node of nodes) {
         await makeSparqlAndUpdateStore(node.id, boundary_actions.delete, boundary_parts.boundary);
         await makeSparqlAndUpdateStore(node.id, boundary_actions.delete, boundary_parts.insideBoundary);
         node.classList.remove('insideBoundary', 'boundary');
         removeCommissionHighlight(node);
     }
+
+    for (const pipe of pipes) {
+        await makeSparqlAndUpdateStore(pipe.id, boundary_actions.delete, boundary_parts.boundary);
+        node.classList.remove('boundary');
+        removePipeHighlight(pipe);
+    }
 });
+
+async function handlePipeClick(pipe) {
+    pipe.classList.add('boundary');
+    await makeSparqlAndUpdateStore(pipe.id, boundary_actions.insert, boundary_parts.boundary);
+}
 
 async function handleNodeClick(node, event) {
     // ctrl + left click - select or deselect nodes as insideBoundary
@@ -53,15 +71,6 @@ async function handleNodeClick(node, event) {
 }
 
 function createHighlightBox(node) {
-    var parentElement = node.parentNode;
-    if(parentElement.tagName === 'symbol'){
-        var internalPaths = parentElement.querySelectorAll('path, ellipse, rect, circle');
-        internalPaths.forEach(path => {
-            path.setAttribute('fill', 'yellow');
-            path.setAttribute('fill-opacity', '0.2');
-        });
-    } 
-
     var highlightRects = node.querySelectorAll('.commissionHighlight');
     if (highlightRects.length !== 0)
         return;
