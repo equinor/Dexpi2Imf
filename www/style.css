@@ -7,15 +7,17 @@
 
 .piping:hover {
     cursor: pointer; 
+    stroke-width: 1;
+    stroke: yellow;
 }
 
 .insideBoundary path {
     stroke-width: 0.5;
-    stroke: rgb(0, 255, 98);
+    stroke: rgb(62, 164, 22);
 }
 
 .boundary path {
-   stroke: rgb(242, 71, 41);
+   stroke: rgb(251, 131, 109);
    stroke-width: 0.5;
 }
 
