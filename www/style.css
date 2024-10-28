@@ -1,27 +1,17 @@
 /* ------ style.css ----- */
 
 
-.node ellipse:hover {
+.node:hover {
     cursor: pointer; 
-    opacity: 100;                
 }
 
 .piping:hover {
     cursor: pointer; 
 }
 
-/* TODO 
-Clearly display that an element is chosen as internal. Maybe mark the entire element at once, rather then just the ellipse? 
-*/
-.insideBoundary ellipse {
-    stroke: rgb(37, 18, 244);
-    opacity: 100;
-}
-
-.boundary ellipse {
-    stroke: rgb(244, 240, 18);
-    fill: rgb(244, 240, 18);
-    opacity: 100;
+.boundary path {
+   stroke: rgb(242, 141, 41);
+   stroke-width: 0.5;
 }
 
 /*START. Style for the table and the dowload button */
