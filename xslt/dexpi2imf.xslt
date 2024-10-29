@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- This is an experimental XSLT stylesheet for evaluation of the DEXPI to IMF transformation in RML vs. XSLT-->
+
 <xsl:stylesheet version="1.0"
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 xmlns:imf="http://ns.imfid.org/imf#"
