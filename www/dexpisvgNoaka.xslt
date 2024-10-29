@@ -226,6 +226,7 @@
             </xsl:choose>
         </xsl:variable>
 
+        <!-- Label index A, B, C, D and E for IM005B symbol. In the future, this will be generated for all symbols from the symbol excel file-->
         <xsl:variable name="labelA">
             <xsl:choose>
                 <xsl:when test="$componentName = 'IM005B_SHAPE'">
