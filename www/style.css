@@ -14,6 +14,7 @@
 
 .commissionHighlight:hover {
     cursor: pointer;
+    stroke: rgb(251, 131, 109);
 }
 
 .insideBoundary path {

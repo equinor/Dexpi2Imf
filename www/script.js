@@ -127,7 +127,6 @@ function addPipeHighlight(pipe, color = 'yellow') {
 
 
 function removePipeHighlight(pipe) {
-
     let connectorId = pipe.id + '_highlight';
     let highlightRect = document.getElementById(connectorId);
     if (highlightRect)
@@ -154,7 +153,6 @@ function removeCommissionHighlight(node) {
 async function updateInCommissioningPackage() {
     if (checkOnlyInsideBoundary()) { return ;}
     let packageIds = await getNodeIdsInCommissioningPackage();
-    let boundaryIds = await getNodeIdsInBoundary();
     await updateTable()
 
     nodes.forEach(node => {
@@ -178,12 +176,6 @@ async function updateInCommissioningPackage() {
 
 async function getNodeIdsInCommissioningPackage(){
     let query = 'SELECT ?node WHERE{?node comp:isInPackage ' + completionPackageIri + ' .}';
-    let result = await queryTripleStore(query);
-    return parseNodeIds(result);
-}
-
-async function getNodeIdsInBoundary() {
-    let query = 'SELECT ?node WHERE{?node comp:isBoundaryOf ' + completionPackageIri + ' .}';
     let result = await queryTripleStore(query);
     return parseNodeIds(result);
 }
