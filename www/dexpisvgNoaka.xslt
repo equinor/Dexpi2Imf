@@ -331,8 +331,8 @@
         </xsl:copy>
     </xsl:template>
 
-    <!-- Generic template to copy attributes as they are -->
-    <xsl:template match="@*">
+    <!-- Generic template to copy attributes as they are except path(as this is already matched by another template. -->
+    <xsl:template match="@*[not(self::svg:path)]">
         <xsl:copy />
     </xsl:template>
 
@@ -401,5 +401,8 @@
             </a>
         </xsl:if>
     </xsl:template>
+
+    <!-- Used to remove whitespaces and newlines-->
+    <xsl:strip-space elements="*"/>
 
 </xsl:stylesheet>
