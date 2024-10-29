@@ -89,8 +89,6 @@ function createHighlightBox(node) {
     node.appendChild(highlightRect);
 }
 
-
-
 function addPipeHighlight(pipe, color = 'yellow') {
     let connectorId = pipe.id + '_highlight';
     let existingHighlightRect = document.getElementById(connectorId);
@@ -112,11 +110,16 @@ function addPipeHighlight(pipe, color = 'yellow') {
     highlightRect.setAttribute('class', 'commissionHighlight');
 
     highlightRect.addEventListener('click', async () => {
-        console.log("highlightRect")
         let highlightRect = document.getElementById(connectorId);
-        highlightRect.remove();
-        pipe.classList.remove('pipeBoundary');
-        await makeSparqlAndUpdateStore(pipe.id, boundary_actions.delete, boundary_parts.boundary);
+        if (pipe.classList.contains('pipeBoundary')) {
+            highlightRect.remove();
+            pipe.classList.remove('pipeBoundary');
+            await makeSparqlAndUpdateStore(pipe.id, boundary_actions.delete, boundary_parts.boundary);
+        } else {
+            pipe.classList.add('pipeBoundary')
+            await makeSparqlAndUpdateStore(pipe.id, boundary_actions.insert, boundary_parts.boundary);
+        }
+        await updateInCommissioningPackage()
     }); 
 
     pipe.parentNode.appendChild(highlightRect);
