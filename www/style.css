@@ -8,7 +8,12 @@
 .piping:hover {
     cursor: pointer; 
     stroke-width: 4;
-    stroke: yellow;
+    stroke: rgb(251, 131, 109);
+    stroke-opacity: 0.8;
+}
+
+.boundaryHighlight:hover {
+    cursor: pointer;
 }
 
 .insideBoundary path {

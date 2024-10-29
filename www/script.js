@@ -12,7 +12,7 @@ window.addEventListener('load', async () => {
 
     for (const pipe of pipes) {
         await makeSparqlAndUpdateStore(pipe.id, boundary_actions.delete, boundary_parts.boundary);
-        pipe.classList.remove('boundary', 'insideBoundary');
+        pipe.classList.remove('pipeBoundary');
         removePipeHighlight(pipe);
     }
 });
@@ -27,19 +27,14 @@ nodes.forEach((node) => {
 pipes.forEach((pipe) => {
     pipe.addEventListener('click', async () => {
         await handlePipeClick(pipe)
+        await updateInCommissioningPackage();
     });
 });
 
 async function handlePipeClick(pipe) {
-    if(pipe.classList.contains('boundary', 'insideBoundary')){
-        pipe.classList.remove('boundary', 'insideBoundary');
-        await makeSparqlAndUpdateStore(pipe.id, boundary_actions.delete, boundary_parts.boundary);
-        removePipeHighlight(pipe)
-    }    else {
-        pipe.classList.add('boundary', 'insideBoundary');
-        await makeSparqlAndUpdateStore(pipe.id, boundary_actions.insert, boundary_parts.boundary);
-        addPipeHighlight(pipe)
-    }
+    pipe.classList.add('pipeBoundary');
+    await makeSparqlAndUpdateStore(pipe.id, boundary_actions.insert, boundary_parts.boundary);
+    addPipeHighlight(pipe, color = 'rgb(251, 131, 109)')
 }
 
 async function handleNodeClick(node, event) {
@@ -96,7 +91,7 @@ function createHighlightBox(node) {
 
 
 
-function addPipeHighlight(pipe) {
+function addPipeHighlight(pipe, color = 'yellow') {
     let connectorId = pipe.id + '_highlight';
     let existingHighlightRect = document.getElementById(connectorId);
     if (existingHighlightRect)
@@ -111,10 +106,19 @@ function addPipeHighlight(pipe) {
     highlightRect.setAttribute('fill', 'none');
     highlightRect.setAttribute('stroke-linecap', 'round');
     highlightRect.setAttribute('stroke-linejoin', 'round');
-    highlightRect.setAttribute('stroke', 'yellow'); // Highlight color
+    highlightRect.setAttribute('stroke', color); // Highlight color
     highlightRect.setAttribute('stroke-width', '5'); // Semi-transparent
     highlightRect.setAttribute('stroke-opacity', '0.5'); // Semi-transparent
     highlightRect.setAttribute('class', 'commissionHighlight');
+
+    highlightRect.addEventListener('click', async () => {
+        console.log("highlightRect")
+        let highlightRect = document.getElementById(connectorId);
+        highlightRect.remove();
+        pipe.classList.remove('pipeBoundary');
+        await makeSparqlAndUpdateStore(pipe.id, boundary_actions.delete, boundary_parts.boundary);
+    }); 
+
     pipe.parentNode.appendChild(highlightRect);
 }
 
@@ -146,9 +150,42 @@ function removeCommissionHighlight(node) {
 
 async function updateInCommissioningPackage() {
     if (checkOnlyInsideBoundary()) { return ;}
+    let packageIds = await getNodeIdsInCommissioningPackage();
+    let boundaryIds = await getNodeIdsInBoundary();
+    await updateTable()
+
+    nodes.forEach(node => {
+        if (packageIds.includes(node.id) && !node.classList.contains('boundary')) {
+            addCommissionHighlight(node);
+        } else {
+            removeCommissionHighlight(node);
+        }
+    });
+    pipes.forEach(pipe => {
+        if (packageIds.includes(pipe.id) && !pipe.classList.contains('boundary') && !pipe.classList.contains('insideBoundary')) {
+            addPipeHighlight(pipe);
+        } else if (pipe.classList.contains('pipeBoundary')) {
+            return;
+        } else {
+            removePipeHighlight(pipe);
+        }
+    });
+
+}
+
+async function getNodeIdsInCommissioningPackage(){
     let query = 'SELECT ?node WHERE{?node comp:isInPackage ' + completionPackageIri + ' .}';
     let result = await queryTripleStore(query);
-    let nodeIds = parseNodeIds(result);
+    return parseNodeIds(result);
+}
+
+async function getNodeIdsInBoundary() {
+    let query = 'SELECT ?node WHERE{?node comp:isBoundaryOf ' + completionPackageIri + ' .}';
+    let result = await queryTripleStore(query);
+    return parseNodeIds(result);
+}
+
+async function updateTable() {
     let queryInside = `
     SELECT * WHERE {
         ?node comp:isInPackage ${completionPackageIri} . 
@@ -189,20 +226,6 @@ async function updateInCommissioningPackage() {
         document.getElementById('inside-boundary-table-container').innerHTML = '';
         document.getElementById('boundary-table-container').innerHTML = '';
     }
-    nodes.forEach(node => {
-        if (nodeIds.includes(node.id) && !node.classList.contains('boundary')) {
-            addCommissionHighlight(node);
-        } else {
-            removeCommissionHighlight(node);
-        }
-    });
-    pipes.forEach(pipe => {
-        if (nodeIds.includes(pipe.id) && !pipe.classList.contains('boundary') && !pipe.classList.contains('insideBoundary')) {
-            addPipeHighlight(pipe);
-        } else {
-            removePipeHighlight(pipe);
-        }
-    });
 }
 
 function parseNodeIds(result) {
