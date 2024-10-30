@@ -125,6 +125,13 @@ function addPipeHighlight(pipe, color = 'yellow') {
     pipe.parentNode.appendChild(highlightRect);
 }
 
+function changePipeHighLight(pipe, color) {
+    let connectorId = pipe.id + '_highlight'; 
+    let highlightPath = document.getElementById(connectorId);
+    if (highlightPath) {
+        highlightPath.setAttribute('stroke', color); 
+    }
+}
 
 function removePipeHighlight(pipe) {
     let connectorId = pipe.id + '_highlight';
@@ -162,16 +169,28 @@ async function updateInCommissioningPackage() {
             removeCommissionHighlight(node);
         }
     });
-    pipes.forEach(pipe => {
-        if (packageIds.includes(pipe.id) && !pipe.classList.contains('boundary') && !pipe.classList.contains('insideBoundary')) {
+
+    pipes.forEach(async pipe => { 
+        if (pipe.classList.contains('pipeBoundary')) {
+            const isAdjacent = await adjacentToInternal(pipe.id); 
+            if (isAdjacent) {
+                changePipeHighLight(pipe, 'yellow');
+            } else {
+                changePipeHighLight(pipe, 'red');
+            }
+        } else if(packageIds.includes(pipe.id)) {
             addPipeHighlight(pipe);
-        } else if (pipe.classList.contains('pipeBoundary')) {
-            return;
         } else {
             removePipeHighlight(pipe);
         }
     });
+}
 
+async function adjacentToInternal(pipeIri) {
+    let query = `SELECT ?node WHERE { <${pipeIri}> imf:adjacentTo ?node . ?node comp:isInPackage ?p .}`;
+    let result = await queryTripleStore(query);
+    let internalNeighbours = parseNodeIds(result);
+    return internalNeighbours.length > 0
 }
 
 async function getNodeIdsInCommissioningPackage(){
@@ -179,6 +198,7 @@ async function getNodeIdsInCommissioningPackage(){
     let result = await queryTripleStore(query);
     return parseNodeIds(result);
 }
+
 
 async function updateTable() {
     let queryInside = `
@@ -229,9 +249,10 @@ function parseNodeIds(result) {
 }
 
 function checkOnlyInsideBoundary() {
+    let hasPipeBoundary = Array.from(pipes).some(pipe => pipe.classList.contains('pipeBoundary'));
     let hasBoundary = Array.from(nodes).some(node => node.classList.contains('boundary'));
     let hasInsideBoundary = Array.from(nodes).some(node => node.classList.contains('insideBoundary'));
-    return hasInsideBoundary && !hasBoundary;
+    return hasInsideBoundary && !hasBoundary && !hasPipeBoundary;
 }
 
 const boundary_actions = {
@@ -263,7 +284,7 @@ async function updateTripleStore(sparql) {
 
 async function queryTripleStore(sparql) {
     try {
-        let encoded = encodeURI(sparql);
+        let encoded = encodeURIComponent(sparql);
         let response = await fetch(`http://localhost:12110/datastores/boundaries/sparql?query=${encoded}`, {
             method: 'GET',
         });
