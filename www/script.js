@@ -171,14 +171,14 @@ async function updateInCommissioningPackage() {
     });
 
     pipes.forEach(async pipe => { 
+        const isAdjacent = await adjacentToInternal(pipe.id); 
         if (pipe.classList.contains('pipeBoundary')) {
-            const isAdjacent = await adjacentToInternal(pipe.id); 
             if (isAdjacent) {
                 changePipeHighLight(pipe, 'yellow');
             } else {
-                changePipeHighLight(pipe, 'red');
+                changePipeHighLight(pipe, 'rgb(251, 131, 109)');
             }
-        } else if(packageIds.includes(pipe.id)) {
+        } else if(packageIds.includes(pipe.id) && isAdjacent) {
             addPipeHighlight(pipe);
         } else {
             removePipeHighlight(pipe);
