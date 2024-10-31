@@ -3,9 +3,8 @@
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 xmlns="http://www.w3.org/2000/svg"
                 xmlns:svg="http://www.w3.org/2000/svg"
-                xmlns:math="urn:math"
-                xmlns:color="urn:color"
-    >
+                xmlns:math="urn:math">
+
     <xsl:output method="xml" indent="yes" />
     
     <!-- Root template -->
@@ -307,7 +306,8 @@
                             select="$doc//svg:g">
                             <xsl:with-param name="labelParam" select="$label" />
                             <xsl:with-param name="id" select="$id" />
-                            <xsl:with-param name="componentClass" select="$componentClass"></xsl:with-param>
+                            <xsl:with-param name="componentClass" select="$componentClass"/>
+                            <xsl:with-param name="componentName" select="$componentName"/>
                             <xsl:with-param name="labelParamA" select="$labelA" />
                             <xsl:with-param name="labelParamB" select="$labelB" />
                             <xsl:with-param name="labelParamC" select="$labelC" />
@@ -327,6 +327,7 @@
         <xsl:param name="labelParam" />
         <xsl:param name="id" />
         <xsl:param name="componentClass"/>
+        <xsl:param name="componentName"/>
         <xsl:param name="labelParamA" />
         <xsl:param name="labelParamB" />
         <xsl:param name="labelParamC" />
@@ -337,6 +338,7 @@
                 <xsl:with-param name="labelParam" select="$labelParam" />
                 <xsl:with-param name="id" select="$id" />
                 <xsl:with-param name="componentClass" select="$componentClass" />
+                <xsl:with-param name="componentName" select="$componentName"/>
                 <xsl:with-param name="labelParamA" select="$labelParamA" />
                 <xsl:with-param name="labelParamB" select="$labelParamB" />
                 <xsl:with-param name="labelParamC" select="$labelParamC" />
