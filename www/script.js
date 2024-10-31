@@ -12,7 +12,7 @@ window.addEventListener('load', async () => {
 
     for (const pipe of pipes) {
         await makeSparqlAndUpdateStore(pipe.id, boundary_actions.delete, boundary_parts.boundary);
-        pipe.classList.remove('pipeBoundary');
+        pipe.classList.remove('boundary');
         removePipeHighlight(pipe);
     }
 });
@@ -32,7 +32,7 @@ pipes.forEach((pipe) => {
 });
 
 async function handlePipeClick(pipe) {
-    pipe.classList.add('pipeBoundary');
+    pipe.classList.add('boundary');
     await makeSparqlAndUpdateStore(pipe.id, boundary_actions.insert, boundary_parts.boundary);
     addPipeHighlight(pipe, color = 'rgb(251, 131, 109)')
 }
@@ -111,12 +111,12 @@ function addPipeHighlight(pipe, color = 'yellow') {
 
     highlightRect.addEventListener('click', async () => {
         let highlightRect = document.getElementById(connectorId);
-        if (pipe.classList.contains('pipeBoundary')) {
+        if (pipe.classList.contains('boundary')) {
             highlightRect.remove();
-            pipe.classList.remove('pipeBoundary');
+            pipe.classList.remove('boundary');
             await makeSparqlAndUpdateStore(pipe.id, boundary_actions.delete, boundary_parts.boundary);
         } else {
-            pipe.classList.add('pipeBoundary')
+            pipe.classList.add('boundary')
             await makeSparqlAndUpdateStore(pipe.id, boundary_actions.insert, boundary_parts.boundary);
         }
         await updateInCommissioningPackage()
@@ -172,7 +172,7 @@ async function updateInCommissioningPackage() {
 
     pipes.forEach(async pipe => { 
         const isAdjacent = await adjacentToInternal(pipe.id); 
-        if (pipe.classList.contains('pipeBoundary')) {
+        if (pipe.classList.contains('boundary')) {
             if (isAdjacent) {
                 changePipeHighLight(pipe, 'yellow');
             } else {
@@ -249,10 +249,10 @@ function parseNodeIds(result) {
 }
 
 function checkOnlyInsideBoundary() {
-    let hasPipeBoundary = Array.from(pipes).some(pipe => pipe.classList.contains('pipeBoundary'));
+    let hasboundary = Array.from(pipes).some(pipe => pipe.classList.contains('boundary'));
     let hasBoundary = Array.from(nodes).some(node => node.classList.contains('boundary'));
     let hasInsideBoundary = Array.from(nodes).some(node => node.classList.contains('insideBoundary'));
-    return hasInsideBoundary && !hasBoundary && !hasPipeBoundary;
+    return hasInsideBoundary && !hasBoundary && !hasboundary;
 }
 
 const boundary_actions = {
