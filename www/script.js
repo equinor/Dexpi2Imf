@@ -121,7 +121,6 @@ function addPipeHighlight(pipe, color = 'yellow') {
         }
         await updateInCommissioningPackage()
     }); 
-
     pipe.parentNode.appendChild(highlightRect);
 }
 
