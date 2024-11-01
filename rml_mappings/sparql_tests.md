@@ -4,7 +4,6 @@
 *These sparql tests are outdated as the mappings have changed. They can still be used for reference*
 
 - These tests are based on the data found in this [document](https://github.com/equinor/NOAKADEXPI/tree/main/Blueprint/DISC_EXAMPLE-02).
-- The SPARQL queries without documentation can be found [here](#TODO). 
 
 ## Noaka DEXPI to IMF RDF
 All dexpi piping components are modeled as blocks in IMF. Each piping component block has two terminals, one input and one output terminal. Each terminal is connected to another terminal with the help of a connector. 
@@ -15,7 +14,6 @@ All dexpi equipment are modeled as blocks in IMF. The dexpi nozzles on the equip
 `asset:PipingNetworkSegment-4` connects two equipment blocks togehter;
 - `asset:RotaryPump-1` with tag name D-20PA001
 - `asset:PlateHeatExchanger-1` with tag name D-20HA001 
-- 
 `asset:PipingNetworkSegment-4` begins from `dexpi:Nozzle-2` and ends at `asset:Nozzle-3`, hence connecting `asset:RotaryPump-1` to `asset:PlateHeatExhanger-1`. 
 
 The components contained within `asset:PipingNetworkSegment-4` is the piping component blocks `asset:Flange-3` and `asset:Flange-4`. Hence, the input terminal of `asset:Flange-3` should share the same connector as `dexpi:Nozzle-2`, and the output terminal of `asset:Flange-4` should share the same connector as `asset:Nozzle-3` :
