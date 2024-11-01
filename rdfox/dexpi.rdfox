@@ -1,8 +1,4 @@
 boundaries.rdfox
 
-import ../datalog/boundary.datalog
-import ../datalog/interactive_boundary.datalog
-import +p "../rml/pandid.trig"
-
-set output out
-select * where {?s a data:insideBoundaryX}
+import ../datalog/noaka_boundary.datalog
+import +p "../rml_mappings/pandid.trig"
