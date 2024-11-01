@@ -570,5 +570,8 @@
     <xsl:template match="@*">
         <xsl:copy />
     </xsl:template>
+
+     <!-- Used to remove whitespaces and newlines-->
+ <xsl:strip-space elements="*"/>
     
 </xsl:stylesheet>
