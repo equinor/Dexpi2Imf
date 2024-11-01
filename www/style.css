@@ -1,20 +1,30 @@
 /* ------ style.css ----- */
 
-.node:hover text {
-    transition: 0.6s;
-    cursor:pointer;
+
+.node:hover {
+    cursor: pointer; 
 }
 
-.boundary text {
-    fill: #FF0000;
+.piping:hover {
+    cursor: pointer; 
+    stroke-width: 4;
+    stroke: rgb(251, 131, 109);
+    stroke-opacity: 0.8;
 }
 
-.insideBoundary text {
-    fill: rgb(34 244 18);
+.commissionHighlight:hover {
+    cursor: pointer;
+    stroke: rgb(251, 131, 109);
 }
 
-.inCommissioningPackage text {
-    fill: rgb(112 237 240);
+.insideBoundary path {
+    stroke-width: 0.5;
+    stroke: rgb(62, 164, 22);
+}
+
+.boundary path {
+   stroke: rgb(251, 131, 109);
+   stroke-width: 0.5;
 }
 
 /*START. Style for the table and the dowload button */

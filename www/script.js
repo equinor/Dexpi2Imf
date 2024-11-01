@@ -2,13 +2,6 @@ let nodes = document.querySelectorAll('.node');
 let pipes = document.querySelectorAll('.piping');
 let completionPackageIri = 'asset:Package1';
 
-nodes.forEach((node) => {
-    node.addEventListener('click', async (event) => {
-        await handleNodeClick(node, event);
-        await updateInCommissioningPackage();
-    });
-});
-
 window.addEventListener('load', async () => {
     for (const node of nodes) {
         await makeSparqlAndUpdateStore(node.id, boundary_actions.delete, boundary_parts.boundary);
@@ -16,7 +9,33 @@ window.addEventListener('load', async () => {
         node.classList.remove('insideBoundary', 'boundary');
         removeCommissionHighlight(node);
     }
+
+    for (const pipe of pipes) {
+        await makeSparqlAndUpdateStore(pipe.id, boundary_actions.delete, boundary_parts.boundary);
+        pipe.classList.remove('boundary');
+        removePipeHighlight(pipe);
+    }
 });
+
+nodes.forEach((node) => {
+    node.addEventListener('click', async (event) => {
+        await handleNodeClick(node, event);
+        await updateInCommissioningPackage();
+    });
+});
+
+pipes.forEach((pipe) => {
+    pipe.addEventListener('click', async () => {
+        await handlePipeClick(pipe)
+        await updateInCommissioningPackage();
+    });
+});
+
+async function handlePipeClick(pipe) {
+    pipe.classList.add('boundary');
+    await makeSparqlAndUpdateStore(pipe.id, boundary_actions.insert, boundary_parts.boundary);
+    addPipeHighlight(pipe, color = 'rgb(251, 131, 109)')
+}
 
 async function handleNodeClick(node, event) {
     // ctrl + left click - select or deselect nodes as insideBoundary
@@ -53,15 +72,6 @@ async function handleNodeClick(node, event) {
 }
 
 function createHighlightBox(node) {
-    var parentElement = node.parentNode;
-    if(parentElement.tagName === 'symbol'){
-        var internalPaths = parentElement.querySelectorAll('path, ellipse, rect, circle');
-        internalPaths.forEach(path => {
-            path.setAttribute('fill', 'yellow');
-            path.setAttribute('fill-opacity', '0.2');
-        });
-    } 
-
     var highlightRects = node.querySelectorAll('.commissionHighlight');
     if (highlightRects.length !== 0)
         return;
@@ -79,9 +89,7 @@ function createHighlightBox(node) {
     node.appendChild(highlightRect);
 }
 
-
-
-function addPipeHighlight(pipe) {
+function addPipeHighlight(pipe, color = 'yellow') {
     let connectorId = pipe.id + '_highlight';
     let existingHighlightRect = document.getElementById(connectorId);
     if (existingHighlightRect)
@@ -96,16 +104,35 @@ function addPipeHighlight(pipe) {
     highlightRect.setAttribute('fill', 'none');
     highlightRect.setAttribute('stroke-linecap', 'round');
     highlightRect.setAttribute('stroke-linejoin', 'round');
-    highlightRect.setAttribute('stroke', 'yellow'); // Highlight color
+    highlightRect.setAttribute('stroke', color); // Highlight color
     highlightRect.setAttribute('stroke-width', '5'); // Semi-transparent
     highlightRect.setAttribute('stroke-opacity', '0.5'); // Semi-transparent
     highlightRect.setAttribute('class', 'commissionHighlight');
+
+    highlightRect.addEventListener('click', async () => {
+        let highlightRect = document.getElementById(connectorId);
+        if (pipe.classList.contains('boundary')) {
+            highlightRect.remove();
+            pipe.classList.remove('boundary');
+            await makeSparqlAndUpdateStore(pipe.id, boundary_actions.delete, boundary_parts.boundary);
+        } else {
+            pipe.classList.add('boundary')
+            await makeSparqlAndUpdateStore(pipe.id, boundary_actions.insert, boundary_parts.boundary);
+        }
+        await updateInCommissioningPackage()
+    }); 
     pipe.parentNode.appendChild(highlightRect);
 }
 
+function changePipeHighLight(pipe, color) {
+    let connectorId = pipe.id + '_highlight'; 
+    let highlightPath = document.getElementById(connectorId);
+    if (highlightPath) {
+        highlightPath.setAttribute('stroke', color); 
+    }
+}
 
 function removePipeHighlight(pipe) {
-
     let connectorId = pipe.id + '_highlight';
     let highlightRect = document.getElementById(connectorId);
     if (highlightRect)
@@ -131,9 +158,48 @@ function removeCommissionHighlight(node) {
 
 async function updateInCommissioningPackage() {
     if (checkOnlyInsideBoundary()) { return ;}
+    let packageIds = await getNodeIdsInCommissioningPackage();
+    await updateTable()
+
+    nodes.forEach(node => {
+        if (packageIds.includes(node.id) && !node.classList.contains('boundary')) {
+            addCommissionHighlight(node);
+        } else {
+            removeCommissionHighlight(node);
+        }
+    });
+
+    pipes.forEach(async pipe => { 
+        const isAdjacent = await adjacentToInternal(pipe.id); 
+        if (pipe.classList.contains('boundary')) {
+            if (isAdjacent) {
+                changePipeHighLight(pipe, 'yellow');
+            } else {
+                changePipeHighLight(pipe, 'rgb(251, 131, 109)');
+            }
+        } else if(packageIds.includes(pipe.id) && isAdjacent) {
+            addPipeHighlight(pipe);
+        } else {
+            removePipeHighlight(pipe);
+        }
+    });
+}
+
+async function adjacentToInternal(pipeIri) {
+    let query = `SELECT ?node WHERE { <${pipeIri}> imf:adjacentTo ?node . ?node comp:isInPackage ?p .}`;
+    let result = await queryTripleStore(query);
+    let internalNeighbours = parseNodeIds(result);
+    return internalNeighbours.length > 0
+}
+
+async function getNodeIdsInCommissioningPackage(){
     let query = 'SELECT ?node WHERE{?node comp:isInPackage ' + completionPackageIri + ' .}';
     let result = await queryTripleStore(query);
-    let nodeIds = parseNodeIds(result);
+    return parseNodeIds(result);
+}
+
+
+async function updateTable() {
     let queryInside = `
     SELECT * WHERE {
         ?node comp:isInPackage ${completionPackageIri} . 
@@ -170,23 +236,10 @@ async function updateInCommissioningPackage() {
         displayTablesAndDownloadButton(nodeIdsInside, 'Inside Boundary', 'inside-boundary-table-container', nodeIdsBoundary, 'Boundary', 'boundary-table-container');
     } else {
         // Clear the container if there are no nodes
+
         document.getElementById('inside-boundary-table-container').innerHTML = '';
         document.getElementById('boundary-table-container').innerHTML = '';
     }
-    nodes.forEach(node => {
-        if (nodeIds.includes(node.id) && !node.classList.contains('boundary')) {
-            addCommissionHighlight(node);
-        } else {
-            removeCommissionHighlight(node);
-        }
-    });
-    pipes.forEach(pipe => {
-        if (nodeIds.includes(pipe.id) && !pipe.classList.contains('boundary') && !pipe.classList.contains('insideBoundary')) {
-            addPipeHighlight(pipe);
-        } else {
-            removePipeHighlight(pipe);
-        }
-    });
 }
 
 function parseNodeIds(result) {
@@ -195,9 +248,10 @@ function parseNodeIds(result) {
 }
 
 function checkOnlyInsideBoundary() {
+    let hasboundary = Array.from(pipes).some(pipe => pipe.classList.contains('boundary'));
     let hasBoundary = Array.from(nodes).some(node => node.classList.contains('boundary'));
     let hasInsideBoundary = Array.from(nodes).some(node => node.classList.contains('insideBoundary'));
-    return hasInsideBoundary && !hasBoundary;
+    return hasInsideBoundary && !hasBoundary && !hasboundary;
 }
 
 const boundary_actions = {
@@ -229,7 +283,7 @@ async function updateTripleStore(sparql) {
 
 async function queryTripleStore(sparql) {
     try {
-        let encoded = encodeURI(sparql);
+        let encoded = encodeURIComponent(sparql);
         let response = await fetch(`http://localhost:12110/datastores/boundaries/sparql?query=${encoded}`, {
             method: 'GET',
         });

@@ -8,6 +8,25 @@
 @prefix asset: <https://assetid.equinor.com/plantx#> .
 @prefix imf: <http://ns.imfid.org/imf#> .
 
+:PipingComponentConnectorMap a rr:TriplesMap;
+  rml:logicalSource [
+    rml:source "pandid.xml";
+    rml:referenceFormulation ql:XPath;
+    rml:iterator "//PipingNetworkSegment/PipingComponent | //PipingNetworkSegment/PropertyBreak"
+  ];
+  rr:subjectMap [
+    rr:template "https://assetid.equinor.com/plantx#{concat(@ID, '-node2-connector')}";
+    rr:termType rr:IRI;
+    rr:class imf:Connector
+  ] ;
+  rr:predicateObjectMap [
+     rr:predicate imf:partOf;
+     rr:objectMap [
+      rr:template "https://assetid.equinor.com/plantx#{../@ID}"; 
+      rr:termType rr:IRI 
+    ]
+  ] .
+
 :PipingComponentTerminalMap a rr:TriplesMap;
   rml:logicalSource [
     rml:source "pandid.xml";
@@ -19,7 +38,6 @@
     rr:termType rr:IRI;
     rr:class imf:Terminal
   ];
-
   rr:predicateObjectMap [
     rr:predicate imf:hasConnector;
     rr:objectMap [
