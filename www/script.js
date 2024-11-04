@@ -53,7 +53,7 @@ async function handleNodeClick(node, event) {
                 await makeSparqlAndUpdateStore(node.id, boundary_actions.delete, boundary_parts.boundary);
             }
         }
-    // left click - select or deselect nodes as boundary
+        // left click - select or deselect nodes as boundary
     } else {
         if (node.classList.contains('boundary')) {
             node.classList.remove('boundary');
@@ -120,15 +120,15 @@ function addPipeHighlight(pipe, color = 'yellow') {
             await makeSparqlAndUpdateStore(pipe.id, boundary_actions.insert, boundary_parts.boundary);
         }
         await updateInCommissioningPackage()
-    }); 
+    });
     pipe.parentNode.appendChild(highlightRect);
 }
 
 function changePipeHighLight(pipe, color) {
-    let connectorId = pipe.id + '_highlight'; 
+    let connectorId = pipe.id + '_highlight';
     let highlightPath = document.getElementById(connectorId);
     if (highlightPath) {
-        highlightPath.setAttribute('stroke', color); 
+        highlightPath.setAttribute('stroke', color);
     }
 }
 
@@ -139,13 +139,13 @@ function removePipeHighlight(pipe) {
         highlightRect.remove();
 }
 
-function addCommissionHighlight(node){
+function addCommissionHighlight(node) {
     createHighlightBox(node);
 }
 
 function removeCommissionHighlight(node) {
     var parentElement = node.parentNode;
-    if(parentElement.tagName === 'symbol'){
+    if (parentElement.tagName === 'symbol') {
         var internalPaths = parentElement.querySelectorAll('path, ellipse, rect, circle');
         internalPaths.forEach(path => {
             path.setAttribute('fill', 'none');
@@ -157,7 +157,9 @@ function removeCommissionHighlight(node) {
 }
 
 async function updateInCommissioningPackage() {
-    if (checkOnlyInsideBoundary()) { return ;}
+    if (checkOnlyInsideBoundary()) {
+        return;
+    }
     let packageIds = await getNodeIdsInCommissioningPackage();
     await updateTable()
 
@@ -169,15 +171,15 @@ async function updateInCommissioningPackage() {
         }
     });
 
-    pipes.forEach(async pipe => { 
-        const isAdjacent = await adjacentToInternal(pipe.id); 
+    pipes.forEach(async pipe => {
+        const isAdjacent = await adjacentToInternal(pipe.id);
         if (pipe.classList.contains('boundary')) {
             if (isAdjacent) {
                 changePipeHighLight(pipe, 'yellow');
             } else {
                 changePipeHighLight(pipe, 'rgb(251, 131, 109)');
             }
-        } else if(packageIds.includes(pipe.id) && isAdjacent) {
+        } else if (packageIds.includes(pipe.id) && isAdjacent) {
             addPipeHighlight(pipe);
         } else {
             removePipeHighlight(pipe);
@@ -192,7 +194,7 @@ async function adjacentToInternal(pipeIri) {
     return internalNeighbours.length > 0
 }
 
-async function getNodeIdsInCommissioningPackage(){
+async function getNodeIdsInCommissioningPackage() {
     let query = 'SELECT ?node WHERE{?node comp:isInPackage ' + completionPackageIri + ' .}';
     let result = await queryTripleStore(query);
     return parseNodeIds(result);
@@ -273,7 +275,7 @@ async function updateTripleStore(sparql) {
     try {
         await fetch('http://localhost:12110/datastores/boundaries/sparql', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded'},
+            headers: {'Content-Type': 'application/x-www_old-form-urlencoded'},
             body: `update=${sparql}`
         });
     } catch (error) {
@@ -298,13 +300,13 @@ function displayTablesAndDownloadButton(nodeIdsInside, headerTitleInside, contai
     createTable(nodeIdsBoundary, headerTitleBoundary, containerIdBoundary);
 
     // Create a single download button for both tables
-    const downloadButtonContainer = document.getElementById(containerIdInside); 
+    const downloadButtonContainer = document.getElementById(containerIdInside);
     let downloadButton = document.createElement('button');
     downloadButton.textContent = 'Download Excel';
     downloadButton.style.margin = '10px';
     downloadButton.style.padding = '5px 10px';
     downloadButton.style.cursor = 'pointer';
-    downloadButton.onclick = function() {
+    downloadButton.onclick = function () {
         downloadWorkbook(nodeIdsInside, nodeIdsBoundary, 'node_data.xlsx');
     };
 
@@ -343,18 +345,18 @@ function createTable(nodeIds, headerTitle, containerId) {
 function downloadWorkbook(nodeIdsInside, nodeIdsBoundary, filename) {
     const wb = XLSX.utils.book_new();
 
-    const wsInside = XLSX.utils.json_to_sheet(nodeIdsInside.map(id => ({ 'Inside boundary': id })));
+    const wsInside = XLSX.utils.json_to_sheet(nodeIdsInside.map(id => ({'Inside boundary': id})));
     XLSX.utils.book_append_sheet(wb, wsInside, 'Inside Boundary');
 
-    const wsBoundary = XLSX.utils.json_to_sheet(nodeIdsBoundary.map(id => ({ 'Boundary': id })));
+    const wsBoundary = XLSX.utils.json_to_sheet(nodeIdsBoundary.map(id => ({'Boundary': id})));
     XLSX.utils.book_append_sheet(wb, wsBoundary, 'Boundary');
 
     const combinedData = nodeIdsInside.concat(nodeIdsBoundary);
-    const wsCombined = XLSX.utils.json_to_sheet(combinedData.map(id => ({ 'Combined': id })));
+    const wsCombined = XLSX.utils.json_to_sheet(combinedData.map(id => ({'Combined': id})));
     XLSX.utils.book_append_sheet(wb, wsCombined, 'Combined');
 
-    const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'binary' });
-    
+    const wbout = XLSX.write(wb, {bookType: 'xlsx', type: 'binary'});
+
     function s2ab(s) {
         const buffer = new ArrayBuffer(s.length);
         const view = new Uint8Array(buffer);
@@ -364,6 +366,6 @@ function downloadWorkbook(nodeIdsInside, nodeIdsBoundary, filename) {
         return buffer;
     }
 
-    saveAs(new Blob([s2ab(wbout)], { type: "application/octet-stream" }), filename);
+    saveAs(new Blob([s2ab(wbout)], {type: "application/octet-stream"}), filename);
 }
 

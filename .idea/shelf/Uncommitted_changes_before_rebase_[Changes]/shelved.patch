@@ -1,0 +1,18 @@
+Index: .gitignore
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>C01V04-VER.EX01.xml\nC01V04-VER.EX01.trig\ndexpi.properties\npandid.xml\npandid.trig\nrml/segments.trig\nclient/.idea\n.vs\nclient/Boundaries/Dexpi2Svg/test.svg\nrml/C03V04.trig\nwww/C03V04.svg\nclient/Boundaries/Dexpi2Svg/bin\nclient/Boundaries/Dexpi2Svg/obj\nclient/Boundaries/Boundaries/bin\nclient/Boundaries/Boundaries/obj\nclient/Boundaries/TestBoundaries/obj\nclient/Boundaries/TestBoundaries/bin\naibel_dexpi/*\naibel_dexpi.xml\noutput.svg\nlocal\naibel_dexpi.xml\n\n/owl/boundary.properties\n/owl/catalog-v001.xml\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.gitignore b/.gitignore
+--- a/.gitignore	(revision a0ce52acfd29235f0e9693a45abfa9d4d97a844f)
++++ b/.gitignore	(date 1730719191685)
+@@ -5,6 +5,7 @@
+ pandid.trig
+ rml/segments.trig
+ client/.idea
++.idea
+ .vs
+ client/Boundaries/Dexpi2Svg/test.svg
+ rml/C03V04.trig

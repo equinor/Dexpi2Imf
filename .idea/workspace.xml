@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="6d84e191-058f-40a7-bcb2-aba9c52bd088" name="Changes" comment="set up react project">
+      <change beforePath="$PROJECT_DIR$/www/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/www/RunGuide.md" beforeDir="false" afterPath="$PROJECT_DIR$/www/RunGuide.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/www/eslint.config.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/www/index.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/www/package-lock.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/www/package.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/www/public/vite.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/www/script.js" beforeDir="false" afterPath="$PROJECT_DIR$/www/script.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/www/src/App.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/www/src/App.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/www/src/assets/react.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/www/src/index.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/www/src/main.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/www/src/vite-env.d.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/www/tsconfig.app.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/www/tsconfig.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/www/tsconfig.node.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/www/vite.config.ts" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FormatOnSaveOptions">
+    <option name="myRunOnSave" value="true" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="story/188128-setup-react-project" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;NoraKri&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/equinor/Dexpi2Imf&quot;,
+    &quot;accountId&quot;: &quot;7451889e-fb8d-43e5-b4b5-5978b764fb08&quot;
+  }
+}</component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 1
+}</component>
+  <component name="ProjectId" id="2nsJx7XoZSGX6ES2d9PJsRQmHUQ" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "story/188128-setup-react-project",
+    "last_opened_file_path": "/Users/nora.kristiansen/Development/Dexpi2Imf",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "actions.on.save",
+    "ts.external.directory.path": "/Users/nora.kristiansen/Development/Dexpi2Imf/www_old/node_modules/typescript/lib",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/www/src" />
+      <recent name="$PROJECT_DIR$/www" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/www" />
+      <recent name="$PROJECT_DIR$" />
+      <recent name="$PROJECT_DIR$/www/src" />
+      <recent name="$PROJECT_DIR$/www/public" />
+      <recent name="$PROJECT_DIR$/www/www" />
+    </key>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-js-predefined-d6986cc7102b-5c90d61e3bab-JavaScript-WS-242.23726.96" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="6d84e191-058f-40a7-bcb2-aba9c52bd088" name="Changes" comment="" />
+      <created>1729756093343</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1729756093343</updated>
+      <workItem from="1729756094376" duration="15194000" />
+      <workItem from="1729836553129" duration="7508000" />
+      <workItem from="1729852421869" duration="14997000" />
+      <workItem from="1730035929834" duration="5285000" />
+      <workItem from="1730100422552" duration="11000" />
+      <workItem from="1730711614023" duration="7277000" />
+      <workItem from="1730719071443" duration="849000" />
+    </task>
+    <task id="LOCAL-00001" summary="set up react project">
+      <option name="closed" value="true" />
+      <created>1729759041967</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1729759041967</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="set up react project" />
+    <option name="LAST_COMMIT_MESSAGE" value="set up react project" />
+  </component>
+</project>

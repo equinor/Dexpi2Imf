@@ -12,7 +12,8 @@ Before you start, ensure that you have the following repository structure on you
 
 1. **Navigate to the Tool Directory**
 
-   Open a command prompt or terminal window and navigate to the `Client/boundaries/Dexpi2svg` directory within the `NOAKADEXPI` repository.
+   Open a command prompt or terminal window and navigate to the `Client/boundaries/Dexpi2svg` directory within the
+   `NOAKADEXPI` repository.
 
 2. **Run the Conversion Command**
 
@@ -22,11 +23,13 @@ Before you start, ensure that you have the following repository structure on you
    dotnet run "<path-to-your-xml-file>" "<path-to-your-xslt-file>" > output.svg
    ```
 
-   Replace `<path-to-your-xml-file>` with the generic path to your DEPI XML file and `<path-to-your-xslt-file>` with the generic path to your XSLT file.
+   Replace `<path-to-your-xml-file>` with the generic path to your DEPI XML file and `<path-to-your-xslt-file>` with the
+   generic path to your XSLT file.
 
 3. **Addressing Missing Symbol Error**
 
-   If you encounter an error about a missing symbol `PV001A_Origio.svg`, you will need to create it by following these steps:
+   If you encounter an error about a missing symbol `PV001A_Origio.svg`, you will need to create it by following these
+   steps:
 
    a. Create a new file inside the `NOAKADEXPI/SYMBOL/Origo` directory.
 
@@ -34,16 +37,17 @@ Before you start, ensure that you have the following repository structure on you
 
    ```xml
    <?xml version="1.0" encoding="UTF-8"?>
+
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1"
-    width="3.43931mm" height="17.4611mm" viewBox="-0.40625 -2.03125 0.8125 4.125">
-    <defs vector-effect="non-scaling-stroke" />
-    <g>
-        <g id="cell-SPPeGkMqv3PPZ88ONVvg-0" layer="Symbol">
-            <path d="M0 2L0-2" fill="none" stroke="rgb(0, 0, 0)" stroke-miterlimit="10"
-                pointer-events="stroke" stroke-width="0.25" stroke-linecap="round"
-                stroke-linejoin="round" />
-        </g>
+width="3.43931mm" height="17.4611mm" viewBox="-0.40625 -2.03125 0.8125 4.125">
+<defs vector-effect="non-scaling-stroke" />
+<g>
+<g id="cell-SPPeGkMqv3PPZ88ONVvg-0" layer="Symbol">
+<path d="M0 2L0-2" fill="none" stroke="rgb(0, 0, 0)" stroke-miterlimit="10"
+pointer-events="stroke" stroke-width="0.25" stroke-linecap="round"
+stroke-linejoin="round" />
+</g>
 
         <g id="cell-JrQDJ3AAwTKKgfP51pYv-3"
             content="&lt;object label=&quot;Connection&quot; PipingConnector=&quot;Y&quot; LabelConnector=&quot;N&quot; SignalConnector=&quot;Y&quot; Direction=&quot;0, 180&quot; AuxiliaryConnector=&quot;N&quot;/&gt;"
@@ -79,10 +83,11 @@ Before you start, ensure that you have the following repository structure on you
                 vector-effect="non-scaling-stroke" />
         </g>
     </g>
+
 </svg>
    ```
 
-   Name this file `PV001A_Origio.svg`.
+Name this file `PV001A_Origio.svg`.
 
 4. **Integrate the SVG Output**
 
@@ -102,5 +107,7 @@ Before you start, ensure that you have the following repository structure on you
 
 5. **View the Result**
 
-   Open `dexpi.html` in a web browser to view the SVG representation of your DEPI XML file. You should now be able to click on the components within the SVG as intended. 
-   If you want to be able to create boundaries you must use RDFox aswell, to manage this see the README in client/boundaries.
+   Open `dexpi.html` in a web browser to view the SVG representation of your DEPI XML file. You should now be able to
+   click on the components within the SVG as intended.
+   If you want to be able to create boundaries you must use RDFox aswell, to manage this see the README in
+   client/boundaries.
