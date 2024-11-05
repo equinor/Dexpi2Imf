@@ -549,7 +549,14 @@
                         name="posY" select="Text/Position/Location/@Y" />
                     <xsl:variable
                         name="textRotationAngle">
-                        <xsl:value-of select="Text/@TextAngle" />
+                        <xsl:choose>
+                            <xsl:when test="Text/@TextAngle">
+                                <xsl:value-of select="Text/@TextAngle" />
+                            </xsl:when>
+                            <xsl:otherwise>
+                                0
+                            </xsl:otherwise>
+                        </xsl:choose>
                     </xsl:variable>
                     <xsl:value-of
                         select="concat('rotate(', 360 - $textRotationAngle, ' ', $posX, ' ', $height - $posY, ')')" />
