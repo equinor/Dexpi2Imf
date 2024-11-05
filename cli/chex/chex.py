@@ -61,23 +61,19 @@ def known(file_path):
 @cli.command()    
 @click.argument("file_path", type=str, nargs=1)
 def all(file_path):
+    """Runs all check"""
     tree = etree.parse(file_path)
     check_required_elements(tree)
     check_piping_components(tree)
     check_piping_network_segments(tree)
     check_shapes(tree)
 
-def view_hierarchy():
-    systems = tree.xpath('PipingNetworkSystem')
-    for system in systems:
-        print_helper(system, 0)
-        segments = system.xpath('PipingNetworkSegment')
-        for segment in segments:
-            print_helper(segment, 3)
-            pipings = segment.xpath('PipingComponent')
-            print(len(pipings))
-            for piping in pipings:
-                print_helper(piping, 6)
+@cli.command()
+@click.argument("file_path", type=str, nargs=1)
+def explore(file_path):
+    """Shows how PipingComponents, PipingNetworkSegments and PipingNetworkSystems are structured"""
+    tree = etree.parse(file_path)
+    display_structure(tree)
 
 ### Functions for checking 
 def check_required_elements(tree):
@@ -156,6 +152,19 @@ def check_shapes(tree):
 
     category_count_table = create_table(findings, ["Category", "Count"])
     print(category_count_table)
+
+def display_structure(tree):
+    systems = tree.xpath('PipingNetworkSystem')
+    for system in systems:
+        print_helper(system, 0)
+        segments = system.xpath('PipingNetworkSegment')
+        if(len(segments) == 0):
+            print("------None")
+        for segment in segments:
+            print_helper(segment, 3)
+            pipings = segment.xpath('PipingComponent')
+            for piping in pipings:
+                print_helper(piping, 6)
 
 ### Helper functions
 def get_unkown_shapes(tree):
