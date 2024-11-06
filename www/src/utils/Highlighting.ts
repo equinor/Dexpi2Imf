@@ -1,13 +1,8 @@
-import setAttributes from "./Attributes.ts";
+export function setAttributes(el: Element, attrs: { [key: string]: string }) {
+    Object.keys(attrs).forEach(key => el.setAttribute(key, attrs[key]));
+}
 
-export function addPipeHighlight(pipe: Element, color = 'yellow') {
-    const connectorId = pipe.id + '_highlight';
-    const existingHighlightRect = document.getElementById(connectorId);
-    if (existingHighlightRect)
-        return;
-    const d = pipe.getAttribute('d')!;
-
-    // Create a new rect element
+export function setPathHighlight(d: string, connectorId: string, color: string) {
     const highlightRect = document.createElementNS("http://www.w3.org/2000/svg", "path");
 
     setAttributes(highlightRect, {
@@ -16,8 +11,42 @@ export function addPipeHighlight(pipe: Element, color = 'yellow') {
         'fill': 'none',
         'stroke-linecap': 'round',
         'stroke-linejoin': 'round',
-        'stroke': color, 'stroke-width': '5', 'stroke-opacity': '0.5', 'class': 'commissionHighlight'
+        'stroke': color,
+        'stroke-width': '5',
+        'stroke-opacity': '0.5',
+        'class': 'commissionHighlight',
     })
+
+    return highlightRect;
+}
+
+export function setEllipseHighlight(cx: string, cy: string, rx: string, ry: string, color = 'yellow') {
+    const highlightEllipse = document.createElementNS("http://www.w3.org/2000/svg", "ellipse");
+    setAttributes(highlightEllipse, {
+        'cx': cx,
+        'cy': cy,
+        'rx': rx,
+        'ry': ry,
+        'fill': 'none',
+        'stroke-linecap': 'round',
+        'stroke-linejoin': 'round',
+        'stroke': color,
+        'stroke-width': '5',
+        'stroke-opacity': '0.5',
+        'class': 'commissionHighlight',
+    })
+
+    return highlightEllipse;
+}
+
+export function addPipeHighlight(pipe: Element, color = 'yellow') {
+    const connectorId = pipe.id + '_highlight';
+    const existingHighlightRect = document.getElementById(connectorId);
+    if (existingHighlightRect)
+        return;
+    const d = pipe.getAttribute('d')!;
+
+    const highlightRect = setPathHighlight(d, connectorId, color);
 
     highlightRect.addEventListener('click', async () => {
         if (pipe.classList.contains('boundary')) {
@@ -27,7 +56,10 @@ export function addPipeHighlight(pipe: Element, color = 'yellow') {
             pipe.classList.add('boundary')
         }
     });
-    pipe.parentNode!.appendChild(highlightRect);
+
+    const parent = pipe.parentNode!;
+    parent.insertBefore(highlightRect, pipe);
+
 }
 
 
@@ -46,8 +78,27 @@ export function removePipeHighlight(pipe: Element) {
         highlightRect.remove();
 }
 
+export function addNodeHighlight(node: Element, color = 'yellow') {
+    const elements = node.querySelectorAll('ellipse, path');
+    for (const element of elements) {
+        const connectorId = element.id + '_highlight';
+        switch (element.tagName) {
+            case 'path': {
+                element.parentNode!.parentNode!.prepend(setPathHighlight(element.getAttribute('d')!, connectorId, color));
+                break;
+            }
+            case 'ellipse': {
+                element.parentNode!.parentNode!.prepend(setEllipseHighlight(element.getAttribute('cx')!, element.getAttribute('cy')!, element.getAttribute('rx')!, element.getAttribute('ry')!, color));
+                break;
+            }
+            default: {
+                break;
+            }
+        }
+    }
+}
+
 export function addCommissionHighlight(node: Element, color = 'yellow') {
-    console.log('adding commission highlight');
     const highlightRects = node.querySelectorAll('.commissionHighlight');
     if (highlightRects.length !== 0)
         return;

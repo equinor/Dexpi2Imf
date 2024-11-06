@@ -4,9 +4,9 @@ This guide will help you run the NOAKADEXPI program that converts DEPI XML files
 
 ## Prerequisites
 
-Before you start, ensure that you have the following repository structure on your local machine:
+To run the code, you need to have Node.js installed. [You can download node here](https://nodejs.org/en).
 
-- `NOAKADEXPI` repository located adjacent to the `SSI_DEXPI_TEMP` repository.
+Open a terminal in the `www` directory, and run ```npm install```.
 
 ## Steps to Run the Program
 
@@ -91,23 +91,13 @@ Name this file `PV001A_Origio.svg`.
 
 4. **Integrate the SVG Output**
 
-   Once you have the `output.svg` file, you can integrate it into your `dexpi.html` file:
+   Once you have the `output.svg` file, move it to ```www\src\assets```
 
-   a. Copy the full contents of `output.svg`.
-
-   b. Paste the copied SVG content into `dexpi.html` after the line `<?xml version='1.0' encoding='UTF-8'?>`.
-
-   Ensure that the end of your `dexpi.html` file only contains the following lines:
-
-   ```html
-   <script src="script.js" crossorigin="anonymous"></script>
-   </body>
-   </html>
-   ```
 
 5. **View the Result**
 
-   Open `dexpi.html` in a web browser to view the SVG representation of your DEPI XML file. You should now be able to
+   In a terminal inside the `www` folder, run `npm run dev`. Click the link to open it in the browser. You should now be
+   able to
    click on the components within the SVG as intended.
-   If you want to be able to create boundaries you must use RDFox aswell, to manage this see the README in
+   If you want to be able to create boundaries you must use RDFox as well, to manage this see the README in
    client/boundaries.

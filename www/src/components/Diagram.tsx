@@ -8,7 +8,7 @@ import {
     makeSparqlAndUpdateStore, updateTable
 } from "../utils/Triplestore.ts";
 import {
-    addCommissionHighlight, addPipeHighlight,
+    addCommissionHighlight, addNodeHighlight, addPipeHighlight,
     changePipeHighLight,
     removeCommissionHighlight,
     removePipeHighlight
@@ -66,7 +66,8 @@ export default function Diagram() {
 
     async function handleNodeClick(event: MouseEvent) {
         const target = event.currentTarget as HTMLElement;
-        console.log(`Node clicked: ${target}`);
+        console.log(`Node clicked: ${target.id}`);
+        addNodeHighlight(target, 'rgb(229,139,139)')
         // ctrl + left click - select or deselect nodes as insideBoundary
         if (event.ctrlKey) {
             if (target.classList.contains('insideBoundary')) {
@@ -105,7 +106,7 @@ export default function Diagram() {
         target.classList.add('boundary');
         await makeSparqlAndUpdateStore(target.id, BoundaryActions.Insert, BoundaryParts.Boundary);
         console.log('Pipe clicked', event.currentTarget);
-        addPipeHighlight(target, 'rgb(251, 131, 109)')
+        addPipeHighlight(target, 'rgb(229,139,139)')
     }
 
 
@@ -130,7 +131,7 @@ export default function Diagram() {
                 if (isAdjacent) {
                     changePipeHighLight(pipe, 'yellow');
                 } else {
-                    changePipeHighLight(pipe, 'rgb(251, 131, 109)');
+                    changePipeHighLight(pipe, 'rgb(229,139,139)');
                 }
             } else if (packageIds.includes(pipe.id) && isAdjacent) {
                 addPipeHighlight(pipe);

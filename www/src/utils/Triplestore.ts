@@ -42,14 +42,14 @@ export async function queryTripleStore(sparql: string) {
 export async function adjacentToInternal(pipeIri: string) {
     const query = `SELECT ?node WHERE { <${pipeIri}> imf:adjacentTo ?node . ?node comp:isInPackage ?p .}`;
     const result = await queryTripleStore(query);
-    const internalNeighbours = parseNodeIds(result);
+    const internalNeighbours = parseNodeIds(result!);
     return internalNeighbours.length > 0
 }
 
 export async function getNodeIdsInCommissioningPackage() {
     const query = 'SELECT ?node WHERE{?node comp:isInPackage ' + completionPackageIri + ' .}';
     const result = await queryTripleStore(query);
-    return parseNodeIds(result);
+    return parseNodeIds(result!);
 }
 
 export async function updateTable() {
@@ -78,18 +78,18 @@ export async function updateTable() {
         }
     }
     `;
-    let resultInside = parseNodeIds(await queryTripleStore(queryInside));
-    const resultBoundary = parseNodeIds(await queryTripleStore(queryBoundary));
+    let resultInside = parseNodeIds(await queryTripleStore(queryInside) as string);
+    const resultBoundary = parseNodeIds(await queryTripleStore(queryBoundary) as string);
 
     if (resultInside.length > 0 || resultBoundary.length > 0) {
         // Remove elements that are in both inside boundary and boundary
         resultInside = resultInside.filter((nodeId: string) => !resultBoundary.includes(nodeId));
-        displayTablesAndDownloadButton(resultInside, 'Inside Boundary', 'inside-boundary-table-container', resultBoundary, 'Boundary', 'boundary-table-container');
+        //displayTablesAndDownloadButton(resultInside, 'Inside Boundary', 'inside-boundary-table-container', resultBoundary, 'Boundary', 'boundary-table-container');
     } else {
         // Clear the container if there are no nodes
 
-        document.getElementById('inside-boundary-table-container').innerHTML = '';
-        document.getElementById('boundary-table-container').innerHTML = '';
+        //document.getElementById('inside-boundary-table-container').innerHTML = '';
+        //document.getElementById('boundary-table-container').innerHTML = '';
     }
 }
 
