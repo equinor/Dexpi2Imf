@@ -38,7 +38,7 @@ def shapes(file_path):
 
 @cli.command()
 @click.argument("file_path", type=str, nargs=1)
-def unkown(file_path):
+def unknown(file_path):
     """Prints all shapes in the P&ID that is known in the NOAKADEXPI symbol library"""
     tree = etree.parse(file_path)
     known_shapes = get_known_shapes(tree)
