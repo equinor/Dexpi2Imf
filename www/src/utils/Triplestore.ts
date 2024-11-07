@@ -12,14 +12,10 @@ export enum BoundaryParts {
 
 export async function makeSparqlAndUpdateStore(nodeId: string, action: string, type: string) {
     const sparql = `${action} { <${nodeId}> ${type} ${completionPackageIri} . }`;
-    await updateTripleStore(sparql);
-}
-
-export async function updateTripleStore(sparql: string) {
     try {
         await fetch('http://localhost:12110/datastores/boundaries/sparql', {
             method: 'POST',
-            headers: {'Content-Type': 'application/x-www_old-form-urlencoded'},
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
             body: `update=${sparql}`
         });
     } catch (error) {

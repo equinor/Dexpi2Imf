@@ -1,86 +1,99 @@
 import SVG from '../assets/output.svg?react'
-import {useEffect, useState} from "react";
+import {useEffect, useRef} from "react";
 import {
     adjacentToInternal,
     BoundaryActions,
     BoundaryParts,
     getNodeIdsInCommissioningPackage,
-    makeSparqlAndUpdateStore, updateTable
+    makeSparqlAndUpdateStore,
 } from "../utils/Triplestore.ts";
 import {
-    addCommissionHighlight, addNodeHighlight, addPipeHighlight,
+    addCommissionHighlight, addPipeHighlight,
     changePipeHighLight,
     removeCommissionHighlight,
     removePipeHighlight
 } from "../utils/Highlighting.ts";
-
+import '../../style.css'
 export default function Diagram() {
-    const [nodes, setNodes] = useState<NodeListOf<HTMLElement>>();
-    const [piping, setPiping] = useState<NodeListOf<HTMLElement>>();
+    const nodes = useRef<NodeListOf<HTMLElement>>();
+    const piping = useRef<NodeListOf<HTMLElement>>();
 
     useEffect(() => {
-        const nodesFromDom: NodeListOf<HTMLElement> = document.querySelectorAll('.node');
-        const pipingFromDom: NodeListOf<HTMLElement> = document.querySelectorAll('.piping');
+        nodes.current = document.querySelectorAll('.node');
+        piping.current = document.querySelectorAll('.piping');
 
-        setNodes(nodesFromDom);
-        setPiping(pipingFromDom);
-    }, []);
-
-    useEffect(() => {
-        if (!nodes || !piping) {
-            return;
-        }
         const addEventListeners = async () => {
-            for (const node of nodes) {
+            for (const node of nodes.current!) {
                 await makeSparqlAndUpdateStore(node.id, BoundaryActions.Delete, BoundaryParts.Boundary);
                 await makeSparqlAndUpdateStore(node.id, BoundaryActions.Delete, BoundaryParts.InsideBoundary);
                 node.classList.remove('insideBoundary', 'boundary');
                 removeCommissionHighlight(node);
                 node.addEventListener('click', handleNodeClick);
-                node.addEventListener('click', updateInCommissioningPackage);
 
             }
 
-            for (const pipe of piping) {
+            for (const pipe of piping.current!) {
                 await makeSparqlAndUpdateStore(pipe.id, BoundaryActions.Delete, BoundaryParts.Boundary);
                 pipe.classList.remove('boundary');
                 removePipeHighlight(pipe);
                 pipe.addEventListener('click', handlePipeClick);
-                pipe.addEventListener('click', updateInCommissioningPackage);
             }
         }
         addEventListeners()
 
+        const observer = new MutationObserver(() => {
+            nodes.current = document.querySelectorAll('.node')
+            piping.current = document.querySelectorAll('.piping');
+
+            // Clear old listeners and re-attach them to updated elements
+            nodes.current.forEach((node) => {
+                node.removeEventListener('click', handleNodeClick);
+                node.addEventListener('click', handleNodeClick);
+            });
+            piping.current.forEach((pipe) => {
+                pipe.removeEventListener('click', handlePipeClick);
+                pipe.addEventListener('click', handlePipeClick);
+            });
+        })
+
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true,
+            attributes: true,
+            attributeFilter: ['class'],
+        });
+
         // Clean up the event listeners when the component un-mounts
         return () => {
-            nodes.forEach(node => {
-                node.removeEventListener('click', (event) => handleNodeClick(event));
-                node.removeEventListener('click', () => updateInCommissioningPackage());
+            nodes.current?.forEach(node => {
+                node.removeEventListener('click', handleNodeClick);
+                node.removeEventListener('click',updateInCommissioningPackage);
             });
-            piping.forEach(pipe => {
-                pipe.removeEventListener('click', (event) => handlePipeClick(event));
-                pipe.removeEventListener('click', () => updateInCommissioningPackage());
+            piping.current?.forEach(pipe => {
+                pipe.removeEventListener('click',handlePipeClick);
+                pipe.removeEventListener('click',updateInCommissioningPackage);
             });
         };
-    }, [nodes, piping]);
+    }, []);
 
     async function handleNodeClick(event: MouseEvent) {
         const target = event.currentTarget as HTMLElement;
-        console.log(`Node clicked: ${target.id}`);
-        addNodeHighlight(target, 'rgb(229,139,139)')
         // ctrl + left click - select or deselect nodes as insideBoundary
-        if (event.ctrlKey) {
+        if (event.shiftKey) {
             if (target.classList.contains('insideBoundary')) {
                 target.classList.remove('insideBoundary');
                 removeCommissionHighlight(target);
                 await makeSparqlAndUpdateStore(target.id, BoundaryActions.Delete, BoundaryParts.InsideBoundary);
+                updateInCommissioningPackage();
             } else {
                 target.classList.add('insideBoundary');
                 await makeSparqlAndUpdateStore(target.id, BoundaryActions.Insert, BoundaryParts.InsideBoundary);
+                updateInCommissioningPackage();
                 if (target.classList.contains('boundary')) {
                     target.classList.remove('boundary');
                     removeCommissionHighlight(target);
                     await makeSparqlAndUpdateStore(target.id, BoundaryActions.Delete, BoundaryParts.Boundary);
+                    updateInCommissioningPackage();
                 }
             }
             // left click - select or deselect nodes as boundary
@@ -89,13 +102,17 @@ export default function Diagram() {
                 target.classList.remove('boundary');
                 removeCommissionHighlight(target);
                 await makeSparqlAndUpdateStore(target.id, BoundaryActions.Delete, BoundaryParts.Boundary);
+                updateInCommissioningPackage();
             } else {
                 target.classList.add('boundary');
+                //addNodeHighlight(target);
                 await makeSparqlAndUpdateStore(target.id, BoundaryActions.Insert, BoundaryParts.Boundary);
+                updateInCommissioningPackage();
                 if (target.classList.contains('insideBoundary')) {
                     target.classList.remove('insideBoundary');
                     removeCommissionHighlight(target);
                     await makeSparqlAndUpdateStore(target.id, BoundaryActions.Delete, BoundaryParts.InsideBoundary);
+                    updateInCommissioningPackage();
                 }
             }
         }
@@ -105,19 +122,18 @@ export default function Diagram() {
         const target = event.currentTarget as HTMLElement;
         target.classList.add('boundary');
         await makeSparqlAndUpdateStore(target.id, BoundaryActions.Insert, BoundaryParts.Boundary);
-        console.log('Pipe clicked', event.currentTarget);
         addPipeHighlight(target, 'rgb(229,139,139)')
     }
 
 
     async function updateInCommissioningPackage() {
-        if (checkOnlyInsideBoundary() || !nodes || !piping) {
+        if (checkOnlyInsideBoundary() || !nodes.current || !piping.current) {
             return;
         }
         const packageIds = await getNodeIdsInCommissioningPackage();
-        await updateTable()
-
-        nodes.forEach(node => {
+        console.log(packageIds)
+        //await updateTable()
+        nodes.current.forEach(node => {
             if (packageIds.includes(node.id) && !node.classList.contains('boundary')) {
                 addCommissionHighlight(node);
             } else {
@@ -125,7 +141,7 @@ export default function Diagram() {
             }
         });
 
-        for (const pipe of piping) {
+        for (const pipe of piping.current) {
             const isAdjacent = await adjacentToInternal(pipe.id);
             if (pipe.classList.contains('boundary')) {
                 if (isAdjacent) {
@@ -142,10 +158,10 @@ export default function Diagram() {
     }
 
     function checkOnlyInsideBoundary() {
-        if (!piping || !nodes) return;
-        const hasPipingBoundary = Array.from(piping).some(pipe => pipe.classList.contains('boundary'));
-        const hasNodeBoundary = Array.from(nodes).some(node => node.classList.contains('boundary'));
-        const hasInsideBoundary = Array.from(nodes).some(node => node.classList.contains('insideBoundary'));
+        if (!piping.current || !nodes.current) return;
+        const hasPipingBoundary = Array.from(piping.current).some(pipe => pipe.classList.contains('boundary'));
+        const hasNodeBoundary = Array.from(nodes.current).some(node => node.classList.contains('boundary'));
+        const hasInsideBoundary = Array.from(nodes.current).some(node => node.classList.contains('insideBoundary'));
         return hasInsideBoundary && !hasPipingBoundary && !hasNodeBoundary;
     }
 
