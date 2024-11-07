@@ -38,8 +38,8 @@ def shapes(file_path):
 
 @cli.command()
 @click.argument("file_path", type=str, nargs=1)
-def unkown(file_path):
-    """Prints all shapes in the P&ID that is known in the NOAKADEXPI symbol library"""
+def unknown(file_path):
+    """Prints all shapes in the P&ID that is unknown in the NOAKADEXPI symbol library"""
     tree = etree.parse(file_path)
     known_shapes = get_known_shapes(tree)
     print("Known shapes:")
@@ -50,7 +50,7 @@ def unkown(file_path):
 @cli.command()
 @click.argument("file_path", type=str, nargs=1)
 def known(file_path):
-    """Prints all shapes in the P&ID that is not known in the NOAKADEXPI symbol library"""
+    """Prints all shapes in the P&ID that is known in the NOAKADEXPI symbol library"""
     tree = etree.parse(file_path)
     unknown_shapes = get_unkown_shapes(tree)
     print("Unknown shapes:")
