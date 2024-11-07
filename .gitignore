@@ -19,7 +19,7 @@ aibel_dexpi/*
 aibel_dexpi.xml
 output.svg
 local
-aibel_dexpi.xml
-
+chex.egg-info
+__pycache__
 /owl/boundary.properties
 /owl/catalog-v001.xml
