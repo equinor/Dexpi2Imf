@@ -2,11 +2,12 @@ export function setAttributes(el: Element, attrs: { [key: string]: string }) {
     Object.keys(attrs).forEach(key => el.setAttribute(key, attrs[key]));
 }
 
-export function setPathHighlight(d: string, color: string) {
+export function setPathHighlight(d: string, connectorId: string, color: string) {
     const highlightRect = document.createElementNS("http://www.w3.org/2000/svg", "path");
 
     setAttributes(highlightRect, {
         'd': d,
+        'id': connectorId,
         'fill': 'none',
         'stroke-linecap': 'round',
         'stroke-linejoin': 'round',
@@ -26,7 +27,7 @@ export function addPipeHighlight(pipe: Element, color = 'yellow') {
         return;
     const d = pipe.getAttribute('d')!;
 
-    const highlightRect = setPathHighlight(d, color);
+    const highlightRect = setPathHighlight(d, connectorId, color);
 
     highlightRect.addEventListener('click', async () => {
         if (pipe.classList.contains('boundary')) {
@@ -61,7 +62,8 @@ export function removePipeHighlight(pipe: Element) {
 export function addNodeHighlight(node: Element, color = 'yellow') {
     const elements = node.querySelectorAll('path');
     for (const element of elements) {
-        element.parentNode!.prepend(setPathHighlight(element.getAttribute('d')!, color));
+        const connectorId = element.id + '_highlight';
+        element.parentNode!.prepend(setPathHighlight(element.getAttribute('d')!, connectorId, color));
     }
 }
 
