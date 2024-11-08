@@ -22,11 +22,11 @@ export default function Diagram() {
         nodes.current = document.querySelectorAll('.node');
         piping.current = document.querySelectorAll('.piping');
 
-        for (const node of nodes.current!) {
+        for (const node of nodes.current) {
             node.addEventListener('click', handleNodeClick);
         }
 
-        for (const pipe of piping.current!) {
+        for (const pipe of piping.current) {
             pipe.addEventListener('click', handlePipeClick);
         }
 
@@ -42,22 +42,20 @@ export default function Diagram() {
             attributeFilter: ['class'],
         });
 
-        // Clean up the event listeners when the component un-mounts
         return () => {
+            observer.disconnect();
             nodes.current?.forEach(async node => {
                 node.removeEventListener('click', handleNodeClick);
-                node.removeEventListener('click',updateInCommissioningPackage);
                 await makeSparqlAndUpdateStore(node.id, BoundaryActions.Delete, BoundaryParts.Boundary);
                 await makeSparqlAndUpdateStore(node.id, BoundaryActions.Delete, BoundaryParts.InsideBoundary);
                 node.classList.remove('insideBoundary', 'boundary');
                 removeCommissionHighlight(node);
             });
             piping.current?.forEach(async pipe => {
-                pipe.removeEventListener('click',handlePipeClick);
-                pipe.removeEventListener('click',updateInCommissioningPackage);
                 await makeSparqlAndUpdateStore(pipe.id, BoundaryActions.Delete, BoundaryParts.Boundary);
                 pipe.classList.remove('boundary');
                 removePipeHighlight(pipe);
+                pipe.removeEventListener('click',handlePipeClick);
             });
         };
     }, []);
