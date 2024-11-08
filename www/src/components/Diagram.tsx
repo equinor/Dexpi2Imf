@@ -64,7 +64,6 @@ export default function Diagram() {
 
     async function handleNodeClick(event: MouseEvent) {
         const target = event.currentTarget as HTMLElement;
-        // ctrl + left click - select or deselect nodes as insideBoundary
         if (event.shiftKey) {
             if (target.classList.contains('insideBoundary')) {
                 target.classList.remove('insideBoundary');
@@ -82,7 +81,6 @@ export default function Diagram() {
                     updateInCommissioningPackage();
                 }
             }
-            // left click - select or deselect nodes as boundary
         } else {
             if (target.classList.contains('boundary')) {
                 target.classList.remove('boundary');
