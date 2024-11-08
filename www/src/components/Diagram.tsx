@@ -22,38 +22,17 @@ export default function Diagram() {
         nodes.current = document.querySelectorAll('.node');
         piping.current = document.querySelectorAll('.piping');
 
-        const addEventListeners = async () => {
-            for (const node of nodes.current!) {
-                await makeSparqlAndUpdateStore(node.id, BoundaryActions.Delete, BoundaryParts.Boundary);
-                await makeSparqlAndUpdateStore(node.id, BoundaryActions.Delete, BoundaryParts.InsideBoundary);
-                node.classList.remove('insideBoundary', 'boundary');
-                removeCommissionHighlight(node);
-                node.addEventListener('click', handleNodeClick);
-
-            }
-
-            for (const pipe of piping.current!) {
-                await makeSparqlAndUpdateStore(pipe.id, BoundaryActions.Delete, BoundaryParts.Boundary);
-                pipe.classList.remove('boundary');
-                removePipeHighlight(pipe);
-                pipe.addEventListener('click', handlePipeClick);
-            }
+        for (const node of nodes.current!) {
+            node.addEventListener('click', handleNodeClick);
         }
-        addEventListeners()
+
+        for (const pipe of piping.current!) {
+            pipe.addEventListener('click', handlePipeClick);
+        }
 
         const observer = new MutationObserver(() => {
             nodes.current = document.querySelectorAll('.node')
             piping.current = document.querySelectorAll('.piping');
-
-            // Clear old listeners and re-attach them to updated elements
-            nodes.current.forEach((node) => {
-                node.removeEventListener('click', handleNodeClick);
-                node.addEventListener('click', handleNodeClick);
-            });
-            piping.current.forEach((pipe) => {
-                pipe.removeEventListener('click', handlePipeClick);
-                pipe.addEventListener('click', handlePipeClick);
-            });
         })
 
         observer.observe(document.body, {
@@ -65,13 +44,20 @@ export default function Diagram() {
 
         // Clean up the event listeners when the component un-mounts
         return () => {
-            nodes.current?.forEach(node => {
+            nodes.current?.forEach(async node => {
                 node.removeEventListener('click', handleNodeClick);
                 node.removeEventListener('click',updateInCommissioningPackage);
+                await makeSparqlAndUpdateStore(node.id, BoundaryActions.Delete, BoundaryParts.Boundary);
+                await makeSparqlAndUpdateStore(node.id, BoundaryActions.Delete, BoundaryParts.InsideBoundary);
+                node.classList.remove('insideBoundary', 'boundary');
+                removeCommissionHighlight(node);
             });
-            piping.current?.forEach(pipe => {
+            piping.current?.forEach(async pipe => {
                 pipe.removeEventListener('click',handlePipeClick);
                 pipe.removeEventListener('click',updateInCommissioningPackage);
+                await makeSparqlAndUpdateStore(pipe.id, BoundaryActions.Delete, BoundaryParts.Boundary);
+                pipe.classList.remove('boundary');
+                removePipeHighlight(pipe);
             });
         };
     }, []);
