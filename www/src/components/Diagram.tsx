@@ -106,6 +106,7 @@ export default function Diagram() {
         target.classList.add('boundary');
         await makeSparqlAndUpdateStore(target.id, BoundaryActions.Insert, BoundaryParts.Boundary);
         addPipeHighlight(target, 'rgb(229,139,139)')
+        // TODO: Handle removal of components not in the commissioning package anymore
     }
 
 
