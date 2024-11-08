@@ -89,7 +89,6 @@ export default function Diagram() {
                 updateInCommissioningPackage();
             } else {
                 target.classList.add('boundary');
-                //addNodeHighlight(target);
                 await makeSparqlAndUpdateStore(target.id, BoundaryActions.Insert, BoundaryParts.Boundary);
                 updateInCommissioningPackage();
                 if (target.classList.contains('insideBoundary')) {
