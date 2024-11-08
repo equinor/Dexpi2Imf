@@ -11,7 +11,7 @@
     <xsl:template match="/PlantModel">
         <svg xmlns:svg="http://www.w3.org/2000/svg">
             <xsl:attribute name="width">
-                <xsl:value-of select="2000"/>
+                <xsl:text>100%</xsl:text>
             </xsl:attribute>
             <xsl:attribute name="viewBox">
                 <xsl:text>0 0 </xsl:text>
