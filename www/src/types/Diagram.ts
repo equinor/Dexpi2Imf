@@ -1,6 +1,5 @@
 export interface XMLProps {
-    // @ts-ignore
-    ?xml: {version: string; encoding: string};
+    xml: { version: string; encoding: string };
     PlantModel: PlantModelProps;
 }
 
@@ -9,6 +8,7 @@ export interface PlantModelProps {
     MetaData: MetaDataProps;
     PlantStructureItem: PlantStructureItemProps[];
     Equipment: EquipmentProps[];
+    PipingNetworkSystem: PipingNetworkSystemProps[];
     Drawing: DrawingProps;
     ShapeCatalogue: ShapeCatalogueProps;
 }
@@ -48,15 +48,16 @@ export interface PlantStructureItemProps {
 }
 
 export interface EquipmentProps {
-    ID: string;
-    ComponentClass: string;
-    ComponentClassURI: string;
-    ComponentName: string;
-    PersistentID: PersistentIDProps;
-    Position: PositionProps;
-    GenericAttributes: GenericAttributesProps[];
-    Association: AssociationProps[];
-    Nozzle: NozzleProps[];
+    ID: string,
+    ComponentClass: string,
+    ComponentClassURI: string,
+    ComponentName: string,
+    PersistentID: PersistentIDProps,
+    Position: PositionProps,
+    GenericAttributes: GenericAttributesProps[],
+    Association: AssociationProps[],
+    Nozzle: NozzleProps[],
+    height?: number
 }
 
 export interface DrawingProps {
@@ -91,10 +92,8 @@ export interface ExtentProps {
 }
 
 export interface PresentationProps {
-    // Based on XML, there are no attributes or other nested elements defined for Presentation.
 }
 
-// The rest of the shape types (only an example given, all others would follow similar structure):
 export interface LabelShapeProps {
     ID: string;
     ComponentName: string;
@@ -124,30 +123,22 @@ export interface GenericAttributesProps {
     GenericAttribute: GenericAttributeProps[];
 }
 
-export interface GenericAttributeProps {
-    Format: string;
-    Type: string;
-    TypeURI: string;
-    Value: string;
-    Name: string;
-    AttributeURI: string;
-}
-
 export interface AssociationProps {
     Type: string;
     ItemID: string;
 }
 
 export interface NozzleProps {
-    ID: string;
-    ComponentClass: string;
-    ComponentClassURI: string;
-    ComponentName: string;
-    PersistentID: PersistentIDProps;
-    Position: PositionProps;
-    Label: LabelProps;
-    GenericAttributes: GenericAttributesProps;
-    ConnectionPoints: ConnectionPointsProps;
+    ID: string,
+    ComponentClass: string,
+    ComponentClassURI: string,
+    ComponentName: string,
+    PersistentID: PersistentIDProps,
+    Position: PositionProps,
+    Label: LabelProps,
+    GenericAttributes: GenericAttributesProps,
+    ConnectionPoints: ConnectionPointsProps,
+    height?: number
 }
 
 export interface LabelProps {
@@ -170,10 +161,101 @@ export interface ConnectionPointsProps {
     NumPoints: number;
     Node: NodeProps[];
 }
+
 export interface NodeProps {
     ID: string;
     Type?: string;
     Position?: PositionProps;
+}
+
+export interface PersistentIDProps {
+    Context: string;
+    Identifier: string;
+}
+
+export interface GenericAttributeProps {
+    Format: string;
+    Type: string;
+    TypeURI: string;
+    Value: string;
+    Name?: string;
+    AttributeURI?: string;
+    ValueURI?: string;
+}
+
+export interface GenericAttributesProps {
+    Set: string;
+    Number: number;
+    GenericAttribute: GenericAttributeProps[];
+}
+
+export interface AssociationProps {
+    Type: string;
+    ItemID: string;
+}
+
+export interface CoordinateProps {
+    X: number;
+    Y: number;
+    Z?: number;
+}
+
+export interface NodeProps {
+    ID: string;
+    Type?: string;
+    Position?: PositionProps;
+}
+
+export interface ConnectionPointsProps {
+    FlowIn: string;
+    FlowOut: string;
+    NumPoints: number;
+    Node: NodeProps[];
+}
+
+export interface PipingComponentProps {
+    ID: string;
+    ComponentClass: string;
+    ComponentClassURI: string;
+    ComponentName?: string;
+    PersistentID: PersistentIDProps;
+    Position: PositionProps;
+    GenericAttributes: GenericAttributesProps;
+    ConnectionPoints: ConnectionPointsProps;
+}
+
+export interface CenterLineProps {
+    NumPoints: string;
+    Coordinate: CoordinateProps[];
+}
+
+export interface ConnectionProps {
+    FromID: string;
+    FromNode: string;
+    ToID: string;
+    ToNode: string;
+}
+
+export interface PipingNetworkSegmentProps {
+    ID: string;
+    ComponentClass: string;
+    ComponentClassURI: string;
+    GenericAttributes: GenericAttributesProps;
+    CenterLine: CenterLineProps[];
+    PipingComponent: PipingComponentProps[];
+    Connection?: ConnectionProps;
+    height?: number;
+}
+
+export interface PipingNetworkSystemProps {
+    ID: string;
+    ComponentClass: string;
+    ComponentClassURI: string;
+    PersistentID: PersistentIDProps;
+    GenericAttributes: GenericAttributesProps[];
+    Association: AssociationProps[];
+    PipingNetworkSegment: PipingNetworkSegmentProps[] | PipingNetworkSegmentProps;
+    height?: number;
 }
 
 export interface ShapeCatalogueProps {

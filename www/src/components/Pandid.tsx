@@ -1,12 +1,15 @@
 import {XMLParser} from "fast-xml-parser";
 import Equipment from "./Equipment.tsx";
-import {EquipmentProps, XMLProps} from "../types/Diagram.ts";
+import {EquipmentProps, PipingNetworkSystemProps, XMLProps} from "../types/Diagram.ts";
 import {useEffect, useState} from "react";
+import PipeSystem from "./PipeSystem.tsx";
 
 export default function Pandid() {
     const [xmlData, setXmlData] = useState<XMLProps | null>(null);
     const [viewBox, setViewBox] = useState<string>('');
-    const [equipment, setEquipment] = useState<EquipmentProps[]>([]);
+    const [height, setHeight] = useState<number>(0);
+    const [equipments, setEquipments] = useState<EquipmentProps[]>([]);
+    const [pipingNetworkSystems, setPipingNetworkSystems] = useState<PipingNetworkSystemProps[]>([]);
     const parser = new XMLParser({ignoreAttributes: false, attributeNamePrefix: ''});
 
     useEffect(() => {
@@ -20,15 +23,17 @@ export default function Pandid() {
 
     useEffect(() => {
         if (!xmlData) return;
-        setEquipment(xmlData.PlantModel.Equipment);
-        console.log(xmlData.PlantModel.Equipment)
+        setEquipments(xmlData.PlantModel.Equipment);
+        setPipingNetworkSystems(xmlData.PlantModel.PipingNetworkSystem);
+        setHeight(xmlData.PlantModel.Drawing.Extent.Max.Y);
         setViewBox(`${xmlData.PlantModel.Drawing.Extent.Min.X} ${xmlData.PlantModel.Drawing.Extent.Min.Y} ${xmlData.PlantModel.Drawing.Extent.Max.X} ${xmlData.PlantModel.Drawing.Extent.Max.Y}`);
     }, [xmlData]);
 
     return (
         <>
-        {xmlData && viewBox && <svg viewBox={viewBox}>
-            {equipment.map((eq: EquipmentProps, index: number) => <Equipment key={index} {...eq}/>)}
+        {xmlData && viewBox && height && pipingNetworkSystems && <svg viewBox={viewBox}>
+            {equipments.map((equipment: EquipmentProps, index: number) => <Equipment key={index} {...equipment} height={height}/>)}
+            {pipingNetworkSystems.map((piping: PipingNetworkSystemProps, index: number) => <PipeSystem key={index} {...piping} height={height}/>)}
         </svg>
         }
         </>
