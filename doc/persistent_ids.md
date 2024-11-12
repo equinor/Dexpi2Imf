@@ -1,7 +1,10 @@
 # Persistent IDs
 
 ## Centralized DISC ID management for Dexpi Equipment IDs
-We suggest a common, centralized ID management for DISC Dexpi IDs.
+We suggest a common, centralized ID management for DISC Dexpi Identifiers. 
+
+The identifiers are globally unique and cannot be re-used for example if the same P&ID is re-used in different locations.
+(An example of such re-use would be a P&ID of a component from a supplier.)
 
 That we are looking at P&IDs means we are identifying 
 "processing and instrumentations", so functions and activities 
