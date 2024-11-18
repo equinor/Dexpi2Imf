@@ -1,4 +1,5 @@
-# Persistent IDs
+# Discussion note about Persistent IDs
+
 
 ## Centralized DISC ID management for Dexpi Equipment IDs
 We suggest separate ID management systems for Dexpi Identifiers in each company, but with a coordination which makes re-use possible and easy across companies in DISC.
