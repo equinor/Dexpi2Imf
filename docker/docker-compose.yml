@@ -1,0 +1,9 @@
+version: '3'
+services:
+  rdfox: 
+    image: oxfordsemantic/rdfox
+    command: sandbox local/rdfox dexpi
+  rml-mapper:
+    build: .
+    volumes:
+      - ~/source/repos/ssi-dexpi-tmp/:/app/local/
