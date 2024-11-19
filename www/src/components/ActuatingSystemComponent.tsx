@@ -1,18 +1,15 @@
-import { NozzleProps } from "../types/diagram/Diagram.ts";
+import { ActuatingSystemComponentProps } from "../types/diagram/ActuatingSystem.ts";
 import useNoakaDexpiSvg from "../hooks/useNoakaDexpiSvg.ts";
 import calculateAngleAndRotation from "../utils/Transformation.ts";
 import { useContext } from "react";
 import PandidContext from "../context/PandidContext.ts";
 
-export default function Nozzle(props: NozzleProps) {
+export default function ActuatingSystemComponent(
+  props: ActuatingSystemComponentProps,
+) {
   const height = useContext(PandidContext).height;
-  let componentName = "ND0002_Origo";
-  if (props.ComponentName) {
-    componentName = props.ComponentName;
-  }
-  const hasPosition: boolean = Boolean(props.Position);
-  const svg = useNoakaDexpiSvg(componentName);
-
+  const hasPosition = Boolean(props.Position);
+  const svg = useNoakaDexpiSvg(props.ComponentName!);
   return (
     <>
       {svg && (

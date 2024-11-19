@@ -1,38 +1,54 @@
-import {EquipmentProps, NozzleProps} from "../types/Diagram.ts";
-import {useEffect, useState} from "react";
+import { EquipmentProps, NozzleProps } from "../types/diagram/Diagram.ts";
 import Nozzle from "./Nozzle.tsx";
+import useNoakaDexpiSvg from "../hooks/useNoakaDexpiSvg.ts";
+import { useContext, useEffect, useState } from "react";
+import styled from "styled-components";
+import PandidContext from "../context/PandidContext.ts";
+
+const StyledG = styled.g`
+  path {
+    stroke: yellow;
+    stroke-width: 5;
+  }
+`;
 
 export default function Equipment(props: EquipmentProps) {
-    const componentName = props.ComponentName.replace('_SHAPE', '');
-    const [svg, setSvg] = useState<string>('');
-    const nozzles: NozzleProps[] = props.Nozzle
+  const height = useContext(PandidContext).height;
+  const svg = useNoakaDexpiSvg(props.ComponentName);
+  const nozzles: NozzleProps[] = props.Nozzle;
+  const [isClicked, setIsClicked] = useState<boolean>(false);
 
-    // Fetch SVG
-    useEffect(() => {
-        fetch(`https://raw.githubusercontent.com/equinor/NOAKADEXPI/refs/heads/main/Symbols/Origo/${componentName}_Origo.svg`)
-            .then(res => res.text())
-            .then(data => {
-                const parser = new DOMParser();
-                const svgDoc = parser.parseFromString(data, "image/svg+xml");
-                // We do not want the svg element itself or the xml metadata, only the child g tag
-                const gElement = svgDoc.querySelector('svg > g');
-                if (gElement) {
-                    const serializedGElement = new XMLSerializer().serializeToString(gElement);
-                    setSvg(serializedGElement);
-                } else {
-                    console.error('No g tag found inside the SVG');
-                }
-            })
-            .catch(error => {
-                console.error('Error fetching or parsing SVG: ', error);
-            });
-    }, []);
+  function handleNodeClick() {
+    setIsClicked(!isClicked);
+  }
 
-    return (
+  useEffect(() => {
+    console.log(isClicked);
+  }, [isClicked]);
+
+  return (
+    <g onClick={handleNodeClick}>
+      {svg && (
         <>
-            {svg && <g transform={`${props.Position.Reference.X === -1 ? 'rotate(-180deg)': ''}translate(${props.Position.Location.X}, ${props.height! - props.Position.Location.Y})`}
-                       className={'.node'} dangerouslySetInnerHTML={{__html: svg }}/>}
-            {nozzles.map((nozzle: NozzleProps, index: number) => <Nozzle key={index} {...nozzle} height={props.height} />)}
-        </>);
-
+          {isClicked && (
+            <StyledG
+              id={props.ID + "_highlight"}
+              transform={`${props.Position.Reference.X === -1 ? "rotate(-180deg)" : ""}translate(${props.Position.Location.X}, ${height - props.Position.Location.Y})`}
+              className={".node"}
+              dangerouslySetInnerHTML={{ __html: svg }}
+            />
+          )}
+          <g
+            id={props.ID}
+            transform={`${props.Position.Reference.X === -1 ? "rotate(-180deg)" : ""}translate(${props.Position.Location.X}, ${height - props.Position.Location.Y})`}
+            className={".node"}
+            dangerouslySetInnerHTML={{ __html: svg }}
+          />
+        </>
+      )}
+      {nozzles.map((nozzle: NozzleProps, index: number) => (
+        <Nozzle key={index} {...nozzle} />
+      ))}
+    </g>
+  );
 }
