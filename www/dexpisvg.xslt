@@ -141,9 +141,9 @@
         </xsl:variable>
         <xsl:variable name="angle">
             <xsl:choose>
-                <xsl:when test="$axisX = 0 and $axisY= 0 and $axisZ = 1"><xsl:value-of select="$refangle" />>
+                <xsl:when test="$axisX = 0 and $axisY= 0 and $axisZ = 1"><xsl:value-of select="$refangle" />
                 </xsl:when>
-                <xsl:when test="$axisX = 0 and $axisY= 0 and $axisZ = -1"><xsl:value-of select="- $refangle" />>
+                <xsl:when test="$axisX = 0 and $axisY= 0 and $axisZ = -1"><xsl:value-of select="- $refangle" />
                 </xsl:when>
                 <xsl:otherwise>
                     <xsl:message terminate="yes">This combination of reference values is not handled:
