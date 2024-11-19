@@ -12,7 +12,7 @@ cp /app/local/xslt/PV001A_Origo.svg /app/NOAKADEXPI/Symbols/Origo
 # Create svg
 mkdir -p /app/created/directories
 cd /app/created/directories
-cp /app/local/www/dexpisvg.xslt .
+cp /app/local/xslt/dexpisvg.xslt .
 cp /app/local/rml_mappings/pandid.xml .
 xsltproc --novalid -o /app/dexpi.svg dexpisvg.xslt pandid.xml 
 

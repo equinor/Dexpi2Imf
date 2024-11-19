@@ -8,16 +8,15 @@ services:
     ports:
       - 12110:12110
     volumes:
-      - ~/source/repos/ssi-dexpi-tmp/:/home/rdfox/.RDFox
-      - ~/source/repos/ssi-dexpi-tmp/RDFox.lic:/opt/RDFox/RDFox.lic
+      - ${PWD}:/home/rdfox/.RDFox/
+      - ${PWD}/RDFox.lic:/opt/RDFox/RDFox.lic
   rml-mapper:
     build: .
-    stdin_open: true
     tty: true
     ports:
       - 8080:80
     volumes:
-      - ~/source/repos/ssi-dexpi-tmp/:/app/local/
+      - ${PWD}:/app/local/
     depends_on:
       - rdfox
     
