@@ -1,5 +1,5 @@
 # Docker-based demo setup
 
-* `docker-compose build`
-* `docker-compose up`
-* 
+Run `docker-compose up --build`
+
+Open [http://localhost:8080]
