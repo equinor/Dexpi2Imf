@@ -20,6 +20,9 @@ xsltproc --novalid -o /app/dexpi.svg dexpisvg.xslt pandid.xml
 head -n 14 /app/local/www/dexpi.html > /var/www/html/index.html
 cat /app/dexpi.svg >> /var/www/html/index.html
 tail -n +14 /app/local/www/dexpi.html >> /var/www/html/index.html
+
+cp /app/local/www/script.js /var/www/html/
+cp /app/local/www/style.css /var/www/html/
 #
 apache2ctl -D FOREGROUND
 

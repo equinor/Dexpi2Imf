@@ -313,9 +313,9 @@
             select="//ShapeCatalogue/*[@ComponentName=$componentName]/GenericAttributes/GenericAttribute/@Value" />
         <xsl:variable
             name="path"
-            select="concat('../../../../NOAKADEXPI/Symbols/Origo/', $shapeValue, '_Origo.svg')" />
+            select="concat('../../NOAKADEXPI/Symbols/Origo/', $shapeValue, '_Origo.svg')" />
         <xsl:if
-            test="not($path = '../../../../NOAKADEXPI/Symbols/Origo/BORDER_A1_Origo.svg')">
+            test="not($path = '../../NOAKADEXPI/Symbols/Origo/BORDER_A1_Origo.svg')">
             <xsl:if test="$shapeValue">
                 <a id="{concat('https://assetid.equinor.com/plantx#', $id)}" class="node">
                     <g>
