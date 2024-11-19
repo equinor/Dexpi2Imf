@@ -2,8 +2,22 @@ version: '3'
 services:
   rdfox: 
     image: oxfordsemantic/rdfox
-    command: sandbox local/rdfox dexpi
+    command: sandbox /home/rdfox/.RDFox/rdfox dexpi
+    stdin_open: true
+    tty: true
+    ports:
+      - 12110:12110
+    volumes:
+      - ~/source/repos/ssi-dexpi-tmp/:/home/rdfox/.RDFox
+      - ~/source/repos/ssi-dexpi-tmp/RDFox.lic:/opt/RDFox/RDFox.lic
   rml-mapper:
     build: .
+    stdin_open: true
+    tty: true
+    ports:
+      - 8080:80
     volumes:
       - ~/source/repos/ssi-dexpi-tmp/:/app/local/
+    depends_on:
+      - rdfox
+    
