@@ -10,13 +10,18 @@ services:
     volumes:
       - ${PWD}:/home/rdfox/.RDFox/
       - ${PWD}/RDFox.lic:/opt/RDFox/RDFox.lic
+    depends_on:
+      - rml-mapper
   rml-mapper:
-    build: .
+    build: rml-mapper
+    volumes:
+      - ${PWD}:/app/local/
+  web:
+    build: web
     tty: true
     ports:
       - 8080:80
     volumes:
-      - ${PWD}:/app/local/
+      - ${PWD}/www:/var/www/html/
     depends_on:
-      - rdfox
-    
+      - rml-mapper
