@@ -1,10 +1,10 @@
-import useNoakaDexpiSvg from "../../hooks/useNoakaDexpiSvg.ts";
 import { LabelProps } from "../../types/diagram/Piping.ts";
 import calculateAngleAndRotation from "../../utils/Transformation.ts";
 import constructPath from "../../utils/Path.ts";
 import styled from "styled-components";
 import { useContext } from "react";
 import PandidContext from "../../context/PandidContext.ts";
+import useSerializeSvgWithoutEdits from "../../hooks/useSerializeSvgWithoutEdits.tsx";
 
 const StyledPath = styled.path`
   stroke: #000000;
@@ -14,10 +14,11 @@ const StyledPath = styled.path`
   stroke-linejoin: round;
 `;
 
-export default function Label(props: LabelProps) {
+export default function PipeLabel(props: LabelProps) {
   const context = useContext(PandidContext);
   const height = context.height;
-  const svg = useNoakaDexpiSvg(props.ComponentName);
+  const svg = useSerializeSvgWithoutEdits(props.ComponentName);
+
   return (
     <>
       {svg && (

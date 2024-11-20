@@ -34,7 +34,7 @@ export default function Pandid() {
         const result = parser.parse(data) as XMLProps;
         setXmlData(result);
       });
-  });
+  }, []);
 
   // When XML data is loaded, set all component states
   useEffect(() => {

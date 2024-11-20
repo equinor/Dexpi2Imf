@@ -1,9 +1,9 @@
 import { EquipmentProps, NozzleProps } from "../types/diagram/Diagram.ts";
 import Nozzle from "./Nozzle.tsx";
-import useNoakaDexpiSvg from "../hooks/useNoakaDexpiSvg.ts";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import styled from "styled-components";
 import PandidContext from "../context/PandidContext.ts";
+import useSerializeNodeSvg from "../hooks/useSerializeNodeSvg.tsx";
 
 const StyledG = styled.g`
   path {
@@ -14,17 +14,17 @@ const StyledG = styled.g`
 
 export default function Equipment(props: EquipmentProps) {
   const height = useContext(PandidContext).height;
-  const svg = useNoakaDexpiSvg(props.ComponentName);
+  const svg = useSerializeNodeSvg(
+    props.ComponentName,
+    props.Position,
+    props.GenericAttributes[0],
+  );
+
   const nozzles: NozzleProps[] = props.Nozzle;
   const [isClicked, setIsClicked] = useState<boolean>(false);
-
   function handleNodeClick() {
     setIsClicked(!isClicked);
   }
-
-  useEffect(() => {
-    console.log(isClicked);
-  }, [isClicked]);
 
   return (
     <g onClick={handleNodeClick}>

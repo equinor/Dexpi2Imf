@@ -1,6 +1,8 @@
 import {
   AssociationProps,
+  BaseItemProps,
   CenterLineProps,
+  ComponentItemProps,
   ConnectionPointsProps,
   ConnectionProps,
   CoordinateProps,
@@ -9,10 +11,7 @@ import {
   PositionProps,
 } from "./Common.ts";
 
-export interface PipingComponentProps {
-  ID: string;
-  ComponentClass: string;
-  ComponentClassURI: string;
+export interface PipingComponentProps extends BaseItemProps {
   ComponentName?: string;
   PersistentID: PersistentIDProps;
   Position: PositionProps;
@@ -21,20 +20,16 @@ export interface PipingComponentProps {
   ConnectionPoints: ConnectionPointsProps;
 }
 
-export interface PipingNetworkSegmentProps {
-  ID: string;
-  ComponentClass: string;
-  ComponentClassURI: string;
+export interface PipingNetworkSegmentProps extends BaseItemProps {
   GenericAttributes: GenericAttributesProps;
   CenterLine: CenterLineProps[];
   PipingComponent: PipingComponentProps[];
+  PipeSlopeSymbol?: PipeSlopeSymbolProps;
+  PropertyBreak?: PropertyBreakProps;
   Connection?: ConnectionProps;
 }
 
-export interface PipingNetworkSystemProps {
-  ID: string;
-  ComponentClass: string;
-  ComponentClassURI: string;
+export interface PipingNetworkSystemProps extends BaseItemProps {
   PersistentID: PersistentIDProps;
   GenericAttributes: GenericAttributesProps[];
   Label: LabelProps;
@@ -44,15 +39,22 @@ export interface PipingNetworkSystemProps {
 
 export interface PolyLineProps {
   NumPoints: string;
-  Presentation?: unknown; // There are no attributes for Presentation, it might be an empty object or hold some unspecified properties
+  Presentation?: unknown;
   Coordinate: CoordinateProps[];
 }
 
-export interface LabelProps {
+export interface LabelProps extends ComponentItemProps {
+  PolyLine?: PolyLineProps;
+}
+
+export interface PropertyBreakProps extends ComponentItemProps {
+  PolyLine?: PolyLineProps;
+  GenericAttributes: GenericAttributesProps[];
+  ConnectionPoints: ConnectionPointsProps;
+}
+
+export interface PipeSlopeSymbolProps {
   ID: string;
-  ComponentClass: string;
-  ComponentClassURI: string;
   ComponentName: string;
   Position: PositionProps;
-  PolyLine?: PolyLineProps;
 }

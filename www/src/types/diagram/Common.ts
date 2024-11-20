@@ -1,3 +1,14 @@
+export interface BaseItemProps {
+  ID: string;
+  ComponentClass: string;
+  ComponentClassURI: string;
+}
+
+export interface ComponentItemProps extends BaseItemProps {
+  ComponentName: string;
+  Position: PositionProps;
+}
+
 export interface PersistentIDProps {
   Context: string;
   Identifier: string;
@@ -42,10 +53,7 @@ export interface GenericAttributeProps {
   ValueURI?: string;
 }
 
-export interface LabelProps {
-  ID: string;
-  ComponentClass: string;
-  ComponentClassURI: string;
+export interface LabelProps extends BaseItemProps {
   Text: TextProps;
 }
 
@@ -66,12 +74,13 @@ export interface ConnectionPointsProps {
   Node: NodeProps[];
 }
 
-interface TextProps {
+export interface TextProps {
   String: string;
   Font: string;
   Height: number;
   Width: number;
   Justification: string;
+  TextAngle?: string;
   Position: PositionProps;
 }
 

@@ -1,15 +1,16 @@
 import { ActuatingSystemComponentProps } from "../types/diagram/ActuatingSystem.ts";
-import useNoakaDexpiSvg from "../hooks/useNoakaDexpiSvg.ts";
 import calculateAngleAndRotation from "../utils/Transformation.ts";
 import { useContext } from "react";
 import PandidContext from "../context/PandidContext.ts";
+import useSerializeSvgWithoutEdits from "../hooks/useSerializeSvgWithoutEdits.tsx";
 
 export default function ActuatingSystemComponent(
   props: ActuatingSystemComponentProps,
 ) {
   const height = useContext(PandidContext).height;
   const hasPosition = Boolean(props.Position);
-  const svg = useNoakaDexpiSvg(props.ComponentName!);
+  const svg = useSerializeSvgWithoutEdits(props.ComponentName!);
+
   return (
     <>
       {svg && (

@@ -1,11 +1,12 @@
 import { ShapeCatalogueProps } from "./ShapeCatalogue.ts";
 import {
   AssociationProps,
+  BaseItemProps,
+  ComponentItemProps,
   ConnectionPointsProps,
   GenericAttributesProps,
   LabelProps,
   PersistentIDProps,
-  PositionProps,
 } from "./Common.ts";
 import { DrawingProps } from "./Drawing.ts";
 import { ProcessInstrumentationFunctionProps } from "./ProcessInstrumentationFunction.ts";
@@ -46,41 +47,25 @@ export interface PlantInformationProps {
 
 export type UnitsOfMeasureProps = object;
 
-export interface MetaDataProps {
-  ID: string;
-  ComponentClass: string;
-  ComponentClassURI: string;
+export interface MetaDataProps extends BaseItemProps {
   GenericAttributes: GenericAttributesProps;
 }
 
-export interface PlantStructureItemProps {
-  ID: string;
-  ComponentClass: string;
-  ComponentClassURI: string;
-  PersistentID: PersistentIDProps;
+export interface PlantStructureItemProps extends BaseItemProps {
   GenericAttributes: GenericAttributesProps;
   Association: AssociationProps[];
+  PersistentID: PersistentIDProps;
 }
 
-export interface EquipmentProps {
-  ID: string;
-  ComponentClass: string;
-  ComponentClassURI: string;
-  ComponentName: string;
+export interface EquipmentProps extends ComponentItemProps {
   PersistentID: PersistentIDProps;
-  Position: PositionProps;
   GenericAttributes: GenericAttributesProps[];
   Association: AssociationProps[];
   Nozzle: NozzleProps[];
 }
 
-export interface NozzleProps {
-  ID: string;
-  ComponentClass: string;
-  ComponentClassURI: string;
-  ComponentName: string;
+export interface NozzleProps extends ComponentItemProps {
   PersistentID: PersistentIDProps;
-  Position: PositionProps;
   Label: LabelProps;
   GenericAttributes: GenericAttributesProps;
   ConnectionPoints: ConnectionPointsProps;

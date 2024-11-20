@@ -5,12 +5,10 @@ import {
 } from "../../types/diagram/Piping.ts";
 import { CenterLineProps } from "../../types/diagram/Common.ts";
 import PipingComponent from "./PipingComponent.tsx";
-import { useContext } from "react";
-import PandidContext from "../../context/PandidContext.ts";
+import PipeSlopeComponent from "./PipeSlopeComponent.tsx";
+import PropertyBreak from "./PropertyBreak.tsx";
 
 export default function PipeSegment(props: PipingNetworkSegmentProps) {
-  const context = useContext(PandidContext);
-  const height = context.height;
   const centerlines: CenterLineProps[] = Array.isArray(props.CenterLine)
     ? props.CenterLine
     : [props.CenterLine];
@@ -22,11 +20,7 @@ export default function PipeSegment(props: PipingNetworkSegmentProps) {
 
   return (
     <>
-      <CenterLine
-        centerLines={centerlines}
-        height={height}
-        isInformationFlow={false}
-      />
+      <CenterLine centerLines={centerlines} isInformationFlow={false} />
       {pipingComponents &&
         pipingComponents[0] !== undefined &&
         pipingComponents.map(
@@ -34,6 +28,10 @@ export default function PipeSegment(props: PipingNetworkSegmentProps) {
             <PipingComponent key={index} {...pipingComponent} />
           ),
         )}
+      {props.PipeSlopeSymbol && (
+        <PipeSlopeComponent {...props.PipeSlopeSymbol} />
+      )}
+      {props.PropertyBreak && <PropertyBreak {...props.PropertyBreak} />}
     </>
   );
 }

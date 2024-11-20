@@ -1,8 +1,9 @@
 import { NozzleProps } from "../types/diagram/Diagram.ts";
-import useNoakaDexpiSvg from "../hooks/useNoakaDexpiSvg.ts";
 import calculateAngleAndRotation from "../utils/Transformation.ts";
 import { useContext } from "react";
 import PandidContext from "../context/PandidContext.ts";
+import NozzleLabel from "./NozzleLabel.tsx";
+import useSerializeNodeSvg from "../hooks/useSerializeNodeSvg.tsx";
 
 export default function Nozzle(props: NozzleProps) {
   const height = useContext(PandidContext).height;
@@ -11,7 +12,7 @@ export default function Nozzle(props: NozzleProps) {
     componentName = props.ComponentName;
   }
   const hasPosition: boolean = Boolean(props.Position);
-  const svg = useNoakaDexpiSvg(componentName);
+  const svg = useSerializeNodeSvg(componentName);
 
   return (
     <>
@@ -31,6 +32,14 @@ export default function Nozzle(props: NozzleProps) {
           className={".node"}
           dangerouslySetInnerHTML={{ __html: svg }}
         />
+      )}
+      {props.Label ? (
+        <NozzleLabel
+          label={props.Label}
+          genericAttributes={props.GenericAttributes}
+        />
+      ) : (
+        <></>
       )}
     </>
   );

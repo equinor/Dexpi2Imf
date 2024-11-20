@@ -1,9 +1,9 @@
 import { PipingComponentProps } from "../../types/diagram/Piping.ts";
-import useNoakaDexpiSvg from "../../hooks/useNoakaDexpiSvg.ts";
 import calculateAngleAndRotation from "../../utils/Transformation.ts";
 import { useContext } from "react";
 import PandidContext from "../../context/PandidContext.ts";
-import Label from "./Label.tsx";
+import PipeLabel from "./PipeLabel.tsx";
+import useSerializeSvgWithoutEdits from "../../hooks/useSerializeSvgWithoutEdits.tsx";
 
 interface PipingComponentSVGProps {
   id: string;
@@ -16,7 +16,7 @@ function PipingComponentSVG({
   componentName,
   transform,
 }: PipingComponentSVGProps) {
-  const svg = useNoakaDexpiSvg(componentName);
+  const svg = useSerializeSvgWithoutEdits(componentName);
 
   return (
     <>
@@ -56,7 +56,7 @@ export default function PipingComponent(props: PipingComponentProps) {
           }
         />
       )}
-      {label && <Label {...label} />}
+      {label && <PipeLabel {...label} />}
     </>
   );
 }

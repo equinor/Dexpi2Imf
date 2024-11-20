@@ -1,4 +1,3 @@
-import useNoakaDexpiSvg from "../hooks/useNoakaDexpiSvg.ts";
 import CenterLine from "./CenterLine.tsx";
 import {
   InformationFlowProps,
@@ -6,6 +5,7 @@ import {
 } from "../types/diagram/ProcessInstrumentationFunction.ts";
 import { useContext } from "react";
 import PandidContext from "../context/PandidContext.ts";
+import useSerializeSvgWithoutEdits from "../hooks/useSerializeSvgWithoutEdits.tsx";
 
 export default function ProcessInstrumentationFunction(
   props: ProcessInstrumentationFunctionProps,
@@ -16,7 +16,7 @@ export default function ProcessInstrumentationFunction(
   )
     ? props.InformationFlow
     : [props.InformationFlow];
-  const svg = useNoakaDexpiSvg(props.ComponentName);
+  const svg = useSerializeSvgWithoutEdits(props.ComponentName);
   return (
     <>
       {svg && (
