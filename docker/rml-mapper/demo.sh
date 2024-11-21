@@ -10,6 +10,9 @@ cd /app/
 # Copy the lacking Origo symbol
 cp /app/local/xslt/PV001A_Origo.svg /app/NOAKADEXPI/Symbols/Origo
 
+# Copy all Origo symbols to www project
+cp -rf /app/NOAKADEXPI/Symbols/Origo /app/local/www/public/Origo
+
 # Create svg
 xsltproc --novalid -o /app/dexpi.svg /app/local/xslt/dexpisvg.xslt /app/local/rml_mappings/pandid.xml 
 
