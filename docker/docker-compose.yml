@@ -22,8 +22,12 @@ services:
         source: ../
         target: /app/local/
   frontend:
-    build: rml-mapper
+    build: frontend
     tty: true
+    expose:
+      - 8081
+    ports:
+      - 8081:8081
     volumes:
       - type: bind
         source: ../

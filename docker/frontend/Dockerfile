@@ -1,14 +1,15 @@
-# Use official Java image as the base image
 FROM node:20
+WORKDIR /app
 
-# Set the working directory
-WORKDIR /app/local/www
+
+RUN apt-get update && \
+    apt-get install -y dos2unix
 
 RUN git clone https://github.com/equinor/NOAKADEXPI.git /app/NOAKADEXPI
 
-#RUN -sf /app/NOAKADEXPI/Symbols/Origo /app/local/www/public/Origo
-
-RUN npm install
+COPY demo.sh /app/demo.sh
+RUN dos2unix /app/demo.sh
+RUN chmod +x /app/demo.sh
 
 # Start react dev environment
-ENTRYPOINT ["npm","run","dev"]
+ENTRYPOINT "/app/demo.sh"
