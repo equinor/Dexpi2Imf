@@ -9,4 +9,4 @@ cp -rf /app/NOAKADEXPI/Symbols/Origo /app/local/www/public/Origo
 
 npm install
 
-npm run dev
+npm start
