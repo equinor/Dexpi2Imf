@@ -35,6 +35,7 @@ services:
       - type: bind
         source: ../
         target: /app/local/
+    command: npm run dev
   web_old:
     build: web
     tty: true
