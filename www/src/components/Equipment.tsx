@@ -1,9 +1,10 @@
 import { EquipmentProps, NozzleProps } from "../types/diagram/Diagram.ts";
 import Nozzle from "./Nozzle.tsx";
-import { useContext, useState } from "react";
+import React, { useContext } from "react";
 import styled from "styled-components";
 import PandidContext from "../context/PandidContext.ts";
 import useSerializeNodeSvg from "../hooks/useSerializeNodeSvg.tsx";
+import { BoundaryActions, BoundaryParts } from "../utils/Triplestore.ts";
 
 const StyledG = styled.g`
   path {
@@ -12,43 +13,56 @@ const StyledG = styled.g`
   }
 `;
 
-export default function Equipment(props: EquipmentProps) {
-  const height = useContext(PandidContext).height;
-  const svg = useSerializeNodeSvg(
-    props.ComponentName,
-    props.Position,
-    props.GenericAttributes[0],
-  );
+interface EquipmentComponentProps {
+  equipment: EquipmentProps;
+  onClick: (
+    id: string,
+    action: BoundaryActions,
+    type: BoundaryParts,
+  ) => Promise<void>;
+  isInBoundary: boolean;
+}
 
-  const nozzles: NozzleProps[] = props.Nozzle;
-  const [isClicked, setIsClicked] = useState<boolean>(false);
-  function handleNodeClick() {
-    setIsClicked(!isClicked);
-  }
+const Equipment: React.FC<EquipmentComponentProps> = React.memo(
+  ({ equipment, onClick, isInBoundary }) => {
+    const height = useContext(PandidContext).height;
+    const svg = useSerializeNodeSvg(
+      equipment.ComponentName,
+      equipment.GenericAttributes[0],
+    );
 
-  return (
-    <g onClick={handleNodeClick}>
-      {svg && (
-        <>
-          {isClicked && (
-            <StyledG
-              id={props.ID + "_highlight"}
-              transform={`${props.Position.Reference.X === -1 ? "rotate(-180deg)" : ""}translate(${props.Position.Location.X}, ${height - props.Position.Location.Y})`}
+    const nozzles: NozzleProps[] = equipment.Nozzle;
+
+    return (
+      <g
+        onClick={() =>
+          onClick(equipment.ID, BoundaryActions.Insert, BoundaryParts.Boundary)
+        }
+      >
+        {svg && (
+          <>
+            {isInBoundary && (
+              <StyledG
+                id={equipment.ID + "_highlight"}
+                transform={`${equipment.Position.Reference.X === -1 ? "rotate(-180deg)" : ""}translate(${equipment.Position.Location.X}, ${height - equipment.Position.Location.Y})`}
+                className={".node"}
+                dangerouslySetInnerHTML={{ __html: svg }}
+              />
+            )}
+            <g
+              id={equipment.ID}
+              transform={`${equipment.Position.Reference.X === -1 ? "rotate(-180deg)" : ""}translate(${equipment.Position.Location.X}, ${height - equipment.Position.Location.Y})`}
               className={".node"}
               dangerouslySetInnerHTML={{ __html: svg }}
             />
-          )}
-          <g
-            id={props.ID}
-            transform={`${props.Position.Reference.X === -1 ? "rotate(-180deg)" : ""}translate(${props.Position.Location.X}, ${height - props.Position.Location.Y})`}
-            className={".node"}
-            dangerouslySetInnerHTML={{ __html: svg }}
-          />
-        </>
-      )}
-      {nozzles.map((nozzle: NozzleProps, index: number) => (
-        <Nozzle key={index} {...nozzle} />
-      ))}
-    </g>
-  );
-}
+          </>
+        )}
+        {nozzles.map((nozzle: NozzleProps, index: number) => (
+          <Nozzle key={index} {...nozzle} />
+        ))}
+      </g>
+    );
+  },
+);
+
+export default Equipment;

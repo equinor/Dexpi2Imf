@@ -26,6 +26,7 @@ export interface PipingNetworkSegmentProps extends BaseItemProps {
   PipingComponent: PipingComponentProps[];
   PipeSlopeSymbol?: PipeSlopeSymbolProps;
   PropertyBreak?: PropertyBreakProps;
+  PipeOffPageConnector?: PipeOffPageConnectorProps;
   Connection?: ConnectionProps;
 }
 
@@ -57,4 +58,23 @@ export interface PipeSlopeSymbolProps {
   ID: string;
   ComponentName: string;
   Position: PositionProps;
+}
+
+export interface PipeOffPageConnectorReferenceProps {
+  ID: string;
+  ComponentClass: string;
+  ComponentClassURI: string;
+  GenericAttributes: GenericAttributesProps;
+}
+
+export interface PipeOffPageConnectorProps {
+  ID: string;
+  ComponentClass: string;
+  ComponentClassURI: string;
+  ComponentName: string;
+  PersistentID: PersistentIDProps;
+  Position: PositionProps;
+  ConnectionPoints: ConnectionPointsProps;
+  Association: AssociationProps;
+  PipeOffPageConnectorReference: PipeOffPageConnectorReferenceProps;
 }

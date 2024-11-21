@@ -20,6 +20,7 @@ export interface ProcessInstrumentationFunctionProps {
   Association: AssociationProps[];
   InformationFlow: InformationFlowProps[];
   ActuatingFunction: ActuatingFunctionProps;
+  SignalOffPageConnector?: SignalOffPageConnectorProps;
 }
 
 export interface InformationFlowProps {
@@ -38,4 +39,23 @@ interface ActuatingFunctionProps {
   ComponentClass: string;
   ComponentClassURI: string;
   Association: AssociationProps[];
+}
+
+export interface SignalOffPageConnectorReferenceProps {
+  ID: string;
+  ComponentClass: string;
+  ComponentClassURI: string;
+  GenericAttributes: GenericAttributesProps;
+}
+
+export interface SignalOffPageConnectorProps {
+  ID: string;
+  ComponentClass: string;
+  ComponentClassURI: string;
+  ComponentName: string;
+  PersistentID: PersistentIDProps;
+  Position: PositionProps;
+  ConnectionPoints: ConnectionPointsProps;
+  Association: AssociationProps;
+  SignalOffPageConnectorReference: SignalOffPageConnectorReferenceProps;
 }

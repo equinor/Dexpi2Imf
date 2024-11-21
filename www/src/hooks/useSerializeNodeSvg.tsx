@@ -6,22 +6,18 @@ import {
   removeRedPath,
   serializeElement,
 } from "../utils/SvgEdit.ts";
-import {
-  GenericAttributesProps,
-  PositionProps,
-} from "../types/diagram/Common.ts";
+import { GenericAttributesProps } from "../types/diagram/Common.ts";
 
 export default function useSerializeNodeSvg(
   componentName: string,
-  position?: PositionProps,
   genericAttributes?: GenericAttributesProps,
 ) {
   const [serializedSvg, setSerializedSvg] = useState<string>("");
   const svg = useNoakaDexpiSvg(componentName);
   useEffect(() => {
     if (!svg) return;
-    if (genericAttributes && position) {
-      addTextToNode(svg, genericAttributes, position);
+    if (genericAttributes) {
+      addTextToNode(svg, genericAttributes);
     }
     removeConnectionPointsAndOrigo(svg);
     removeRedPath(svg);

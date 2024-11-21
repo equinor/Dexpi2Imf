@@ -1,5 +1,6 @@
 import { setAttributes } from "./Highlighting.ts";
 import {
+  GenericAttributeProps,
   GenericAttributesProps,
   LabelProps,
   PositionProps,
@@ -21,7 +22,12 @@ export function addTextToNode(
       "font-size": "45px",
       fill: "black",
     });
-    textElement!.textContent = genericAttributes.GenericAttribute[0].Value;
+    const genericAttribute: GenericAttributeProps[] = Array.isArray(
+      genericAttributes.GenericAttribute,
+    )
+      ? genericAttributes.GenericAttribute
+      : [genericAttributes.GenericAttribute];
+    textElement!.textContent = genericAttribute[0].Value;
   }
 
   return element;

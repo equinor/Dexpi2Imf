@@ -1,13 +1,13 @@
-import './App.css'
-import Pandid from "./components/Pandid.tsx";
+import "./App.css";
+import Editor from "./components/Editor.tsx";
 
 function App() {
-    return (
-        <>
-            <Pandid/>
-            {/*<Diagram/>*/}
-        </>
-    )
+  return (
+    <>
+      <Editor />
+      {/*<Diagram/>*/}
+    </>
+  );
 }
 
-export default App
+export default App;
