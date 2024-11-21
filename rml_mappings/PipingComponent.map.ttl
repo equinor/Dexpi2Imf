@@ -34,7 +34,7 @@
     rml:iterator "//PipingNetworkSegment/PipingComponent/ConnectionPoints/Node[@Type='process'] | //PipingNetworkSegment/PropertyBreak/ConnectionPoints/Node[@Type='process']"
   ];
   rr:subjectMap [
-    rr:template "https://assetid.equinor.com/plantx#{concat(../../@ID, '-node', count(preceding-sibling::*))}";  
+    rr:template "https://assetid.equinor.com/plantx#{concat(../../@ID, '-node', count(preceding-sibling::Node))}";  
     rr:termType rr:IRI;
     rr:class imf:Terminal
   ];
@@ -42,13 +42,13 @@
     rr:predicate imf:hasConnector;
     rr:objectMap [
       rr:template """https://assetid.equinor.com/plantx#{
-      if(count(preceding-sibling::*) = 1) then
+      if(count(preceding-sibling::Node) = 1) then
         if(../../preceding-sibling::PipingComponent) then 
           concat(../../preceding-sibling::PipingComponent[1]/@ID, '-node2-connector') 
         else if(../../../Connection/@FromID) then
           concat(../../../Connection/@FromID, '-node',  ../../../Connection/@FromNode, '-connector')
         else()
-      else if(count(preceding-sibling::*) = 2) then
+      else if(count(preceding-sibling::Node) = 2) then
         if(../../following-sibling::PipingComponent or following-sibling::PropertyBreak) then
           concat(../../@ID , '-node2-connector')
         else if(../../../Connection/@ToID) then

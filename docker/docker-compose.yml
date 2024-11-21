@@ -1,0 +1,35 @@
+
+services:
+  rdfox: 
+    image: oxfordsemantic/rdfox:7.2a
+    command: -license.file /home/rdfox/.RDFox/RDFox.lic sandbox /home/rdfox/.RDFox/rdfox dexpi
+    stdin_open: true
+    tty: true
+    ports:
+      - 12110:12110
+    volumes:
+      - type: bind
+        source: ../
+        target: /home/rdfox/.RDFox/
+    depends_on:
+      rml-mapper:
+        condition: service_completed_successfully
+  rml-mapper:
+    build: rml-mapper
+    tty: true
+    volumes:
+      - type: bind
+        source: ../
+        target: /app/local/
+  web:
+    build: web
+    tty: true
+    ports:
+      - 8080:80
+    volumes:
+      - type: bind
+        source: ../www
+        target: /var/www/html/
+    depends_on:
+      rml-mapper:
+        condition: service_completed_successfully
