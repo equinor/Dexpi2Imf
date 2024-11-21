@@ -12,7 +12,8 @@ services:
         source: ../
         target: /home/rdfox/.RDFox/
     depends_on:
-      - rml-mapper
+      rml-mapper:
+        condition: service_completed_successfully
   rml-mapper:
     build: rml-mapper
     tty: true
@@ -30,4 +31,5 @@ services:
         source: ../www
         target: /var/www/html/
     depends_on:
-      - rml-mapper
+      rml-mapper:
+        condition: service_completed_successfully
