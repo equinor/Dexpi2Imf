@@ -1,0 +1,62 @@
+@startuml ssi_arch
+!define StLib https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master
+!includeurl StLib/C4_Container.puml
+!includeurl StLib/C4_Component.puml
+!define AzurePuml https://raw.githubusercontent.com/plantuml-stdlib/Azure-PlantUML/release/2-2/dist
+!includeurl AzurePuml/AzureCommon.puml
+!includeurl AzurePuml/Databases/all.puml
+!includeurl AzurePuml/Compute/all.puml
+!includeurl AzurePuml/Storage/all.puml
+!includeurl AzurePuml/Identity/all.puml
+!includeurl AzurePuml/DevOps/all.puml
+!includeurl AzurePuml/Security/all.puml
+
+Enterprise_Boundary(ssi, "Equinor"){
+    Boundary(bravo, "Bravo"){
+            System(orch, "Bravo TIE Orchestrator", "Transforms to RDF")
+            
+            System(api, "Bravo Web API", "Record keeper")
+            BiRel(orch, api, "Records (RDF)") 
+
+            Boundary(storage, "Storage"){
+                ComponentDb(sql, "Bravo SQL", "Indexed data points")
+                ComponentDb(blob, "Bravo Storage", "Raw and RDF")
+
+                ComponentDb(fox, "Bravo Triples", "Triple Store", "RDFox")
+            }
+            BiRel(api, storage, "References and RDF")
+            
+            System(brp, "Bravo Record Publisher", "SQL Trigger AF")
+            BiRel(api, brp, "Records (RDF)")
+        }        
+
+
+    Boundary(web, "Reference sites"){
+        System(asset, "assetid.equinor.com", "Asset IDs", "Website")
+        System(rdf, "rdf.equinor.com", "Vocabularies and axioms", "Website")
+    }
+
+    Rel(bravo, web, "References")
+
+    Boundary(dexpi, "Boundary app", "DEXPI"){
+
+        System(boundary, "Boundary app", "DEXPI demo (local)")
+        SystemDb(boundaryTs, "Boundary TS", "Triple Store")
+        BiRel(boundary, boundaryTs, "RDF / Datalog")
+
+        "Commissioning" as user
+        user --> boundary
+    }
+}
+    
+Rel(brp, dexpi, "Records")
+
+
+System_Ext(tieIn, "TIE")
+Rel(tieIn, orch, "DEXPI")
+
+System_Ext(consumer, "Record consumer")
+
+
+footer "Dexpi Architecture - 2024-11-22"
+@enduml
