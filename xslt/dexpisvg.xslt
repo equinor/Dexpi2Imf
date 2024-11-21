@@ -118,9 +118,42 @@
         <xsl:variable name="refZ"
             select="$PositionNode/Reference/@Z" />
         
-        <!-- Calculate the angle using the custom extension function -->
-        <xsl:variable name="angle"
-            select="math:CalculateAngle($axisX, $axisY, $axisZ, $refX, $refY, $refZ)" />
+        <!-- Calculate the angle using the custom extension function TODO: Find out if can be removed -->
+<!--        <xsl:variable name="angle"-->
+<!--            select="math:CalculateAngle($axisX, $axisY, $axisZ, $refX, $refY, $refZ)" />-->
+        
+        <!-- Calculate the angle using some assumptions, probably wrong
+        See Proteus "P&ID Profile file specification 3.3.3, page 14 -->
+        <xsl:variable name="refangle">
+            <xsl:choose>
+                <xsl:when test="$refX = 0 and $refY = 1 and $refZ = 0">270</xsl:when>
+                <xsl:when test="$refX = 1 and $refY = 0 and $refZ = 0">0</xsl:when>
+                <xsl:when test="$refX = -1 and $refY = 0 and $refZ = 0">180</xsl:when>
+                <xsl:when test="$refX = 0 and $refY = -1 and $refZ = 0">90</xsl:when>
+                <xsl:otherwise>
+                    <xsl:message terminate="yes">This combination of reference values is not handled:
+                        X: <xsl:value-of select="$refX" />
+                        Y: <xsl:value-of select="$refY" />
+                        Z: <xsl:value-of select="$refZ" />
+                    </xsl:message>
+                </xsl:otherwise> 
+            </xsl:choose>
+        </xsl:variable>
+        <xsl:variable name="angle">
+            <xsl:choose>
+                <xsl:when test="$axisX = 0 and $axisY= 0 and $axisZ = 1"><xsl:value-of select="$refangle" />
+                </xsl:when>
+                <xsl:when test="$axisX = 0 and $axisY= 0 and $axisZ = -1"><xsl:value-of select="- $refangle" />
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:message terminate="yes">This combination of reference values is not handled:
+                        <xsl:value-of select="$axisX" />
+                        <xsl:value-of select="$axisY" />
+                        <xsl:value-of select="$axisZ" />
+                    </xsl:message>
+                </xsl:otherwise>
+            </xsl:choose>
+        </xsl:variable>
         
         <!-- Output the SVG rotate and translate commands -->
         <xsl:attribute
@@ -280,9 +313,9 @@
             select="//ShapeCatalogue/*[@ComponentName=$componentName]/GenericAttributes/GenericAttribute/@Value" />
         <xsl:variable
             name="path"
-            select="concat('../../../../NOAKADEXPI/Symbols/Origo/', $shapeValue, '_Origo.svg')" />
+            select="concat('../../NOAKADEXPI/Symbols/Origo/', $shapeValue, '_Origo.svg')" />
         <xsl:if
-            test="not($path = '../../../../NOAKADEXPI/Symbols/Origo/BORDER_A1_Origo.svg')">
+            test="not($path = '../../NOAKADEXPI/Symbols/Origo/BORDER_A1_Origo.svg')">
             <xsl:if test="$shapeValue">
                 <a id="{concat('https://assetid.equinor.com/plantx#', $id)}" class="node">
                     <g>
