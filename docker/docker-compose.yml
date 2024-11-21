@@ -23,7 +23,6 @@ services:
         target: /app/local/
   frontend:
     image: node:20
-    user: node
     working_dir: /app/local/www
     environment:
       - NODE_ENV=development
