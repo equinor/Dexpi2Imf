@@ -22,12 +22,10 @@ services:
         source: ../
         target: /app/local/
   frontend:
-    image: node:20
+    image: node:23
     working_dir: /app/local/www
     environment:
       - NODE_ENV=development
-    expose:
-      - 8081
     ports:
       - 8081:8081
     volumes:
