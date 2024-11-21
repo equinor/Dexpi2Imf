@@ -2,14 +2,13 @@
 services:
   rdfox: 
     image: oxfordsemantic/rdfox
-    command: sandbox /home/rdfox/.RDFox/rdfox dexpi
+    command: -license.file /home/rdfox/.RDFox//RDFox.lic sandbox /home/rdfox/.RDFox/rdfox dexpi
     stdin_open: true
     tty: true
     ports:
       - 12110:12110
     volumes:
       - ${PWD}:/home/rdfox/.RDFox/
-      - ${PWD}/RDFox.lic:/opt/RDFox/RDFox.lic
     depends_on:
       - rml-mapper
   rml-mapper:

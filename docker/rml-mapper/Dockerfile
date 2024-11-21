@@ -9,7 +9,7 @@ ADD https://github.com/RMLio/rmlmapper-java/releases/download/v7.1.2/rmlmapper-7
 
 # Install Git, xsltproc and apache
 RUN apt-get update && \
-    apt-get install -y git xsltproc apache2 dos2unix
+    apt-get install -y git xsltproc dos2unix
 
 # Clone the NOAKADEXPI Git repo
 RUN git clone https://github.com/equinor/NOAKADEXPI.git /app/NOAKADEXPI
