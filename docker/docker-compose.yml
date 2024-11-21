@@ -8,20 +8,26 @@ services:
     ports:
       - 12110:12110
     volumes:
-      - ${PWD}:/home/rdfox/.RDFox/
+      - type: bind
+        source: ../
+        target: /home/rdfox/.RDFox/
     depends_on:
       - rml-mapper
   rml-mapper:
     build: rml-mapper
     tty: true
     volumes:
-      - ${PWD}:/app/local/
+      - type: bind
+        source: ../
+        target: /app/local/
   web:
     build: web
     tty: true
     ports:
       - 8080:80
     volumes:
-      - ${PWD}/www:/var/www/html/
+      - type: bind
+        source: ../www
+        target: /var/www/html/
     depends_on:
       - rml-mapper
