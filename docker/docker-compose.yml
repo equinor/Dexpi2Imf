@@ -2,7 +2,7 @@
 services:
   rdfox: 
     image: oxfordsemantic/rdfox:7.2a
-    command: -license.file /home/rdfox/.RDFox//RDFox.lic sandbox /home/rdfox/.RDFox/rdfox dexpi
+    command: -license.file /home/rdfox/.RDFox/RDFox.lic sandbox /home/rdfox/.RDFox/rdfox dexpi
     stdin_open: true
     tty: true
     ports:
