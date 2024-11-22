@@ -3,6 +3,7 @@ pandid.xml
 pandid.trig
 rml/segments.trig
 client/.idea
+.idea
 .vs
 client/Boundaries/Dexpi2Svg/test.svg
 client/Boundaries/Dexpi2Svg/bin
@@ -22,3 +23,6 @@ __pycache__
 /.idea/
 /www/.idea
 /www/index.html
+/www/public/Origo
+/www_old/index.html
+/www/public/DISC_EXAMPLE-02-02.xml
