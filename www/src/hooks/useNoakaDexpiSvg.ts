@@ -1,12 +1,7 @@
 import { useEffect, useState } from "react";
 
 export default function useNoakaDexpiSvg(componentName: string) {
-  let shapeName = "";
-  if (componentName === "PV001A_SHAPE") {
-    shapeName = "/PV001A_Origo.svg";
-  } else {
-    shapeName = `https://raw.githubusercontent.com/equinor/NOAKADEXPI/refs/heads/main/Symbols/Origo/${componentName.replace("_SHAPE", "_Origo")}.svg`;
-  }
+  const shapeName = `/Origo/${componentName.replace("_SHAPE", "_Origo")}.svg`;
 
   const [svg, setSvg] = useState<Element | null>(null);
 
