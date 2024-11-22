@@ -25,10 +25,7 @@ docker-compose -f docker/docker-compose.yml up --build
 * For container logs, run `docker container logs <contiainer-id>` (Get container id with `docker container ls` while container is running)
 
 ## Running and building faster
-To improve building time when there are changes to the docker setup, build in parallel with 
-```
-docker-compose -f docker/docker-compose.yml build --parallel
-```
+
 
 To start the containers faster when there are no changes to the docker setup, dont build:
 ```
