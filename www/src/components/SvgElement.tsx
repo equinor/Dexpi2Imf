@@ -4,11 +4,12 @@ import {
 } from "../types/diagram/Common.ts";
 import calculateAngleAndRotation from "../utils/Transformation.ts";
 import useSerializeNodeSvg from "../hooks/useSerializeNodeSvg.tsx";
+import { useContext } from "react";
+import PandidContext from "../context/PandidContext.ts";
 
 interface SvgElementProps {
   id: string;
   componentName: string;
-  height: number;
   position?: PositionProps;
   text?: GenericAttributesProps;
 }
@@ -16,10 +17,10 @@ interface SvgElementProps {
 export default function SvgElement({
   id,
   componentName,
-  height,
   position,
   text,
 }: SvgElementProps) {
+  const height = useContext(PandidContext).height;
   const svg = useSerializeNodeSvg(componentName, text);
   return (
     <>

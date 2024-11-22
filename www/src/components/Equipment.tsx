@@ -20,13 +20,13 @@ interface EquipmentComponentProps {
     action: BoundaryActions,
     type: BoundaryParts,
   ) => Promise<void>;
-  isInBoundary: boolean;
+  isBoundary: boolean;
 }
 
 export default function Equipment({
   equipment,
   onClick,
-  isInBoundary,
+  isBoundary,
 }: EquipmentComponentProps) {
   const height = useContext(PandidContext).height;
   const svg = useSerializeNodeSvg(
@@ -44,7 +44,7 @@ export default function Equipment({
     >
       {svg && (
         <>
-          {isInBoundary && (
+          {isBoundary && (
             <StyledG
               id={equipment.ID + "_highlight"}
               transform={`${equipment.Position.Reference.X === -1 ? "rotate(-180deg)" : ""}translate(${equipment.Position.Location.X}, ${height - equipment.Position.Location.Y})`}

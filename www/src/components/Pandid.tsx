@@ -80,7 +80,7 @@ export default function Pandid() {
               equipments.map((equipment: EquipmentProps, index: number) => (
                 <Equipment
                   key={index}
-                  isInBoundary={context.borderIds.includes(equipment.ID)}
+                  isBoundary={context.borderIds.includes(equipment.ID)}
                   equipment={equipment}
                   onClick={handleAddBoundary}
                 />
