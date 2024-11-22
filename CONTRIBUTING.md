@@ -1,4 +1,2 @@
 ## Contributing
-Please follow these steps to contribute:
-
-Fork the repository on GitHub. Clone your fork and create a new branch for your feature or bugfix. Commit your changes to the new branch. Push your changes to your fork. Open a pull request from your fork to the original repository. Please ensure that your code follows the existing style and structure, and add tests where necessary.
+This repo is in a very unfinished and experimental state. We do not encourage usage other than for experimentation, and we do not have capacity to handle contributions.
