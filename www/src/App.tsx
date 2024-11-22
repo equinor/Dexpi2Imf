@@ -4,7 +4,6 @@ function App() {
   return (
     <>
       <Editor />
-      {/*<Diagram/>*/}
     </>
   );
 }
