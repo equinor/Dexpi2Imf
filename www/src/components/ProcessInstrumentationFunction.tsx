@@ -2,34 +2,12 @@ import CenterLine from "./CenterLine.tsx";
 import {
   InformationFlowProps,
   ProcessInstrumentationFunctionProps,
-  SignalOffPageConnectorProps,
 } from "../types/diagram/ProcessInstrumentationFunction.ts";
 import { useContext } from "react";
 import PandidContext from "../context/PandidContext.ts";
 import useSerializeSvgWithoutEdits from "../hooks/useSerializeSvgWithoutEdits.tsx";
-import useSerializeNodeSvg from "../hooks/useSerializeNodeSvg.tsx";
 import { GenericAttributesProps } from "../types/diagram/Common.ts";
-
-function SignalOffPageConnector(props: SignalOffPageConnectorProps) {
-  const genericAttributes: GenericAttributesProps[] = Array.isArray(
-    props.SignalOffPageConnectorReference.GenericAttributes,
-  )
-    ? props.SignalOffPageConnectorReference.GenericAttributes
-    : [props.SignalOffPageConnectorReference.GenericAttributes];
-  const height = useContext(PandidContext).height;
-  const svg = useSerializeNodeSvg(props.ComponentName, genericAttributes[0]);
-  return (
-    <>
-      {svg && (
-        <g
-          transform={`${props.Position.Reference.X === -1 ? "rotate(-180deg)" : ""}translate(${props.Position.Location.X}, ${height - props.Position.Location.Y})`}
-          className={".node"}
-          dangerouslySetInnerHTML={{ __html: svg }}
-        />
-      )}
-    </>
-  );
-}
+import SvgElement from "./SvgElement.tsx";
 
 export default function ProcessInstrumentationFunction(
   props: ProcessInstrumentationFunctionProps,
@@ -40,6 +18,21 @@ export default function ProcessInstrumentationFunction(
   )
     ? props.InformationFlow
     : [props.InformationFlow];
+
+  let genericAttributes = undefined;
+  if (props.SignalOffPageConnector) {
+    genericAttributes = Array.isArray(
+      props.SignalOffPageConnector.SignalOffPageConnectorReference
+        .GenericAttributes,
+    )
+      ? props.SignalOffPageConnector.SignalOffPageConnectorReference
+          .GenericAttributes
+      : [
+          props.SignalOffPageConnector.SignalOffPageConnectorReference
+            .GenericAttributes,
+        ];
+  }
+
   const svg = useSerializeSvgWithoutEdits(props.ComponentName);
   return (
     <>
@@ -60,8 +53,14 @@ export default function ProcessInstrumentationFunction(
             />
           ) : null,
         )}
-      {props.SignalOffPageConnector && (
-        <SignalOffPageConnector {...props.SignalOffPageConnector} />
+      {props.SignalOffPageConnector && genericAttributes && (
+        <SvgElement
+          height={height}
+          componentName={props.SignalOffPageConnector.ComponentName}
+          id={props.SignalOffPageConnector.ID}
+          position={props.SignalOffPageConnector.Position}
+          text={genericAttributes as GenericAttributesProps}
+        />
       )}
     </>
   );

@@ -1,4 +1,3 @@
-import "./App.css";
 import Editor from "./components/Editor.tsx";
 
 function App() {

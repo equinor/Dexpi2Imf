@@ -1,42 +1,18 @@
 import CenterLine from "../CenterLine.tsx";
 import {
-  PipeOffPageConnectorProps,
   PipingComponentProps,
   PipingNetworkSegmentProps,
 } from "../../types/diagram/Piping.ts";
-import {
-  CenterLineProps,
-  GenericAttributesProps,
-} from "../../types/diagram/Common.ts";
+import { CenterLineProps } from "../../types/diagram/Common.ts";
 import PipingComponent from "./PipingComponent.tsx";
-import PipeSlopeComponent from "./PipeSlopeComponent.tsx";
-import PropertyBreak from "./PropertyBreak.tsx";
 import { useContext } from "react";
 import PandidContext from "../../context/PandidContext.ts";
-import useSerializeNodeSvg from "../../hooks/useSerializeNodeSvg.tsx";
-
-function PipeOffPageConnector(props: PipeOffPageConnectorProps) {
-  const genericAttributes: GenericAttributesProps[] = Array.isArray(
-    props.PipeOffPageConnectorReference.GenericAttributes,
-  )
-    ? props.PipeOffPageConnectorReference.GenericAttributes
-    : [props.PipeOffPageConnectorReference.GenericAttributes];
-  const height = useContext(PandidContext).height;
-  const svg = useSerializeNodeSvg(props.ComponentName, genericAttributes[0]);
-  return (
-    <>
-      {svg && (
-        <g
-          transform={`${props.Position.Reference.X === -1 ? "rotate(-180deg)" : ""}translate(${props.Position.Location.X}, ${height - props.Position.Location.Y})`}
-          className={".node"}
-          dangerouslySetInnerHTML={{ __html: svg }}
-        />
-      )}
-    </>
-  );
-}
+import SvgElement from "../SvgElement.tsx";
+import StyledPath from "../StyledPath.tsx";
+import constructPath from "../../utils/Path.ts";
 
 export default function PipeSegment(props: PipingNetworkSegmentProps) {
+  const height = useContext(PandidContext).height;
   const centerlines: CenterLineProps[] = Array.isArray(props.CenterLine)
     ? props.CenterLine
     : [props.CenterLine];
@@ -57,11 +33,41 @@ export default function PipeSegment(props: PipingNetworkSegmentProps) {
           ),
         )}
       {props.PipeSlopeSymbol && (
-        <PipeSlopeComponent {...props.PipeSlopeSymbol} />
+        <SvgElement
+          height={height}
+          componentName={props.PipeSlopeSymbol.ComponentName}
+          id={props.PipeSlopeSymbol.ID}
+          position={props.PipeSlopeSymbol.Position}
+        />
       )}
-      {props.PropertyBreak && <PropertyBreak {...props.PropertyBreak} />}
+      {props.PropertyBreak && (
+        <>
+          <SvgElement
+            id={props.PropertyBreak.ID}
+            componentName={props.PropertyBreak.ComponentName}
+            height={height}
+            text={props.PropertyBreak.GenericAttributes[0]}
+            position={props.PropertyBreak.Position}
+          />
+          {props.PropertyBreak.PolyLine && (
+            <StyledPath
+              d={constructPath(props.PropertyBreak.PolyLine.Coordinate, height)}
+              $isDashed={false}
+            />
+          )}
+        </>
+      )}
       {props.PipeOffPageConnector && (
-        <PipeOffPageConnector {...props.PipeOffPageConnector} />
+        <SvgElement
+          height={height}
+          componentName={props.PipeOffPageConnector.ComponentName}
+          id={props.PipeOffPageConnector.ID}
+          position={props.PipeOffPageConnector.Position}
+          text={
+            props.PipeOffPageConnector.PipeOffPageConnectorReference
+              .GenericAttributes
+          }
+        />
       )}
     </>
   );

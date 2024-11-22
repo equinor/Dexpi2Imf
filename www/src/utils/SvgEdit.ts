@@ -1,6 +1,5 @@
 import { setAttributes } from "./Highlighting.ts";
 import {
-  GenericAttributeProps,
   GenericAttributesProps,
   LabelProps,
   PositionProps,
@@ -22,15 +21,24 @@ export function addTextToNode(
       "font-size": "45px",
       fill: "black",
     });
-    const genericAttribute: GenericAttributeProps[] = Array.isArray(
-      genericAttributes.GenericAttribute,
-    )
-      ? genericAttributes.GenericAttribute
-      : [genericAttributes.GenericAttribute];
+    const genericAttribute = extractGenericAttributes(genericAttributes);
     textElement!.textContent = genericAttribute[0].Value;
   }
 
   return element;
+}
+
+export function extractGenericAttributes(data: GenericAttributesProps) {
+  if (Array.isArray(data)) {
+    return data
+      .map((obj) => (obj && obj.GenericAttribute) || null)
+      .filter((attr) => attr !== null);
+  } else if (data && data.GenericAttribute) {
+    return Array.isArray(data.GenericAttribute)
+      ? data.GenericAttribute
+      : [data.GenericAttribute];
+  }
+  return [];
 }
 
 export function addTextToPipe(

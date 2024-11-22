@@ -10,7 +10,7 @@ import { GenericAttributesProps } from "../types/diagram/Common.ts";
 
 export default function useSerializeNodeSvg(
   componentName: string,
-  genericAttributes?: GenericAttributesProps,
+  genericAttributes: GenericAttributesProps | undefined,
 ) {
   const [serializedSvg, setSerializedSvg] = useState<string>("");
   const svg = useNoakaDexpiSvg(componentName);
