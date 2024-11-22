@@ -38,7 +38,7 @@ async function handlePipeClick(pipe) {
 }
 
 async function handleNodeClick(node, event) {
-    // ctrl + left click - select or deselect nodes as insideBoundary
+    // shift + left click - select or deselect nodes as insideBoundary
     if (event.shiftKey) {
         if (node.classList.contains('insideBoundary')) {
             node.classList.remove('insideBoundary');
