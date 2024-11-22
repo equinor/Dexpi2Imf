@@ -40,6 +40,7 @@ async function handlePipeClick(pipe) {
 async function handleNodeClick(node, event) {
     // shift + left click - select or deselect nodes as insideBoundary
     if (event.shiftKey) {
+        window.getSelection().removeAllRanges();
         if (node.classList.contains('insideBoundary')) {
             node.classList.remove('insideBoundary');
             removeCommissionHighlight(node);
