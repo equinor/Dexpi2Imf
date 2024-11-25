@@ -54,14 +54,24 @@ export default function Pandid() {
     setActuatingSystem(xmlData.PlantModel.ActuatingSystem);
   }, [xmlData]);
 
+  const handleAddInternal = useCallback(
+    async (id: string, action: BoundaryActions) => {
+      context.setInternalIds((prev) =>
+        prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id],
+      );
+      console.log("handleAddInternal")
+      await makeSparqlAndUpdateStore(id, action, BoundaryParts.InsideBoundary);
+    },
+    [],
+  );
+
   const handleAddBoundary = useCallback(
-    async (id: string, action: BoundaryActions, type: BoundaryParts) => {
+    async (id: string, action: BoundaryActions) => {
       context.setBorderIds((prev) =>
         prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id],
       );
-      await makeSparqlAndUpdateStore(id, action, type);
+      await makeSparqlAndUpdateStore(id, action, BoundaryParts.Boundary);
     },
-
     [],
   );
 
@@ -81,8 +91,10 @@ export default function Pandid() {
                 <Equipment
                   key={index}
                   isBoundary={context.borderIds.includes(equipment.ID)}
+                  isInternal={context.internalIds.includes(equipment.ID)}
                   equipment={equipment}
                   onClick={handleAddBoundary}
+                  onShiftClick={handleAddInternal}
                 />
               ))}
             {pipingNetworkSystems &&

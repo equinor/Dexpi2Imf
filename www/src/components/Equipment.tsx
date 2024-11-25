@@ -3,14 +3,23 @@ import { useContext } from "react";
 import styled from "styled-components";
 import PandidContext from "../context/PandidContext.ts";
 import useSerializeNodeSvg from "../hooks/useSerializeNodeSvg.tsx";
-import { BoundaryActions, BoundaryParts } from "../utils/Triplestore.ts";
+import { BoundaryActions } from "../utils/Triplestore.ts";
 import SvgElement from "./SvgElement.tsx";
 
-const StyledG = styled.g`
+const StyledInternal = styled.g`
   path {
     stroke: yellow;
     stroke-width: 5;
+    opacity: 0.5 ;
   }
+`;
+
+const StyledBoundary = styled.g`
+path {
+  stroke: red;
+  stroke-width: 5;
+  opacity: 0.5 ;
+}
 `;
 
 interface EquipmentComponentProps {
@@ -18,15 +27,21 @@ interface EquipmentComponentProps {
   onClick: (
     id: string,
     action: BoundaryActions,
-    type: BoundaryParts,
+  ) => Promise<void>;
+  onShiftClick: (
+    id: string, 
+    action: BoundaryActions
   ) => Promise<void>;
   isBoundary: boolean;
+  isInternal: boolean;
 }
 
 export default function Equipment({
   equipment,
   onClick,
+  onShiftClick,
   isBoundary,
+  isInternal,
 }: EquipmentComponentProps) {
   const height = useContext(PandidContext).height;
   const svg = useSerializeNodeSvg(
@@ -38,14 +53,38 @@ export default function Equipment({
 
   return (
     <g
-      onClick={() =>
-        onClick(equipment.ID, BoundaryActions.Insert, BoundaryParts.Boundary)
+    onClick={(event) => {
+      if (event.ctrlKey) {
+        event.preventDefault();
+        if(isInternal) {
+          onShiftClick(equipment.ID, BoundaryActions.Delete);
+        } 
+        else {
+          onShiftClick(equipment.ID, BoundaryActions.Insert);
+        }
+      } 
+      else {
+        if(isBoundary) {
+          onClick(equipment.ID, BoundaryActions.Delete);
+        }
+        else {
+          onClick(equipment.ID, BoundaryActions.Insert);
+        }
       }
+    }}
     >
       {svg && (
         <>
           {isBoundary && (
-            <StyledG
+            <StyledBoundary
+              id={equipment.ID + "_highlight"}
+              transform={`${equipment.Position.Reference.X === -1 ? "rotate(-180deg)" : ""}translate(${equipment.Position.Location.X}, ${height - equipment.Position.Location.Y})`}
+              className={".node"}
+              dangerouslySetInnerHTML={{ __html: svg }}
+            />
+          )}
+          {isInternal && (
+            <StyledInternal
               id={equipment.ID + "_highlight"}
               transform={`${equipment.Position.Reference.X === -1 ? "rotate(-180deg)" : ""}translate(${equipment.Position.Location.X}, ${height - equipment.Position.Location.Y})`}
               className={".node"}

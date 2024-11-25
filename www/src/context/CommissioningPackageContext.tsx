@@ -14,6 +14,8 @@ interface CommissioningPackageContextProps {
   >;
   borderIds: string[];
   setBorderIds: React.Dispatch<React.SetStateAction<string[]>>;
+  internalIds: string[];
+  setInternalIds: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
 const CommissioningPackageContext = createContext<
@@ -28,6 +30,7 @@ export const CommissioningPackageProvider: React.FC<{
   >([]);
   const [borderIds, setBorderIds] = useState<string[]>([]);
   const [activePackageId, setActivePackageId] = useState<number>(0);
+  const [internalIds, setInternalIds] = useState<string[]>([]);
 
   const contextValue: CommissioningPackageContextProps = {
     activePackageId,
@@ -36,6 +39,8 @@ export const CommissioningPackageProvider: React.FC<{
     setCommissioningPackages,
     borderIds,
     setBorderIds,
+    internalIds, 
+    setInternalIds 
   };
 
   return (
