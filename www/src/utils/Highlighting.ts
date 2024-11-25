@@ -1,3 +1,21 @@
+import styled from "styled-components";
+
+export const StyledInternal = styled.g`
+  path {
+    stroke: yellow;
+    stroke-width: 5;
+    opacity: 0.5 ;
+  }
+`;
+
+export const StyledBoundary = styled.g`
+path {
+  stroke: red;
+  stroke-width: 5;
+  opacity: 0.5 ;
+}
+`;
+
 export function setAttributes(el: Element, attrs: { [key: string]: string }) {
     Object.keys(attrs).forEach(key => el.setAttribute(key, attrs[key]));
 }

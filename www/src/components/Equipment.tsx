@@ -1,6 +1,7 @@
 import { EquipmentProps, NozzleProps } from "../types/diagram/Diagram.ts";
 import { useContext } from "react";
-import { StyledBoundary, StyledInternal, ClickableComponentProps} from "../types/ClickableComponentProps.ts";
+import {ClickableComponentProps} from "../types/ClickableComponentProps.ts";
+import { StyledBoundary, StyledInternal } from "../utils/Highlighting.ts";
 import PandidContext from "../context/PandidContext.ts";
 import useSerializeNodeSvg from "../hooks/useSerializeNodeSvg.tsx";
 import { BoundaryActions } from "../utils/Triplestore.ts";
