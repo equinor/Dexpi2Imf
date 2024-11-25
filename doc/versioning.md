@@ -1,7 +1,7 @@
 # Plan for versioning support
 
 ### Record-based
-The plan is to re-use the document + revision setup from https://github.com/equinor/records and https://github.com/equinor/revisions for the P&IDs
+The plan is to use the records format from https://github.com/equinor/records and https://github.com/equinor/revisions for the P&IDs
 For the first demo, I suggest just using plain records with no replaces and no describes, with the translation of each
 dexpi file in a separate record.
 
@@ -14,9 +14,12 @@ Each file will be translated with RML-mapper and then put into its own record. T
 The setup will be a bit different with graphical info in RDF, mainly the actions in the front-end when selecting a new version
 In the current setup, this will be based on file-loading, while later only interaction with the triplestore is needed.
 
-### Separate storage of completion packages
-The completion packages (including color and boundary, but not including the scoping) must be stored separately from the P&IDs
-For this first demo, storage in head should be sufficient.
+### Separate storage of commissioning packages
+The commissioning packages (including internal element(s), boundary points and perhaps color, but not including the scoping) must be stored separately from the P&IDs
+For this first demo, storage in the default graph should be sufficient.
+
+### Identifiers
+This setup assumes that the identifiers we use for the boundaries do not change across versions. Ids that change across versions must not be used for elements of the commissioning package. (But they can be highlighted as part of scope)
 
 ### Switching versions 
 The list of files/records/P&IDs can be fetched (from the frontend) by this query
@@ -40,15 +43,17 @@ There is a datalog rule in the triplestore that puts the ex:CurrentVersion in he
     ex:CurrentVersion[?rec],
     [?s, ?p, ?o] ?rec .
 ```
-This means the data is automatically updated, so the queries from the front-end about completion should not need to change. 
+This means the data is automatically updated, so the queries from the front-end about scoping/highlighting and changing boundary elements should not need to change. 
+
+
 However, the front-end needs to get the new graphical data after switching versions. 
 Today, this could just be fetched from the volume-mapping directly without any changes other than what filename is 
 used to render the Dexpi. The highlighting could either happen automatically, or the completion package would have to be selected again (Depending on how the multiple commissioning packages setup is made)
 
 ### Demo "script"
-Demo'er copies all relevant versions into a local folder "demo"
-Demo'er starts script, the commandline includes an argument something like -v demo:versions
-The page now only shows a list of file-names (or other metadata we are able to extract?). The demo'er selects one of them
-The demo'er creates a boundary and checks that the completion works out. 
-The demo'er in some way (a menu or a list) selects another file
-The other file comes up, with boundary selection mechanism from multiple-boundary package user story
+* Demo'er copies all relevant versions into a local folder "demo"
+* Demo'er starts script, the commandline includes an argument something like -v demo:versions
+* The page now only shows a list of file-names (or other metadata we are able to extract?). The demo'er selects one of them
+* The demo'er creates a boundary + internal and checks that the highlighting works out. 
+* The demo'er in some way (a menu or a list) selects another file
+* The other file comes up, with boundary selection mechanism from multiple-boundary package user story
