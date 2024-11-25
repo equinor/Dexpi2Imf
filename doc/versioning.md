@@ -53,9 +53,9 @@ Today, this could just be fetched from the volume-mapping directly without any c
 used to render the Dexpi. The highlighting could either happen automatically, or the completion package would have to be selected again (Depending on how the multiple commissioning packages setup is made)
 
 ### Demo "script"
-* Demo'er copies all relevant versions into a local folder "demo"
-* Demo'er starts script, the commandline includes an argument something like -v demo:versions
+* Copy all relevant versions into a local folder "demo"
+* Start script, the commandline includes an argument something like -v demo:versions
 * The page now only shows a list of file-names (or other metadata we are able to extract?). The demo'er selects one of them
-* The demo'er creates a boundary + internal and checks that the highlighting works out. 
-* The demo'er in some way (a menu or a list) selects another file
+* Select boundary + internal and checks that the highlighting works out. 
+* In some way (a menu or a list) selects another file
 * The other file comes up, with boundary selection mechanism from multiple-boundary package user story
