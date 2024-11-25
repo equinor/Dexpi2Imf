@@ -4,7 +4,7 @@ import {
   PipingNetworkSystemProps,
 } from "../../types/diagram/Piping.ts";
 import { useContext } from "react";
-import PandidContext from "../../context/PandidContext.ts";
+import PandidContext from "../../context/PandidContext.tsx";
 import {
   GenericAttributesProps,
   PositionProps,

@@ -7,7 +7,7 @@ import { PipingNetworkSystemProps } from "../types/diagram/Piping.ts";
 import { ProcessInstrumentationFunctionProps } from "../types/diagram/ProcessInstrumentationFunction.ts";
 import { ActuatingSystemProps } from "../types/diagram/ActuatingSystem.ts";
 import ActuatingSystem from "./ActuatingSystem.tsx";
-import PandidContext from "../context/PandidContext.ts";
+import PandidContext from "../context/PandidContext.tsx";
 import PipeSystem from "./piping/PipeSystem.tsx";
 import {
   BoundaryActions,
@@ -15,6 +15,7 @@ import {
   makeSparqlAndUpdateStore,
 } from "../utils/Triplestore.ts";
 import { useCommissioningPackageContext } from "../hooks/useCommissioningPackageContext.tsx";
+import { noakaDexpiSvg } from "../utils/SvgEdit.ts";
 
 export default function Pandid() {
   const [xmlData, setXmlData] = useState<XMLProps | null>(null);
@@ -28,6 +29,7 @@ export default function Pandid() {
     ActuatingSystemProps[]
   >([]);
   const context = useCommissioningPackageContext();
+  const [svgMap, setSvgMap] = useState<Map<string, Element | null>>(new Map());
   const parser = new XMLParser({
     ignoreAttributes: false,
     attributeNamePrefix: "",
@@ -52,7 +54,37 @@ export default function Pandid() {
       xmlData.PlantModel.ProcessInstrumentationFunction,
     );
     setActuatingSystem(xmlData.PlantModel.ActuatingSystem);
+    const initializeSvgMap = async () => {
+      const preloadedMap = await preloadSVGs(xmlData);
+      setSvgMap(preloadedMap);
+    };
+
+    initializeSvgMap();
   }, [xmlData]);
+
+  const preloadSVGs = async (obj: XMLProps) => {
+    const componentNames = new Set<string>();
+
+    const traverse = (node: any) => {
+      if (typeof node !== "object" || node === null) return;
+
+      if (node.ComponentName) {
+        componentNames.add(node.ComponentName);
+      }
+
+      Object.values(node).forEach(traverse);
+    };
+
+    traverse(obj);
+    const svgMap = new Map<string, Element | null>();
+
+    await Promise.all(
+      Array.from(componentNames).map(async (name: string) => {
+        svgMap.set(name, await noakaDexpiSvg(name));
+      }),
+    );
+    return svgMap;
+  };
 
   const handleAddBoundary = useCallback(
     async (id: string, action: BoundaryActions, type: BoundaryParts) => {
@@ -71,6 +103,8 @@ export default function Pandid() {
         <PandidContext.Provider
           value={{
             height: xmlData.PlantModel.Drawing.Extent.Max.Y,
+            svgMap,
+            setSvgMap,
           }}
         >
           <svg

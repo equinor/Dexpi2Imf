@@ -1,7 +1,7 @@
 import { EquipmentProps, NozzleProps } from "../types/diagram/Diagram.ts";
 import { useContext } from "react";
 import styled from "styled-components";
-import PandidContext from "../context/PandidContext.ts";
+import PandidContext from "../context/PandidContext.tsx";
 import useSerializeNodeSvg from "../hooks/useSerializeNodeSvg.tsx";
 import { BoundaryActions, BoundaryParts } from "../utils/Triplestore.ts";
 import SvgElement from "./SvgElement.tsx";
@@ -66,7 +66,6 @@ export default function Equipment({
             key={index}
             id={nozzle.ID}
             componentName={nozzle.ComponentName || "ND0002_SHAPE"}
-            height={height}
             position={nozzle.Position}
             text={nozzle.GenericAttributes}
           />

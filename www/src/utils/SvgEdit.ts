@@ -7,6 +7,22 @@ import {
 } from "../types/diagram/Common.ts";
 import { calculateAngle } from "./Transformation.ts";
 
+export async function noakaDexpiSvg(componentName: string) {
+  const shapeName = `/Origo/${componentName.replace("_SHAPE", "_Origo")}.svg`;
+  try {
+    const response = await fetch(shapeName);
+    if (!response.ok)
+      throw new Error(`Failed to fetch SVG for ${componentName}`);
+    const svgText = await response.text();
+    const parser = new DOMParser();
+    const svgDoc = parser.parseFromString(svgText, "image/svg+xml");
+    return svgDoc.querySelector("svg > g"); // Return the root SVG element
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+}
+
 export function addTextToNode(
   element: Element,
   genericAttributes: GenericAttributesProps,

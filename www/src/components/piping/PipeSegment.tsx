@@ -6,7 +6,7 @@ import {
 import { CenterLineProps } from "../../types/diagram/Common.ts";
 import PipingComponent from "./PipingComponent.tsx";
 import { useContext } from "react";
-import PandidContext from "../../context/PandidContext.ts";
+import PandidContext from "../../context/PandidContext.tsx";
 import SvgElement from "../SvgElement.tsx";
 import StyledPath from "../StyledPath.tsx";
 import constructPath from "../../utils/Path.ts";
@@ -34,7 +34,6 @@ export default function PipeSegment(props: PipingNetworkSegmentProps) {
         )}
       {props.PipeSlopeSymbol && (
         <SvgElement
-          height={height}
           componentName={props.PipeSlopeSymbol.ComponentName}
           id={props.PipeSlopeSymbol.ID}
           position={props.PipeSlopeSymbol.Position}
@@ -45,7 +44,6 @@ export default function PipeSegment(props: PipingNetworkSegmentProps) {
           <SvgElement
             id={props.PropertyBreak.ID}
             componentName={props.PropertyBreak.ComponentName}
-            height={height}
             text={props.PropertyBreak.GenericAttributes[0]}
             position={props.PropertyBreak.Position}
           />
@@ -59,7 +57,6 @@ export default function PipeSegment(props: PipingNetworkSegmentProps) {
       )}
       {props.PipeOffPageConnector && (
         <SvgElement
-          height={height}
           componentName={props.PipeOffPageConnector.ComponentName}
           id={props.PipeOffPageConnector.ID}
           position={props.PipeOffPageConnector.Position}

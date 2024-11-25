@@ -3,9 +3,9 @@ import {
   PositionProps,
 } from "../types/diagram/Common.ts";
 import calculateAngleAndRotation from "../utils/Transformation.ts";
-import useSerializeNodeSvg from "../hooks/useSerializeNodeSvg.tsx";
 import { useContext } from "react";
-import PandidContext from "../context/PandidContext.ts";
+import PandidContext from "../context/PandidContext.tsx";
+import useSerializeNodeSvg from "../hooks/useSerializeNodeSvg.tsx";
 
 interface SvgElementProps {
   id: string;
