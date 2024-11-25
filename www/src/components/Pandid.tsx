@@ -9,6 +9,7 @@ import { ActuatingSystemProps } from "../types/diagram/ActuatingSystem.ts";
 import ActuatingSystem from "./ActuatingSystem.tsx";
 import PandidContext from "../context/PandidContext.ts";
 import PipeSystem from "./piping/PipeSystem.tsx";
+import { ClickableComponentProps } from "../types/ClickableComponentProps.ts";
 import {
   BoundaryActions,
   BoundaryParts,
@@ -90,11 +91,13 @@ export default function Pandid() {
               equipments.map((equipment: EquipmentProps, index: number) => (
                 <Equipment
                   key={index}
-                  isBoundary={context.borderIds.includes(equipment.ID)}
-                  isInternal={context.internalIds.includes(equipment.ID)}
                   equipment={equipment}
-                  onClick={handleAddBoundary}
-                  onShiftClick={handleAddInternal}
+                  clickableComponent={{
+                    isBoundary: context.borderIds.includes(equipment.ID),
+                    isInternal: context.internalIds.includes(equipment.ID),
+                    onClick: handleAddBoundary,
+                    onShiftClick: handleAddInternal,
+                  }}
                 />
               ))}
             {pipingNetworkSystems &&

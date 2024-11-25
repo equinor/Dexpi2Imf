@@ -1,47 +1,20 @@
 import { EquipmentProps, NozzleProps } from "../types/diagram/Diagram.ts";
 import { useContext } from "react";
-import styled from "styled-components";
+import { StyledBoundary, StyledInternal, ClickableComponentProps} from "../types/ClickableComponentProps.ts";
 import PandidContext from "../context/PandidContext.ts";
 import useSerializeNodeSvg from "../hooks/useSerializeNodeSvg.tsx";
 import { BoundaryActions } from "../utils/Triplestore.ts";
 import SvgElement from "./SvgElement.tsx";
 
-const StyledInternal = styled.g`
-  path {
-    stroke: yellow;
-    stroke-width: 5;
-    opacity: 0.5 ;
-  }
-`;
-
-const StyledBoundary = styled.g`
-path {
-  stroke: red;
-  stroke-width: 5;
-  opacity: 0.5 ;
-}
-`;
 
 interface EquipmentComponentProps {
   equipment: EquipmentProps;
-  onClick: (
-    id: string,
-    action: BoundaryActions,
-  ) => Promise<void>;
-  onShiftClick: (
-    id: string, 
-    action: BoundaryActions
-  ) => Promise<void>;
-  isBoundary: boolean;
-  isInternal: boolean;
+  clickableComponent: ClickableComponentProps
 }
 
 export default function Equipment({
   equipment,
-  onClick,
-  onShiftClick,
-  isBoundary,
-  isInternal,
+  clickableComponent
 }: EquipmentComponentProps) {
   const height = useContext(PandidContext).height;
   const svg = useSerializeNodeSvg(
@@ -56,26 +29,26 @@ export default function Equipment({
     onClick={(event) => {
       if (event.ctrlKey) {
         event.preventDefault();
-        if(isInternal) {
-          onShiftClick(equipment.ID, BoundaryActions.Delete);
+        if(clickableComponent.isInternal) {
+          clickableComponent.onShiftClick(equipment.ID, BoundaryActions.Delete);
         } 
         else {
-          onShiftClick(equipment.ID, BoundaryActions.Insert);
+          clickableComponent.onShiftClick(equipment.ID, BoundaryActions.Insert);
         }
       } 
       else {
-        if(isBoundary) {
-          onClick(equipment.ID, BoundaryActions.Delete);
+        if(clickableComponent.isBoundary) {
+          clickableComponent.onClick(equipment.ID, BoundaryActions.Delete);
         }
         else {
-          onClick(equipment.ID, BoundaryActions.Insert);
+          clickableComponent.onClick(equipment.ID, BoundaryActions.Insert);
         }
       }
     }}
     >
       {svg && (
         <>
-          {isBoundary && (
+          {clickableComponent.isBoundary && (
             <StyledBoundary
               id={equipment.ID + "_highlight"}
               transform={`${equipment.Position.Reference.X === -1 ? "rotate(-180deg)" : ""}translate(${equipment.Position.Location.X}, ${height - equipment.Position.Location.Y})`}
@@ -83,7 +56,7 @@ export default function Equipment({
               dangerouslySetInnerHTML={{ __html: svg }}
             />
           )}
-          {isInternal && (
+          {clickableComponent.isInternal && (
             <StyledInternal
               id={equipment.ID + "_highlight"}
               transform={`${equipment.Position.Reference.X === -1 ? "rotate(-180deg)" : ""}translate(${equipment.Position.Location.X}, ${height - equipment.Position.Location.Y})`}
