@@ -1,0 +1,47 @@
+
+services:
+  rdfox: 
+    image: oxfordsemantic/rdfox:7.2a
+    command: -license.file /home/rdfox/.RDFox/RDFox.lic sandbox /home/rdfox/.RDFox/rdfox dexpi
+    stdin_open: true
+    tty: true
+    ports:
+      - 12110:12110
+    volumes:
+      - type: bind
+        source: ../
+        target: /home/rdfox/.RDFox/
+    depends_on:
+      rml-mapper:
+        condition: service_completed_successfully
+  rml-mapper:
+    build: rml-mapper
+    tty: true
+    volumes:
+      - type: bind
+        source: ../
+        target: /app/local/
+  frontend:
+    image: node:23
+    working_dir: /app/local/www
+    environment:
+      - NODE_ENV=development
+    ports:
+      - 8081:8081
+    volumes:
+      - type: bind
+        source: ../
+        target: /app/local/
+    command: sh -c "npm install && npm run dev"
+  web_old:
+    build: web
+    tty: true
+    ports:
+      - 8080:80
+    volumes:
+      - type: bind
+        source: ../www_old
+        target: /var/www/html/
+    depends_on:
+      rml-mapper:
+        condition: service_completed_successfully

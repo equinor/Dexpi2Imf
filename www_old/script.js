@@ -38,8 +38,9 @@ async function handlePipeClick(pipe) {
 }
 
 async function handleNodeClick(node, event) {
-    // ctrl + left click - select or deselect nodes as insideBoundary
-    if (event.ctrlKey) {
+    // shift + left click - select or deselect nodes as insideBoundary
+    if (event.shiftKey) {
+        window.getSelection().removeAllRanges();
         if (node.classList.contains('insideBoundary')) {
             node.classList.remove('insideBoundary');
             removeCommissionHighlight(node);
@@ -53,7 +54,7 @@ async function handleNodeClick(node, event) {
                 await makeSparqlAndUpdateStore(node.id, boundary_actions.delete, boundary_parts.boundary);
             }
         }
-    // left click - select or deselect nodes as boundary
+        // left click - select or deselect nodes as boundary
     } else {
         if (node.classList.contains('boundary')) {
             node.classList.remove('boundary');
@@ -120,15 +121,15 @@ function addPipeHighlight(pipe, color = 'yellow') {
             await makeSparqlAndUpdateStore(pipe.id, boundary_actions.insert, boundary_parts.boundary);
         }
         await updateInCommissioningPackage()
-    }); 
+    });
     pipe.parentNode.appendChild(highlightRect);
 }
 
 function changePipeHighLight(pipe, color) {
-    let connectorId = pipe.id + '_highlight'; 
+    let connectorId = pipe.id + '_highlight';
     let highlightPath = document.getElementById(connectorId);
     if (highlightPath) {
-        highlightPath.setAttribute('stroke', color); 
+        highlightPath.setAttribute('stroke', color);
     }
 }
 
@@ -169,8 +170,8 @@ async function updateInCommissioningPackage() {
         }
     });
 
-    pipes.forEach(async pipe => { 
-        const isAdjacent = await adjacentToInternal(pipe.id); 
+    pipes.forEach(async pipe => {
+        const isAdjacent = await adjacentToInternal(pipe.id);
         if (pipe.classList.contains('boundary')) {
             if (isAdjacent) {
                 changePipeHighLight(pipe, 'yellow');
@@ -298,7 +299,7 @@ function displayTablesAndDownloadButton(nodeIdsInside, headerTitleInside, contai
     createTable(nodeIdsBoundary, headerTitleBoundary, containerIdBoundary);
 
     // Create a single download button for both tables
-    const downloadButtonContainer = document.getElementById(containerIdInside); 
+    const downloadButtonContainer = document.getElementById(containerIdInside);
     let downloadButton = document.createElement('button');
     downloadButton.textContent = 'Download Excel';
     downloadButton.style.margin = '10px';
@@ -354,7 +355,7 @@ function downloadWorkbook(nodeIdsInside, nodeIdsBoundary, filename) {
     XLSX.utils.book_append_sheet(wb, wsCombined, 'Combined');
 
     const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'binary' });
-    
+
     function s2ab(s) {
         const buffer = new ArrayBuffer(s.length);
         const view = new Uint8Array(buffer);
@@ -366,4 +367,3 @@ function downloadWorkbook(nodeIdsInside, nodeIdsBoundary, filename) {
 
     saveAs(new Blob([s2ab(wbout)], { type: "application/octet-stream" }), filename);
 }
-
