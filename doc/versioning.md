@@ -19,7 +19,9 @@ The commissioning packages (including internal element(s), boundary points and p
 For this first demo, storage in the default graph should be sufficient.
 
 ### Identifiers
-This setup assumes that the identifiers we use for the boundaries do not change across versions. Ids that change across versions must not be used for elements of the commissioning package. (But they can be highlighted as part of scope)
+This setup assumes that the identifiers we use for the boundaries and internal elements do not change across versions. 
+Ids that change across versions must not be possible to use for selecting boundaries or the internal element of the commissioning package. 
+But for highlighting/scope it might be ok or even necessary to show elements that do not have persistent IDs
 
 ### Switching versions 
 The list of files/records/P&IDs can be fetched (from the frontend) by this query
