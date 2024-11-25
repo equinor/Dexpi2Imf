@@ -1,7 +1,7 @@
 import { CenterLineProps } from "../types/diagram/Common.ts";
 import constructPath from "../utils/Path.ts";
 import { useContext } from "react";
-import PandidContext from "../context/PandidContext.ts";
+import PandidContext from "../context/PandidContext.tsx";
 import StyledPath from "./StyledPath.tsx";
 
 interface CenterLineComponentProps {
