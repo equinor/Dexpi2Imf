@@ -105,7 +105,6 @@ export default function Equipment({
             key={index}
             id={nozzle.ID}
             componentName={nozzle.ComponentName || "ND0002_SHAPE"}
-            height={height}
             position={nozzle.Position}
             text={nozzle.GenericAttributes}
           />

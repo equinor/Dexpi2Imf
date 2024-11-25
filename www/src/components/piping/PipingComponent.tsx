@@ -17,7 +17,6 @@ export default function PipingComponent(props: PipingComponentProps) {
           id={props.ID}
           componentName={componentName}
           position={props.Position}
-          height={height}
           text={props.GenericAttributes}
         />
       )}
@@ -27,7 +26,6 @@ export default function PipingComponent(props: PipingComponentProps) {
             id={label.ID}
             componentName={label.ComponentName}
             position={label.Position}
-            height={height}
           />
           {label.PolyLine && (
             <StyledPath
