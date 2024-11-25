@@ -1,10 +1,10 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { addTextToPipe, serializeElement } from "../utils/SvgEdit.ts";
 import {
   GenericAttributesProps,
   PositionProps,
 } from "../types/diagram/Common.ts";
-import useNoakaDexpiSvg from "./useNoakaDexpiSvg.ts";
+import PandidContext from "../context/PandidContext.tsx";
 
 export default function useSerializePipeSvg(
   componentName: string,
@@ -13,7 +13,7 @@ export default function useSerializePipeSvg(
   position: PositionProps,
 ) {
   const [serializedSvg, setSerializedSvg] = useState<string>("");
-  const svg = useNoakaDexpiSvg(componentName);
+  const svg = useContext(PandidContext).svgMap.get(componentName);
   useEffect(() => {
     if (!svg) return;
     addTextToPipe(svg, genericAttributes, height, position);
