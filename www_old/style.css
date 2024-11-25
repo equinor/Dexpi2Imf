@@ -2,11 +2,11 @@
 
 
 .node:hover {
-    cursor: pointer; 
+    cursor: pointer;
 }
 
 .piping:hover {
-    cursor: pointer; 
+    cursor: pointer;
     stroke-width: 4;
     stroke: rgb(251, 131, 109);
     stroke-opacity: 0.8;
@@ -23,8 +23,8 @@
 }
 
 .boundary path {
-   stroke: rgb(251, 131, 109);
-   stroke-width: 0.5;
+    stroke: rgb(251, 131, 109);
+    stroke-width: 0.5;
 }
 
 /*START. Style for the table and the dowload button */
@@ -39,18 +39,18 @@
 }
 
 #inside-boundary-table-container {
-    width: 50%; 
+    width: 50%;
 
 }
 
 #boundary-table-container {
-    width: 50%; 
+    width: 50%;
 
 }
 
 
 table {
-    width: 100%; 
+    width: 100%;
     border-collapse: collapse;
 }
 
