@@ -13,6 +13,14 @@ interface StyledSvgElementProps {
     color: string;
 }
 
+const StyledG = styled.g`
+path {
+  stroke: ${(props) => props.color};
+  stroke-width: 5;
+  opacity: 0.5 ;
+}
+`
+
 export default function StyledSvgElement({
     id,
     position,
@@ -20,18 +28,13 @@ export default function StyledSvgElement({
     color
 }: StyledSvgElementProps) {
     const height = useContext(PandidContext).height;
-    const StyledG = styled.g`
-    path {
-      stroke: ${color};
-      stroke-width: 5;
-      opacity: 0.5 ;
-    }
-  `
+
     return (
         <>
             {svg && (
                 <StyledG
                     id={id}
+                    color={color}
                     transform={
                         position
                             ? calculateAngleAndRotation(

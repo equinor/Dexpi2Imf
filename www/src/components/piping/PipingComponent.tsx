@@ -24,8 +24,8 @@ export default function PipingComponent({
   const svg = props.ComponentName != null ? useSerializeNodeSvg(
     props.ComponentName,
     props.GenericAttributes,
-  ) : null;
-
+  ) : null; 
+    
   return (
     <g
       onClick={handleClick(clickableComponent, props.ID)}
