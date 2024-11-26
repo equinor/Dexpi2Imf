@@ -4,38 +4,60 @@ import PandidContext from "../../context/PandidContext.ts";
 import SvgElement from "../SvgElement.tsx";
 import constructPath from "../../utils/Path.ts";
 import StyledPath from "../StyledPath.tsx";
-import { ClickableComponentProps } from "../../types/ClickableComponentProps.ts";
+import { ClickableComponentProps, handleClick } from "../../types/ClickableComponentProps.ts";
+import useSerializeNodeSvg from "../../hooks/useSerializeNodeSvg.tsx";
+import StyledSvgElement from "../StyledSvgElement.tsx";
 
 interface PipingComponentClickableProps {
-  props : PipingComponentProps;
+  props: PipingComponentProps;
   clickableComponent: ClickableComponentProps;
 }
 
 export default function PipingComponent({
-  props, 
+  props,
   clickableComponent
-} : PipingComponentClickableProps) {
+}: PipingComponentClickableProps) {
   const context = useContext(PandidContext);
   const height = context.height;
-  const componentName = props.ComponentName; // string | undefined
+  const componentName = props.ComponentName;
   const label = props.Label;
+  const svg = props.ComponentName != null ? useSerializeNodeSvg(
+    props.ComponentName,
+    props.GenericAttributes,
+  ) : null;
+
   return (
-    <>
-      {componentName && (
-        <SvgElement
-          id={props.ID}
-          componentName={componentName}
-          position={props.Position}
-          text={props.GenericAttributes}
-        />
+    <g
+      onClick={handleClick(clickableComponent, props.ID)}
+    >
+      {componentName && svg && (
+        <>
+          {clickableComponent.isInternal && (
+            <StyledSvgElement
+              id={props.ID}
+              position={props.Position}
+              svg={svg}
+              color="yellow"
+            />
+          )}
+          {clickableComponent.isBoundary && (
+            <StyledSvgElement
+              id={props.ID}
+              position={props.Position}
+              svg={svg}
+              color="red"
+            />
+          )}
+          <SvgElement
+            id={props.ID}
+            componentName={componentName}
+            position={props.Position}
+            text={props.GenericAttributes}
+          />
+        </>
       )}
       {label && (
         <>
-          <SvgElement
-            id={label.ID}
-            componentName={label.ComponentName}
-            position={label.Position}
-          />
           {label.PolyLine && (
             <StyledPath
               d={constructPath(label.PolyLine.Coordinate, height)}
@@ -44,6 +66,6 @@ export default function PipingComponent({
           )}
         </>
       )}
-    </>
+    </g>
   );
 }
