@@ -1,10 +1,9 @@
 import { EquipmentProps, NozzleProps } from "../types/diagram/Diagram.ts";
 import { useContext } from "react";
-import {ClickableComponentProps} from "../types/ClickableComponentProps.ts";
-import { StyledBoundary, StyledInternal } from "../utils/Highlighting.ts";
+import {ClickableComponentProps, handleClick} from "../types/ClickableComponentProps.ts";
+import StyledSvgElement from "./StyledSvgElement.tsx";
 import PandidContext from "../context/PandidContext.ts";
 import useSerializeNodeSvg from "../hooks/useSerializeNodeSvg.tsx";
-import { BoundaryActions } from "../utils/Triplestore.ts";
 import SvgElement from "./SvgElement.tsx";
 
 
@@ -27,42 +26,24 @@ export default function Equipment({
 
   return (
     <g
-    onClick={(event) => {
-      if (event.ctrlKey) {
-        event.preventDefault();
-        if(clickableComponent.isInternal) {
-          clickableComponent.onShiftClick(props.ID, BoundaryActions.Delete);
-        } 
-        else {
-          clickableComponent.onShiftClick(props.ID, BoundaryActions.Insert);
-        }
-      } 
-      else {
-        if(clickableComponent.isBoundary) {
-          clickableComponent.onClick(props.ID, BoundaryActions.Delete);
-        }
-        else {
-          clickableComponent.onClick(props.ID, BoundaryActions.Insert);
-        }
-      }
-    }}
+      onClick={handleClick(clickableComponent, props.ID)}
     >
       {svg && (
         <>
           {clickableComponent.isBoundary && (
-            <StyledBoundary
+            <StyledSvgElement
               id={props.ID + "_highlight"}
-              transform={`${props.Position.Reference.X === -1 ? "rotate(-180deg)" : ""}translate(${props.Position.Location.X}, ${height - props.Position.Location.Y})`}
-              className={".node"}
-              dangerouslySetInnerHTML={{ __html: svg }}
+              position={props.Position}
+              svg={svg}
+              color="red"
             />
           )}
           {clickableComponent.isInternal && (
-            <StyledInternal
+            <StyledSvgElement
               id={props.ID + "_highlight"}
-              transform={`${props.Position.Reference.X === -1 ? "rotate(-180deg)" : ""}translate(${props.Position.Location.X}, ${height - props.Position.Location.Y})`}
-              className={".node"}
-              dangerouslySetInnerHTML={{ __html: svg }}
+              position={props.Position}
+              svg={svg}
+              color="yellow"
             />
           )}
           <g
