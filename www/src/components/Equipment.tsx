@@ -8,22 +8,22 @@ import { BoundaryActions } from "../utils/Triplestore.ts";
 import SvgElement from "./SvgElement.tsx";
 
 
-interface EquipmentComponentProps {
-  equipment: EquipmentProps;
+interface EquipmentClickableProps {
+  props: EquipmentProps;
   clickableComponent: ClickableComponentProps
 }
 
 export default function Equipment({
-  equipment,
+  props,
   clickableComponent
-}: EquipmentComponentProps) {
+}: EquipmentClickableProps) {
   const height = useContext(PandidContext).height;
   const svg = useSerializeNodeSvg(
-    equipment.ComponentName,
-    equipment.GenericAttributes[0],
+    props.ComponentName,
+    props.GenericAttributes[0],
   );
 
-  const nozzles: NozzleProps[] = equipment.Nozzle;
+  const nozzles: NozzleProps[] = props.Nozzle;
 
   return (
     <g
@@ -31,18 +31,18 @@ export default function Equipment({
       if (event.ctrlKey) {
         event.preventDefault();
         if(clickableComponent.isInternal) {
-          clickableComponent.onShiftClick(equipment.ID, BoundaryActions.Delete);
+          clickableComponent.onShiftClick(props.ID, BoundaryActions.Delete);
         } 
         else {
-          clickableComponent.onShiftClick(equipment.ID, BoundaryActions.Insert);
+          clickableComponent.onShiftClick(props.ID, BoundaryActions.Insert);
         }
       } 
       else {
         if(clickableComponent.isBoundary) {
-          clickableComponent.onClick(equipment.ID, BoundaryActions.Delete);
+          clickableComponent.onClick(props.ID, BoundaryActions.Delete);
         }
         else {
-          clickableComponent.onClick(equipment.ID, BoundaryActions.Insert);
+          clickableComponent.onClick(props.ID, BoundaryActions.Insert);
         }
       }
     }}
@@ -51,23 +51,23 @@ export default function Equipment({
         <>
           {clickableComponent.isBoundary && (
             <StyledBoundary
-              id={equipment.ID + "_highlight"}
-              transform={`${equipment.Position.Reference.X === -1 ? "rotate(-180deg)" : ""}translate(${equipment.Position.Location.X}, ${height - equipment.Position.Location.Y})`}
+              id={props.ID + "_highlight"}
+              transform={`${props.Position.Reference.X === -1 ? "rotate(-180deg)" : ""}translate(${props.Position.Location.X}, ${height - props.Position.Location.Y})`}
               className={".node"}
               dangerouslySetInnerHTML={{ __html: svg }}
             />
           )}
           {clickableComponent.isInternal && (
             <StyledInternal
-              id={equipment.ID + "_highlight"}
-              transform={`${equipment.Position.Reference.X === -1 ? "rotate(-180deg)" : ""}translate(${equipment.Position.Location.X}, ${height - equipment.Position.Location.Y})`}
+              id={props.ID + "_highlight"}
+              transform={`${props.Position.Reference.X === -1 ? "rotate(-180deg)" : ""}translate(${props.Position.Location.X}, ${height - props.Position.Location.Y})`}
               className={".node"}
               dangerouslySetInnerHTML={{ __html: svg }}
             />
           )}
           <g
-            id={equipment.ID}
-            transform={`${equipment.Position.Reference.X === -1 ? "rotate(-180deg)" : ""}translate(${equipment.Position.Location.X}, ${height - equipment.Position.Location.Y})`}
+            id={props.ID}
+            transform={`${props.Position.Reference.X === -1 ? "rotate(-180deg)" : ""}translate(${props.Position.Location.X}, ${height - props.Position.Location.Y})`}
             className={".node"}
             dangerouslySetInnerHTML={{ __html: svg }}
           />
