@@ -63,7 +63,6 @@ export default function Pandid() {
       context.setInternalIds((prev) =>
         prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id],
       );
-      console.log("handleAddInternal")
       await makeSparqlAndUpdateStore(id, action, BoundaryParts.InsideBoundary);
     },
     [],
