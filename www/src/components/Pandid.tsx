@@ -94,7 +94,7 @@ export default function Pandid() {
               equipments.map((equipment: EquipmentProps, index: number) => (
                 <Equipment
                   key={index}
-                  equipment={equipment}
+                  props={equipment}
                   clickableComponent={{
                     isBoundary: context.borderIds.includes(equipment.ID),
                     isInternal: context.internalIds.includes(equipment.ID),
@@ -104,19 +104,29 @@ export default function Pandid() {
                 />
               ))}
             {pipingNetworkSystems &&
-                pipingNetworkSystems.map((pipingNetworkSystem: PipingNetworkSystemProps, index: number) => (
-                  <React.Fragment key={index}>
-                    <PipeSystem {...pipingNetworkSystem} />
-                    { ensureArray(pipingNetworkSystem.PipingNetworkSegment).map((pipingNetworkSegment: PipingNetworkSegmentProps, segmentIndex: number) => (
-                      <React.Fragment key={segmentIndex}>
-                          <PipeSegment {...pipingNetworkSegment} />
-                          {ensureArray(pipingNetworkSegment.PipingComponent).map((pipingComponent: PipingComponentProps, componentIndex: number) => (
-                            <PipingComponent key = {componentIndex} {...pipingComponent}></PipingComponent>
-                          ))}
-                      </React.Fragment>
+              pipingNetworkSystems.map((pipingNetworkSystem: PipingNetworkSystemProps, index: number) => (
+                <React.Fragment key={index}>
+                  <PipeSystem {...pipingNetworkSystem} />
+                  {ensureArray(pipingNetworkSystem.PipingNetworkSegment).map((pipingNetworkSegment: PipingNetworkSegmentProps, segmentIndex: number) => (
+                    <React.Fragment key={segmentIndex}>
+                      <PipeSegment {...pipingNetworkSegment} />
+                      {pipingNetworkSegment.PipingComponent &&
+                        ensureArray(pipingNetworkSegment.PipingComponent).map((pipingComponent: PipingComponentProps, componentIndex: number) => (
+                          <PipingComponent
+                            key={componentIndex}
+                            props={pipingComponent}
+                            clickableComponent={{
+                              isBoundary: context.borderIds.includes(pipingComponent.ID),
+                              isInternal: context.internalIds.includes(pipingComponent.ID),
+                              onClick: handleAddBoundary,
+                              onShiftClick: handleAddInternal
+                            }}
+                          />
                         ))}
-                  </React.Fragment>
-                ))
+                    </React.Fragment>
+                  ))}
+                </React.Fragment>
+              ))
             }
             {processInstrumentationFunction &&
               processInstrumentationFunction.map(

@@ -4,8 +4,17 @@ import PandidContext from "../../context/PandidContext.ts";
 import SvgElement from "../SvgElement.tsx";
 import constructPath from "../../utils/Path.ts";
 import StyledPath from "../StyledPath.tsx";
+import { ClickableComponentProps } from "../../types/ClickableComponentProps.ts";
 
-export default function PipingComponent(props: PipingComponentProps) {
+interface PipingComponentClickableProps {
+  props : PipingComponentProps;
+  clickableComponent: ClickableComponentProps;
+}
+
+export default function PipingComponent({
+  props, 
+  clickableComponent
+} : PipingComponentClickableProps) {
   const context = useContext(PandidContext);
   const height = context.height;
   const componentName = props.ComponentName; // string | undefined
