@@ -9,7 +9,8 @@ import { ActuatingSystemProps } from "../types/diagram/ActuatingSystem.ts";
 import ActuatingSystem from "./ActuatingSystem.tsx";
 import PandidContext from "../context/PandidContext.ts";
 import PipeSystem from "./piping/PipeSystem.tsx";
-import { ClickableComponentProps } from "../types/ClickableComponentProps.ts";
+import PipeSegment from "./piping/PipeSegment.tsx";
+import React from "react";
 import {
   BoundaryActions,
   BoundaryParts,
@@ -101,11 +102,17 @@ export default function Pandid() {
                 />
               ))}
             {pipingNetworkSystems &&
-              pipingNetworkSystems.map(
-                (piping: PipingNetworkSystemProps, index: number) => (
-                  <PipeSystem key={index} {...piping} />
-                ),
-              )}
+                pipingNetworkSystems.map((piping: PipingNetworkSystemProps, index: number) => (
+                  <React.Fragment key={index}>
+                    <PipeSystem {...piping} />
+                    {Array.isArray(piping.PipingNetworkSegment)
+                      ? piping.PipingNetworkSegment.map((pipe, pipeIndex) => (
+                          <PipeSegment key={pipeIndex} {...pipe} />
+                        ))
+                      : <PipeSegment {...piping.PipingNetworkSegment} />}
+                  </React.Fragment>
+                ))
+            }
             {processInstrumentationFunction &&
               processInstrumentationFunction.map(
                 (
