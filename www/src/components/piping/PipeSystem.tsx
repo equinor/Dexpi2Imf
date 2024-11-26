@@ -1,6 +1,4 @@
-import PipeSegment from "./PipeSegment.tsx";
 import {
-  PipingNetworkSegmentProps,
   PipingNetworkSystemProps,
 } from "../../types/diagram/Piping.ts";
 import { useContext } from "react";

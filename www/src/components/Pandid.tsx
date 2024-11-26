@@ -3,8 +3,9 @@ import Equipment from "./Equipment.tsx";
 import { useCallback, useEffect, useState } from "react";
 import ProcessInstrumentationFunction from "./ProcessInstrumentationFunction.tsx";
 import { EquipmentProps, XMLProps } from "../types/diagram/Diagram.ts";
-import { PipingNetworkSystemProps } from "../types/diagram/Piping.ts";
+import { PipingComponentProps, PipingNetworkSegmentProps, PipingNetworkSystemProps } from "../types/diagram/Piping.ts";
 import { ProcessInstrumentationFunctionProps } from "../types/diagram/ProcessInstrumentationFunction.ts";
+import { ensureArray } from "../utils/HelperFunctions.ts";
 import { ActuatingSystemProps } from "../types/diagram/ActuatingSystem.ts";
 import ActuatingSystem from "./ActuatingSystem.tsx";
 import PandidContext from "../context/PandidContext.ts";
@@ -17,6 +18,7 @@ import {
   makeSparqlAndUpdateStore,
 } from "../utils/Triplestore.ts";
 import { useCommissioningPackageContext } from "../hooks/useCommissioningPackageContext.tsx";
+import PipingComponent from "./piping/PipingComponent.tsx";
 
 export default function Pandid() {
   const [xmlData, setXmlData] = useState<XMLProps | null>(null);
@@ -102,14 +104,17 @@ export default function Pandid() {
                 />
               ))}
             {pipingNetworkSystems &&
-                pipingNetworkSystems.map((piping: PipingNetworkSystemProps, index: number) => (
+                pipingNetworkSystems.map((pipingNetworkSystem: PipingNetworkSystemProps, index: number) => (
                   <React.Fragment key={index}>
-                    <PipeSystem {...piping} />
-                    {Array.isArray(piping.PipingNetworkSegment)
-                      ? piping.PipingNetworkSegment.map((pipe, pipeIndex) => (
-                          <PipeSegment key={pipeIndex} {...pipe} />
-                        ))
-                      : <PipeSegment {...piping.PipingNetworkSegment} />}
+                    <PipeSystem {...pipingNetworkSystem} />
+                    { ensureArray(pipingNetworkSystem.PipingNetworkSegment).map((pipingNetworkSegment: PipingNetworkSegmentProps, segmentIndex: number) => (
+                      <React.Fragment key={segmentIndex}>
+                          <PipeSegment {...pipingNetworkSegment} />
+                          {ensureArray(pipingNetworkSegment.PipingComponent).map((pipingComponent: PipingComponentProps, componentIndex: number) => (
+                            <PipingComponent key = {componentIndex} {...pipingComponent}></PipingComponent>
+                          ))}
+                      </React.Fragment>
+                        ))}
                   </React.Fragment>
                 ))
             }
