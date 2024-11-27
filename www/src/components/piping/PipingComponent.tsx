@@ -1,5 +1,5 @@
 import { PipingComponentProps } from "../../types/diagram/Piping.ts";
-import { useCallback, useContext } from "react";
+import { useContext } from "react";
 import PandidContext from "../../context/PandidContext.ts";
 import SvgElement from "../SvgElement.tsx";
 import constructPath from "../../utils/Path.ts";
