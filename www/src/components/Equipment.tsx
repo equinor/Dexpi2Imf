@@ -43,6 +43,14 @@ export default function Equipment({
               id={props.ID + "_highlight"}
               position={props.Position}
               svg={svg}
+              color="red"
+            />
+          )}
+          {clickableComponent.isInternal && (
+            <StyledSvgElement
+              id={props.ID + "_highlight"}
+              position={props.Position}
+              svg={svg}
               color="yellow"
             />
           )}
