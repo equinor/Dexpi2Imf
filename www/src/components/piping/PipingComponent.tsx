@@ -1,5 +1,5 @@
 import { PipingComponentProps } from "../../types/diagram/Piping.ts";
-import { useContext } from "react";
+import { useCallback, useContext } from "react";
 import PandidContext from "../../context/PandidContext.ts";
 import SvgElement from "../SvgElement.tsx";
 import constructPath from "../../utils/Path.ts";
@@ -7,6 +7,7 @@ import StyledPath from "../StyledPath.tsx";
 import { ClickableComponentProps, handleClick } from "../../types/ClickableComponentProps.ts";
 import useSerializeNodeSvg from "../../hooks/useSerializeNodeSvg.tsx";
 import StyledSvgElement from "../StyledSvgElement.tsx";
+import { useCommissioningPackageContext } from "../../hooks/useCommissioningPackageContext.tsx";
 
 interface PipingComponentClickableProps {
   props: PipingComponentProps;
@@ -18,6 +19,7 @@ export default function PipingComponent({
   clickableComponent
 }: PipingComponentClickableProps) {
   const context = useContext(PandidContext);
+  const context2 = useCommissioningPackageContext();
   const height = context.height;
   const componentName = props.ComponentName;
   const label = props.Label;
@@ -32,7 +34,15 @@ export default function PipingComponent({
     >
       {componentName && svg && (
         <>
-          {clickableComponent.isInternal && (
+          {context2.internalIds.includes(props.ID) && (
+            <StyledSvgElement
+              id={props.ID}
+              position={props.Position}
+              svg={svg}
+              color="yellow"
+            />
+          )}
+          {clickableComponent.isInPackage && (
             <StyledSvgElement
               id={props.ID}
               position={props.Position}

@@ -16,9 +16,12 @@ import {
   BoundaryActions,
   BoundaryParts,
   makeSparqlAndUpdateStore,
+  getNodeIdsInCommissioningPackage,
+  assetIri,
 } from "../utils/Triplestore.ts";
 import { useCommissioningPackageContext } from "../hooks/useCommissioningPackageContext.tsx";
 import PipingComponent from "./piping/PipingComponent.tsx";
+import { CommissioningPackageProps } from "../context/CommissioningPackageContext.tsx";
 
 export default function Pandid() {
   const [xmlData, setXmlData] = useState<XMLProps | null>(null);
@@ -47,6 +50,31 @@ export default function Pandid() {
       });
   }, []);
 
+  useEffect(() => {
+    (async () => {
+      //todo, check if undefined ignore. else kjør på
+      if (context.boundaryIds.length >= 1 && context.internalIds.length >= 1) {
+        const nodeIds = await getNodeIdsInCommissioningPackage();
+        //TODO: This logic needs to be improved when introducing multiple commissioning packages.
+        // Default package name "asset:Package1" used. 
+        if (context.commissioningPackages.length < 1) {
+          const newPackage: CommissioningPackageProps = {
+            id: "asset:Package1",
+            idsInPackage: nodeIds
+          }
+          context.setCommissioningPackages([newPackage]);
+          context.setActivePackageId(newPackage.id);
+        } else {
+          context.setCommissioningPackages(getUpdatedCommissioningPackages(nodeIds))
+        }
+      }
+    })();
+  }, [context.boundaryIds, context.internalIds]);
+
+  useEffect(() => {
+    console.log(context.commissioningPackages)
+  }, [context.commissioningPackages])
+
   // When XML data is loaded, set all component states
   useEffect(() => {
     if (!xmlData) return;
@@ -70,13 +98,34 @@ export default function Pandid() {
 
   const handleAddBoundary = useCallback(
     async (id: string, action: BoundaryActions) => {
-      context.setBorderIds((prev) =>
+      context.setboundaryIds((prev) =>
         prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id],
       );
       await makeSparqlAndUpdateStore(id, action, BoundaryParts.Boundary);
     },
     [],
   );
+
+  const getUpdatedCommissioningPackages = (ids: string[]) => {
+    return context.commissioningPackages.map(pkg => {
+      if (pkg.id === context.activePackageId) {
+        const updatedPackage: CommissioningPackageProps = {
+          id: "asset:Package1",
+          idsInPackage: ids
+        };
+        return updatedPackage;
+      } else {
+        return pkg;
+      };
+    })
+  };
+
+  const isInPackage = (id: string) => {
+    const activePackage = context.commissioningPackages.find(pkg => pkg.id === context.activePackageId);
+    console.log(`active package ${activePackage?.idsInPackage}`)
+    console.log(`this is the ID ${assetIri(id)}`);
+    return activePackage?.idsInPackage.includes(assetIri(id)) || false;
+  }
 
   return (
     <>
@@ -95,8 +144,9 @@ export default function Pandid() {
                   key={index}
                   props={equipment}
                   clickableComponent={{
-                    isBoundary: context.borderIds.includes(equipment.ID),
+                    isBoundary: context.boundaryIds.includes(equipment.ID),
                     isInternal: context.internalIds.includes(equipment.ID),
+                    isInPackage: isInPackage(equipment.ID),
                     onClick: handleAddBoundary,
                     onShiftClick: handleAddInternal,
                   }}
@@ -106,17 +156,20 @@ export default function Pandid() {
               pipingNetworkSystems.map((pipingNetworkSystem: PipingNetworkSystemProps, index: number) => (
                 <React.Fragment key={index}>
                   <PipeSystem {...pipingNetworkSystem} />
+
                   {ensureArray(pipingNetworkSystem.PipingNetworkSegment).map((pipingNetworkSegment: PipingNetworkSegmentProps, segmentIndex: number) => (
                     <React.Fragment key={segmentIndex}>
                       <PipeSegment {...pipingNetworkSegment} />
+
                       {pipingNetworkSegment.PipingComponent &&
                         ensureArray(pipingNetworkSegment.PipingComponent).map((pipingComponent: PipingComponentProps, componentIndex: number) => (
                           <PipingComponent
                             key={componentIndex}
                             props={pipingComponent}
                             clickableComponent={{
-                              isBoundary: context.borderIds.includes(pipingComponent.ID),
+                              isBoundary: context.boundaryIds.includes(pipingComponent.ID),
                               isInternal: context.internalIds.includes(pipingComponent.ID),
+                              isInPackage: isInPackage(pipingComponent.ID),
                               onClick: handleAddBoundary,
                               onShiftClick: handleAddInternal
                             }}

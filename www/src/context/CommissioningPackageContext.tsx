@@ -1,19 +1,19 @@
 import React, { useState, createContext } from "react";
 
 export interface CommissioningPackageProps {
-  id: number;
-  name: string; // Example fields, adjust to your data model
+  id: string;
+  idsInPackage: string[];  // Example fields, adjust to your data model
 }
 
 interface CommissioningPackageContextProps {
-  activePackageId: number;
-  setActivePackageId: React.Dispatch<React.SetStateAction<number>>;
+  activePackageId: string;
+  setActivePackageId: React.Dispatch<React.SetStateAction<string>>;
   commissioningPackages: CommissioningPackageProps[];
   setCommissioningPackages: React.Dispatch<
     React.SetStateAction<CommissioningPackageProps[]>
   >;
-  borderIds: string[];
-  setBorderIds: React.Dispatch<React.SetStateAction<string[]>>;
+  boundaryIds: string[];
+  setboundaryIds: React.Dispatch<React.SetStateAction<string[]>>;
   internalIds: string[];
   setInternalIds: React.Dispatch<React.SetStateAction<string[]>>;
 }
@@ -28,8 +28,8 @@ export const CommissioningPackageProvider: React.FC<{
   const [commissioningPackages, setCommissioningPackages] = useState<
     CommissioningPackageProps[]
   >([]);
-  const [borderIds, setBorderIds] = useState<string[]>([]);
-  const [activePackageId, setActivePackageId] = useState<number>(0);
+  const [boundaryIds, setboundaryIds] = useState<string[]>([]);
+  const [activePackageId, setActivePackageId] = useState<string>("");
   const [internalIds, setInternalIds] = useState<string[]>([]);
 
   const contextValue: CommissioningPackageContextProps = {
@@ -37,10 +37,10 @@ export const CommissioningPackageProvider: React.FC<{
     setActivePackageId,
     commissioningPackages,
     setCommissioningPackages,
-    borderIds,
-    setBorderIds,
+    boundaryIds,
+    setboundaryIds,
     internalIds, 
-    setInternalIds 
+    setInternalIds
   };
 
   return (

@@ -9,6 +9,7 @@ export interface ClickableComponentProps {
     id: string,
     action: BoundaryActions
   ) => Promise<void>;
+  isInPackage: boolean; 
   isBoundary: boolean;
   isInternal: boolean;
 }

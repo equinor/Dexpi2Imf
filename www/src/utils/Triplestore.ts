@@ -11,7 +11,7 @@ export enum BoundaryParts {
 }
 
 export async function makeSparqlAndUpdateStore(nodeId: string, action: string, type: string) {
-    const sparql = `${action} { asset:${nodeId} ${type} ${completionPackageIri} . }`;
+    const sparql = `${action} { <${assetIri(nodeId)}> ${type} ${completionPackageIri} . }`;
     try {
         await fetch('http://localhost:12110/datastores/boundaries/sparql', {
             method: 'POST',
@@ -87,6 +87,10 @@ export async function updateTable() {
         //document.getElementById('inside-boundary-table-container').innerHTML = '';
         //document.getElementById('boundary-table-container').innerHTML = '';
     }
+}
+
+export const assetIri = (id: string) => {
+    return `https://assetid.equinor.com/plantx#${id}`;
 }
 
 function parseNodeIds(result: string) {
