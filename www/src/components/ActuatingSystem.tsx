@@ -13,7 +13,6 @@ export default function ActuatingSystem(props: ActuatingSystemProps) {
       {actuatingSystemComponents.map((component, index: number) => (
         <SvgElement
           key={index}
-          height={height}
           componentName={component.ComponentName!}
           id={component.ID}
           position={component.Position}
