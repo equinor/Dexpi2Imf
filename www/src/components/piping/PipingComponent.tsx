@@ -26,36 +26,36 @@ export default function PipingComponent({
   const svg = props.ComponentName != null ? useSerializeNodeSvg(
     props.ComponentName,
     props.GenericAttributes,
-  ) : null; 
-    
+  ) : null;
+
   return (
     <g
       onClick={handleClick(clickableComponent, props.ID)}
     >
       {componentName && svg && (
         <>
-          {context2.internalIds.includes(props.ID) && (
+          {clickableComponent.isBoundary && (
             <StyledSvgElement
-              id={props.ID}
+              id={props.ID + "_highlight"}
               position={props.Position}
               svg={svg}
-              color="yellow"
+              color="red"
             />
           )}
           {clickableComponent.isInPackage && (
             <StyledSvgElement
-              id={props.ID}
+              id={props.ID + "_highlight"}
               position={props.Position}
               svg={svg}
               color="yellow"
             />
           )}
-          {clickableComponent.isBoundary && (
+          {clickableComponent.isInternal && (
             <StyledSvgElement
-              id={props.ID}
+              id={props.ID + "_highlight"}
               position={props.Position}
               svg={svg}
-              color="red"
+              color="green"
             />
           )}
           <SvgElement

@@ -43,7 +43,7 @@ export default function Equipment({
               id={props.ID + "_highlight"}
               position={props.Position}
               svg={svg}
-              color="red"
+              color="yellow"
             />
           )}
           {clickableComponent.isInternal && (
@@ -51,7 +51,7 @@ export default function Equipment({
               id={props.ID + "_highlight"}
               position={props.Position}
               svg={svg}
-              color="yellow"
+              color="green"
             />
           )}
           <g
