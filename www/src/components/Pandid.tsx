@@ -18,6 +18,7 @@ import {
   makeSparqlAndUpdateStore,
   getNodeIdsInCommissioningPackage,
   assetIri,
+  cleanTripleStore,
 } from "../utils/Triplestore.ts";
 import { useCommissioningPackageContext } from "../hooks/useCommissioningPackageContext.tsx";
 import PipingComponent from "./piping/PipingComponent.tsx";
@@ -40,6 +41,7 @@ export default function Pandid() {
     attributeNamePrefix: "",
   });
 
+
   // Read XML file from disk, parse as XMLProps (TypeScript interface)
   useEffect(() => {
     fetch("/DISC_EXAMPLE-02-02.xml")
@@ -49,6 +51,14 @@ export default function Pandid() {
         setXmlData(result);
       });
   }, []);
+
+  //Clean triplestore on render
+  useEffect(() => {
+    (async () => {
+      await cleanTripleStore(); 
+      console.log("ts clean")
+    })()
+  }, [])
 
   useEffect(() => {
     (async () => {
@@ -70,10 +80,6 @@ export default function Pandid() {
       }
     })();
   }, [context.boundaryIds, context.internalIds]);
-
-  useEffect(() => {
-    console.log(context.commissioningPackages)
-  }, [context.commissioningPackages])
 
   // When XML data is loaded, set all component states
   useEffect(() => {
@@ -122,8 +128,6 @@ export default function Pandid() {
 
   const isInPackage = (id: string) => {
     const activePackage = context.commissioningPackages.find(pkg => pkg.id === context.activePackageId);
-    console.log(`active package ${activePackage?.idsInPackage}`)
-    console.log(`this is the ID ${assetIri(id)}`);
     return activePackage?.idsInPackage.includes(assetIri(id)) || false;
   }
 

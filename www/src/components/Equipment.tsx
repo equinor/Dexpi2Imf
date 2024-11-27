@@ -38,7 +38,7 @@ export default function Equipment({
               color="red"
             />
           )}
-          {clickableComponent.isInternal && (
+          {clickableComponent.isInPackage && (
             <StyledSvgElement
               id={props.ID + "_highlight"}
               position={props.Position}
