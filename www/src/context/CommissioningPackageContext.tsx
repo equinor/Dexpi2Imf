@@ -5,7 +5,7 @@ export interface CommissioningPackageProps {
   idsInPackage: string[];  // Example fields, adjust to your data model
 }
 
-interface CommissioningPackageContextProps {
+export interface CommissioningPackageContextProps {
   activePackageId: string;
   setActivePackageId: React.Dispatch<React.SetStateAction<string>>;
   commissioningPackages: CommissioningPackageProps[];

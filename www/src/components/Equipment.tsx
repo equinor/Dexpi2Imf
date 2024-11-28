@@ -5,6 +5,8 @@ import StyledSvgElement from "./StyledSvgElement.tsx";
 import PandidContext from "../context/PandidContext.ts";
 import useSerializeNodeSvg from "../hooks/useSerializeNodeSvg.tsx";
 import SvgElement from "./SvgElement.tsx";
+import { useCommissioningPackageContext } from "../hooks/useCommissioningPackageContext.tsx";
+
 
 
 interface EquipmentClickableProps {
@@ -16,18 +18,19 @@ export default function Equipment({
   props,
   clickableComponent
 }: EquipmentClickableProps) {
+  const packageContext = useCommissioningPackageContext()
   const height = useContext(PandidContext).height;
   const svg = useSerializeNodeSvg(
     props.ComponentName,
     props.GenericAttributes[0],
   );
-  const colors = getHighlightColors(clickableComponent);
+  const colors = getHighlightColors(props.ID, packageContext);
 
   const nozzles: NozzleProps[] = props.Nozzle;
 
   return (
     <g
-      onClick={handleClick(clickableComponent, props.ID)}
+      onClick={handleClick(clickableComponent, packageContext, props.ID)}
     >
       {svg && (
         <>

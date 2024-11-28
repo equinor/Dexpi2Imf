@@ -19,8 +19,8 @@ export default function PipingComponent({
   clickableComponent
 }: PipingComponentClickableProps) {
   const context = useContext(PandidContext);
-  const context2 = useCommissioningPackageContext();
-  const colors = getHighlightColors(clickableComponent)
+  const packageContext = useCommissioningPackageContext()
+  const colors = getHighlightColors(props.ID, packageContext)
   const height = context.height;
   const componentName = props.ComponentName;
   const label = props.Label;
@@ -31,7 +31,7 @@ export default function PipingComponent({
 
   return (
     <g
-      onClick={handleClick(clickableComponent, props.ID)}
+      onClick={handleClick(clickableComponent, packageContext, props.ID)}
     >
       {componentName && svg && (
         <>

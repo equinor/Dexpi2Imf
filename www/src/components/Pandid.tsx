@@ -17,7 +17,6 @@ import {
   BoundaryParts,
   makeSparqlAndUpdateStore,
   getNodeIdsInCommissioningPackage,
-  assetIri,
   cleanTripleStore,
 } from "../utils/Triplestore.ts";
 import { useCommissioningPackageContext } from "../hooks/useCommissioningPackageContext.tsx";
@@ -141,11 +140,6 @@ export default function Pandid() {
     })
   };
 
-  const isInPackage = (id: string) => {
-    const activePackage = context.commissioningPackages.find(pkg => pkg.id === context.activePackageId);
-    return activePackage?.idsInPackage.includes(assetIri(id)) || false;
-  }
-
   return (
     <>
       {xmlData && (
@@ -163,9 +157,6 @@ export default function Pandid() {
                   key={index}
                   props={equipment}
                   clickableComponent={{
-                    isBoundary: context.boundaryIds.includes(equipment.ID),
-                    isInternal: context.internalIds.includes(equipment.ID),
-                    isInPackage: isInPackage(equipment.ID),
                     onClick: handleAddBoundary,
                     onShiftClick: handleAddInternal,
                   }}
@@ -186,9 +177,6 @@ export default function Pandid() {
                             key={componentIndex}
                             props={pipingComponent}
                             clickableComponent={{
-                              isBoundary: context.boundaryIds.includes(pipingComponent.ID),
-                              isInternal: context.internalIds.includes(pipingComponent.ID),
-                              isInPackage: isInPackage(pipingComponent.ID),
                               onClick: handleAddBoundary,
                               onShiftClick: handleAddInternal
                             }}
