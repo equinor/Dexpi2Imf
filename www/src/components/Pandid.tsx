@@ -55,31 +55,30 @@ export default function Pandid() {
   //Clean triplestore on render
   useEffect(() => {
     (async () => {
-      await cleanTripleStore(); 
-      console.log("ts clean")
+      await cleanTripleStore();
+      context.setCommissioningPackages([]);
+      context.setboundaryIds([]);
+      context.setInternalIds([]);
     })()
   }, [])
 
   useEffect(() => {
     (async () => {
-      //todo, check if undefined ignore. else kjør på
-      if (context.boundaryIds.length >= 1 && context.internalIds.length >= 1) {
-        const nodeIds = await getNodeIdsInCommissioningPackage();
-        //TODO: This logic needs to be improved when introducing multiple commissioning packages.
-        // Default package name "asset:Package1" used. 
-        if (context.commissioningPackages.length < 1) {
-          const newPackage: CommissioningPackageProps = {
-            id: "asset:Package1",
-            idsInPackage: nodeIds
-          }
-          context.setCommissioningPackages([newPackage]);
-          context.setActivePackageId(newPackage.id);
-        } else {
-          context.setCommissioningPackages(getUpdatedCommissioningPackages(nodeIds))
+      const nodeIds = await getNodeIdsInCommissioningPackage();
+      //TODO: This logic needs to be improved when introducing multiple commissioning packages.
+      // Default package name "asset:Package1" used. 
+      if (context.commissioningPackages.length < 1) {
+        const newPackage: CommissioningPackageProps = {
+          id: "asset:Package1",
+          idsInPackage: nodeIds
         }
+        context.setCommissioningPackages([newPackage]);
+        context.setActivePackageId(newPackage.id);
+      } else {
+        context.setCommissioningPackages(getUpdatedCommissioningPackages(nodeIds))
       }
     })();
-  }, [context.boundaryIds, context.internalIds]);
+  }, [context]);
 
   // When XML data is loaded, set all component states
   useEffect(() => {
@@ -95,11 +94,15 @@ export default function Pandid() {
   const handleAddInternal = useCallback(
     async (id: string, action: BoundaryActions) => {
       context.setInternalIds((prev) =>
-        prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id],
-      );
+        prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]);
       await makeSparqlAndUpdateStore(id, action, BoundaryParts.InsideBoundary);
+
+      if (context.boundaryIds.includes(id)) {
+        context.setboundaryIds(prev => prev.filter((item) => item !== id));
+        await makeSparqlAndUpdateStore(id, BoundaryActions.Delete, BoundaryParts.Boundary);
+      } 
     },
-    [],
+    [context],
   );
 
   const handleAddBoundary = useCallback(
@@ -107,10 +110,22 @@ export default function Pandid() {
       context.setboundaryIds((prev) =>
         prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id],
       );
+
+      if(context.internalIds.includes(id)) {
+        context.setInternalIds(prev => prev.filter((item) => item !== id));
+        await makeSparqlAndUpdateStore(id, BoundaryActions.Delete, BoundaryParts.InsideBoundary);
+      }
+
       await makeSparqlAndUpdateStore(id, action, BoundaryParts.Boundary);
     },
-    [],
+    [context],
   );
+
+  useEffect(() => {
+    console.log(`internals: ${context.internalIds}`);
+    console.log(`boundaries: ${context.boundaryIds}`);
+  }, [context.boundaryIds, context.internalIds])
+
 
   const getUpdatedCommissioningPackages = (ids: string[]) => {
     return context.commissioningPackages.map(pkg => {
