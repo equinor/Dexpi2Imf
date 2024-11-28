@@ -14,7 +14,7 @@ export interface ClickableComponentProps {
   isInternal: boolean;
 }
 
-export const getHighlightColor = (component: ClickableComponentProps) => {
+export const getHighlightColors = (component: ClickableComponentProps) => {
   var colors = []
   if (component.isInPackage) {
     colors.push("yellow");

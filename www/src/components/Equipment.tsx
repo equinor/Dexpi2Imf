@@ -1,6 +1,6 @@
 import { EquipmentProps, NozzleProps } from "../types/diagram/Diagram.ts";
 import { useContext } from "react";
-import { ClickableComponentProps, handleClick, getHighlightColor } from "../types/ClickableComponentProps.ts";
+import { ClickableComponentProps, handleClick, getHighlightColors } from "../types/ClickableComponentProps.ts";
 import StyledSvgElement from "./StyledSvgElement.tsx";
 import PandidContext from "../context/PandidContext.ts";
 import useSerializeNodeSvg from "../hooks/useSerializeNodeSvg.tsx";
@@ -21,7 +21,7 @@ export default function Equipment({
     props.ComponentName,
     props.GenericAttributes[0],
   );
-  const colors = getHighlightColor(clickableComponent);
+  const colors = getHighlightColors(clickableComponent);
 
   const nozzles: NozzleProps[] = props.Nozzle;
 
