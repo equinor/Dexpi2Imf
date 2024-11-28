@@ -1,6 +1,6 @@
 import { EquipmentProps, NozzleProps } from "../types/diagram/Diagram.ts";
 import { useContext } from "react";
-import {ClickableComponentProps, handleClick} from "../types/ClickableComponentProps.ts";
+import { ClickableComponentProps, handleClick, getHighlightColor } from "../types/ClickableComponentProps.ts";
 import StyledSvgElement from "./StyledSvgElement.tsx";
 import PandidContext from "../context/PandidContext.ts";
 import useSerializeNodeSvg from "../hooks/useSerializeNodeSvg.tsx";
@@ -21,6 +21,7 @@ export default function Equipment({
     props.ComponentName,
     props.GenericAttributes[0],
   );
+  const colors = getHighlightColor(clickableComponent);
 
   const nozzles: NozzleProps[] = props.Nozzle;
 
@@ -30,30 +31,17 @@ export default function Equipment({
     >
       {svg && (
         <>
-          {clickableComponent.isBoundary && (
-            <StyledSvgElement
-              id={props.ID + "_highlight"}
-              position={props.Position}
-              svg={svg}
-              color="red"
-            />
-          )}
-          {clickableComponent.isInPackage && (
-            <StyledSvgElement
-              id={props.ID + "_highlight"}
-              position={props.Position}
-              svg={svg}
-              color="yellow"
-            />
-          )}
-          {clickableComponent.isInternal && (
-            <StyledSvgElement
-              id={props.ID + "_highlight"}
-              position={props.Position}
-              svg={svg}
-              color="green"
-            />
-          )}
+          {colors.length > 0 &&
+            colors.map((c) => (
+              <StyledSvgElement
+                key={c}
+                id={props.ID + "_highlight"}
+                position={props.Position}
+                svg={svg}
+                color={c}
+              />
+            ))
+          }
           <g
             id={props.ID}
             transform={`${props.Position.Reference.X === -1 ? "rotate(-180deg)" : ""}translate(${props.Position.Location.X}, ${height - props.Position.Location.Y})`}

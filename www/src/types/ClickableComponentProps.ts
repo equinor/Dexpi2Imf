@@ -9,9 +9,23 @@ export interface ClickableComponentProps {
     id: string,
     action: BoundaryActions
   ) => Promise<void>;
-  isInPackage: boolean; 
+  isInPackage: boolean;
   isBoundary: boolean;
   isInternal: boolean;
+}
+
+export const getHighlightColor = (component: ClickableComponentProps) => {
+  var colors = []
+  if (component.isInPackage) {
+    colors.push("yellow");
+  } 
+  if (component.isBoundary) {
+    colors.push("red");
+  } 
+  if (component.isInternal) {
+    colors.push("green");
+  }
+  return colors;
 }
 
 export const handleClick = (component: ClickableComponentProps, id: string) =>
