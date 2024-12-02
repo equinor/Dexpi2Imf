@@ -1,3 +1,8 @@
+using System.Net;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
+using SymbolLibrary;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -16,9 +21,14 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.MapGet("/symbol/{id}", () =>
+var symbols = ExcelParser.ParseExcelFile("Data/Symbols.xlsm");
+
+app.MapGet("/symbol/{id}", (string id) =>
     {
-        return "hello world";
+        if (symbols.ContainsKey(id))
+            return Results.Ok(symbols[id]);
+        else 
+            return Results.NotFound();
     })
     .WithName("Symbol")
     .WithOpenApi();
