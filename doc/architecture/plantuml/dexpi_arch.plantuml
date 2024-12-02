@@ -49,7 +49,7 @@ Enterprise_Boundary(ssi, "Equinor"){
 
         BiRel(boundary, boundBack, "API")
 
-        SystemDb(boundaryTs, "Triple Store", "RDF + datalog")
+        ComponentDb(boundaryTs, "Triple Store", "RDF + datalog")
         BiRel(boundBack, boundaryTs, "RDF / Datalog")        
 
         
