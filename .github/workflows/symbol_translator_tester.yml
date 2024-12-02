@@ -1,0 +1,31 @@
+name: "Run tests (required)"
+on:
+  workflow_dispatch:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:  
+  dotnet-tests:
+    runs-on: ubuntu-latest
+    name: ".NET Tests & Reports for symbol-translator"
+    timeout-minutes: 5
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.0.x
+
+    - name: Restore dependencies
+      run: dotnet restore ./symbol-translator/Boundaries.sln
+
+    - name: Build
+      run: dotnet build ./client/Boundaries/Boundaries.sln --no-restore
+
+    - name: Test
+      run: |
+        dotnet test ./client/Boundaries/Boundaries.sln --no-build --verbosity normal 
