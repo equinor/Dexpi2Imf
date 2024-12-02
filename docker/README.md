@@ -33,7 +33,11 @@ docker-compose -f docker/docker-compose.yml up
 ```
 
 ## Symbol-translator
-The [symbol-translator api](../SymbolLibrary/src) is available at [http://localhost:5000/symbol](http://localhost:5000/symbol) 
+The [symbol-translator api](../SymbolLibrary/src)  swagger openpi is at [http://localhost:5000/swagger](http://localhost:5000/swagger)
+(To disable swagger, remove the Development env in the [symbol-translator Dockerfile](../SymbolLibrary/src/Dockerfile))
+
+The api itself is available at [http://localhost:5000/symbol](http://localhost:5000/symbol)
+
 To test, try f.ex.
 ```bash
 curl http://localhost:5000/symbol/PF009A
