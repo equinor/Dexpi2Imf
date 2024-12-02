@@ -26,3 +26,7 @@ __pycache__
 /www/public/Origo
 /www_old/index.html
 /www/public/DISC_EXAMPLE-02-02.xml
+
+/symbol-translator/SymbolLibrary/obj/
+/symbol-translator/SymbolLibrary/bin/
+/symbol-translator/SymbolLibrary/Data/Symbols.xlsm
