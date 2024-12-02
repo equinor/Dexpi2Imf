@@ -13,50 +13,79 @@
 
 Enterprise_Boundary(ssi, "Equinor"){
     Boundary(bravo, "Bravo"){
-            System(orch, "Bravo TIE Orchestrator", "Transforms to RDF")
+            System(orch, "TIE Orchestrator", "Transforms to RDF")
             
-            System(api, "Bravo Web API", "Record keeper")
-            BiRel(orch, api, "Records (RDF)") 
+            Boundary(keeper, "Record Keeper"){
+                Component(api, "Interface", "REST API")
+                Component(backend, "Backend", "Calculates versions and history")
+
+                BiRel_D(api, backend, "API")
+                BiRel_D(orch, api, "Records (RDF)") 
+            }
 
             Boundary(storage, "Storage"){
-                ComponentDb(sql, "Bravo SQL", "Indexed data points")
-                ComponentDb(blob, "Bravo Storage", "Raw and RDF")
-
-                ComponentDb(fox, "Bravo Triples", "Triple Store", "RDFox")
+                ComponentDb(sql, "SQL", "Indexed data points")
+                ComponentDb(blob, "Storage Account", "Raw and RDF")
+                ComponentDb(fox, "Triple Store", "RDF and axioms")
             }
-            BiRel(api, storage, "References and RDF")
             
-            System(brp, "Bravo Record Publisher", "SQL Trigger AF")
-            BiRel(api, brp, "Records (RDF)")
+            Rel_D(backend, storage, "References and RDF")
+            
+            System(brp, "Record Publisher", "SQL Trigger AF")
+            Rel(storage, brp, "Notifications")
         }        
 
 
     Boundary(web, "Reference sites"){
-        System(asset, "assetid.equinor.com", "Asset IDs", "Website")
+        System(asset, "assetid.equinor.com", "Asset identifiers", "Website")
         System(rdf, "rdf.equinor.com", "Vocabularies and axioms", "Website")
     }
-
+    
     Rel(bravo, web, "References")
 
     Boundary(dexpi, "Boundary app", "DEXPI"){
+        Component(boundary, "Front-end", "User interface")
+        Component(boundBack, "Back-end", "Business logic")
 
-        System(boundary, "Boundary app", "DEXPI demo (local)")
-        SystemDb(boundaryTs, "Boundary TS", "Triple Store")
-        BiRel(boundary, boundaryTs, "RDF / Datalog")
+        BiRel(boundary, boundBack, "API")
 
-        "Commissioning" as user
-        user --> boundary
+        SystemDb(boundaryTs, "Triple Store", "RDF + datalog")
+        BiRel(boundBack, boundaryTs, "RDF / Datalog")        
+
+        
+        System_Ext(symbols, "Symbol Library", "PCA")
+        BiRel(boundBack, symbols, "SVG")
+
+        Component(adapter, "Procosys Adapter", "Exports to Procosys")
+        
+        Person_Ext(user, "Commisioning Engineer")        
+        Rel(user, boundary, "Sets boundaries")
+
+        Component(exporter, "Exporter")
+        Rel(exporter, adapter, "Commissioning Packages")
+        Rel(exporter, api, "Commissioning Packages", "Records")
+        Rel(boundBack, exporter, "Commissioning Packages", "RDF")
     }
+
+
+    Boundary(rulesMaster, "Rules Master", "Common Library?"){
+        System(rulesApi, "Rules API", "Rule sets")
+        ComponentDb(rules, "Triple Store", "Axioms")
+        BiRel(rules, rulesApi, "API")
+    }
+
+    BiRel(boundBack, rulesApi, "Rules (pull)")
+
+    Rel(brp, boundBack, "Notifications")    
+    BiRel(api, boundBack, "RDF", "SPARQL")
+
+    System(procosys, "Procosys")
+    Rel(adapter, procosys, "Commissioning Packages")
+
 }
     
-Rel(brp, dexpi, "Records")
-
-
 System_Ext(tieIn, "TIE")
 Rel(tieIn, orch, "DEXPI")
 
-System_Ext(consumer, "Record consumer")
-
-
-footer "Dexpi Architecture - 2024-11-22"
+footer "Dexpi Architecture - 2024-12-02"
 @enduml
