@@ -21,11 +21,14 @@ jobs:
         dotnet-version: 8.0.x
 
     - name: Restore dependencies
-      run: dotnet restore ./symbol-translator/Boundaries.sln
+      run: dotnet restore ./SymbolLibrary/SymbolLibrary.sln
+
+    - name: Copy NOAKADEXPI Symbol library
+      run:  curl -o SymbolLibrary/src/Data/Symbols.xlsm https://github.com/equinor/NOAKADEXPI/raw/refs/heads/main/Symbols.xlsm
 
     - name: Build
-      run: dotnet build ./client/Boundaries/Boundaries.sln --no-restore
+      run: dotnet build ./SymbolLibrary/SymbolLibrary.sln --no-restore
 
     - name: Test
       run: |
-        dotnet test ./client/Boundaries/Boundaries.sln --no-build --verbosity normal 
+        dotnet test ./SymbolLibrary/SymbolLibrary.sln --no-build --verbosity normal 
