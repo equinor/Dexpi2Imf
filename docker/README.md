@@ -32,3 +32,21 @@ To start the containers faster when there are no changes to the docker setup, do
 docker-compose -f docker/docker-compose.yml up
 ```
 
+## Symbol-translator
+The [symbol-translator api](../SymbolLibrary/src) is available at [http://localhost:5000/symbol](http://localhost:5000/symbol) 
+To test, try f.ex.
+```bash
+curl http://localhost:5000/symbol/PF009A
+```
+which will give you
+```json
+{
+  "id":"PF009A",
+  "description":"Flow T. Flow Glass",
+  "labelAttributeA":"<ProcessPlantIdentificationCode>-<PlantSystemIdentificationCode>",
+  "labelAttributeB":"<TagType>",
+  "labelAttributeC":"<TagSequence><TagSuffix>",
+  "labelAttributeD":"",
+  "labelAttributeE":""
+}
+```

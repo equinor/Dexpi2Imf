@@ -12,7 +12,23 @@ a single endpoint that can be used to read json representations of the lines in 
 dotnet run
 ```
 
-The API will be available at http://localhost:5268/swagger/index.html
+The API will be available at http://localhost:5000/symbol/{id]
+ 
+If you run in development mode, f.ex. by 
+```bash
+ASPNETCORE_ENVIRONMENT=Development dotnet run
+```
+then a swagger open api is at  http://localhost:5000/swagger/index.html
 
 Individual Jsons can be fetched e.g. by calling http://localhost:5268/api/symbols/PF009A
+
+## Running as docker container
+If you have docker desktop or docker engine installed, you can also run with docker from this folder: 
+```bash
+docker build -t symbollib .
+```
+```bash
+docker run symbollib 
+```
+
 
