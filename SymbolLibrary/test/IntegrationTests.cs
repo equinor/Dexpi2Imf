@@ -16,35 +16,83 @@ public class IntegrationTests : IClassFixture<WebApplicationFactory<TestHook>>
     {
         _client = factory.CreateClient();
     }
+
+    private Task<HttpResponseMessage> GetSymbolId(string symbolId)
+    {
+        var request = new HttpRequestMessage(HttpMethod.Get, $"/symbol/{symbolId}");
+        request.Headers.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+        
+        // Act
+        return _client.SendAsync(request);
+
+    }
+    
     [Fact]
     public async Task TestExistingSymbols()
     {
-        // Arrange
-        var ID = "PF009A";
-        var request = new HttpRequestMessage(HttpMethod.Get, $"/symbols/{ID}");
-        
         // Act
-        var response = await _client.SendAsync(request);
+        var response = await GetSymbolId("PF009A");
         
         // Assert
         response.EnsureSuccessStatusCode();
         var responseString = await response.Content.ReadAsStringAsync();
         var symbol = JsonSerializer.Deserialize<SymbolData>(responseString);
-        
-    }
+        symbol.id.Should().Be("PF009A");
+     }
     
     [Fact]
     public async Task TestNonExistentSymbol()
     {
-        // Arrange
-        var ID = "InvalidId";
-        var request = new HttpRequestMessage(HttpMethod.Get, $"/symbols/{ID}");
-        
         // Act
-        var response = await _client.SendAsync(request);
+        var response = await GetSymbolId("InvalidId");
         
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+     }
+    
+    
+    [Fact]
+    public async Task TesLabelA()
+    {
+        // Act
+        var response = await GetSymbolId("ND0028");
+        
+        // Assert
+        response.EnsureSuccessStatusCode();
+        var responseString = await response.Content.ReadAsStringAsync();
+        var symbol = JsonSerializer.Deserialize<SymbolData>(responseString);
+        symbol.labelAttributeA.Should().Be("<ObjectDisplayName>");
+        symbol.labelAttributeB.Should().Be(String.Empty);
+        
+    }
+    
+    
+    [Fact]
+    public async Task TesLabelB()
+    {
+        // Act
+        var response = await GetSymbolId("ND0009");
+        
+        // Assert
+        response.EnsureSuccessStatusCode();
+        var responseString = await response.Content.ReadAsStringAsync();
+        var symbol = JsonSerializer.Deserialize<SymbolData>(responseString);
+        symbol.labelAttributeB.Should().Be("<ReferencedDrawingDescriptor>");
+        
+    }
+    
+    
+    [Fact]
+    public async Task TesLabelC()
+    {
+        // Act
+        var response = await GetSymbolId("PF009A");
+        
+        // Assert
+        response.EnsureSuccessStatusCode();
+        var responseString = await response.Content.ReadAsStringAsync();
+        var symbol = JsonSerializer.Deserialize<SymbolData>(responseString);
+        symbol.labelAttributeC.Should().Be("<TagSequence><TagSuffix>");
         
     }
 }

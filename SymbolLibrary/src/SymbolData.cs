@@ -2,24 +2,11 @@ namespace SymbolLibrary;
 
 public struct SymbolData
 {
-    public SymbolData(String id, String description, String labelA, String labelB, String labelC, String labelD, String labelE)
-    {
-        
-        ID = id;
-        Description = description;
-        LabelAttributeA = labelA;
-        LabelAttributeB = labelB;
-        LabelAttributeC = labelC;
-        LabelAttributeD = labelD;
-        LabelAttributeE = labelE;
-        
-    }
-    
-    public string ID;
-    public string Description;
-    public string LabelAttributeA;
-    public string LabelAttributeB;
-    public string LabelAttributeC;
-    public string LabelAttributeD;
-    public string LabelAttributeE;
+    public string id { get; set; }
+    public string description { get; set; }
+    public string labelAttributeA { get; set; }
+    public string labelAttributeB { get; set; }
+    public string labelAttributeC { get; set; }
+    public string labelAttributeD { get; set; }
+    public string labelAttributeE { get; set; }
 }
