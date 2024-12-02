@@ -33,7 +33,7 @@ export async function getNodeIdsInCommissioningPackage() {
     return parseNodeIds(result!);
 }
 
-export async function queryTripleStore(sparql: string, method: string) {
+export async function queryTripleStore(sparql: string, method: Method.Get | Method.Post) {
     if (method === Method.Get) {
         try {
             const encoded = encodeURIComponent(sparql);
@@ -54,8 +54,6 @@ export async function queryTripleStore(sparql: string, method: string) {
         } catch (error) {
             console.error('Error:', error);
         }
-    } else {
-        console.error('Wrong method, use GET or POST')
     }
 };
 
