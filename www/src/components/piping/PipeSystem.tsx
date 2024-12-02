@@ -1,6 +1,4 @@
-import PipeSegment from "./PipeSegment.tsx";
 import {
-  PipingNetworkSegmentProps,
   PipingNetworkSystemProps,
 } from "../../types/diagram/Piping.ts";
 import { useContext } from "react";
@@ -48,17 +46,9 @@ function PipeSystemSVG({
 
 export default function PipeSystem(props: PipingNetworkSystemProps) {
   const height = useContext(PandidContext).height;
-  const pipingSegments: PipingNetworkSegmentProps[] = Array.isArray(
-    props.PipingNetworkSegment,
-  )
-    ? props.PipingNetworkSegment
-    : [props.PipingNetworkSegment];
 
   return (
     <>
-      {pipingSegments.map((pipe: PipingNetworkSegmentProps, index: number) => (
-        <PipeSegment key={index} {...pipe} />
-      ))}
       {props.Label && (
         <PipeSystemSVG
           id={props.ID}

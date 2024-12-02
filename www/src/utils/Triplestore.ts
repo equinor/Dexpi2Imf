@@ -10,43 +10,60 @@ export enum BoundaryParts {
     Boundary = 'comp:isBoundaryOf'
 }
 
+export enum Method {
+    Post = 'POST',
+    Get = 'GET'
+}
+
 export async function makeSparqlAndUpdateStore(nodeId: string, action: string, type: string) {
-    const sparql = `${action} { <${nodeId}> ${type} ${completionPackageIri} . }`;
-    try {
-        await fetch('http://localhost:12110/datastores/boundaries/sparql', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-            body: `update=${sparql}`
-        });
-    } catch (error) {
-        console.error('Error:', error);
-    }
+    const sparql = `${action} { <${assetIri(nodeId)}> ${type} ${completionPackageIri} . }`;
+    await queryTripleStore(sparql, Method.Post);
 }
 
-export async function queryTripleStore(sparql: string) {
-    try {
-        const encoded = encodeURIComponent(sparql);
-        const response = await fetch(`http://localhost:12110/datastores/boundaries/sparql?query=${encoded}`, {
-            method: 'GET',
-        });
-        return await response.text();
-    } catch (error) {
-        console.error('Error:', error);
-    }
-}
-
-export async function adjacentToInternal(pipeIri: string) {
-    const query = `SELECT ?node WHERE { <${pipeIri}> imf:adjacentTo ?node . ?node comp:isInPackage ?p .}`;
-    const result = await queryTripleStore(query);
-    const internalNeighbours = parseNodeIds(result!);
-    return internalNeighbours.length > 0
+export async function cleanTripleStore() {
+    const deleteBoundary = `DELETE WHERE { ?boundary comp:isBoundaryOf ?p . }`;
+    const deleteInternal = `DELETE WHERE { ?internal comp:isInPackage ?p . }`;
+    await queryTripleStore(deleteBoundary, Method.Post);
+    await queryTripleStore(deleteInternal, Method.Post);
 }
 
 export async function getNodeIdsInCommissioningPackage() {
     const query = 'SELECT ?node WHERE{?node comp:isInPackage ' + completionPackageIri + ' .}';
-    const result = await queryTripleStore(query);
+    const result = await queryTripleStore(query, Method.Get);
     return parseNodeIds(result!);
 }
+
+export async function queryTripleStore(sparql: string, method: Method.Get | Method.Post) {
+    if (method === Method.Get) {
+        try {
+            const encoded = encodeURIComponent(sparql);
+            const response = await fetch(`http://localhost:12110/datastores/boundaries/sparql?query=${encoded}`, {
+                method: 'GET',
+            });
+            return await response.text();
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    } else if (method === Method.Post) {
+        try {
+            await fetch('http://localhost:12110/datastores/boundaries/sparql', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `update=${sparql}`
+            });
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
+};
+
+export async function adjacentToInternal(pipeIri: string) {
+    const query = `SELECT ?node WHERE { <${pipeIri}> imf:adjacentTo ?node . ?node comp:isInPackage ?p .}`;
+    const result = await queryTripleStore(query, Method.Get);
+    const internalNeighbours = parseNodeIds(result!);
+    return internalNeighbours.length > 0
+}
+
 
 export async function updateTable() {
     const queryInside = `
@@ -74,8 +91,8 @@ export async function updateTable() {
         }
     }
     `;
-    let resultInside = parseNodeIds(await queryTripleStore(queryInside) as string);
-    const resultBoundary = parseNodeIds(await queryTripleStore(queryBoundary) as string);
+    let resultInside = parseNodeIds(await queryTripleStore(queryInside, Method.Get) as string);
+    const resultBoundary = parseNodeIds(await queryTripleStore(queryBoundary, Method.Get) as string);
 
     if (resultInside.length > 0 || resultBoundary.length > 0) {
         // Remove elements that are in both inside boundary and boundary
@@ -87,6 +104,10 @@ export async function updateTable() {
         //document.getElementById('inside-boundary-table-container').innerHTML = '';
         //document.getElementById('boundary-table-container').innerHTML = '';
     }
+}
+
+export const assetIri = (id: string) => {
+    return `https://assetid.equinor.com/plantx#${id}`;
 }
 
 function parseNodeIds(result: string) {
