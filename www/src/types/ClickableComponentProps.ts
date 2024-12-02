@@ -19,18 +19,18 @@ const isInPackage = (id: string, context: CommissioningPackageContextProps) => {
   return activePackage?.idsInPackage.includes(assetIri(id)) || false;
 }
 
-export const getHighlightColors = (id: string, context: CommissioningPackageContextProps) => {
-  var colors = []
-  if (isInPackage(id, context)) {
-    colors.push("yellow");
-  }
-  if (isBoundary(id, context)) {
-    colors.push("red");
-  }
+export const getHighlightColor = (id: string, context: CommissioningPackageContextProps) => {
+  let color = ""
   if (isInternal(id, context)) {
-    colors.push("green");
+    color = "green"
   }
-  return colors;
+  else if (isBoundary(id, context)) {
+    color = "red"
+  }
+  else if (isInPackage(id, context)) {
+    color = "yellow"
+  }
+  return color;
 }
 
 export const handleClick = (component: ClickableComponentProps, context: CommissioningPackageContextProps, id: string) =>

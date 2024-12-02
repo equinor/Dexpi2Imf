@@ -4,7 +4,7 @@ import PandidContext from "../../context/PandidContext.ts";
 import SvgElement from "../SvgElement.tsx";
 import constructPath from "../../utils/Path.ts";
 import StyledPath from "../StyledPath.tsx";
-import { ClickableComponentProps, getHighlightColors, handleClick } from "../../types/ClickableComponentProps.ts";
+import { ClickableComponentProps, getHighlightColor, handleClick } from "../../types/ClickableComponentProps.ts";
 import useSerializeNodeSvg from "../../hooks/useSerializeNodeSvg.tsx";
 import StyledSvgElement from "../StyledSvgElement.tsx";
 import { useCommissioningPackageContext } from "../../hooks/useCommissioningPackageContext.tsx";
@@ -20,7 +20,7 @@ export default function PipingComponent({
 }: PipingComponentClickableProps) {
   const context = useContext(PandidContext);
   const packageContext = useCommissioningPackageContext()
-  const colors = getHighlightColors(props.ID, packageContext)
+  const color = getHighlightColor(props.ID, packageContext)
   const height = context.height;
   const componentName = props.ComponentName;
   const label = props.Label;
@@ -35,17 +35,15 @@ export default function PipingComponent({
     >
       {componentName && svg && (
         <>
-          {colors.length > 0 &&
-            colors.map((c) => (
-              <StyledSvgElement
-                key={c}
-                id={props.ID + "_highlight"}
-                position={props.Position}
-                svg={svg}
-                color={c}
-              />
-            ))
+          {color && 
+            <StyledSvgElement
+              id={props.ID + "_highlight"}
+              position={props.Position}
+              svg={svg}
+              color={color}
+            />
           }
+
           <SvgElement
             id={props.ID}
             componentName={componentName}

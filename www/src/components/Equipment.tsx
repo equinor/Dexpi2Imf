@@ -1,6 +1,6 @@
 import { EquipmentProps, NozzleProps } from "../types/diagram/Diagram.ts";
 import { useContext } from "react";
-import { ClickableComponentProps, handleClick, getHighlightColors } from "../types/ClickableComponentProps.ts";
+import { ClickableComponentProps, handleClick, getHighlightColor } from "../types/ClickableComponentProps.ts";
 import StyledSvgElement from "./StyledSvgElement.tsx";
 import PandidContext from "../context/PandidContext.ts";
 import useSerializeNodeSvg from "../hooks/useSerializeNodeSvg.tsx";
@@ -24,7 +24,7 @@ export default function Equipment({
     props.ComponentName,
     props.GenericAttributes[0],
   );
-  const colors = getHighlightColors(props.ID, packageContext);
+  const color = getHighlightColor(props.ID, packageContext);
 
   const nozzles: NozzleProps[] = props.Nozzle;
 
@@ -32,19 +32,14 @@ export default function Equipment({
     <g
       onClick={handleClick(clickableComponent, packageContext, props.ID)}
     >
-      {svg && (
+      {svg && color && (
         <>
-          {colors.length > 0 &&
-            colors.map((c) => (
-              <StyledSvgElement
-                key={c}
-                id={props.ID + "_highlight"}
-                position={props.Position}
-                svg={svg}
-                color={c}
-              />
-            ))
-          }
+          <StyledSvgElement
+            id={props.ID + "_highlight"}
+            position={props.Position}
+            svg={svg}
+            color={color}
+          />
           <g
             id={props.ID}
             transform={`${props.Position.Reference.X === -1 ? "rotate(-180deg)" : ""}translate(${props.Position.Location.X}, ${height - props.Position.Location.Y})`}
