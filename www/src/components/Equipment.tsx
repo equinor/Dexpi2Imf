@@ -10,39 +10,39 @@ import { useCommissioningPackageContext } from "../hooks/useCommissioningPackage
 
 
 interface EquipmentClickableProps {
-  props: EquipmentProps;
+  equipment: EquipmentProps;
   clickableComponent: ClickableComponentProps
 }
 
 export default function Equipment({
-  props,
+  equipment,
   clickableComponent
 }: EquipmentClickableProps) {
   const packageContext = useCommissioningPackageContext()
   const height = useContext(PandidContext).height;
   const svg = useSerializeNodeSvg(
-    props.ComponentName,
-    props.GenericAttributes[0],
+    equipment.ComponentName,
+    equipment.GenericAttributes[0],
   );
-  const color = getHighlightColor(props.ID, packageContext);
+  const color = getHighlightColor(equipment.ID, packageContext);
 
-  const nozzles: NozzleProps[] = props.Nozzle;
+  const nozzles: NozzleProps[] = equipment.Nozzle;
 
   return (
     <g
-      onClick={handleClick(clickableComponent, packageContext, props.ID)}
+      onClick={handleClick(clickableComponent, packageContext, equipment.ID)}
     >
       {svg && color && (
         <>
           <StyledSvgElement
-            id={props.ID + "_highlight"}
-            position={props.Position}
+            id={equipment.ID + "_highlight"}
+            position={equipment.Position}
             svg={svg}
             color={color}
           />
           <g
-            id={props.ID}
-            transform={`${props.Position.Reference.X === -1 ? "rotate(-180deg)" : ""}translate(${props.Position.Location.X}, ${height - props.Position.Location.Y})`}
+            id={equipment.ID}
+            transform={`${equipment.Position.Reference.X === -1 ? "rotate(-180deg)" : ""}translate(${equipment.Position.Location.X}, ${height - equipment.Position.Location.Y})`}
             className={".node"}
             dangerouslySetInnerHTML={{ __html: svg }}
           />

@@ -155,7 +155,7 @@ export default function Pandid() {
               equipments.map((equipment: EquipmentProps, index: number) => (
                 <Equipment
                   key={index}
-                  props={equipment}
+                  equipment={equipment}
                   clickableComponent={{
                     onClick: handleAddBoundary,
                     onShiftClick: handleAddInternal,
@@ -175,7 +175,7 @@ export default function Pandid() {
                         ensureArray(pipingNetworkSegment.PipingComponent).map((pipingComponent: PipingComponentProps, componentIndex: number) => (
                           <PipingComponent
                             key={componentIndex}
-                            props={pipingComponent}
+                            pipingComponent={pipingComponent}
                             clickableComponent={{
                               onClick: handleAddBoundary,
                               onShiftClick: handleAddInternal
