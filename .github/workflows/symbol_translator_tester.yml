@@ -24,7 +24,7 @@ jobs:
       run: dotnet restore ./SymbolLibrary/SymbolLibrary.sln
 
     - name: Copy NOAKADEXPI Symbol library
-      run:  curl -o SymbolLibrary/src/Data/Symbols.xlsm https://raw.githubusercontent.com/equinor/NOAKADEXPI/main/Symbols.xlsm
+      run:  curl -o ./SymbolLibrary/src/Data/Symbols.xlsm https://raw.githubusercontent.com/equinor/NOAKADEXPI/main/Symbols.xlsm
 
     - name: Build
       run: dotnet build ./SymbolLibrary/SymbolLibrary.sln --no-restore
