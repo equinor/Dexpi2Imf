@@ -36,8 +36,10 @@ Lines require:
   - A unique IRI calculated in the backend
 - **An array of x and y-coordinates**
   - Each coordinate represents a point, and a line will be drawn between points from the order they are given. A line will be drawn between point 1 and 2, then 2 and 3, etc.
-- **stroke-dasharray:** 
-  - Whether the line is dashed or not. Can be either "none" or "1,4".
+- **Style** 
+  - Whether the line is dashed or not. There are several different line types specified. If the line is solid, set to "none", if regular dashed line, set to "1,4" etc.
+  - How wide the stroke is: a double.
+  - Stroke color. RGB value, or a color name. "black" or "rgb(255,255,255)".
 
 ```
 {
@@ -56,7 +58,11 @@ Lines require:
       "y": 180
     }
   ],
-  "stroke-dasharray": "none"
+  "style": {
+    "stroke-dasharray": "none",
+    "stroke-width": "1,4",
+    "stroke": "rgb(255,255,255)"
+  }
 }
 ```
 
