@@ -1,0 +1,91 @@
+@startuml ssi_arch
+!define StLib https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master
+!includeurl StLib/C4_Container.puml
+!includeurl StLib/C4_Component.puml
+!define AzurePuml https://raw.githubusercontent.com/plantuml-stdlib/Azure-PlantUML/release/2-2/dist
+!includeurl AzurePuml/AzureCommon.puml
+!includeurl AzurePuml/Databases/all.puml
+!includeurl AzurePuml/Compute/all.puml
+!includeurl AzurePuml/Storage/all.puml
+!includeurl AzurePuml/Identity/all.puml
+!includeurl AzurePuml/DevOps/all.puml
+!includeurl AzurePuml/Security/all.puml
+
+Enterprise_Boundary(ssi, "Equinor"){
+    Boundary(bravo, "Bravo"){
+            System(orch, "TIE Orchestrator", "Transforms to RDF")
+            
+            Boundary(keeper, "Record Keeper"){
+                Component(api, "Interface", "REST API")
+                Component(backend, "Backend", "Calculates versions and history")
+
+                BiRel_D(api, backend, "API")
+                BiRel_D(orch, api, "Records (RDF)") 
+            }
+
+            Boundary(storage, "Storage"){
+                ComponentDb(sql, "SQL", "Indexed data points")
+                ComponentDb(blob, "Storage Account", "Raw and RDF")
+                ComponentDb(fox, "Triple Store", "RDF and axioms")
+            }
+            
+            Rel_D(backend, storage, "References and RDF")
+            
+            System(brp, "Record Publisher", "SQL Trigger AF")
+            Rel(storage, brp, "Notifications")
+        }        
+
+
+    Boundary(web, "Reference sites"){
+        System(asset, "assetid.equinor.com", "Asset identifiers", "Website")
+        System(rdf, "rdf.equinor.com", "Vocabularies and axioms", "Website")
+    }
+    
+    Rel(bravo, web, "References")
+
+    Boundary(dexpi, "Boundary app", "DEXPI"){
+        Component(boundary, "Front-end", "User interface")
+        Component(boundBack, "Back-end", "Business logic")
+
+        BiRel(boundary, boundBack, "API")
+
+        ComponentDb(boundaryTs, "Triple Store", "RDF + datalog")
+        BiRel(boundBack, boundaryTs, "RDF / Datalog")        
+
+        
+        System_Ext(symbols, "Symbol Library", "PCA")
+        BiRel(boundBack, symbols, "SVG")
+
+        Component(adapter, "Procosys Adapter", "Exports to Procosys")
+        
+        Person_Ext(user, "Commisioning Engineer")        
+        Rel(user, boundary, "Sets boundaries")
+
+        Component(exporter, "Exporter")
+        Rel(exporter, adapter, "Commissioning Packages")
+        Rel(exporter, api, "Commissioning Packages", "Records")
+        Rel(boundBack, exporter, "Commissioning Packages", "RDF")
+    }
+
+
+    Boundary(rulesMaster, "Rules Master", "Common Library?"){
+        System(rulesApi, "Rules API", "Rule sets")
+        ComponentDb(rules, "Triple Store", "Axioms")
+        BiRel(rules, rulesApi, "API")
+    }
+
+    BiRel(boundBack, rulesApi, "Rules (pull)")
+
+    Rel(brp, boundBack, "Notifications")    
+    BiRel(api, boundBack, "RDF", "SPARQL")
+
+    System(procosys, "Procosys")
+    Rel(adapter, procosys, "Commissioning Packages")
+
+}
+    
+System_Ext(tieIn, "TIE")
+Rel(tieIn, orch, "DEXPI")
+
+footer "Dexpi Architecture - 2024-12-02"
+@enduml
