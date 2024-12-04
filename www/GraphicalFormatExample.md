@@ -72,6 +72,16 @@ The JSON file should contain two arrays, one for symbols and one for lines. The 
 ```
 {
   "diagramName": "Test P&ID",
+  "extent": {
+    "min": {
+      "x": 100,
+      "y": 100
+    },
+    "max": {
+      "x": 200,
+      "y": 200
+    }
+  },
   "symbols": [
     {
       ... data for symbol 1 in here
