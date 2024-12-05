@@ -1,0 +1,1 @@
+Copy the file https://github.com/equinor/NOAKADEXPI/blob/main/Symbols.xlsm into this folder

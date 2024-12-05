@@ -1,0 +1,7 @@
+@SymbolLibrary_HostAddress = http://localhost:5268
+@id = PF009A
+
+GET {{SymbolLibrary_HostAddress}}/symbol/{{id}}/
+Accept: application/json
+
+###

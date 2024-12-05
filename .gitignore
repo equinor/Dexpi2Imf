@@ -26,3 +26,14 @@ __pycache__
 /www/public/Origo
 /www_old/index.html
 /www/public/DISC_EXAMPLE-02-02.xml
+
+/SymbolLibrary/Data/Symbols.xlsm
+/SymbolLibrary/obj
+/SymbolLibrary/src/obj
+/SymbolLibrary/src/bin
+/SymbolLibrary/test/obj
+/SymbolLibrary/test/bin
+/SymbolLibrary/SymolLibrary.Tests/obj/
+/SymbolLibrary/SymolLibrary.Tests/bin/
+/SymbolLibrary/SymbolLibrary.sln.DotSettings.user
+/SymbolLibrary/src/Data/Symbols.xlsm
