@@ -1,24 +1,26 @@
 import { EquipmentProps, NozzleProps } from "../types/diagram/Diagram.ts";
 import { useContext } from "react";
-import { ClickableComponentProps, handleClick, getHighlightColor } from "../types/ClickableComponentProps.ts";
+import {
+  ClickableComponentProps,
+  handleClick,
+  getHighlightColor,
+} from "../types/ClickableComponentProps.ts";
 import StyledSvgElement from "./StyledSvgElement.tsx";
 import PandidContext from "../context/PandidContext.ts";
 import useSerializeNodeSvg from "../hooks/useSerializeNodeSvg.tsx";
 import SvgElement from "./SvgElement.tsx";
 import { useCommissioningPackageContext } from "../hooks/useCommissioningPackageContext.tsx";
 
-
-
 interface EquipmentClickableProps {
   equipment: EquipmentProps;
-  clickableComponent: ClickableComponentProps
+  clickableComponent: ClickableComponentProps;
 }
 
 export default function Equipment({
   equipment,
-  clickableComponent
+  clickableComponent,
 }: EquipmentClickableProps) {
-  const packageContext = useCommissioningPackageContext()
+  const packageContext = useCommissioningPackageContext();
   const height = useContext(PandidContext).height;
   const svg = useSerializeNodeSvg(
     equipment.ComponentName,
@@ -29,17 +31,18 @@ export default function Equipment({
   const nozzles: NozzleProps[] = equipment.Nozzle;
 
   return (
-    <g
-      onClick={handleClick(clickableComponent, packageContext, equipment.ID)}
-    >
-      {svg && color && (
+    <g onClick={handleClick(clickableComponent, packageContext, equipment.ID)}>
+      {svg && (
         <>
-          <StyledSvgElement
-            id={equipment.ID + "_highlight"}
-            position={equipment.Position}
-            svg={svg}
-            color={color}
-          />
+          {color && (
+            <StyledSvgElement
+              id={equipment.ID + "_highlight"}
+              position={equipment.Position}
+              svg={svg}
+              color={color}
+            />
+          )}
+
           <g
             id={equipment.ID}
             transform={`${equipment.Position.Reference.X === -1 ? "rotate(-180deg)" : ""}translate(${equipment.Position.Location.X}, ${height - equipment.Position.Location.Y})`}
