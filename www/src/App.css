@@ -9,3 +9,15 @@ body,
 #root {
     height: 100%;
 }
+
+.boundary {
+    path {
+        stroke: red;
+    }
+}
+
+.internal {
+    path {
+        stroke: green;
+    }
+}

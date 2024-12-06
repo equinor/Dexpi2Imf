@@ -5,7 +5,7 @@ export const useCommissioningPackageContext = () => {
   const context = useContext(CommissioningPackageContext);
   if (!context) {
     throw new Error(
-      "useCommissioningPackageContext must be used within a CommissioningPackageProvider",
+      "useCommissioningPackageContext must be used within a CommissioningPackageContextProvider",
     );
   }
   return context;

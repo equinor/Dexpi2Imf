@@ -1,4 +1,5 @@
 import {
+  PipingNetworkSegmentProps,
   PipingNetworkSystemProps,
 } from "../../types/diagram/Piping.ts";
 import { useContext } from "react";
@@ -8,6 +9,9 @@ import {
   PositionProps,
 } from "../../types/diagram/Common.ts";
 import useSerializePipeSvg from "../../hooks/useSerializePipeSvg.tsx";
+import { ensureArray } from "../../utils/HelperFunctions.ts";
+import PipeSegment from "./PipeSegment.tsx";
+import { ClickableComponentProps } from "../../types/ClickableComponentProps.ts";
 
 interface PipeSystemSVGProps {
   id: string;
@@ -44,7 +48,11 @@ function PipeSystemSVG({
   );
 }
 
-export default function PipeSystem(props: PipingNetworkSystemProps) {
+interface PipeSystemProps
+  extends PipingNetworkSystemProps,
+    ClickableComponentProps {}
+
+export default function PipeSystem(props: PipeSystemProps) {
   const height = useContext(PandidContext).height;
 
   return (
@@ -57,6 +65,15 @@ export default function PipeSystem(props: PipingNetworkSystemProps) {
           position={props.Label.Position}
           height={height}
         />
+      )}
+      {ensureArray(props.PipingNetworkSegment).map(
+        (pipingNetworkSegment: PipingNetworkSegmentProps, index: number) => (
+          <PipeSegment
+            key={index}
+            onClick={props.onClick}
+            {...pipingNetworkSegment}
+          />
+        ),
       )}
     </>
   );
