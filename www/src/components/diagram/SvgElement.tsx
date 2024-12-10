@@ -6,9 +6,12 @@ import calculateAngleAndRotation from "../../utils/Transformation.ts";
 import useSerializeNodeSvg from "../../hooks/useSerializeNodeSvg.tsx";
 import { useContext } from "react";
 import PandidContext from "../../context/PandidContext.ts";
-import { iriFromSvgNode } from "../../utils/Triplestore.ts";
 import { useCommissioningPackageContext } from "../../hooks/useCommissioningPackageContext.tsx";
-import { isBoundary, isInternal } from "../../utils/HelperFunctions.ts";
+import {
+  iriFromSvgNode,
+  isBoundary,
+  isInternal,
+} from "../../utils/HelperFunctions.ts";
 import StyledSvgElement from "./StyledSvgElement.tsx";
 import selectHandleFunction from "../../utils/HandlerFunctionHelper.tsx";
 import ToolContext from "../../context/ToolContext.ts";

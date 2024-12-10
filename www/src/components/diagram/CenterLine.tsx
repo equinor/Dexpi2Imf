@@ -7,8 +7,8 @@ import { useCommissioningPackageContext } from "../../hooks/useCommissioningPack
 import React from "react";
 import selectHandleFunction from "../../utils/HandlerFunctionHelper.tsx";
 import ToolContext from "../../context/ToolContext.ts";
-import { iriFromSvgNode } from "../../utils/Triplestore.ts";
 import HighlightColors from "../../types/HighlightColors.ts";
+import { iriFromSvgNode } from "../../utils/HelperFunctions.ts";
 
 interface CenterLineComponentProps {
   centerLines: CenterLineProps[];

@@ -1,5 +1,3 @@
-import { PipingNetworkSegmentProps } from "../types/diagram/Piping.ts";
-
 export enum BoundaryActions {
   Insert = "INSERT DATA ",
   Delete = "DELETE DATA ",
@@ -66,28 +64,6 @@ export async function queryTripleStore(
     } catch (error) {
       console.error("Error:", error);
     }
-  }
-}
-
-export function iriFromSvgNode(id: string) {
-  return `https://assetid.equinor.com/plantx#${id}`;
-}
-
-export function iriFromPiping(segment: PipingNetworkSegmentProps) {
-  if (
-    segment.Connection?.ToID &&
-    (!segment.PipingComponent || !segment.PropertyBreak)
-  ) {
-    return `https://assetid.equinor.com/plantx#${segment.Connection.ToID}-node${segment.Connection.ToNode}-connector`;
-  } else if (segment.PipingComponent[1]) {
-    return `https://assetid.equinor.com/plantx#${segment.PipingComponent[1].ID}-node2-connector`;
-  } else if (segment.Connection?.FromID) {
-    return `https://assetid.equinor.com/plantx#${segment.Connection.FromID}-node${segment.Connection.FromNode}-connector`;
-  } else if (segment.Connection?.ToID) {
-    return `https://assetid.equinor.com/plantx#${segment.Connection!.ToID}-node${segment.Connection!.ToNode}-connector`;
-  } else {
-    console.error("Something went wrong with iri creation");
-    return ``;
   }
 }
 

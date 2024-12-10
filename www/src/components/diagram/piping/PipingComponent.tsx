@@ -8,12 +8,12 @@ import { ClickableComponentProps } from "../../../types/ClickableComponentProps.
 import useSerializeNodeSvg from "../../../hooks/useSerializeNodeSvg.tsx";
 import StyledSvgElement from "../StyledSvgElement.tsx";
 import { useCommissioningPackageContext } from "../../../hooks/useCommissioningPackageContext.tsx";
-import { iriFromSvgNode } from "../../../utils/Triplestore.ts";
 import {
   GenericAttributesProps,
   PositionProps,
 } from "../../../types/diagram/Common.ts";
 import HighlightColors from "../../../types/HighlightColors.ts";
+import { iriFromSvgNode } from "../../../utils/HelperFunctions.ts";
 
 interface PipingComponentClickableProps
   extends PipingComponentProps,

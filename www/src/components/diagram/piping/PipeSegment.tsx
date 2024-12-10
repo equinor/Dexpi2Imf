@@ -9,10 +9,9 @@ import PandidContext from "../../../context/PandidContext.ts";
 import SvgElement from "../SvgElement.tsx";
 import StyledPath from "../StyledPath.tsx";
 import constructPath from "../../../utils/Path.ts";
-import { ensureArray } from "../../../utils/HelperFunctions.ts";
+import { ensureArray, iriFromPiping } from "../../../utils/HelperFunctions.ts";
 import PipingComponent from "./PipingComponent.tsx";
 import { ClickableComponentProps } from "../../../types/ClickableComponentProps.ts";
-import { iriFromPiping } from "../../../utils/Triplestore.ts";
 
 interface PipeSegmentProps
   extends PipingNetworkSegmentProps,

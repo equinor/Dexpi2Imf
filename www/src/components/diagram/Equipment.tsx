@@ -5,8 +5,11 @@ import PandidContext from "../../context/PandidContext.ts";
 import useSerializeNodeSvg from "../../hooks/useSerializeNodeSvg.tsx";
 import SvgElement from "./SvgElement.tsx";
 import { useCommissioningPackageContext } from "../../hooks/useCommissioningPackageContext.tsx";
-import { iriFromSvgNode } from "../../utils/Triplestore.ts";
-import { isBoundary, isInternal } from "../../utils/HelperFunctions.ts";
+import {
+  iriFromSvgNode,
+  isBoundary,
+  isInternal,
+} from "../../utils/HelperFunctions.ts";
 import ToolContext from "../../context/ToolContext.ts";
 import selectHandleFunction from "../../utils/HandlerFunctionHelper.tsx";
 
