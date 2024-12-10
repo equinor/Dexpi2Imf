@@ -13,7 +13,7 @@ import { ensureArray } from "../../../utils/HelperFunctions.ts";
 import PipeSegment from "./PipeSegment.tsx";
 import { iriFromSvgNode } from "../../../utils/Triplestore.ts";
 import selectHandleFunction from "../../../utils/HandlerFunctionHelper.tsx";
-import ToolContext from "../../../context/ToolContext.tsx";
+import ToolContext from "../../../context/ToolContext.ts";
 import { useCommissioningPackageContext } from "../../../hooks/useCommissioningPackageContext.tsx";
 
 interface PipeSystemSVGProps {

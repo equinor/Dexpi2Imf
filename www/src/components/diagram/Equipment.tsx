@@ -7,7 +7,7 @@ import SvgElement from "./SvgElement.tsx";
 import { useCommissioningPackageContext } from "../../hooks/useCommissioningPackageContext.tsx";
 import { iriFromSvgNode } from "../../utils/Triplestore.ts";
 import { isBoundary, isInternal } from "../../utils/HelperFunctions.ts";
-import ToolContext from "../../context/ToolContext.tsx";
+import ToolContext from "../../context/ToolContext.ts";
 import selectHandleFunction from "../../utils/HandlerFunctionHelper.tsx";
 
 export default function Equipment(props: EquipmentProps) {

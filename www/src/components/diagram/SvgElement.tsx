@@ -11,7 +11,7 @@ import { useCommissioningPackageContext } from "../../hooks/useCommissioningPack
 import { isBoundary, isInternal } from "../../utils/HelperFunctions.ts";
 import StyledSvgElement from "./StyledSvgElement.tsx";
 import selectHandleFunction from "../../utils/HandlerFunctionHelper.tsx";
-import ToolContext from "../../context/ToolContext.tsx";
+import ToolContext from "../../context/ToolContext.ts";
 
 interface SvgElementProps {
   id: string;

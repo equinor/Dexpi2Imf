@@ -4,7 +4,7 @@ import styled from "styled-components";
 import { useContext, useState } from "react";
 import Tools from "../../enums/Tools.ts";
 import { useCommissioningPackageContext } from "../../hooks/useCommissioningPackageContext.tsx";
-import ToolContext from "../../context/ToolContext.tsx";
+import ToolContext from "../../context/ToolContext.ts";
 import CommissioningPackageCreationDialog from "./CommissioningPackageCreationDialog.tsx";
 
 const StyledSideBar = styled.div`
