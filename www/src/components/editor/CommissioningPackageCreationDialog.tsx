@@ -5,7 +5,7 @@ import {
   Label,
   NativeSelect,
 } from "@equinor/eds-core-react";
-import HighlightColors from "../../types/HighlightColors.ts";
+import HighlightColors from "../../enums/HighlightColors.ts";
 import styled from "styled-components";
 import React, { useEffect, useState } from "react";
 import CommissioningPackage from "../../types/CommissioningPackage.ts";

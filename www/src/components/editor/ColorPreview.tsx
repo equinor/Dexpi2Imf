@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import HighlightColors from "../../types/HighlightColors.ts";
+import HighlightColors from "../../enums/HighlightColors.ts";
 
 const ColorPreview = styled.div<{ color: HighlightColors }>`
   width: 1.5rem;

@@ -1,6 +1,6 @@
 import React, { createContext, useEffect, useState } from "react";
 import CommissioningPackage from "../types/CommissioningPackage.ts";
-import HighlightColors from "../types/HighlightColors.ts";
+import HighlightColors from "../enums/HighlightColors.ts";
 
 export interface CommissioningPackageContextProps {
   activePackage: CommissioningPackage;

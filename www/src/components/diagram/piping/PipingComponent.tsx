@@ -11,7 +11,7 @@ import {
   GenericAttributesProps,
   PositionProps,
 } from "../../../types/diagram/Common.ts";
-import HighlightColors from "../../../types/HighlightColors.ts";
+import HighlightColors from "../../../enums/HighlightColors.ts";
 import { iriFromSvgNode } from "../../../utils/HelperFunctions.ts";
 import selectHandleFunction from "../../../utils/HandlerFunctionHelper.tsx";
 import ToolContext from "../../../context/ToolContext.ts";

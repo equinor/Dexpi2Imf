@@ -31,11 +31,7 @@ export default function PipeSegment(props: PipeSegmentProps) {
       {props.PipingComponent &&
         ensureArray(props.PipingComponent).map(
           (pipingComponent: PipingComponentProps, componentIndex: number) => (
-            <PipingComponent
-              key={componentIndex}
-              onClick={props.onClick}
-              {...pipingComponent}
-            />
+            <PipingComponent key={componentIndex} {...pipingComponent} />
           ),
         )}
       {props.PipeSlopeSymbol && (

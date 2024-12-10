@@ -1,4 +1,4 @@
-import HighlightColors from "./HighlightColors.ts";
+import HighlightColors from "../enums/HighlightColors.ts";
 
 export default interface CommissioningPackage {
   id: string;
