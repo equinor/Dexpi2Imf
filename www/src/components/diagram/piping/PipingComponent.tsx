@@ -4,7 +4,6 @@ import PandidContext from "../../../context/PandidContext.ts";
 import SvgElement from "../SvgElement.tsx";
 import constructPath from "../../../utils/Path.ts";
 import StyledPath from "../StyledPath.tsx";
-import { ClickableComponentProps } from "../../../types/ClickableComponentProps.ts";
 import useSerializeNodeSvg from "../../../hooks/useSerializeNodeSvg.tsx";
 import StyledSvgElement from "../StyledSvgElement.tsx";
 import { useCommissioningPackageContext } from "../../../hooks/useCommissioningPackageContext.tsx";
@@ -14,10 +13,8 @@ import {
 } from "../../../types/diagram/Common.ts";
 import HighlightColors from "../../../types/HighlightColors.ts";
 import { iriFromSvgNode } from "../../../utils/HelperFunctions.ts";
-
-interface PipingComponentClickableProps
-  extends PipingComponentProps,
-    ClickableComponentProps {}
+import selectHandleFunction from "../../../utils/HandlerFunctionHelper.tsx";
+import ToolContext from "../../../context/ToolContext.ts";
 
 interface PipingComponentSVGProps {
   id: string;
@@ -57,9 +54,10 @@ function PipingComponentSVG({
   );
 }
 
-export default function PipingComponent(props: PipingComponentClickableProps) {
+export default function PipingComponent(props: PipingComponentProps) {
   const height = useContext(PandidContext).height;
   const context = useCommissioningPackageContext();
+  const tool = useContext(ToolContext).activeTool;
 
   const componentName = props.ComponentName;
   const label = props.Label;
@@ -71,7 +69,7 @@ export default function PipingComponent(props: PipingComponentClickableProps) {
   const color = commissioningPackage?.color;
 
   return (
-    <g onClick={() => props.onClick}>
+    <g onClick={() => selectHandleFunction(props.ID, context, tool)}>
       {componentName && (
         <PipingComponentSVG
           id={props.ID}
