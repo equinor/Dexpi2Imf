@@ -66,10 +66,17 @@ export default function PipingComponent(props: PipingComponentProps) {
   const commissioningPackage = context.commissioningPackages.find((pkg) =>
     pkg.nodeIds.find((node) => node === iri),
   );
+  const isInActivePackage = commissioningPackage
+    ? context.activePackage.id === commissioningPackage.id
+    : true;
   const color = commissioningPackage?.color;
 
   return (
-    <g onClick={() => selectHandleFunction(props.ID, context, tool)}>
+    <g
+      onClick={() =>
+        isInActivePackage ? selectHandleFunction(props.ID, context, tool) : {}
+      }
+    >
       {componentName && (
         <PipingComponentSVG
           id={props.ID}

@@ -57,7 +57,7 @@ export default function SvgElement({
           <g
             id={iri}
             onClick={() =>
-              isInActivePackage ? selectHandleFunction(iri, context, tool) : {}
+              isInActivePackage ? selectHandleFunction(id, context, tool) : {}
             }
             transform={
               position
@@ -69,7 +69,7 @@ export default function SvgElement({
                   )
                 : ""
             }
-            className={`.node ${isBoundary(iri, context) ? "boundary" : ""} ${isInternal(iri, context) ? "internal" : ""}`}
+            className={`.node ${isBoundary(id, context) ? "boundary" : ""} ${isInternal(id, context) ? "internal" : ""}`}
             dangerouslySetInnerHTML={{ __html: svg }}
           />
         </>
