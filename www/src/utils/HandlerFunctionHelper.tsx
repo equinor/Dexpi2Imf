@@ -12,7 +12,6 @@ export default async function selectHandleFunction(
   context: CommissioningPackageContextProps,
   tool: Tools,
 ) {
-  console.log("handler selector fired");
   switch (tool) {
     case Tools.BOUNDARY:
       return await handleAddBoundary(id, context);
@@ -27,7 +26,6 @@ export async function handleAddInternal(
   id: string,
   context: CommissioningPackageContextProps,
 ) {
-  console.log("Internal handler fired");
   // If element is already inside
   if (context.activePackage.internalIds.includes(id)) {
     context.setActivePackage((prev) => ({
@@ -38,6 +36,7 @@ export async function handleAddInternal(
       id,
       BoundaryActions.Delete,
       BoundaryParts.InsideBoundary,
+      context.activePackage.id,
     );
   } else {
     // If the clicked element is a boundary, remove it as a boundary
@@ -50,6 +49,7 @@ export async function handleAddInternal(
         id,
         BoundaryActions.Delete,
         BoundaryParts.Boundary,
+        context.activePackage.id,
       );
     }
     // Then, add it as an internal element
@@ -61,28 +61,30 @@ export async function handleAddInternal(
       id,
       BoundaryActions.Insert,
       BoundaryParts.InsideBoundary,
+      context.activePackage.id,
     );
   }
-
-  // Then, update the internal ids to include the new node
-  const nodeIds = await getNodeIdsInCommissioningPackage();
-  context.setActivePackage((prev) => ({ ...prev, nodeIds: nodeIds }));
-
-  // Lastly, update the commissioningPackages
-  context.setCommissioningPackages((prevPackages) =>
-    prevPackages.map((pkg) =>
-      pkg.id === context.activePackage.id
-        ? { ...pkg, ...context.activePackage }
-        : pkg,
-    ),
+  // Then, update the nodes in package
+  const nodeIds = await getNodeIdsInCommissioningPackage(
+    context.activePackage.id,
   );
+  context.setActivePackage((prev) => {
+    const updatedPackage = { ...prev, nodeIds: nodeIds };
+
+    context.setCommissioningPackages((prevPackages) =>
+      prevPackages.map((pkg) =>
+        pkg.id === updatedPackage.id ? updatedPackage : pkg,
+      ),
+    );
+
+    return updatedPackage;
+  });
 }
 
 export async function handleAddBoundary(
   id: string,
   context: CommissioningPackageContextProps,
 ) {
-  console.log("Boundary handler fired");
   // If the element is already a boundary, remove it as boundary
   if (context.activePackage.boundaryIds.includes(id)) {
     context.setActivePackage((prev) => ({
@@ -93,6 +95,7 @@ export async function handleAddBoundary(
       id,
       BoundaryActions.Delete,
       BoundaryParts.Boundary,
+      context.activePackage.id,
     );
   } else {
     // If element is not already a boundary, add it as boundary.
@@ -106,6 +109,7 @@ export async function handleAddBoundary(
         id,
         BoundaryActions.Delete,
         BoundaryParts.InsideBoundary,
+        context.activePackage.id,
       );
     }
     context.setActivePackage((prev) => ({
@@ -116,18 +120,22 @@ export async function handleAddBoundary(
       id,
       BoundaryActions.Insert,
       BoundaryParts.Boundary,
+      context.activePackage.id,
     );
   }
-  // Then, update the internal ids to include the new node
-  const nodeIds = await getNodeIdsInCommissioningPackage();
-  context.setActivePackage((prev) => ({ ...prev, internalIds: nodeIds }));
-
-  // Lastly, update the commissioningPackages
-  context.setCommissioningPackages((prevPackages) =>
-    prevPackages.map((pkg) =>
-      pkg.id === context.activePackage.id
-        ? { ...pkg, ...context.activePackage }
-        : pkg,
-    ),
+  // Then, update the nodes in package
+  const nodeIds = await getNodeIdsInCommissioningPackage(
+    context.activePackage.id,
   );
+  context.setActivePackage((prev) => {
+    const updatedPackage = { ...prev, nodeIds: nodeIds };
+
+    context.setCommissioningPackages((prevPackages) =>
+      prevPackages.map((pkg) =>
+        pkg.id === updatedPackage.id ? updatedPackage : pkg,
+      ),
+    );
+
+    return updatedPackage;
+  });
 }

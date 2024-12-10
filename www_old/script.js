@@ -33,6 +33,7 @@ pipes.forEach((pipe) => {
 
 async function handlePipeClick(pipe) {
     pipe.classList.add('boundary');
+    console.log(pipe.id)
     await makeSparqlAndUpdateStore(pipe.id, boundary_actions.insert, boundary_parts.boundary);
     addPipeHighlight(pipe, color = 'rgb(251, 131, 109)')
 }

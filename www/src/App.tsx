@@ -1,4 +1,4 @@
-import Editor from "./components/Editor.tsx";
+import Editor from "./components/editor/Editor.tsx";
 import styled from "styled-components";
 
 const Page = styled.div`

@@ -1,17 +1,20 @@
 import {
   PipingNetworkSegmentProps,
   PipingNetworkSystemProps,
-} from "../../types/diagram/Piping.ts";
+} from "../../../types/diagram/Piping.ts";
 import { useContext } from "react";
-import PandidContext from "../../context/PandidContext.ts";
+import PandidContext from "../../../context/PandidContext.ts";
 import {
   GenericAttributesProps,
   PositionProps,
-} from "../../types/diagram/Common.ts";
-import useSerializePipeSvg from "../../hooks/useSerializePipeSvg.tsx";
-import { ensureArray } from "../../utils/HelperFunctions.ts";
+} from "../../../types/diagram/Common.ts";
+import useSerializePipeSvg from "../../../hooks/useSerializePipeSvg.tsx";
+import { ensureArray } from "../../../utils/HelperFunctions.ts";
 import PipeSegment from "./PipeSegment.tsx";
-import { ClickableComponentProps } from "../../types/ClickableComponentProps.ts";
+import { iriFromSvgNode } from "../../../utils/Triplestore.ts";
+import selectHandleFunction from "../../../utils/HandlerFunctionHelper.tsx";
+import ToolContext from "../../../context/ToolContext.tsx";
+import { useCommissioningPackageContext } from "../../../hooks/useCommissioningPackageContext.tsx";
 
 interface PipeSystemSVGProps {
   id: string;
@@ -48,18 +51,17 @@ function PipeSystemSVG({
   );
 }
 
-interface PipeSystemProps
-  extends PipingNetworkSystemProps,
-    ClickableComponentProps {}
-
-export default function PipeSystem(props: PipeSystemProps) {
+export default function PipeSystem(props: PipingNetworkSystemProps) {
   const height = useContext(PandidContext).height;
+  const context = useCommissioningPackageContext();
+  const tool = useContext(ToolContext).activeTool;
+  const iri = iriFromSvgNode(props.ID);
 
   return (
-    <>
+    <g>
       {props.Label && (
         <PipeSystemSVG
-          id={props.ID}
+          id={iri}
           componentName={props.Label.ComponentName}
           genericAttributes={props.GenericAttributes[0]}
           position={props.Label.Position}
@@ -70,11 +72,11 @@ export default function PipeSystem(props: PipeSystemProps) {
         (pipingNetworkSegment: PipingNetworkSegmentProps, index: number) => (
           <PipeSegment
             key={index}
-            onClick={props.onClick}
+            onClick={() => selectHandleFunction(props.ID, context, tool)}
             {...pipingNetworkSegment}
           />
         ),
       )}
-    </>
+    </g>
   );
 }

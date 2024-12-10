@@ -2,16 +2,17 @@ import CenterLine from "../CenterLine.tsx";
 import {
   PipingComponentProps,
   PipingNetworkSegmentProps,
-} from "../../types/diagram/Piping.ts";
-import { CenterLineProps } from "../../types/diagram/Common.ts";
+} from "../../../types/diagram/Piping.ts";
+import { CenterLineProps } from "../../../types/diagram/Common.ts";
 import { useContext } from "react";
-import PandidContext from "../../context/PandidContext.ts";
+import PandidContext from "../../../context/PandidContext.ts";
 import SvgElement from "../SvgElement.tsx";
 import StyledPath from "../StyledPath.tsx";
-import constructPath from "../../utils/Path.ts";
-import { ensureArray } from "../../utils/HelperFunctions.ts";
+import constructPath from "../../../utils/Path.ts";
+import { ensureArray } from "../../../utils/HelperFunctions.ts";
 import PipingComponent from "./PipingComponent.tsx";
-import { ClickableComponentProps } from "../../types/ClickableComponentProps.ts";
+import { ClickableComponentProps } from "../../../types/ClickableComponentProps.ts";
+import { iriFromPiping } from "../../../utils/Triplestore.ts";
 
 interface PipeSegmentProps
   extends PipingNetworkSegmentProps,
@@ -23,9 +24,11 @@ export default function PipeSegment(props: PipeSegmentProps) {
     ? props.CenterLine
     : [props.CenterLine];
 
+  const id = iriFromPiping(props).split("#")[1];
+
   return (
     <>
-      <CenterLine centerLines={centerlines} isInformationFlow={false} />
+      <CenterLine centerLines={centerlines} id={id} isInformationFlow={false} />
       {props.PipingComponent &&
         ensureArray(props.PipingComponent).map(
           (pipingComponent: PipingComponentProps, componentIndex: number) => (

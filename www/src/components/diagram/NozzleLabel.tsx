@@ -1,7 +1,10 @@
-import { GenericAttributesProps, LabelProps } from "../types/diagram/Common.ts";
-import { addTextToNozzle, serializeElement } from "../utils/SvgEdit.ts";
+import {
+  GenericAttributesProps,
+  LabelProps,
+} from "../../types/diagram/Common.ts";
+import { addTextToNozzle, serializeElement } from "../../utils/SvgEdit.ts";
 import { useContext } from "react";
-import PandidContext from "../context/PandidContext.ts";
+import PandidContext from "../../context/PandidContext.ts";
 
 interface NozzleLabelProps {
   label: LabelProps;

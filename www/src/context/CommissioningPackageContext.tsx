@@ -1,5 +1,6 @@
 import React, { createContext, useEffect, useState } from "react";
 import CommissioningPackage from "../types/CommissioningPackage.ts";
+import HighlightColors from "../types/HighlightColors.ts";
 
 export interface CommissioningPackageContextProps {
   activePackage: CommissioningPackage;
@@ -20,7 +21,7 @@ export const CommissioningPackageContextProvider: React.FC<{
   const [activePackage, setActivePackage] = useState<CommissioningPackage>({
     id: "asset:Package1",
     name: "Initial Package",
-    color: `rgb(255,0,0)`,
+    color: HighlightColors.LASER_LEMON,
     boundaryIds: [],
     internalIds: [],
     nodeIds: [],
