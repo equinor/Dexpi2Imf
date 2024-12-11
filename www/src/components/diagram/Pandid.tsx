@@ -11,6 +11,12 @@ import PandidContext from "../../context/PandidContext.ts";
 import PipeSystem from "./piping/PipeSystem.tsx";
 import { cleanTripleStore } from "../../utils/Triplestore.ts";
 import { useCommissioningPackageContext } from "../../hooks/useCommissioningPackageContext.tsx";
+import styled from "styled-components";
+
+const SVGContainer = styled.div`
+  width: 100%;
+  height: 100%;
+`;
 
 export default function Pandid() {
   const context = useCommissioningPackageContext();
@@ -61,7 +67,7 @@ export default function Pandid() {
   }, [xmlData]);
 
   return (
-    <>
+    <SVGContainer>
       {xmlData && (
         <PandidContext.Provider
           value={{
@@ -70,6 +76,9 @@ export default function Pandid() {
         >
           <svg
             viewBox={`${xmlData.PlantModel.Drawing.Extent.Min.X} ${xmlData.PlantModel.Drawing.Extent.Min.Y} ${xmlData.PlantModel.Drawing.Extent.Max.X} ${xmlData.PlantModel.Drawing.Extent.Max.Y}`}
+            width={"100%"}
+            height={"100%"}
+            preserveAspectRatio={"xMidyMid meet"}
           >
             {equipments &&
               equipments.map((equipment: EquipmentProps, index: number) => (
@@ -103,6 +112,6 @@ export default function Pandid() {
           </svg>
         </PandidContext.Provider>
       )}
-    </>
+    </SVGContainer>
   );
 }
