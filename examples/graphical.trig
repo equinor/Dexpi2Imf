@@ -7,6 +7,7 @@
 
 data:doc1234 a :Diagram ;
     :hasExtent [
+        a :Extent ;
         :minimumExtent [ :x 100 ; :y 100 ] ;
         :maximumExtent [ :x 200 ; :y 200 ]
     ] ;
@@ -22,7 +23,6 @@ data:PressureVessel-1\/Symbol a :Symbol ;
         :rotation 0
     ];
     :hasGraphics symbol:P200A .
-
 
 data:GateValve-5-node2-connector\/Symbol a :Line ;
     :hasCoordinates (
@@ -44,9 +44,11 @@ data:GateValve-5-node2-connector\/Symbol a :Line ;
     );
     :hasStyle [
         :hasStroke [
+            a :Stroke ;
             :dasharray "none"^^xsd:css ;
             :width 1.4 ;
             :color [
+                a :Color ;
                 :type :rgb ;
                 :red 255 ;
                 :green 255 ;
