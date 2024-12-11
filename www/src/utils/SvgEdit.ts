@@ -6,6 +6,47 @@ import {
   TextProps,
 } from "../types/diagram/Common.ts";
 import { calculateAngle } from "./Transformation.ts";
+import { XMLProps } from "../types/diagram/Diagram.ts";
+
+export async function noakaDexpiSvg(componentName: string) {
+  const shapeName = `/Origo/${componentName.replace("_SHAPE", "_Origo")}.svg`;
+  try {
+    const response = await fetch(shapeName);
+    if (!response.ok)
+      throw new Error(`Failed to fetch SVG for ${componentName}`);
+    const svgText = await response.text();
+    const parser = new DOMParser();
+    const svgDoc = parser.parseFromString(svgText, "image/svg+xml");
+    return svgDoc.querySelector("svg > g"); // Return the root SVG element
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+}
+
+export const preloadSVGs = async (obj: XMLProps) => {
+  const componentNames = new Set<string>();
+
+  const traverse = (node: any) => {
+    if (typeof node !== "object" || node === null) return;
+
+    if (node.ComponentName) {
+      componentNames.add(node.ComponentName);
+    }
+
+    Object.values(node).forEach(traverse);
+  };
+
+  traverse(obj);
+  const svgMap = new Map<string, Element | null>();
+
+  await Promise.all(
+    Array.from(componentNames).map(async (name: string) => {
+      svgMap.set(name, await noakaDexpiSvg(name));
+    }),
+  );
+  return svgMap;
+};
 
 export function addTextToNode(
   element: Element,
@@ -61,14 +102,20 @@ export function addTextToPipe(
 }
 
 export function addTextToNozzle(
+  element: Element,
   label: LabelProps,
   genericAttributes: GenericAttributesProps,
   height: number,
 ) {
-  const textElement = document.createElementNS(
-    "http://www.w3.org/2000/svg",
-    "text",
-  );
+  let textElement = element.querySelector(`text`);
+  if (!textElement) {
+    textElement = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "text",
+    );
+    element.append(textElement);
+  }
+  console.log("Before:", textElement);
 
   function findTextAnchor(text: TextProps) {
     switch (text.Justification) {
@@ -94,8 +141,11 @@ export function addTextToNozzle(
     "font-family": `${label.Text.Font}`,
     fill: "black",
   });
+
+  console.log("After", textElement);
+
   textElement!.textContent = genericAttributes.GenericAttribute[0].Value;
-  return textElement;
+  return element;
 }
 
 export function removeConnectionPoints(element: Element) {

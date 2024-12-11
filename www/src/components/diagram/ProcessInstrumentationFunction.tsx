@@ -5,9 +5,9 @@ import {
 } from "../../types/diagram/ProcessInstrumentationFunction.ts";
 import { useContext } from "react";
 import PandidContext from "../../context/PandidContext.ts";
-import useSerializeSvgWithoutEdits from "../../hooks/useSerializeSvgWithoutEdits.tsx";
 import { GenericAttributesProps } from "../../types/diagram/Common.ts";
 import SvgElement from "./SvgElement.tsx";
+import useSerializeNodeSvg from "../../hooks/useSerializeNodeSvg.tsx";
 
 export default function ProcessInstrumentationFunction(
   props: ProcessInstrumentationFunctionProps,
@@ -33,7 +33,7 @@ export default function ProcessInstrumentationFunction(
         ];
   }
 
-  const svg = useSerializeSvgWithoutEdits(props.ComponentName);
+  const svg = useSerializeNodeSvg(props.ComponentName, undefined);
   return (
     <>
       {svg && (

@@ -12,6 +12,7 @@ import PipeSystem from "./piping/PipeSystem.tsx";
 import { cleanTripleStore } from "../../utils/Triplestore.ts";
 import { useCommissioningPackageContext } from "../../hooks/useCommissioningPackageContext.tsx";
 import styled from "styled-components";
+import { preloadSVGs } from "../../utils/SvgEdit.ts";
 
 const SVGContainer = styled.div`
   width: 100%;
@@ -31,6 +32,7 @@ export default function Pandid() {
   const [actuatingSystem, setActuatingSystem] = useState<
     ActuatingSystemProps[]
   >([]);
+  const [svgMap, setSvgMap] = useState<Map<string, Element | null>>(new Map());
 
   const parser = new XMLParser({
     ignoreAttributes: false,
@@ -64,6 +66,14 @@ export default function Pandid() {
       xmlData.PlantModel.ProcessInstrumentationFunction,
     );
     setActuatingSystem(xmlData.PlantModel.ActuatingSystem);
+
+    // Create map from componentName to SVG
+    const initializeSvgMap = async () => {
+      const preloadedMap = await preloadSVGs(xmlData);
+      setSvgMap(preloadedMap);
+    };
+
+    initializeSvgMap();
   }, [xmlData]);
 
   return (
@@ -72,13 +82,14 @@ export default function Pandid() {
         <PandidContext.Provider
           value={{
             height: xmlData.PlantModel.Drawing.Extent.Max.Y,
+            svgMap,
+            setSvgMap,
           }}
         >
           <svg
             viewBox={`${xmlData.PlantModel.Drawing.Extent.Min.X} ${xmlData.PlantModel.Drawing.Extent.Min.Y} ${xmlData.PlantModel.Drawing.Extent.Max.X} ${xmlData.PlantModel.Drawing.Extent.Max.Y}`}
             width={"100%"}
             height={"100%"}
-            preserveAspectRatio={"xMidyMid meet"}
           >
             {equipments &&
               equipments.map((equipment: EquipmentProps, index: number) => (
