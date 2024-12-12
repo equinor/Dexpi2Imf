@@ -1,50 +1,50 @@
-import React, { useState, createContext } from "react";
-
-export interface CommissioningPackageProps {
-  id: string;
-  idsInPackage: string[];  // Example fields, adjust to your data model
-}
+import React, { createContext, useEffect, useState } from "react";
+import CommissioningPackage from "../types/CommissioningPackage.ts";
+import HighlightColors from "../enums/HighlightColors.ts";
 
 export interface CommissioningPackageContextProps {
-  activePackageId: string;
-  setActivePackageId: React.Dispatch<React.SetStateAction<string>>;
-  commissioningPackages: CommissioningPackageProps[];
+  activePackage: CommissioningPackage;
+  setActivePackage: React.Dispatch<React.SetStateAction<CommissioningPackage>>;
+  commissioningPackages: CommissioningPackage[];
   setCommissioningPackages: React.Dispatch<
-    React.SetStateAction<CommissioningPackageProps[]>
+    React.SetStateAction<CommissioningPackage[]>
   >;
-  boundaryIds: string[];
-  setboundaryIds: React.Dispatch<React.SetStateAction<string[]>>;
-  internalIds: string[];
-  setInternalIds: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
 const CommissioningPackageContext = createContext<
   CommissioningPackageContextProps | undefined
 >(undefined);
 
-export const CommissioningPackageProvider: React.FC<{
+export const CommissioningPackageContextProvider: React.FC<{
   children: React.ReactNode;
 }> = ({ children }) => {
+  const [activePackage, setActivePackage] = useState<CommissioningPackage>({
+    id: "asset:Package1",
+    name: "Initial Package",
+    color: HighlightColors.LASER_LEMON,
+    boundaryIds: [],
+    internalIds: [],
+    nodeIds: [],
+  });
   const [commissioningPackages, setCommissioningPackages] = useState<
-    CommissioningPackageProps[]
+    CommissioningPackage[]
   >([]);
-  const [boundaryIds, setboundaryIds] = useState<string[]>([]);
-  const [activePackageId, setActivePackageId] = useState<string>("");
-  const [internalIds, setInternalIds] = useState<string[]>([]);
 
-  const contextValue: CommissioningPackageContextProps = {
-    activePackageId,
-    setActivePackageId,
-    commissioningPackages,
-    setCommissioningPackages,
-    boundaryIds,
-    setboundaryIds,
-    internalIds, 
-    setInternalIds
-  };
+  useEffect(() => {
+    if (activePackage && commissioningPackages.length === 0) {
+      setCommissioningPackages([activePackage]);
+    }
+  }, [activePackage, commissioningPackages]);
 
   return (
-    <CommissioningPackageContext.Provider value={contextValue}>
+    <CommissioningPackageContext.Provider
+      value={{
+        activePackage,
+        setActivePackage,
+        commissioningPackages,
+        setCommissioningPackages,
+      }}
+    >
       {children}
     </CommissioningPackageContext.Provider>
   );

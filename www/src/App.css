@@ -1,0 +1,26 @@
+body,
+html {
+    width: 100vw;
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+html,
+body,
+#root {
+    height: 100%;
+}
+
+.boundary {
+    path {
+        stroke: red;
+    }
+}
+
+.internal {
+    path {
+        stroke: green;
+    }
+}

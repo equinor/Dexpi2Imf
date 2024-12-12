@@ -1,32 +1,38 @@
-import {
-  GenericAttributesProps,
-  PositionProps,
-} from "../types/diagram/Common.ts";
-import calculateAngleAndRotation from "../utils/Transformation.ts";
-import useSerializeNodeSvg from "../hooks/useSerializeNodeSvg.tsx";
+import { PositionProps } from "../../types/diagram/Common.ts";
+import calculateAngleAndRotation from "../../utils/Transformation.ts";
 import { useContext } from "react";
-import PandidContext from "../context/PandidContext.ts";
+import PandidContext from "../../context/PandidContext.ts";
+import styled from "styled-components";
 
-interface SvgElementProps {
+interface StyledSvgElementProps {
   id: string;
-  componentName: string;
   position?: PositionProps;
-  text?: GenericAttributesProps;
+  svg: string;
+  color: string;
 }
 
-export default function SvgElement({
+const StyledG = styled.g`
+  path {
+    stroke: ${(props) => props.color};
+    stroke-width: 5;
+    opacity: 1;
+  }
+`;
+
+export default function StyledSvgElement({
   id,
-  componentName,
   position,
-  text,
-}: SvgElementProps) {
+  svg,
+  color,
+}: StyledSvgElementProps) {
   const height = useContext(PandidContext).height;
-  const svg = useSerializeNodeSvg(componentName, text);
+
   return (
     <>
       {svg && (
-        <g
+        <StyledG
           id={id}
+          color={color}
           transform={
             position
               ? calculateAngleAndRotation(
