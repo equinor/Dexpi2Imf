@@ -4,55 +4,10 @@ import PandidContext from "../../../context/PandidContext.ts";
 import SvgElement from "../SvgElement.tsx";
 import constructPath from "../../../utils/Path.ts";
 import StyledPath from "../StyledPath.tsx";
-import useSerializeNodeSvg from "../../../hooks/useSerializeNodeSvg.tsx";
-import StyledSvgElement from "../StyledSvgElement.tsx";
 import { useCommissioningPackageContext } from "../../../hooks/useCommissioningPackageContext.tsx";
-import {
-  GenericAttributesProps,
-  PositionProps,
-} from "../../../types/diagram/Common.ts";
-import HighlightColors from "../../../enums/HighlightColors.ts";
 import { iriFromSvgNode } from "../../../utils/HelperFunctions.ts";
 import selectHandleFunction from "../../../utils/HandlerFunctionHelper.tsx";
 import ToolContext from "../../../context/ToolContext.ts";
-
-interface PipingComponentSVGProps {
-  id: string;
-  componentName: string;
-  genericAttributes: GenericAttributesProps;
-  position?: PositionProps;
-  color: HighlightColors | undefined;
-}
-
-function PipingComponentSVG({
-  id,
-  componentName,
-  genericAttributes,
-  position,
-  color,
-}: PipingComponentSVGProps) {
-  const svg = useSerializeNodeSvg(componentName, genericAttributes);
-
-  return (
-    <>
-      {color && (
-        <StyledSvgElement
-          id={id + "_highlight"}
-          position={position}
-          svg={svg}
-          color={color}
-        />
-      )}
-
-      <SvgElement
-        id={id}
-        componentName={componentName}
-        position={position}
-        text={genericAttributes}
-      />
-    </>
-  );
-}
 
 export default function PipingComponent(props: PipingComponentProps) {
   const height = useContext(PandidContext).height;
@@ -69,7 +24,6 @@ export default function PipingComponent(props: PipingComponentProps) {
   const isInActivePackage = commissioningPackage
     ? context.activePackage.id === commissioningPackage.id
     : true;
-  const color = commissioningPackage?.color;
 
   return (
     <g
@@ -78,12 +32,11 @@ export default function PipingComponent(props: PipingComponentProps) {
       }
     >
       {componentName && (
-        <PipingComponentSVG
+        <SvgElement
           id={props.ID}
           componentName={componentName}
           position={props.Position}
-          genericAttributes={props.GenericAttributes}
-          color={color}
+          text={props.GenericAttributes}
         />
       )}
       {label && (

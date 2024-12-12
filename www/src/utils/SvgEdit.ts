@@ -57,8 +57,8 @@ export function addTextToNode(
     const textElement = labelElement.querySelector("text");
     labelElement.querySelectorAll("path").forEach((e) => e.remove());
     setAttributes(textElement!, {
-      y: `${parseInt(textElement!.getAttribute("y")!) + 15}`,
-      x: `${parseInt(textElement!.getAttribute("x")!) - 75}`,
+      y: `${parseInt(textElement!.getAttribute("y")!)}`,
+      x: `${parseInt(textElement!.getAttribute("x")!) - 15}`,
       "font-size": "45px",
       fill: "black",
     });
@@ -105,17 +105,9 @@ export function addTextToNozzle(
   element: Element,
   label: LabelProps,
   genericAttributes: GenericAttributesProps,
-  height: number,
 ) {
-  let textElement = element.querySelector(`text`);
-  if (!textElement) {
-    textElement = document.createElementNS(
-      "http://www.w3.org/2000/svg",
-      "text",
-    );
-    element.append(textElement);
-  }
-  console.log("Before:", textElement);
+  const textElement = element.querySelector(`text`);
+  if (!textElement) return;
 
   function findTextAnchor(text: TextProps) {
     switch (text.Justification) {
@@ -131,18 +123,16 @@ export function addTextToNozzle(
   }
 
   setAttributes(textElement, {
-    x: `${label.Text.Position.Location.X}`,
-    y: `${height - label.Text.Position.Location.Y}`,
+    x: `5`,
+    y: `5`,
     transform: label.Text.TextAngle
-      ? `rotate(${360 - Number(label.Text.TextAngle)} ${label.Text.Position.Location.X} ${height - label.Text.Position.Location.Y})`
-      : `rotate(0 ${label.Text.Position.Location.X} ${height - label.Text.Position.Location.Y})`,
+      ? `rotate(${label.Text.TextAngle} 0 0)`
+      : `rotate(0 0 0)`,
     "font-size": `${label.Text.Height}`,
     "text-anchor": findTextAnchor(label.Text),
     "font-family": `${label.Text.Font}`,
     fill: "black",
   });
-
-  console.log("After", textElement);
 
   textElement!.textContent = genericAttributes.GenericAttribute[0].Value;
   return element;

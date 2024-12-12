@@ -17,10 +17,11 @@ export default function Equipment(props: EquipmentProps) {
   const context = useCommissioningPackageContext();
   const height = useContext(PandidContext).height;
   const tool = useContext(ToolContext).activeTool;
-  const svg = useSerializeNodeSvg(
-    props.ComponentName,
-    props.GenericAttributes[0],
-  );
+  const svg = useSerializeNodeSvg({
+    id: props.ID,
+    componentName: props.ComponentName,
+    genericAttributes: props.GenericAttributes[0],
+  });
   const nozzles: NozzleProps[] = props.Nozzle;
 
   const iri = iriFromSvgNode(props.ID);
@@ -49,7 +50,6 @@ export default function Equipment(props: EquipmentProps) {
                 color={color}
               />
             )}
-
             <g
               id={iri}
               transform={`${props.Position.Reference.X === -1 ? "rotate(-180deg)" : ""}translate(${props.Position.Location.X}, ${height - props.Position.Location.Y})`}
@@ -63,6 +63,7 @@ export default function Equipment(props: EquipmentProps) {
             <SvgElement
               key={index}
               id={nozzle.ID}
+              label={nozzle.Label}
               componentName={nozzle.ComponentName || "ND0002_SHAPE"}
               position={nozzle.Position}
               text={nozzle.GenericAttributes}

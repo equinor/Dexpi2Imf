@@ -33,7 +33,11 @@ export default function ProcessInstrumentationFunction(
         ];
   }
 
-  const svg = useSerializeNodeSvg(props.ComponentName, undefined);
+  const svg = useSerializeNodeSvg({
+    id: props.ID,
+    componentName: props.ComponentName,
+    genericAttributes: props.GenericAttributes,
+  });
   return (
     <>
       {svg && (

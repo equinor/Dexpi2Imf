@@ -1,5 +1,6 @@
 import {
   GenericAttributesProps,
+  LabelProps,
   PositionProps,
 } from "../../types/diagram/Common.ts";
 import calculateAngleAndRotation from "../../utils/Transformation.ts";
@@ -21,6 +22,8 @@ interface SvgElementProps {
   id: string;
   componentName: string;
   position?: PositionProps;
+  label?: LabelProps;
+  rotationAttribute?: string;
   text?: GenericAttributesProps;
 }
 
@@ -28,12 +31,18 @@ export default function SvgElement({
   id,
   componentName,
   position,
+  label,
   text,
 }: SvgElementProps) {
   const height = useContext(PandidContext).height;
   const context = useCommissioningPackageContext();
   const tool = useContext(ToolContext).activeTool;
-  const svg = useSerializeNodeSvg(componentName, text);
+  const svg = useSerializeNodeSvg({
+    id: id,
+    componentName: componentName,
+    label: label,
+    genericAttributes: text,
+  });
   const iri = iriFromSvgNode(id);
   const commissioningPackage = context.commissioningPackages.find((pkg) =>
     pkg.nodeIds.find((node) => node === iri),
