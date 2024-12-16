@@ -1,4 +1,4 @@
-import { SideBar, SidebarLinkProps } from "@equinor/eds-core-react";
+import { Button, Dialog, SideBar, SidebarLinkProps } from "@equinor/eds-core-react";
 import { add, boundaries, category, texture, delete_to_trash } from "@equinor/eds-icons";
 import styled from "styled-components";
 import { useContext, useState } from "react";
@@ -15,6 +15,7 @@ export default function EditorSidebar() {
   const context = useCommissioningPackageContext();
   const { activeTool, setActiveTool } = useContext(ToolContext);
   const [isCreationOpen, setIsCreationOpen] = useState<boolean>(false);
+  const [isDeleteOpen, setIsDeleteOpen] = useState<boolean>(false);
 
   const menuItemsInitial: SidebarLinkProps[] = [
     {
@@ -37,7 +38,7 @@ export default function EditorSidebar() {
       label: "Delete commissioning package",
       icon: delete_to_trash,
       onClick: () => {
-        context?.deleteCommissioningPackage(context.activePackage.id);
+        setIsDeleteOpen(true);
       },
     },
   ];
@@ -47,6 +48,38 @@ export default function EditorSidebar() {
         open={isCreationOpen}
         setOpen={setIsCreationOpen}
       />
+      <Dialog
+          open={isDeleteOpen}
+          onClose={() => {
+            setIsDeleteOpen(false);
+          }}
+      >
+        <Dialog.Header>
+          <Dialog.Title>
+            Delete Commissioning Package
+          </Dialog.Title>
+        </Dialog.Header>
+        <Dialog.Content>
+          {`Do you really want to delete commissioning package with id `}
+          <strong>{context?.activePackage.id}</strong>
+          {`?`}
+        </Dialog.Content>
+        <Dialog.Actions>
+          <Button
+              onClick={() => {
+                context?.deleteCommissioningPackage(context.activePackage.id);
+              }}
+          >
+            Delete
+          </Button>
+          <Button variant="ghost" onClick={() => {
+            setIsDeleteOpen(false);
+          }}
+          >
+            Cancel
+          </Button>
+        </Dialog.Actions>
+      </Dialog>
       <StyledSideBar>
         <SideBar>
           <SideBar.Content>
