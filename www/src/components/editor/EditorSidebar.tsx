@@ -68,6 +68,7 @@ export default function EditorSidebar() {
           <Button
               onClick={() => {
                 context?.deleteCommissioningPackage(context.activePackage.id);
+                setIsDeleteOpen(false);
               }}
           >
             Delete

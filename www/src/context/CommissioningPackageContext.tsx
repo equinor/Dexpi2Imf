@@ -38,7 +38,12 @@ export const CommissioningPackageContextProvider: React.FC<{
   }, [activePackage, commissioningPackages]);
 
   const deleteCommissioningPackage = (packageId: string) => {
-    console.log("Deleting package with id: ", packageId);
+    setCommissioningPackages((prevPackages) =>
+      prevPackages.filter((pkg) => pkg.id !== packageId)
+    );
+    if (activePackage.id === packageId) {
+      setActivePackage(commissioningPackages[0]);
+    }
   };
 
   return (
