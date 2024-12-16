@@ -9,6 +9,7 @@ export interface CommissioningPackageContextProps {
   setCommissioningPackages: React.Dispatch<
     React.SetStateAction<CommissioningPackage[]>
   >;
+  deleteCommissioningPackage: (packageId: string) => void;
 }
 
 const CommissioningPackageContext = createContext<
@@ -36,6 +37,10 @@ export const CommissioningPackageContextProvider: React.FC<{
     }
   }, [activePackage, commissioningPackages]);
 
+  const deleteCommissioningPackage = (packageId: string) => {
+    console.log("Deleting package with id: ", packageId);
+  };
+
   return (
     <CommissioningPackageContext.Provider
       value={{
@@ -43,6 +48,7 @@ export const CommissioningPackageContextProvider: React.FC<{
         setActivePackage,
         commissioningPackages,
         setCommissioningPackages,
+        deleteCommissioningPackage,
       }}
     >
       {children}

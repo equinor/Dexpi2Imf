@@ -1,5 +1,5 @@
 import { SideBar, SidebarLinkProps } from "@equinor/eds-core-react";
-import { add, boundaries, category, texture } from "@equinor/eds-icons";
+import { add, boundaries, category, texture, delete_to_trash } from "@equinor/eds-icons";
 import styled from "styled-components";
 import { useContext, useState } from "react";
 import Tools from "../../enums/Tools.ts";
@@ -32,6 +32,13 @@ export default function EditorSidebar() {
         setActiveTool(Tools.INSIDEBOUNDARY);
       },
       active: activeTool === Tools.INSIDEBOUNDARY,
+    },
+    {
+      label: "Delete commissioning package",
+      icon: delete_to_trash,
+      onClick: () => {
+        context?.deleteCommissioningPackage(context.activePackage.id);
+      },
     },
   ];
   return (
