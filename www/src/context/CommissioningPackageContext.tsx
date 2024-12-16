@@ -16,20 +16,20 @@ const CommissioningPackageContext = createContext<
   CommissioningPackageContextProps | undefined
 >(undefined);
 
+const createInitialPackage = (): CommissioningPackage => ({
+  id: "asset:Package1",
+  name: "Initial Package",
+  color: HighlightColors.LASER_LEMON,
+  boundaryIds: [],
+  internalIds: [],
+  nodeIds: [],
+});
+
 export const CommissioningPackageContextProvider: React.FC<{
   children: React.ReactNode;
 }> = ({ children }) => {
-  const [activePackage, setActivePackage] = useState<CommissioningPackage>({
-    id: "asset:Package1",
-    name: "Initial Package",
-    color: HighlightColors.LASER_LEMON,
-    boundaryIds: [],
-    internalIds: [],
-    nodeIds: [],
-  });
-  const [commissioningPackages, setCommissioningPackages] = useState<
-    CommissioningPackage[]
-  >([]);
+  const [activePackage, setActivePackage] = useState<CommissioningPackage>(createInitialPackage());
+  const [commissioningPackages, setCommissioningPackages] = useState<CommissioningPackage[]>([]);
 
   useEffect(() => {
     if (activePackage && commissioningPackages.length === 0) {
@@ -38,11 +38,36 @@ export const CommissioningPackageContextProvider: React.FC<{
   }, [activePackage, commissioningPackages]);
 
   const deleteCommissioningPackage = (packageId: string) => {
+    if (commissioningPackages.length === 1) {
+      const initialPackage = createInitialPackage();
+      setCommissioningPackages([initialPackage]);
+      setActivePackage(initialPackage);
+    } else {
+      setCommissioningPackages((prevPackages) => {
+        const updatedPackages = prevPackages.filter((pkg) => pkg.id !== packageId);
+        if (activePackage.id === packageId) {
+          setActivePackage(updatedPackages[0]);
+        }
+        return updatedPackages;
+      });
+    }
+
     setCommissioningPackages((prevPackages) =>
-      prevPackages.filter((pkg) => pkg.id !== packageId)
+      prevPackages.map((pkg) => ({
+          ...pkg,
+          boundaryIds: pkg.boundaryIds.filter((id) => id !== packageId),
+          internalIds: pkg.internalIds.filter((id) => id !== packageId),
+          nodeIds: pkg.nodeIds.filter((id) => id !== packageId),
+      }))
     );
+
     if (activePackage.id === packageId) {
-      setActivePackage(commissioningPackages[0]);
+      setActivePackage((prevPackage) => ({
+          ...prevPackage,
+          boundaryIds: [],
+          internalIds: [],
+          nodeIds: [],
+      }));
     }
   };
 
