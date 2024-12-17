@@ -3,8 +3,6 @@ import { ReactElement, RefObject, useEffect, useRef, useState } from "react";
 
 interface ZoomableSVGWrapperProps {
   containerRef: RefObject<HTMLDivElement>;
-  svgWidth: number;
-  svgHeight: number;
   children: ReactElement;
 }
 
