@@ -88,13 +88,7 @@ export default function Pandid() {
           }}
         >
           {" "}
-          <ZoomableSVGWrapper
-            containerRef={containerRef}
-            svgWidth={parseInt(String(xmlData.PlantModel.Drawing.Extent.Max.X))}
-            svgHeight={parseInt(
-              String(xmlData.PlantModel.Drawing.Extent.Max.Y),
-            )}
-          >
+          <ZoomableSVGWrapper containerRef={containerRef}>
             <svg
               viewBox={`${xmlData.PlantModel.Drawing.Extent.Min.X} ${xmlData.PlantModel.Drawing.Extent.Min.Y} ${xmlData.PlantModel.Drawing.Extent.Max.X} ${xmlData.PlantModel.Drawing.Extent.Max.Y}`}
               width={"100%"}
