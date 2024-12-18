@@ -1,7 +1,8 @@
-### AB#insert_story_number_here
 [Pull requests practices for the SSI team](https://github.com/equinor/ssi-infrastructure/blob/main/docs/pr_practices.md)
 
 ## Aim of the PR
+This PR fixes AB#insert_workitem_number_here.
+
 Please describe the goal of this pull request.
 
 ## Implementation 
@@ -14,7 +15,6 @@ Please provide an overview of how this change achieves the goal.
 - [ ] This change requires a documentation update
 
 If the changes impact any dependent services then provide details.
-
 ## How Has This Been Tested?
 Please describe the tests that you ran to verify that your changes works as expected.
 
