@@ -1,5 +1,5 @@
-import { SideBar, SidebarLinkProps } from "@equinor/eds-core-react";
-import { add, boundaries, category, texture } from "@equinor/eds-icons";
+import {Button, Checkbox, Dialog, SideBar, SidebarLinkProps, Table} from "@equinor/eds-core-react";
+import { add, boundaries, category, texture, delete_to_trash } from "@equinor/eds-icons";
 import styled from "styled-components";
 import { useContext, useState } from "react";
 import Tools from "../../enums/Tools.ts";
@@ -15,6 +15,28 @@ export default function EditorSidebar() {
   const context = useCommissioningPackageContext();
   const { activeTool, setActiveTool } = useContext(ToolContext);
   const [isCreationOpen, setIsCreationOpen] = useState<boolean>(false);
+  const [isDeleteOpen, setIsDeleteOpen] = useState<boolean>(false);
+  const [selectedPackages, setSelectedPackages] = useState<Set<string>>(new Set());
+
+  const handleCheckboxChange = (packageId: string) => {
+    setSelectedPackages((prevSelected) => {
+      const newSelected = new Set(prevSelected);
+      if (newSelected.has(packageId)) {
+        newSelected.delete(packageId);
+      } else {
+        newSelected.add(packageId);
+      }
+      return newSelected;
+    });
+  };
+
+  const handleDelete = () => {
+    selectedPackages.forEach((packageId) => {
+      context?.deleteCommissioningPackage(packageId);
+    });
+    setIsDeleteOpen(false);
+    setSelectedPackages(new Set());
+  };
 
   const menuItemsInitial: SidebarLinkProps[] = [
     {
@@ -33,6 +55,13 @@ export default function EditorSidebar() {
       },
       active: activeTool === Tools.INSIDEBOUNDARY,
     },
+    {
+      label: "Delete commissioning packages",
+      icon: delete_to_trash,
+      onClick: () => {
+        setIsDeleteOpen(true);
+      },
+    },
   ];
   return (
     <>
@@ -40,6 +69,47 @@ export default function EditorSidebar() {
         open={isCreationOpen}
         setOpen={setIsCreationOpen}
       />
+      <Dialog
+          open={isDeleteOpen}
+          onClose={() => {
+            setIsDeleteOpen(false);
+          }}
+      >
+        <Dialog.Header>
+          <Dialog.Title>
+            Delete Commissioning Packages
+          </Dialog.Title>
+        </Dialog.Header>
+        <Dialog.CustomContent>
+          Choose which commissioning packages to delete:
+          {context?.commissioningPackages.map((commpckg) => (
+              <Table>
+                <Table.Row>
+                  <Table.Cell>
+                    <Checkbox
+                      key={commpckg.id}
+                      label={commpckg.name}
+                      name="multiple"
+                      checked={selectedPackages.has(commpckg.id)}
+                      onChange={() => handleCheckboxChange(commpckg.id)}
+                  />
+                  </Table.Cell>
+                </Table.Row>
+              </Table>
+          ))}
+        </Dialog.CustomContent>
+        <Dialog.Actions>
+          <Button onClick={handleDelete}>
+            Delete
+          </Button>
+          <Button variant="ghost" onClick={() => {
+            setIsDeleteOpen(false);
+          }}
+          >
+            Cancel
+          </Button>
+        </Dialog.Actions>
+      </Dialog>
       <StyledSideBar>
         <SideBar>
           <SideBar.Content>
