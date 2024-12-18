@@ -82,7 +82,7 @@ export default function Pandid() {
       {xmlData && (
         <PandidContext.Provider
           value={{
-            height: parseInt(xmlData.PlantModel.Drawing.Extent.Max.Y),
+            height: Number(xmlData.PlantModel.Drawing.Extent.Max.Y),
             svgMap,
             setSvgMap,
           }}
