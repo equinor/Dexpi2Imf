@@ -6,11 +6,11 @@
 
 # This example is based on the examples in <file>
 
-document:doc1234 a :Document ;
+document:doc1234 a :PID ;
     :visualisedAs graphic:doc1234 .
 
-document:PressureVessel-1 :hasGraphics graphic:PressureVessel-1 .
-document:GateValve-5-node2-connector :hasGraphics graphic:GateValve-5-node2-connector .
+document:PressureVessel-1 :visualisedAs graphic:PressureVessel-1 .
+document:GateValve-5-node2-connector :visualisedAs graphic:GateValve-5-node2-connector .
 
 
 graphic:doc1234 a :Diagram ;
@@ -30,7 +30,7 @@ graphic:PressureVessel-1 a :Symbol ;
         :y 210 ;
         :rotation 0
     ];
-    :hasGraphics symbol:P200A .
+    :hasGraphics symbol:PT002A .
 
 graphic:GateValve-5-node2-connector a :Line ;
     :hasCoordinates (
