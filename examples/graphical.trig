@@ -1,21 +1,29 @@
 @prefix : <http://example.org/> .
 @prefix css: <https://www.w3.org/TR/css-color-4#> .
-@prefix data: <http://example.org/data/> .
+@prefix graphic: <http://example.org/data/> .
+@prefix document: <https://assetid.equinor.com/plantx/document/> .
 @prefix symbol: <https://example.com/pca/symbol/> .
 
 # This example is based on the examples in <file>
 
-data:doc1234 a :Diagram ;
+document:doc1234 a :Document ;
+    :visualisedAs graphic:doc1234 .
+
+document:PressureVessel-1 :hasGraphics graphic:PressureVessel-1 .
+document:GateValve-5-node2-connector :hasGraphics graphic:GateValve-5-node2-connector .
+
+
+graphic:doc1234 a :Diagram ;
     :hasExtent [
         a :Extent ;
         :minimumExtent [ :x 100 ; :y 100 ] ;
         :maximumExtent [ :x 200 ; :y 200 ]
     ] ;
-        :hasSymbol data:PressureVessel-1\/Symbol ;
-        :hasLine data:GateValve-5-node2-connector\/Symbol .
+        :hasSymbol graphic:PressureVessel-1 ;
+        :hasLine graphic:GateValve-5-node2-connector .
 
 
-data:PressureVessel-1\/Symbol a :Symbol ;
+graphic:PressureVessel-1 a :Symbol ;
     :hasPosition [
         a :Position ;
         :x 390 ;
@@ -24,7 +32,7 @@ data:PressureVessel-1\/Symbol a :Symbol ;
     ];
     :hasGraphics symbol:P200A .
 
-data:GateValve-5-node2-connector\/Symbol a :Line ;
+graphic:GateValve-5-node2-connector a :Line ;
     :hasCoordinates (
         [
             a :Position ;
