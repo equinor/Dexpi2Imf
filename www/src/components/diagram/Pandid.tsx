@@ -1,6 +1,6 @@
 import { XMLParser } from "fast-xml-parser";
 import Equipment from "./Equipment.tsx";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ProcessInstrumentationFunction from "./ProcessInstrumentationFunction.tsx";
 import { EquipmentProps, XMLProps } from "../../types/diagram/Diagram.ts";
 import { PipingNetworkSystemProps } from "../../types/diagram/Piping.ts";
@@ -13,6 +13,7 @@ import { cleanTripleStore } from "../../utils/Triplestore.ts";
 import { useCommissioningPackageContext } from "../../hooks/useCommissioningPackageContext.tsx";
 import styled from "styled-components";
 import { preloadSVGs } from "../../utils/SvgEdit.ts";
+import ZoomableSVGWrapper from "../editor/ZoomableSVGWrapper.tsx";
 
 const SVGContainer = styled.div`
   width: 100%;
@@ -33,6 +34,7 @@ export default function Pandid() {
     ActuatingSystemProps[]
   >([]);
   const [svgMap, setSvgMap] = useState<Map<string, Element | null>>(new Map());
+  const containerRef = useRef<HTMLDivElement>(null);
 
   const parser = new XMLParser({
     ignoreAttributes: false,
@@ -72,55 +74,57 @@ export default function Pandid() {
       const preloadedMap = await preloadSVGs(xmlData);
       setSvgMap(preloadedMap);
     };
-
     initializeSvgMap();
   }, [xmlData]);
 
   return (
-    <SVGContainer>
+    <SVGContainer ref={containerRef}>
       {xmlData && (
         <PandidContext.Provider
           value={{
-            height: xmlData.PlantModel.Drawing.Extent.Max.Y,
+            height: Number(xmlData.PlantModel.Drawing.Extent.Max.Y),
             svgMap,
             setSvgMap,
           }}
         >
-          <svg
-            viewBox={`${xmlData.PlantModel.Drawing.Extent.Min.X} ${xmlData.PlantModel.Drawing.Extent.Min.Y} ${xmlData.PlantModel.Drawing.Extent.Max.X} ${xmlData.PlantModel.Drawing.Extent.Max.Y}`}
-            width={"100%"}
-            height={"100%"}
-          >
-            {equipments &&
-              equipments.map((equipment: EquipmentProps, index: number) => (
-                <Equipment key={index} {...equipment} />
-              ))}
-            {pipingNetworkSystems &&
-              pipingNetworkSystems.map(
-                (
-                  pipingNetworkSystem: PipingNetworkSystemProps,
-                  index: number,
-                ) => <PipeSystem key={index} {...pipingNetworkSystem} />,
-              )}
-            {processInstrumentationFunction &&
-              processInstrumentationFunction.map(
-                (
-                  processInstrumentationFunction: ProcessInstrumentationFunctionProps,
-                  index: number,
-                ) => (
-                  <ProcessInstrumentationFunction
-                    key={index}
-                    {...processInstrumentationFunction}
-                  />
-                ),
-              )}
-            {actuatingSystem &&
-              actuatingSystem.map(
-                (actuatingSystem: ActuatingSystemProps, index: number) => (
-                  <ActuatingSystem key={index} {...actuatingSystem} />
-                ),
-              )}
-          </svg>
+          {" "}
+          <ZoomableSVGWrapper containerRef={containerRef}>
+            <svg
+              viewBox={`${xmlData.PlantModel.Drawing.Extent.Min.X} ${xmlData.PlantModel.Drawing.Extent.Min.Y} ${xmlData.PlantModel.Drawing.Extent.Max.X} ${xmlData.PlantModel.Drawing.Extent.Max.Y}`}
+              width={"100%"}
+              height={"100%"}
+            >
+              {equipments &&
+                equipments.map((equipment: EquipmentProps, index: number) => (
+                  <Equipment key={index} {...equipment} />
+                ))}
+              {pipingNetworkSystems &&
+                pipingNetworkSystems.map(
+                  (
+                    pipingNetworkSystem: PipingNetworkSystemProps,
+                    index: number,
+                  ) => <PipeSystem key={index} {...pipingNetworkSystem} />,
+                )}
+              {processInstrumentationFunction &&
+                processInstrumentationFunction.map(
+                  (
+                    processInstrumentationFunction: ProcessInstrumentationFunctionProps,
+                    index: number,
+                  ) => (
+                    <ProcessInstrumentationFunction
+                      key={index}
+                      {...processInstrumentationFunction}
+                    />
+                  ),
+                )}
+              {actuatingSystem &&
+                actuatingSystem.map(
+                  (actuatingSystem: ActuatingSystemProps, index: number) => (
+                    <ActuatingSystem key={index} {...actuatingSystem} />
+                  ),
+                )}
+            </svg>
+          </ZoomableSVGWrapper>
         </PandidContext.Provider>
       )}
     </SVGContainer>

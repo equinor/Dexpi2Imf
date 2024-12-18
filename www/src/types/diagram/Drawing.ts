@@ -11,8 +11,8 @@ export interface DrawingProps {
 export type PresentationProps = object;
 
 export interface XYProps {
-  X: number;
-  Y: number;
+  X: string;
+  Y: string;
 }
 
 export interface ExtentProps {
