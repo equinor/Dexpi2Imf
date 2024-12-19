@@ -1,0 +1,68 @@
+@prefix : <http://example.org/> .
+@prefix css: <https://www.w3.org/TR/css-color-4#> .
+@prefix graphic: <http://example.org/data/> .
+@prefix document: <https://assetid.equinor.com/plantx/document/> .
+@prefix symbol: <https://example.com/pca/symbol/> .
+
+# This example is based on the examples in <file>
+
+document:doc1234 a :PID ;
+    :visualisedAs graphic:doc1234 .
+
+document:PressureVessel-1 :visualisedAs graphic:PressureVessel-1 .
+document:GateValve-5-node2-connector :visualisedAs graphic:GateValve-5-node2-connector .
+
+
+graphic:doc1234 a :Diagram ;
+    :hasExtent [
+        a :Extent ;
+        :minimumExtent [ :x 100 ; :y 100 ] ;
+        :maximumExtent [ :x 200 ; :y 200 ]
+    ] ;
+        :hasSymbol graphic:PressureVessel-1 ;
+        :hasLine graphic:GateValve-5-node2-connector .
+
+
+graphic:PressureVessel-1 a :Symbol ;
+    :hasPosition [
+        a :Position ;
+        :x 390 ;
+        :y 210 ;
+        :rotation 0
+    ];
+    :hasGraphics symbol:PT002A .
+
+graphic:GateValve-5-node2-connector a :Line ;
+    :hasCoordinates (
+        [
+            a :Position ;
+            :x 646 ;
+            :y 188
+        ] 
+        [            
+            a :Position ;
+            :x 646 ;
+            :y 180
+        ]
+        [            
+            a :Position ;
+            :x 412 ;
+            :y 180
+        ]
+    );
+    :hasStyle [
+        :hasStroke [
+            a :Stroke ;
+            :dasharray "none"^^xsd:css ;
+            :width 1.4 ;
+            :color [
+                a :Color ;
+                :type :rgb ;
+                :red 255 ;
+                :green 255 ;
+                :blue 255
+            ] ;
+            :color "rgb(255,255,255)"^^css:funcdef-rgb
+        ]
+    ] ;
+    :hasStyle "stroke-dasharray:none; stroke:rgb(255,255,255); stroke-width:1.4"^^css:style .
