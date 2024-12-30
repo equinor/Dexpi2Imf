@@ -1,11 +1,12 @@
-import {Button, Checkbox, Dialog, SideBar, SidebarLinkProps, Table} from "@equinor/eds-core-react";
+import { SideBar, SidebarLinkProps } from "@equinor/eds-core-react";
 import { add, boundaries, category, texture, delete_to_trash } from "@equinor/eds-icons";
 import styled from "styled-components";
-import { useContext, useState, useEffect } from "react";
+import { useContext, useState } from "react";
 import Tools from "../../enums/Tools.ts";
 import { useCommissioningPackageContext } from "../../hooks/useCommissioningPackageContext.tsx";
 import ToolContext from "../../context/ToolContext.ts";
 import CommissioningPackageCreationDialog from "./CommissioningPackageCreationDialog.tsx";
+import CommissioningPackageDeletionDialog from "./CommissioningPackageDeletionDialog.tsx";
 
 const StyledSideBar = styled.div`
   height: 100%;
@@ -16,33 +17,6 @@ export default function EditorSidebar() {
   const { activeTool, setActiveTool } = useContext(ToolContext);
   const [isCreationOpen, setIsCreationOpen] = useState<boolean>(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState<boolean>(false);
-  const [selectedPackages, setSelectedPackages] = useState<Set<string>>(new Set());
-
-  const handleCheckboxChange = (packageId: string) => {
-    setSelectedPackages((prevSelected) => {
-      const newSelected = new Set(prevSelected);
-      if (newSelected.has(packageId)) {
-        newSelected.delete(packageId);
-      } else {
-        newSelected.add(packageId);
-      }
-      return newSelected;
-    });
-  };
-
-  const handleDelete = () => {
-    selectedPackages.forEach((packageId) => {
-      context?.deleteCommissioningPackage(packageId);
-    });
-    setIsDeleteOpen(false);
-    setSelectedPackages(new Set());
-  };
-
-  useEffect(() => {
-    if (isDeleteOpen && context?.activePackage) {
-      setSelectedPackages(new Set([context.activePackage.id]));
-    }
-  }, [isDeleteOpen, context?.activePackage]);
 
   const menuItemsInitial: SidebarLinkProps[] = [
     {
@@ -69,63 +43,17 @@ export default function EditorSidebar() {
       },
     },
   ];
+
   return (
     <>
       <CommissioningPackageCreationDialog
         open={isCreationOpen}
         setOpen={setIsCreationOpen}
       />
-      <Dialog
-          open={isDeleteOpen}
-          onClose={() => {
-            setIsDeleteOpen(false);
-          }}
-      >
-        <Dialog.Header>
-          <Dialog.Title>
-            Delete Commissioning Packages
-          </Dialog.Title>
-        </Dialog.Header>
-        <Dialog.CustomContent>
-          Choose which commissioning packages to delete:
-          {context?.commissioningPackages.map((commpckg) => (
-              <Table key={commpckg.id}>
-                <Table.Row>
-                  <Table.Cell>
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                      <div
-                          style={{
-                            width: '16px',
-                            height: '16px',
-                            backgroundColor: commpckg.color,
-                            borderRadius: '50%',
-                            marginRight: '8px',
-                          }}
-                      ></div>
-                      <Checkbox
-                          label={commpckg.name}
-                          name="multiple"
-                          checked={selectedPackages.has(commpckg.id)}
-                          onChange={() => handleCheckboxChange(commpckg.id)}
-                      />
-                    </div>
-                  </Table.Cell>
-                </Table.Row>
-              </Table>
-          ))}
-        </Dialog.CustomContent>
-        <Dialog.Actions>
-          <Button onClick={handleDelete}>
-            Delete
-          </Button>
-          <Button variant="ghost" onClick={() => {
-            setIsDeleteOpen(false);
-          }}
-          >
-            Cancel
-          </Button>
-        </Dialog.Actions>
-      </Dialog>
+      <CommissioningPackageDeletionDialog
+        isOpen={isDeleteOpen}
+        onClose={() => setIsDeleteOpen(false)}
+      />
       <StyledSideBar>
         <SideBar>
           <SideBar.Content>
