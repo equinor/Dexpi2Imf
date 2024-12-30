@@ -44,31 +44,33 @@ const DeleteCommissioningPackageDialog: React.FC<DeleteDialogProps> = ({ isOpen,
       </Dialog.Header>
       <Dialog.CustomContent>
         Choose which commissioning packages to delete:
-        {context?.commissioningPackages.map((commpckg) => (
-          <Table key={commpckg.id}>
-            <Table.Row>
-              <Table.Cell>
-                <div style={{ display: 'flex', alignItems: 'center' }}>
-                  <div
-                    style={{
-                      width: '16px',
-                      height: '16px',
-                      backgroundColor: commpckg.color,
-                      borderRadius: '50%',
-                      marginRight: '8px',
-                    }}
-                  ></div>
-                  <Checkbox
-                    label={commpckg.name}
-                    name="multiple"
-                    checked={selectedPackages.has(commpckg.id)}
-                    onChange={() => handleCheckboxChange(commpckg.id)}
-                  />
-                </div>
-              </Table.Cell>
-            </Table.Row>
-          </Table>
-        ))}
+        <Table>
+          <Table.Body>
+            {context?.commissioningPackages.map((commpckg) => (
+                <Table.Row key={commpckg.id}>
+                  <Table.Cell>
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                      <div
+                          style={{
+                            width: '16px',
+                            height: '16px',
+                            backgroundColor: commpckg.color,
+                            borderRadius: '50%',
+                            marginRight: '8px',
+                          }}
+                      ></div>
+                      <Checkbox
+                          label={commpckg.name}
+                          name="multiple"
+                          checked={selectedPackages.has(commpckg.id)}
+                          onChange={() => handleCheckboxChange(commpckg.id)}
+                      />
+                    </div>
+                  </Table.Cell>
+                </Table.Row>
+            ))}
+          </Table.Body>
+        </Table>
       </Dialog.CustomContent>
       <Dialog.Actions>
         <Button onClick={handleDelete}>Delete</Button>
