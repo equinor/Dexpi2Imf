@@ -83,16 +83,26 @@ export default function EditorSidebar() {
         <Dialog.CustomContent>
           Choose which commissioning packages to delete:
           {context?.commissioningPackages.map((commpckg) => (
-              <Table>
+              <Table key={commpckg.id}>
                 <Table.Row>
                   <Table.Cell>
-                    <Checkbox
-                      key={commpckg.id}
-                      label={commpckg.name}
-                      name="multiple"
-                      checked={selectedPackages.has(commpckg.id)}
-                      onChange={() => handleCheckboxChange(commpckg.id)}
-                  />
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                      <div
+                          style={{
+                            width: '16px',
+                            height: '16px',
+                            backgroundColor: commpckg.color,
+                            borderRadius: '50%',
+                            marginRight: '8px',
+                          }}
+                      ></div>
+                      <Checkbox
+                          label={commpckg.name}
+                          name="multiple"
+                          checked={selectedPackages.has(commpckg.id)}
+                          onChange={() => handleCheckboxChange(commpckg.id)}
+                      />
+                    </div>
                   </Table.Cell>
                 </Table.Row>
               </Table>
