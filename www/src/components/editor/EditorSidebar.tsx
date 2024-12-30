@@ -1,7 +1,7 @@
 import {Button, Checkbox, Dialog, SideBar, SidebarLinkProps, Table} from "@equinor/eds-core-react";
 import { add, boundaries, category, texture, delete_to_trash } from "@equinor/eds-icons";
 import styled from "styled-components";
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import Tools from "../../enums/Tools.ts";
 import { useCommissioningPackageContext } from "../../hooks/useCommissioningPackageContext.tsx";
 import ToolContext from "../../context/ToolContext.ts";
@@ -37,6 +37,12 @@ export default function EditorSidebar() {
     setIsDeleteOpen(false);
     setSelectedPackages(new Set());
   };
+
+  useEffect(() => {
+    if (isDeleteOpen && context?.activePackage) {
+      setSelectedPackages(new Set([context.activePackage.id]));
+    }
+  }, [isDeleteOpen, context?.activePackage]);
 
   const menuItemsInitial: SidebarLinkProps[] = [
     {
