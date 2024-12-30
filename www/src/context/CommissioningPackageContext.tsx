@@ -1,6 +1,7 @@
 import React, { createContext, useEffect, useState } from "react";
 import CommissioningPackage from "../types/CommissioningPackage.ts";
 import HighlightColors from "../enums/HighlightColors.ts";
+import { deletePackageFromTripleStore } from "../utils/Triplestore.ts";
 
 export interface CommissioningPackageContextProps {
   activePackage: CommissioningPackage;
@@ -37,8 +38,10 @@ export const CommissioningPackageContextProvider: React.FC<{
     }
   }, [activePackage, commissioningPackages]);
 
-  const deleteCommissioningPackage = (packageId: string) => {
-    if (commissioningPackages.length === 1) {
+  const deleteCommissioningPackage = async (packageId: string) => {
+      await deletePackageFromTripleStore(packageId);
+
+      if (commissioningPackages.length === 1) {
       const initialPackage = createInitialPackage();
       setCommissioningPackages([initialPackage]);
       setActivePackage(initialPackage);
