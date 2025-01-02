@@ -29,6 +29,10 @@ const DeleteCommissioningPackageDialog: React.FC<DeleteDialogProps> = ({ isOpen,
     });
     onClose();
     setSelectedPackages(new Set());
+
+    if (context?.commissioningPackages.length === 0) {
+      context?.createInitialPackage();
+    }
   };
 
   useEffect(() => {

@@ -11,13 +11,14 @@ export interface CommissioningPackageContextProps {
     React.SetStateAction<CommissioningPackage[]>
   >;
   deleteCommissioningPackage: (packageId: string) => void;
+  createInitialPackage: () => CommissioningPackage;
 }
 
 const CommissioningPackageContext = createContext<
   CommissioningPackageContextProps | undefined
 >(undefined);
 
-const createInitialPackage = (): CommissioningPackage => ({
+export const createInitialPackage = (): CommissioningPackage => ({
   id: "asset:Package1",
   name: "Initial Package",
   color: HighlightColors.LASER_LEMON,
@@ -82,6 +83,7 @@ export const CommissioningPackageContextProvider: React.FC<{
         commissioningPackages,
         setCommissioningPackages,
         deleteCommissioningPackage,
+        createInitialPackage,
       }}
     >
       {children}
