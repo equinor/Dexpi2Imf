@@ -1,11 +1,12 @@
 import { SideBar, SidebarLinkProps } from "@equinor/eds-core-react";
-import { add, boundaries, category, texture } from "@equinor/eds-icons";
+import { add, boundaries, category, texture, delete_to_trash } from "@equinor/eds-icons";
 import styled from "styled-components";
 import { useContext, useState } from "react";
 import Tools from "../../enums/Tools.ts";
 import { useCommissioningPackageContext } from "../../hooks/useCommissioningPackageContext.tsx";
 import ToolContext from "../../context/ToolContext.ts";
 import CommissioningPackageCreationDialog from "./CommissioningPackageCreationDialog.tsx";
+import CommissioningPackageDeletionDialog from "./CommissioningPackageDeletionDialog.tsx";
 
 const StyledSideBar = styled.div`
   height: 100%;
@@ -15,6 +16,7 @@ export default function EditorSidebar() {
   const context = useCommissioningPackageContext();
   const { activeTool, setActiveTool } = useContext(ToolContext);
   const [isCreationOpen, setIsCreationOpen] = useState<boolean>(false);
+  const [isDeleteOpen, setIsDeleteOpen] = useState<boolean>(false);
 
   const menuItemsInitial: SidebarLinkProps[] = [
     {
@@ -33,12 +35,24 @@ export default function EditorSidebar() {
       },
       active: activeTool === Tools.INSIDEBOUNDARY,
     },
+    {
+      label: "Delete commissioning packages",
+      icon: delete_to_trash,
+      onClick: () => {
+        setIsDeleteOpen(true);
+      },
+    },
   ];
+
   return (
     <>
       <CommissioningPackageCreationDialog
         open={isCreationOpen}
         setOpen={setIsCreationOpen}
+      />
+      <CommissioningPackageDeletionDialog
+        isOpen={isDeleteOpen}
+        onClose={() => setIsDeleteOpen(false)}
       />
       <StyledSideBar>
         <SideBar>

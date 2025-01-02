@@ -30,6 +30,13 @@ export async function cleanTripleStore() {
   await queryTripleStore(deleteInternal, Method.Post);
 }
 
+export async function deletePackageFromTripleStore(packageId: string) {
+  const deleteBoundary = "DELETE WHERE { ?boundary comp:isBoundaryOf " + packageId + " . }";
+  const deleteInternal = "DELETE WHERE { ?internal comp:isInPackage " + packageId + " . }";
+  await queryTripleStore(deleteBoundary, Method.Post);
+  await queryTripleStore(deleteInternal, Method.Post);
+}
+
 export async function getNodeIdsInCommissioningPackage(packageIri: string) {
   const query =
     "SELECT ?node WHERE{?node comp:isInPackage " + packageIri + " .}";
