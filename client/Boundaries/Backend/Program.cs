@@ -19,7 +19,7 @@ app.UseHttpsRedirection();
 //Add node as boundary
 app.MapPost("/nodes/{nodeId}/boundary", (string nodeId) =>
 {
-    throw new NotImplementedException("TODO: Not implemented..."); 
+    throw new NotImplementedException("TODO: Not implemented...");
 });
 
 //Add node as internal
