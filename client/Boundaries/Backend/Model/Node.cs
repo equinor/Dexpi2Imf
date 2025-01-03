@@ -1,8 +1,13 @@
 ﻿namespace Backend.Model;
 
+public enum NodeType
+{
+    None,
+    Internal,
+    Boundary
+}
 public class Node
 {
     public required string Id { get; set; }
-    public bool Internal { get; set; }
-    public bool Boundary { get; set; }
+    public required NodeType Type { get; set; }
 }
