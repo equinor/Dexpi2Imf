@@ -17,25 +17,25 @@ app.UseHttpsRedirection();
 
 
 //Add node as boundary
-app.MapPost("/nodes/{nodeId}/boundary", (string nodeId) =>
+app.MapPost("/commissioning-package/{packageId}/boundary/{nodeId}", (string packageId, string nodeId) =>
 {
     throw new NotImplementedException("TODO: Not implemented...");
 });
 
 //Add node as internal
-app.MapPost("/nodes/{nodeId}internal", (string nodeId) =>
+app.MapPost("/commissioning-package/{packageId}/internal/{nodeId}", (string packageId, string nodeId) =>
 {
     throw new NotImplementedException("TODO: Not implemented...");
 });
 
 //Remove node as boundary
-app.MapDelete("/nodes/{nodeId}/boundary", (string nodeId) =>
+app.MapDelete("/commissioning-package/{packageId}/boundary/{nodeId}", (string packageId, string nodeId) =>
 {
     throw new NotImplementedException("TODO: Not implemented...");
 });
 
 //Remove node as internal 
-app.MapDelete("/nodes/{nodeId}/internal", (string nodeId) =>
+app.MapDelete("/commissioning-package/{packageId}/internal/{nodeId}", (string packageId, string nodeId) =>
 {
     throw new NotImplementedException("TODO: Not implemented...");
 });
@@ -48,6 +48,12 @@ app.MapGet("/nodes/{nodeId}/adjacent", (string nodeId) =>
 
 //Add commissioning package
 app.MapPost("/commissioning-package", (CommissioningPackage commissioningPackage) =>
+{
+    throw new NotImplementedException("TODO: Not implemented...");
+});
+
+//Update commissioning package - updating information like name, color and id while persisting the calculated internal nodes, and boundaries. 
+app.MapPut("/commissioning-package", (CommissioningPackage commissioningPackage) =>
 {
     throw new NotImplementedException("TODO: Not implemented...");
 });
