@@ -32,14 +32,14 @@ class Program
         {
             xslt.Load(xr, xsltSettings, new XmlUrlResolver());//added
         }
-        
+
         MathExtensions mathExtensions = new MathExtensions();
         ColorExtensions colorExtensions = new ColorExtensions();
-        
+
         XsltArgumentList xsltArgs = new XsltArgumentList();
         xsltArgs.AddExtensionObject("urn:math", mathExtensions);
         xsltArgs.AddExtensionObject("urn:color", colorExtensions);
-        
+
         XmlWriterSettings settings = xslt.OutputSettings?.Clone() ?? throw new Exception("No xslt output settings found!");
         settings.OmitXmlDeclaration = true;
 
