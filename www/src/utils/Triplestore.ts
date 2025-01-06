@@ -30,10 +30,10 @@ export async function addCommissioningPackage(
   packageName: string,
   packageColor: HighlightColors,
 ) {
-  let sparql = `INSERT DATA {
+  const sparql = `INSERT DATA {
   <${packageIri}> comp:hasColor "${packageColor}" .
   <${packageIri}> comp:hasName "${packageName}" .
-`;
+  }`;
   await queryTripleStore(sparql, Method.Post);
 }
 
