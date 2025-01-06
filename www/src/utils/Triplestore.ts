@@ -54,7 +54,7 @@ export async function deletePackageFromTripleStore(packageId: string) {
 export async function getCommissioningPackage(packageIri: string) {
   const query = `
     SELECT ?node ?name ?color WHERE {
-      OPTIONAL { ?node comp:isInPackage <${packageIri}> . }
+      OPTIONAL { ?node comp:isInPackage ${packageIri} . }
       <${packageIri}> comp:hasName ?name .
       <${packageIri}> comp:hasColor ?color .
     }
