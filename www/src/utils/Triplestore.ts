@@ -1,4 +1,5 @@
 import HighlightColors from "../enums/HighlightColors.ts";
+import CommissioningPackage from "../types/CommissioningPackage.ts";
 
 export enum BoundaryActions {
   Insert = "INSERT DATA ",
@@ -35,13 +36,6 @@ export async function addCommissioningPackage(
   <${packageIri}> comp:hasName "${packageName}" .
   }`;
   await queryTripleStore(sparql, Method.Post);
-}
-
-export async function cleanTripleStore() {
-  const deleteBoundary = `DELETE WHERE { ?boundary comp:isBoundaryOf ?p . }`;
-  const deleteInternal = `DELETE WHERE { ?internal comp:isInPackage ?p . }`;
-  await queryTripleStore(deleteBoundary, Method.Post);
-  await queryTripleStore(deleteInternal, Method.Post);
 }
 
 export async function deletePackageFromTripleStore(packageId: string) {
@@ -125,3 +119,42 @@ export async function queryTripleStore(
 export const assetIri = (id: string) => {
   return `https://assetid.equinor.com/plantx#${id}`;
 };
+
+export async function getAllCommissioningPackages() {
+  const query = `
+    SELECT ?package ?name ?color WHERE {
+      ?package comp:hasName ?name .
+      ?package comp:hasColor ?color .
+    }
+  `;
+  const result = await queryTripleStore(query, Method.Get);
+  const packages = parseAllCommissioningPackages(result!);
+
+  for (const pkg of packages) {
+    const nodeQuery = `SELECT ?node WHERE { ?node comp:isInPackage ${pkg.id} . }`;
+    const nodeResult = await queryTripleStore(nodeQuery, Method.Get);
+    pkg.nodeIds = parseNodeIds(nodeResult!);
+  }
+
+  return packages;
+}
+
+function parseAllCommissioningPackages(result: string): CommissioningPackage[] {
+  const lines = result.split("\n").filter((line) => line.trim() !== "").slice(1);
+  return lines.map((line) => {
+    const [packageIri, name, color] = line.split("\t").map((value) => value.replace(/"/g, "").trim());
+    return {
+      id: packageIri.replace(/[<>]/g, ""),
+      name: name,
+      color: Object.values(HighlightColors).includes(color as HighlightColors) ? color as HighlightColors : HighlightColors.LASER_LEMON,
+      nodeIds: [],
+      boundaryIds: [],
+      internalIds: [],
+    };
+  });
+}
+
+function parseNodeIds(result: string) {
+  const lines = result.split("\n").filter((line) => line.trim() !== "").slice(1);
+  return lines.map((line) => line.replace(/[<>]/g, "").trim());
+}
