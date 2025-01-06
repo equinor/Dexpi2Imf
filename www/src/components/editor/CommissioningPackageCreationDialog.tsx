@@ -11,7 +11,7 @@ import React, { useEffect, useState } from "react";
 import CommissioningPackage from "../../types/CommissioningPackage.ts";
 import { useCommissioningPackageContext } from "../../hooks/useCommissioningPackageContext.tsx";
 import ColorPreview from "./ColorPreview.tsx";
-import  {makeSparqlAndUpdateStore } from "../../utils/Triplestore.ts";
+import { addCommissioningPackage } from "../../utils/Triplestore.ts";
 
 const ColorSelectionContainer = styled.div`
   display: flex;
@@ -48,13 +48,10 @@ export default function CommissioningPackageCreationDialog(
       nodeIds: [],
     };
 
-    await makeSparqlAndUpdateStore(
+    await addCommissioningPackage(
       newPackage.id,
-      "INSERT DATA",
       newPackage.name,
       newPackage.color,
-      null,
-      null,
     );
 
     setCommissioningPackage(newPackage);

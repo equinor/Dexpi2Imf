@@ -1,7 +1,7 @@
 import React, { createContext, useEffect, useState } from "react";
 import CommissioningPackage from "../types/CommissioningPackage.ts";
 import HighlightColors from "../enums/HighlightColors.ts";
-import {deletePackageFromTripleStore, makeSparqlAndUpdateStore} from "../utils/Triplestore.ts";
+import { deletePackageFromTripleStore, addCommissioningPackage } from "../utils/Triplestore.ts";
 
 export interface CommissioningPackageContextProps {
   activePackage: CommissioningPackage;
@@ -37,13 +37,10 @@ export const CommissioningPackageContextProvider: React.FC<{
     if (activePackage && commissioningPackages.length === 0) {
       setCommissioningPackages([activePackage]);
       (async () => {
-        await makeSparqlAndUpdateStore(
+        await addCommissioningPackage(
           activePackage.id,
-          "INSERT DATA",
           activePackage.name,
           activePackage.color,
-          null,
-          null,
         );
       })();
     }
@@ -54,13 +51,10 @@ export const CommissioningPackageContextProvider: React.FC<{
 
     if (commissioningPackages.length === 1) {
       const initialPackage = createInitialPackage();
-      await makeSparqlAndUpdateStore(
+      await addCommissioningPackage(
         initialPackage.id,
-        "INSERT DATA",
         initialPackage.name,
         initialPackage.color,
-        null,
-        null,
       );
       setCommissioningPackages([initialPackage]);
       setActivePackage(initialPackage);

@@ -1,7 +1,7 @@
 import {
   BoundaryActions,
   BoundaryParts,
-  getNodeIdsInCommissioningPackage,
+  getCommissioningPackage,
   makeSparqlAndUpdateStore,
 } from "./Triplestore.ts";
 import Tools from "../enums/Tools.ts";
@@ -65,11 +65,11 @@ export async function handleAddInternal(
     );
   }
   // Then, update the nodes in package
-  const nodeIds = await getNodeIdsInCommissioningPackage(
+  const commissioningPackage = await getCommissioningPackage(
     context.activePackage.id,
   );
   context.setActivePackage((prev) => {
-    const updatedPackage = { ...prev, nodeIds: nodeIds };
+    const updatedPackage = { ...prev, nodeIds: commissioningPackage.nodeIds, name: commissioningPackage.name, color: commissioningPackage.color};
 
     context.setCommissioningPackages((prevPackages) =>
       prevPackages.map((pkg) =>
@@ -124,11 +124,11 @@ export async function handleAddBoundary(
     );
   }
   // Then, update the nodes in package
-  const nodeIds = await getNodeIdsInCommissioningPackage(
+  const commissioningPackage = await getCommissioningPackage(
     context.activePackage.id,
   );
   context.setActivePackage((prev) => {
-    const updatedPackage = { ...prev, nodeIds: nodeIds };
+    const updatedPackage = { ...prev, nodeIds: commissioningPackage.nodeIds, name: commissioningPackage.name, color: commissioningPackage.color};
 
     context.setCommissioningPackages((prevPackages) =>
       prevPackages.map((pkg) =>
