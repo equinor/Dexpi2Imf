@@ -1,3 +1,5 @@
+import HighlightColors from "../enums/HighlightColors.ts";
+
 export enum BoundaryActions {
   Insert = "INSERT DATA ",
   Delete = "DELETE DATA ",
@@ -23,6 +25,18 @@ export async function makeSparqlAndUpdateStore(
   await queryTripleStore(sparql, Method.Post);
 }
 
+export async function addCommissioningPackage(
+  packageIri: string,
+  packageName: string,
+  packageColor: HighlightColors,
+) {
+  let sparql = `INSERT DATA {
+  <${packageIri}> comp:hasColor "${packageColor}" .
+  <${packageIri}> comp:hasName "${packageName}" .
+`;
+  await queryTripleStore(sparql, Method.Post);
+}
+
 export async function cleanTripleStore() {
   const deleteBoundary = `DELETE WHERE { ?boundary comp:isBoundaryOf ?p . }`;
   const deleteInternal = `DELETE WHERE { ?internal comp:isInPackage ?p . }`;
@@ -37,11 +51,45 @@ export async function deletePackageFromTripleStore(packageId: string) {
   await queryTripleStore(deleteInternal, Method.Post);
 }
 
-export async function getNodeIdsInCommissioningPackage(packageIri: string) {
-  const query =
-    "SELECT ?node WHERE{?node comp:isInPackage " + packageIri + " .}";
+export async function getCommissioningPackage(packageIri: string) {
+  const query = `
+    SELECT ?node ?name ?color WHERE {
+      OPTIONAL { ?node comp:isInPackage <${packageIri}> . }
+      <${packageIri}> comp:hasName ?name .
+      <${packageIri}> comp:hasColor ?color .
+    }
+  `;
   const result = await queryTripleStore(query, Method.Get);
-  return parseNodeIds(result!);
+  return parseCommissioningPackage(result!, packageIri);
+}
+
+function parseCommissioningPackage(result: string, packageIri: string) {
+  const lines = result.split("\n").filter((line) => line.trim() !== "").slice(1);
+  const nodes: string[] = [];
+  let name = "Unnamed Package";
+  let color = HighlightColors.LASER_LEMON;
+
+  lines.forEach((line) => {
+    const [node, nameValue, colorValue] = line.split("\t").map((value) => value.replace(/"/g, "").trim());
+    if (node) {
+      nodes.push(node.replace(/[<>]/g, ""));
+    }
+    if (nameValue) {
+      name = nameValue;
+    }
+    if (colorValue) {
+      color = Object.values(HighlightColors).includes(colorValue as HighlightColors) ? colorValue as HighlightColors : HighlightColors.LASER_LEMON;
+    }
+  });
+
+  return {
+    id: packageIri.replace(/[<>]/g, ""),
+    color: color,
+    name: name,
+    boundaryIds: [],
+    internalIds: [],
+    nodeIds: nodes,
+  };
 }
 
 export async function queryTripleStore(
@@ -65,7 +113,7 @@ export async function queryTripleStore(
     try {
       await fetch("http://localhost:12110/datastores/boundaries/sparql", {
         method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        headers: {"Content-Type": "application/x-www-form-urlencoded"},
         body: `update=${sparql}`,
       });
     } catch (error) {
@@ -74,64 +122,6 @@ export async function queryTripleStore(
   }
 }
 
-export async function adjacentToInternal(pipeIri: string) {
-  const query = `SELECT ?node WHERE { <${pipeIri}> imf:adjacentTo ?node . ?node comp:isInPackage ?p .}`;
-  const result = await queryTripleStore(query, Method.Get);
-  const internalNeighbours = parseNodeIds(result!);
-  return internalNeighbours.length > 0;
-}
-
-/*export async function updateTable() {
-  const queryInside = `
-    SELECT * WHERE {
-        ?node comp:isInPackage ${completionPackageIri} . 
-        ?node <http://noaka.org/rdl/SequenceAssignmentClass> ?o .
-        { ?node <http://sandbox.dexpi.org/rdl/TagNameAssignmentClass> ?tagNr. }
-            UNION
-            { ?node <http://noaka.org/rdl/ItemTagAssignmentClass> ?tagNr. }
-          FILTER NOT EXISTS { ?node a imf:Terminal . }
-
-    }
-    `;
-
-  const queryBoundary = `
-    SELECT DISTINCT  ?node ?tagNr WHERE {
-    ?node comp:isBoundaryOf ${completionPackageIri} . 
-    ?node <http://noaka.org/rdl/SequenceAssignmentClass> ?o .
-        {
-            { ?node <http://sandbox.dexpi.org/rdl/TagNameAssignmentClass> ?tagNr. }
-            UNION
-            { ?node <http://noaka.org/rdl/ObjectDisplayNameAssignmentClass> ?tagNr. }
-            UNION 
-            { ?node <http://noaka.org/rdl/ItemTagAssignmentClass> ?tagNr. }
-        }
-    }
-    `;
-  let resultInside = parseNodeIds(
-    (await queryTripleStore(queryInside, Method.Get)) as string,
-  );
-  const resultBoundary = parseNodeIds(
-    (await queryTripleStore(queryBoundary, Method.Get)) as string,
-  );
-
-  if (resultInside.length > 0 || resultBoundary.length > 0) {
-    // Remove elements that are in both inside boundary and boundary
-    resultInside = resultInside.filter(
-      (nodeId: string) => !resultBoundary.includes(nodeId),
-    );
-    //displayTablesAndDownloadButton(resultInside, 'Inside Boundary', 'inside-boundary-table-container', resultBoundary, 'Boundary', 'boundary-table-container');
-  } else {
-    // Clear the container if there are no nodes
-    //document.getElementById('inside-boundary-table-container').innerHTML = '';
-    //document.getElementById('boundary-table-container').innerHTML = '';
-  }
-}*/
-
 export const assetIri = (id: string) => {
   return `https://assetid.equinor.com/plantx#${id}`;
 };
-
-function parseNodeIds(result: string) {
-  const lines = result.split("\n").filter((line) => line.trim() !== "");
-  return lines.slice(1).map((line) => line.replace(/[<>]/g, ""));
-}
