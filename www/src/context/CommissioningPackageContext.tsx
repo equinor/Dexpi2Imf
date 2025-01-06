@@ -1,7 +1,7 @@
 import React, { createContext, useEffect, useState } from "react";
 import CommissioningPackage from "../types/CommissioningPackage.ts";
 import HighlightColors from "../enums/HighlightColors.ts";
-import { deletePackageFromTripleStore } from "../utils/Triplestore.ts";
+import {deletePackageFromTripleStore, makeSparqlAndUpdateStore} from "../utils/Triplestore.ts";
 
 export interface CommissioningPackageContextProps {
   activePackage: CommissioningPackage;
@@ -29,21 +29,39 @@ export const createInitialPackage = (): CommissioningPackage => ({
 
 export const CommissioningPackageContextProvider: React.FC<{
   children: React.ReactNode;
-}> = ({ children }) => {
+}> = ( {children }) => {
   const [activePackage, setActivePackage] = useState<CommissioningPackage>(createInitialPackage());
   const [commissioningPackages, setCommissioningPackages] = useState<CommissioningPackage[]>([]);
 
   useEffect(() => {
     if (activePackage && commissioningPackages.length === 0) {
       setCommissioningPackages([activePackage]);
+      (async () => {
+        await makeSparqlAndUpdateStore(
+          activePackage.id,
+          "INSERT DATA",
+          activePackage.name,
+          activePackage.color,
+          null,
+          null,
+        );
+      })();
     }
   }, [activePackage, commissioningPackages]);
 
   const deleteCommissioningPackage = async (packageId: string) => {
-      await deletePackageFromTripleStore(packageId);
+    await deletePackageFromTripleStore(packageId);
 
-      if (commissioningPackages.length === 1) {
+    if (commissioningPackages.length === 1) {
       const initialPackage = createInitialPackage();
+      await makeSparqlAndUpdateStore(
+        initialPackage.id,
+        "INSERT DATA",
+        initialPackage.name,
+        initialPackage.color,
+        null,
+        null,
+      );
       setCommissioningPackages([initialPackage]);
       setActivePackage(initialPackage);
     } else {
@@ -58,19 +76,19 @@ export const CommissioningPackageContextProvider: React.FC<{
 
     setCommissioningPackages((prevPackages) =>
       prevPackages.map((pkg) => ({
-          ...pkg,
-          boundaryIds: pkg.boundaryIds.filter((id) => id !== packageId),
-          internalIds: pkg.internalIds.filter((id) => id !== packageId),
-          nodeIds: pkg.nodeIds.filter((id) => id !== packageId),
+        ...pkg,
+        boundaryIds: pkg.boundaryIds.filter((id) => id !== packageId),
+        internalIds: pkg.internalIds.filter((id) => id !== packageId),
+        nodeIds: pkg.nodeIds.filter((id) => id !== packageId),
       }))
     );
 
     if (activePackage.id === packageId) {
       setActivePackage((prevPackage) => ({
-          ...prevPackage,
-          boundaryIds: [],
-          internalIds: [],
-          nodeIds: [],
+        ...prevPackage,
+        boundaryIds: [],
+        internalIds: [],
+        nodeIds: [],
       }));
     }
   };
