@@ -41,12 +41,17 @@ export default function Pandid() {
     attributeNamePrefix: "",
   });
 
-  // Step 1: Clean triplestore on mount
+// Step 1: Clean triplestore on initial app load
   useEffect(() => {
-    (async () => {
-      await cleanTripleStore();
-      context.setCommissioningPackages([]);
-    })();
+    const cleanTripleStoreOnStartup = async () => {
+      const isCleaned = localStorage.getItem("isTripleStoreCleaned");
+      if (!isCleaned) {
+        await cleanTripleStore();
+        context.setCommissioningPackages([]);
+        localStorage.setItem("isTripleStoreCleaned", "true");
+      }
+    };
+    cleanTripleStoreOnStartup();
   }, []);
 
   // Step 2: Read XML file from disk, parse as XMLProps
