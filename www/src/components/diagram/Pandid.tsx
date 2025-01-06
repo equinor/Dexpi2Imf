@@ -9,7 +9,7 @@ import { ActuatingSystemProps } from "../../types/diagram/ActuatingSystem.ts";
 import ActuatingSystem from "./ActuatingSystem.tsx";
 import PandidContext from "../../context/PandidContext.ts";
 import PipeSystem from "./piping/PipeSystem.tsx";
-import { cleanTripleStore } from "../../utils/Triplestore.ts";
+import { getAllCommissioningPackages } from "../../utils/Triplestore.ts";
 import { useCommissioningPackageContext } from "../../hooks/useCommissioningPackageContext.tsx";
 import styled from "styled-components";
 import { preloadSVGs } from "../../utils/SvgEdit.ts";
@@ -41,17 +41,12 @@ export default function Pandid() {
     attributeNamePrefix: "",
   });
 
-// Step 1: Clean triplestore on initial app load
+// Step 1: Fetch existing commissioning packages on initial app load
   useEffect(() => {
-    const cleanTripleStoreOnStartup = async () => {
-      const isCleaned = localStorage.getItem("isTripleStoreCleaned");
-      if (!isCleaned) {
-        await cleanTripleStore();
-        context.setCommissioningPackages([]);
-        localStorage.setItem("isTripleStoreCleaned", "true");
-      }
-    };
-    cleanTripleStoreOnStartup();
+    (async () => {
+      const packages = await getAllCommissioningPackages();
+      context.setCommissioningPackages(packages);
+    })();
   }, []);
 
   // Step 2: Read XML file from disk, parse as XMLProps
