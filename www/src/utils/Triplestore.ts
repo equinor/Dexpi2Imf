@@ -131,20 +131,11 @@ export async function getAllCommissioningPackages() {
   const packages = parseAllCommissioningPackages(result!);
 
   for (const pkg of packages) {
-    const nodeQuery = `
-      SELECT ?node ?type WHERE {
-        ?node comp:isInPackage ${pkg.id} .
-        OPTIONAL { ?node comp:isBoundaryOf ${pkg.id} . BIND("boundary" AS ?type) }
-        OPTIONAL { ?node comp:isInPackage ${pkg.id} . BIND("insideBoundary" AS ?type) }
-      }
-    `;
+    const nodeQuery = `SELECT ?node WHERE { ?node comp:isInPackage ${pkg.id} . }`;
     const nodeResult = await queryTripleStore(nodeQuery, Method.Get);
-    const { boundaryIds, internalIds } = parseNodeIds(nodeResult!);
-    pkg.boundaryIds = boundaryIds;
-    pkg.internalIds = internalIds;
+    pkg.nodeIds = parseNodeIds(nodeResult!);
   }
 
-  console.log(packages);
   return packages;
 }
 
@@ -165,17 +156,5 @@ function parseAllCommissioningPackages(result: string): CommissioningPackage[] {
 
 function parseNodeIds(result: string) {
   const lines = result.split("\n").filter((line) => line.trim() !== "").slice(1);
-  const boundaryIds: string[] = [];
-  const internalIds: string[] = [];
-
-  lines.forEach((line) => {
-    const [nodeId, type] = line.split("\t").map((value) => value.replace(/[<>"]/g, "").trim());
-    if (type === "boundary") {
-      boundaryIds.push(nodeId);
-    } else if (type === "insideBoundary") {
-      internalIds.push(nodeId);
-    }
-  });
-
-  return { boundaryIds, internalIds };
+  return lines.map((line) => line.replace(/[<>]/g, "").trim());
 }
