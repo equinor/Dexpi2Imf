@@ -54,7 +54,7 @@ export async function queryTripleStore(
     try {
       await fetch("http://localhost:12110/datastores/boundaries/sparql", {
         method: "POST",
-        headers: {"Content-Type": "application/x-www-form-urlencoded"},
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: `update=${sparql}`,
       });
     } catch (error) {
