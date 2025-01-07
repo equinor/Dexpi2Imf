@@ -29,7 +29,7 @@ export const createInitialPackage = (): CommissioningPackage => ({
 
 export const CommissioningPackageContextProvider: React.FC<{
   children: React.ReactNode;
-}> = ( {children }) => {
+}> = ({children }) => {
   const [activePackage, setActivePackage] = useState<CommissioningPackage>(createInitialPackage());
   const [commissioningPackages, setCommissioningPackages] = useState<CommissioningPackage[]>([]);
 

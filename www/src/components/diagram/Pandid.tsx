@@ -41,7 +41,7 @@ export default function Pandid() {
     attributeNamePrefix: "",
   });
 
-// Step 1: Fetch existing commissioning packages on initial app load
+// Step 1: Fetch existing commissioning packages
   useEffect(() => {
     (async () => {
       const packages = await getAllCommissioningPackages();
