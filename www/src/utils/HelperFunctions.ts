@@ -1,5 +1,4 @@
 import { CommissioningPackageContextProps } from "../context/CommissioningPackageContext.tsx";
-import { assetIri } from "./Triplestore.ts";
 import { PipingNetworkSegmentProps } from "../types/diagram/Piping.ts";
 
 export function ensureArray<T>(value: T | T[]): T[] {
@@ -14,13 +13,6 @@ export const isInternal = (
   id: string,
   context: CommissioningPackageContextProps,
 ) => context.activePackage.internalIds.includes(id);
-export const isInPackage = (
-  id: string,
-  context: CommissioningPackageContextProps,
-) =>
-  context.activePackage.nodeIds
-    ? context.activePackage.nodeIds.includes(assetIri(id))
-    : false;
 
 export function iriFromSvgNode(id: string) {
   return `https://assetid.equinor.com/plantx#${id}`;

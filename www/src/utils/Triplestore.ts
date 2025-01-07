@@ -81,8 +81,10 @@ export async function addCommissioningPackage(
 
 export async function getCommissioningPackage(packageIri: string) {
   const query = `
-    SELECT ?node ?name ?color WHERE {
+    SELECT ?node ?name ?color ?type WHERE {
       OPTIONAL { ?node comp:isInPackage ${packageIri} . }
+      OPTIONAL { ?node comp:isBoundaryOf ${packageIri} . BIND("boundary" AS ?type) }
+      OPTIONAL { ?node comp:isInPackage ${packageIri} . BIND("insideBoundary" AS ?type) }
       <${packageIri}> comp:hasName ?name .
       <${packageIri}> comp:hasColor ?color .
     }
@@ -93,14 +95,19 @@ export async function getCommissioningPackage(packageIri: string) {
 
 function parseCommissioningPackage(result: string, packageIri: string) {
   const lines = result.split("\n").filter((line) => line.trim() !== "").slice(1);
-  const nodes: string[] = [];
+  const boundaryIds: string[] = [];
+  const internalIds: string[] = [];
   let name = "Unnamed Package";
   let color = HighlightColors.LASER_LEMON;
 
   lines.forEach((line) => {
-    const [node, nameValue, colorValue] = line.split("\t").map((value) => value.replace(/"/g, "").trim());
+    const [node, nameValue, colorValue, type] = line.split("\t").map((value) => value.replace(/[<>"]/g, "").trim());
     if (node) {
-      nodes.push(node.replace(/[<>]/g, ""));
+      if (type === "boundary") {
+        boundaryIds.push(node);
+      } else if (type === "insideBoundary") {
+        internalIds.push(node);
+      }
     }
     if (nameValue) {
       name = nameValue;
@@ -114,9 +121,8 @@ function parseCommissioningPackage(result: string, packageIri: string) {
     id: packageIri.replace(/[<>]/g, ""),
     color: color,
     name: name,
-    boundaryIds: [],
-    internalIds: [],
-    nodeIds: nodes,
+    boundaryIds: boundaryIds,
+    internalIds: internalIds,
   };
 }
 
@@ -131,9 +137,17 @@ export async function getAllCommissioningPackages() {
   const packages = parseAllCommissioningPackages(result!);
 
   for (const pkg of packages) {
-    const nodeQuery = `SELECT ?node WHERE { ?node comp:isInPackage ${pkg.id} . }`;
+    const nodeQuery = `
+      SELECT ?node ?type WHERE {
+        ?node comp:isInPackage ${pkg.id} .
+        OPTIONAL { ?node comp:isBoundaryOf ${pkg.id} . BIND("boundary" AS ?type) }
+        OPTIONAL { ?node comp:isInPackage ${pkg.id} . BIND("insideBoundary" AS ?type) }
+      }
+    `;
     const nodeResult = await queryTripleStore(nodeQuery, Method.Get);
-    pkg.nodeIds = parseNodeIds(nodeResult!);
+    const { boundaryIds, internalIds } = parseNodeIds(nodeResult!);
+    pkg.boundaryIds = boundaryIds;
+    pkg.internalIds = internalIds;
   }
 
   return packages;
@@ -147,7 +161,6 @@ function parseAllCommissioningPackages(result: string): CommissioningPackage[] {
       id: packageIri.replace(/[<>]/g, ""),
       name: name,
       color: Object.values(HighlightColors).includes(color as HighlightColors) ? color as HighlightColors : HighlightColors.LASER_LEMON,
-      nodeIds: [],
       boundaryIds: [],
       internalIds: [],
     };
@@ -156,5 +169,17 @@ function parseAllCommissioningPackages(result: string): CommissioningPackage[] {
 
 function parseNodeIds(result: string) {
   const lines = result.split("\n").filter((line) => line.trim() !== "").slice(1);
-  return lines.map((line) => line.replace(/[<>]/g, "").trim());
+  const boundaryIds: string[] = [];
+  const internalIds: string[] = [];
+
+  lines.forEach((line) => {
+    const [node, type] = line.split("\t").map((value) => value.replace(/[<>"]/g, "").trim());
+    if (type === "boundary") {
+      boundaryIds.push(node);
+    } else if (type === "insideBoundary") {
+      internalIds.push(node);
+    }
+  });
+
+  return { boundaryIds, internalIds };
 }

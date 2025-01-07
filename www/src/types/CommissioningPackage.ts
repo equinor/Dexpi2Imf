@@ -6,5 +6,4 @@ export default interface CommissioningPackage {
   color: HighlightColors;
   boundaryIds: string[];
   internalIds: string[];
-  nodeIds: string[];
 }

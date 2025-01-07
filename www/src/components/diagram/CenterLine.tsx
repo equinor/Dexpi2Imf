@@ -25,7 +25,7 @@ export default function CenterLine(props: CenterLineComponentProps) {
   if (props.id) {
     iri = iriFromSvgNode(props.id);
     const commissioningPackage = context.commissioningPackages.find((pkg) =>
-      pkg.nodeIds.find((node) => node === iri),
+      pkg.boundaryIds.includes(iri) || pkg.internalIds.includes(iri),
     );
     color = commissioningPackage?.color;
   }

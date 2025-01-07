@@ -24,7 +24,6 @@ export const createInitialPackage = (): CommissioningPackage => ({
   color: HighlightColors.LASER_LEMON,
   boundaryIds: [],
   internalIds: [],
-  nodeIds: [],
 });
 
 export const CommissioningPackageContextProvider: React.FC<{
@@ -73,7 +72,6 @@ export const CommissioningPackageContextProvider: React.FC<{
         ...pkg,
         boundaryIds: pkg.boundaryIds.filter((id) => id !== packageId),
         internalIds: pkg.internalIds.filter((id) => id !== packageId),
-        nodeIds: pkg.nodeIds.filter((id) => id !== packageId),
       }))
     );
 
@@ -82,7 +80,6 @@ export const CommissioningPackageContextProvider: React.FC<{
         ...prevPackage,
         boundaryIds: [],
         internalIds: [],
-        nodeIds: [],
       }));
     }
   };

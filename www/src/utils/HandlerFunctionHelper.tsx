@@ -1,4 +1,5 @@
 import {
+  assetIri,
   BoundaryActions,
   BoundaryParts,
   getCommissioningPackage,
@@ -27,11 +28,7 @@ export async function handleAddInternal(
   context: CommissioningPackageContextProps,
 ) {
   // If element is already inside
-  if (context.activePackage.internalIds.includes(id)) {
-    context.setActivePackage((prev) => ({
-      ...prev,
-      internalIds: prev.internalIds.filter((item) => item !== id),
-    }));
+  if (context.activePackage.internalIds.includes(assetIri(id))) {
     await makeSparqlAndUpdateStore(
       id,
       BoundaryActions.Delete,
@@ -40,11 +37,7 @@ export async function handleAddInternal(
     );
   } else {
     // If the clicked element is a boundary, remove it as a boundary
-    if (context.activePackage.boundaryIds.includes(id)) {
-      context.setActivePackage((prev) => ({
-        ...prev,
-        boundaryIds: prev.boundaryIds.filter((item) => item !== id),
-      }));
+    if (context.activePackage.boundaryIds.includes(assetIri(id))) {
       await makeSparqlAndUpdateStore(
         id,
         BoundaryActions.Delete,
@@ -53,10 +46,6 @@ export async function handleAddInternal(
       );
     }
     // Then, add it as an internal element
-    context.setActivePackage((prev) => ({
-      ...prev,
-      internalIds: prev.internalIds.concat(id),
-    }));
     await makeSparqlAndUpdateStore(
       id,
       BoundaryActions.Insert,
@@ -69,7 +58,13 @@ export async function handleAddInternal(
     context.activePackage.id,
   );
   context.setActivePackage((prev) => {
-    const updatedPackage = { ...prev, nodeIds: commissioningPackage.nodeIds, name: commissioningPackage.name, color: commissioningPackage.color};
+    const updatedPackage = {
+      ...prev,
+      boundaryIds: commissioningPackage.boundaryIds,
+      internalIds: commissioningPackage.internalIds,
+      name: commissioningPackage.name,
+      color: commissioningPackage.color
+    };
 
     context.setCommissioningPackages((prevPackages) =>
       prevPackages.map((pkg) =>
@@ -86,11 +81,7 @@ export async function handleAddBoundary(
   context: CommissioningPackageContextProps,
 ) {
   // If the element is already a boundary, remove it as boundary
-  if (context.activePackage.boundaryIds.includes(id)) {
-    context.setActivePackage((prev) => ({
-      ...prev,
-      boundaryIds: prev.boundaryIds.filter((item) => item !== id),
-    }));
+  if (context.activePackage.boundaryIds.includes(assetIri(id))) {
     await makeSparqlAndUpdateStore(
       id,
       BoundaryActions.Delete,
@@ -100,11 +91,7 @@ export async function handleAddBoundary(
   } else {
     // If element is not already a boundary, add it as boundary.
     // If it is internal, remove it as internal.
-    if (context.activePackage.internalIds.includes(id)) {
-      context.setActivePackage((prev) => ({
-        ...prev,
-        internalIds: prev.internalIds.filter((item) => item !== id),
-      }));
+    if (context.activePackage.internalIds.includes(assetIri(id))) {
       await makeSparqlAndUpdateStore(
         id,
         BoundaryActions.Delete,
@@ -112,10 +99,6 @@ export async function handleAddBoundary(
         context.activePackage.id,
       );
     }
-    context.setActivePackage((prev) => ({
-      ...prev,
-      boundaryIds: prev.boundaryIds.concat(id),
-    }));
     await makeSparqlAndUpdateStore(
       id,
       BoundaryActions.Insert,
@@ -128,7 +111,13 @@ export async function handleAddBoundary(
     context.activePackage.id,
   );
   context.setActivePackage((prev) => {
-    const updatedPackage = { ...prev, nodeIds: commissioningPackage.nodeIds, name: commissioningPackage.name, color: commissioningPackage.color};
+    const updatedPackage = {
+      ...prev,
+      boundaryIds: commissioningPackage.boundaryIds,
+      internalIds: commissioningPackage.internalIds,
+      name: commissioningPackage.name,
+      color: commissioningPackage.color
+    };
 
     context.setCommissioningPackages((prevPackages) =>
       prevPackages.map((pkg) =>

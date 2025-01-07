@@ -19,7 +19,7 @@ export default function PipingComponent(props: PipingComponentProps) {
 
   const iri = iriFromSvgNode(props.ID);
   const commissioningPackage = context.commissioningPackages.find((pkg) =>
-    pkg.nodeIds.find((node) => node === iri),
+    pkg.boundaryIds.includes(iri) || pkg.internalIds.includes(iri),
   );
   const isInActivePackage = commissioningPackage
     ? context.activePackage.id === commissioningPackage.id
