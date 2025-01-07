@@ -14,7 +14,7 @@ public class DatalogCreatorTests
             new IriTools.IriReference("https://assetid.equinor.com/plantx#PlateHeatExchanger-1"),
             new IriTools.IriReference("https://assetid.equinor.com/plantx#ReciprocatingPump-1")
         });
-        Assert.Equal( $$""" 
+        Assert.Equal($$""" 
 
                       <{{graphIri}}> [?node] :- 
                           rdfs:label [?internal, "T4750"],
@@ -29,6 +29,6 @@ public class DatalogCreatorTests
                           NOT FILTER(?node1 = <https://assetid.equinor.com/plantx#PlateHeatExchanger-1>),
                           NOT FILTER(?node1 = <https://assetid.equinor.com/plantx#ReciprocatingPump-1>),
                           dexpi:PipingOrEquipment [?node].
-                      """ , datalog);
+                      """, datalog);
     }
 }

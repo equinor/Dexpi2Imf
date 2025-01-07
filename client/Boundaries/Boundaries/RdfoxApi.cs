@@ -13,9 +13,9 @@ public class RdfoxApi
         public string Username { get; set; }
         public string Password { get; set; }
         public string Datastore { get; set; }
-        
+
     }
-    
+
     public static ConnectionSettings GetDefaultConnectionSettings()
     {
         return new ConnectionSettings
@@ -27,8 +27,8 @@ public class RdfoxApi
             Datastore = "boundaries"
         };
     }
-    
-    
+
+
     /// <summary>
     /// curl -i -X POST localhost:12110/datastores/boundaries/content?operation=delete-content -H "Content-Type: application/x.datalog" -T boundaries.dlog
     /// </summary>
@@ -45,12 +45,12 @@ public class RdfoxApi
             {
                 Content = content
             };
-            
+
             var response = await client.SendAsync(request);
             response.EnsureSuccessStatusCode();
-        } 
+        }
     }
-    
+
     /// <summary>
     /// curl -i -X POST localhost:12110/datastores/boundaries/content -H "Content-Type: application/x.datalog" -T boundaries.dlog
     /// </summary>
@@ -68,12 +68,12 @@ public class RdfoxApi
                 Content = content
             };
 
-            
+
             var response = await client.SendAsync(request);
             response.EnsureSuccessStatusCode();
-        } 
+        }
     }
-    
+
     /// <summary>
     /// curl -i -X PATCH localhost:12110/datastores/boundaries/content?operation=delete-content -H "Content-Type: application/trig" -T boundaries.dlog
     /// </summary>
@@ -91,12 +91,12 @@ public class RdfoxApi
                 Content = content
             };
 
-            
+
             var response = await client.SendAsync(request);
             response.EnsureSuccessStatusCode();
-        } 
+        }
     }
-    
+
     /// <summary>
     /// curl -i -X POST localhost:12110/datastores/boundaries/content -H "Content-Type: application/trig" -T boundaries.dlog
     /// </summary>
@@ -114,12 +114,12 @@ public class RdfoxApi
                 Content = content
             };
 
-            
+
             var response = await client.SendAsync(request);
             response.EnsureSuccessStatusCode();
-        } 
+        }
     }
-    
+
     /// <summary>
     /// curl -i -X POST localhost:12110/datastores/boundaries/sparql -H "Accept: application/x.sparql-results+turtle-abbrev" -d "query=SELECT ?S ?P ?O WHERE { ?S ?P ?O }"
     /// </summary>
@@ -137,12 +137,12 @@ public class RdfoxApi
             {
                 Content = content
             };
-            
+
             var response = await client.SendAsync(request);
-            if(!response.IsSuccessStatusCode)
+            if (!response.IsSuccessStatusCode)
                 throw new Exception(await response.Content.ReadAsStringAsync());
             return await response.Content.ReadAsStringAsync();
-        } 
+        }
     }
-    
+
 }

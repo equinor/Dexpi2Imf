@@ -5,12 +5,12 @@ namespace Boundaries;
 public class DatalogCreator
 {
     public IriReference BoundaryGraph = new IriReference($"https://data.equinor.com/boundaries/{Guid.NewGuid()}");
-    
+
     public string CreateCommissioningSparqlQuery()
     {
         return $"select ?s(GROUP_CONCAT(?label; SEPARATOR=',') AS ?labels) where {{?s a <{BoundaryGraph}>; rdfs:label ?label. OPTIONAL{{?s  <http://sandbox.dexpi.org/rdl/TagNameAssignmentClass> ?tag.}} }} GROUP BY (?s)";
     }
-    
+
     public string CreateBoundaryDatalogRule(string internalComponentLabel, IriReference[] borderComponentIris)
     {
         var filters = borderComponentIris
@@ -29,8 +29,8 @@ public class DatalogCreator
                    dexpi:PipingOrEquipment [?node].
                """;
     }
-    
-    
+
+
     public string CreateConnectedSparqlQuery()
     {
         return $"select * where {{?s a <{BoundaryGraph}>; rdfs:label ?tag.}}";
