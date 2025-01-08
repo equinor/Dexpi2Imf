@@ -24,6 +24,7 @@ export const createInitialPackage = (): CommissioningPackage => ({
   color: HighlightColors.LASER_LEMON,
   boundaryIds: [],
   internalIds: [],
+  selectedInternalIds: [],
 });
 
 export const CommissioningPackageContextProvider: React.FC<{

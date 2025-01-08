@@ -69,7 +69,6 @@ export async function queryTripleStore(
     } catch (error) {
       console.error("Error:", error);
     }
-    console.log("Sparql query sent");
   }
 }
 
