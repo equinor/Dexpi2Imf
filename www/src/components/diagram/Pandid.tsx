@@ -46,6 +46,7 @@ export default function Pandid() {
     (async () => {
       const packages = await getAllCommissioningPackages();
       context.setCommissioningPackages(packages);
+      context.setActivePackage(packages[0]);
     })();
   }, []);
 
