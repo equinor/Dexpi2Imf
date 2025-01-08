@@ -47,7 +47,7 @@ export default function CenterLine(props: CenterLineComponentProps) {
             )}
             <StyledPath
               onClick={() =>
-                props.id ? selectHandleFunction(props.id, context, tool) : {}
+                iri ? selectHandleFunction(iri, context, tool) : {}
               }
               key={index}
               d={constructPath(centerline.Coordinate, height)}

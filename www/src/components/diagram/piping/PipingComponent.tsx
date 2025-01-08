@@ -28,7 +28,7 @@ export default function PipingComponent(props: PipingComponentProps) {
   return (
     <g
       onClick={() =>
-        isInActivePackage ? selectHandleFunction(props.ID, context, tool) : {}
+        isInActivePackage ? selectHandleFunction(iri, context, tool) : {}
       }
     >
       {componentName && (

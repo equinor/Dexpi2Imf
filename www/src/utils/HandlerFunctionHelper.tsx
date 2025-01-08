@@ -1,5 +1,4 @@
 import {
-  assetIri,
   BoundaryActions,
   BoundaryParts,
   getCommissioningPackage,
@@ -28,7 +27,7 @@ export async function handleAddInternal(
   context: CommissioningPackageContextProps,
 ) {
   // If element is already inside
-  if (context.activePackage.internalIds.includes(assetIri(id))) {
+  if (context.activePackage.internalIds.includes(id)) {
     await makeSparqlAndUpdateStore(
       id,
       BoundaryActions.Delete,
@@ -37,7 +36,7 @@ export async function handleAddInternal(
     );
   } else {
     // If the clicked element is a boundary, remove it as a boundary
-    if (context.activePackage.boundaryIds.includes(assetIri(id))) {
+    if (context.activePackage.boundaryIds.includes(id)) {
       await makeSparqlAndUpdateStore(
         id,
         BoundaryActions.Delete,
@@ -81,7 +80,7 @@ export async function handleAddBoundary(
   context: CommissioningPackageContextProps,
 ) {
   // If the element is already a boundary, remove it as boundary
-  if (context.activePackage.boundaryIds.includes(assetIri(id))) {
+  if (context.activePackage.boundaryIds.includes(id)) {
     await makeSparqlAndUpdateStore(
       id,
       BoundaryActions.Delete,
@@ -91,7 +90,7 @@ export async function handleAddBoundary(
   } else {
     // If element is not already a boundary, add it as boundary.
     // If it is internal, remove it as internal.
-    if (context.activePackage.internalIds.includes(assetIri(id))) {
+    if (context.activePackage.internalIds.includes(id)) {
       await makeSparqlAndUpdateStore(
         id,
         BoundaryActions.Delete,

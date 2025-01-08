@@ -22,7 +22,7 @@ export async function makeSparqlAndUpdateStore(
   type: string,
   packageIri: string,
 ) {
-  const sparql = `${action} { <${assetIri(nodeId)}> ${type} ${packageIri} . }`;
+  const sparql = `${action} { <${nodeId}> ${type} ${packageIri} . }`;
   await queryTripleStore(sparql, Method.Post);
 }
 
