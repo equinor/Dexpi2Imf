@@ -31,8 +31,9 @@ export async function handleAddInternal(
     await makeSparqlAndUpdateStore(
       id,
       BoundaryActions.Delete,
-      BoundaryParts.SelectedInternal,
+      BoundaryParts.InsideBoundary,
       context.activePackage.id,
+      true
     );
   } else {
     // If the clicked element is a boundary, remove it as a boundary
@@ -48,8 +49,9 @@ export async function handleAddInternal(
     await makeSparqlAndUpdateStore(
       id,
       BoundaryActions.Insert,
-      BoundaryParts.SelectedInternal,
+      BoundaryParts.InsideBoundary,
       context.activePackage.id,
+      true
     );
   }
   // Then, update the nodes in package
@@ -95,8 +97,9 @@ export async function handleAddBoundary(
       await makeSparqlAndUpdateStore(
         id,
         BoundaryActions.Delete,
-        BoundaryParts.SelectedInternal,
+        BoundaryParts.InsideBoundary,
         context.activePackage.id,
+        true
       );
     }
     await makeSparqlAndUpdateStore(
