@@ -8,7 +8,7 @@ import { useCommissioningPackageContext } from "../../hooks/useCommissioningPack
 import {
   iriFromSvgNode,
   isBoundary,
-  isInternal,
+  isSelectedInternal,
 } from "../../utils/HelperFunctions.ts";
 import ToolContext from "../../context/ToolContext.ts";
 import selectHandleFunction from "../../utils/HandlerFunctionHelper.tsx";
@@ -53,7 +53,7 @@ export default function Equipment(props: EquipmentProps) {
             <g
               id={iri}
               transform={`${props.Position.Reference.X === -1 ? "rotate(-180deg)" : ""}translate(${props.Position.Location.X}, ${height - props.Position.Location.Y})`}
-              className={`.node ${isBoundary(iri, context) ? "boundary" : ""} ${isInternal(iri, context) ? "internal" : ""}`}
+              className={`.node ${isBoundary(iri, context) ? "boundary" : ""} ${isSelectedInternal(iri, context) ? "selectedInternal" : ""}`}
               dangerouslySetInnerHTML={{ __html: svg }}
             />
           </>

@@ -15,7 +15,7 @@ import ToolContext from "../../context/ToolContext.ts";
 import {
   iriFromSvgNode,
   isBoundary,
-  isInternal,
+  isSelectedInternal,
 } from "../../utils/HelperFunctions.ts";
 
 interface SvgElementProps {
@@ -78,7 +78,7 @@ export default function SvgElement({
                   )
                 : ""
             }
-            className={`.node ${isBoundary(iri, context) ? "boundary" : ""} ${isInternal(iri, context) ? "internal" : ""}`}
+            className={`.node ${isBoundary(iri, context) ? "boundary" : ""} ${isSelectedInternal(iri, context) ? "selectedInternal" : ""}`}
             dangerouslySetInnerHTML={{ __html: svg }}
           />
         </>

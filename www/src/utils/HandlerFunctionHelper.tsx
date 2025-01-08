@@ -31,7 +31,7 @@ export async function handleAddInternal(
     await makeSparqlAndUpdateStore(
       id,
       BoundaryActions.Delete,
-      BoundaryParts.InsideBoundary,
+      BoundaryParts.SelectedInternal,
       context.activePackage.id,
     );
   } else {
@@ -48,7 +48,7 @@ export async function handleAddInternal(
     await makeSparqlAndUpdateStore(
       id,
       BoundaryActions.Insert,
-      BoundaryParts.InsideBoundary,
+      BoundaryParts.SelectedInternal,
       context.activePackage.id,
     );
   }
@@ -61,6 +61,7 @@ export async function handleAddInternal(
       ...prev,
       boundaryIds: commissioningPackage.boundaryIds,
       internalIds: commissioningPackage.internalIds,
+      selectedInternalIds: commissioningPackage.selectedInternalIds,
       name: commissioningPackage.name,
       color: commissioningPackage.color
     };
@@ -94,7 +95,7 @@ export async function handleAddBoundary(
       await makeSparqlAndUpdateStore(
         id,
         BoundaryActions.Delete,
-        BoundaryParts.InsideBoundary,
+        BoundaryParts.SelectedInternal,
         context.activePackage.id,
       );
     }
@@ -114,6 +115,7 @@ export async function handleAddBoundary(
       ...prev,
       boundaryIds: commissioningPackage.boundaryIds,
       internalIds: commissioningPackage.internalIds,
+      selectedInternalIds: commissioningPackage.selectedInternalIds,
       name: commissioningPackage.name,
       color: commissioningPackage.color
     };

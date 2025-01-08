@@ -9,6 +9,7 @@ export enum BoundaryActions {
 export enum BoundaryParts {
   InsideBoundary = "comp:isInPackage",
   Boundary = "comp:isBoundaryOf",
+  SelectedInternal = "comp:isSelectedInternal",
 }
 
 export enum Method {
@@ -22,6 +23,7 @@ export async function makeSparqlAndUpdateStore(
   type: string,
   packageIri: string,
 ) {
+  console.log("makeSparqlAndUpdateStore ", nodeId, action, type, packageIri);
   const sparql = `${action} { <${nodeId}> ${type} ${packageIri} . }`;
   await queryTripleStore(sparql, Method.Post);
 }
@@ -29,8 +31,10 @@ export async function makeSparqlAndUpdateStore(
 export async function deletePackageFromTripleStore(packageId: string) {
   const deleteBoundary = "DELETE WHERE { ?boundary comp:isBoundaryOf " + packageId + " . }";
   const deleteInternal = "DELETE WHERE { ?internal comp:isInPackage " + packageId + " . }";
+  const deleteSelectedInternal = "DELETE WHERE { ?selectedInternal comp:isSelectedInternal " + packageId + " . }";
   await queryTripleStore(deleteBoundary, Method.Post);
   await queryTripleStore(deleteInternal, Method.Post);
+  await queryTripleStore(deleteSelectedInternal, Method.Post);
 }
 
 export async function queryTripleStore(
@@ -60,12 +64,9 @@ export async function queryTripleStore(
     } catch (error) {
       console.error("Error:", error);
     }
+    console.log("Sparql query sent");
   }
 }
-
-export const assetIri = (id: string) => {
-  return `https://assetid.equinor.com/plantx#${id}`;
-};
 
 export async function addCommissioningPackage(
   packageIri: string,
@@ -82,14 +83,16 @@ export async function addCommissioningPackage(
 export async function getCommissioningPackage(packageIri: string) {
   const query = `
     SELECT ?node ?name ?color ?type WHERE {
-      OPTIONAL { ?node comp:isInPackage ${packageIri} . }
       OPTIONAL { ?node comp:isBoundaryOf ${packageIri} . BIND("boundary" AS ?type) }
       OPTIONAL { ?node comp:isInPackage ${packageIri} . BIND("insideBoundary" AS ?type) }
+      OPTIONAL { ?node comp:isSelectedInternal ${packageIri} . BIND("selectedInternal" AS ?type) }
       <${packageIri}> comp:hasName ?name .
       <${packageIri}> comp:hasColor ?color .
     }
   `;
+  console.log("getCommissioningPackage query ", query);
   const result = await queryTripleStore(query, Method.Get);
+  console.log("getCommissioningPackage result ", result);
   return parseCommissioningPackage(result!, packageIri);
 }
 
@@ -97,6 +100,7 @@ function parseCommissioningPackage(result: string, packageIri: string) {
   const lines = result.split("\n").filter((line) => line.trim() !== "").slice(1);
   const boundaryIds: string[] = [];
   const internalIds: string[] = [];
+  const selectedInternalIds: string[] = [];
   let name = "Unnamed Package";
   let color = HighlightColors.LASER_LEMON;
 
@@ -107,6 +111,8 @@ function parseCommissioningPackage(result: string, packageIri: string) {
         boundaryIds.push(node);
       } else if (type === "insideBoundary") {
         internalIds.push(node);
+      } else if (type === "selectedInternal") {
+        selectedInternalIds.push(node);
       }
     }
     if (nameValue) {
@@ -117,12 +123,15 @@ function parseCommissioningPackage(result: string, packageIri: string) {
     }
   });
 
+  console.log(" selectedInternals ", selectedInternalIds);
+
   return {
     id: packageIri.replace(/[<>]/g, ""),
     color: color,
     name: name,
     boundaryIds: boundaryIds,
     internalIds: internalIds,
+    selectedInternalIds: selectedInternalIds,
   };
 }
 
@@ -139,15 +148,16 @@ export async function getAllCommissioningPackages() {
   for (const pkg of packages) {
     const nodeQuery = `
       SELECT ?node ?type WHERE {
-        ?node comp:isInPackage ${pkg.id} .
         OPTIONAL { ?node comp:isBoundaryOf ${pkg.id} . BIND("boundary" AS ?type) }
         OPTIONAL { ?node comp:isInPackage ${pkg.id} . BIND("insideBoundary" AS ?type) }
+        OPTIONAL { ?node comp:isSelectedInternal ${pkg.id} . BIND("selectedInternal" AS ?type) }
       }
     `;
     const nodeResult = await queryTripleStore(nodeQuery, Method.Get);
-    const { boundaryIds, internalIds } = parseNodeIds(nodeResult!);
+    const { boundaryIds, internalIds, selectedInternalIds } = parseNodeIds(nodeResult!);
     pkg.boundaryIds = boundaryIds;
     pkg.internalIds = internalIds;
+    pkg.selectedInternalIds = selectedInternalIds;
   }
 
   return packages;
@@ -163,6 +173,7 @@ function parseAllCommissioningPackages(result: string): CommissioningPackage[] {
       color: Object.values(HighlightColors).includes(color as HighlightColors) ? color as HighlightColors : HighlightColors.LASER_LEMON,
       boundaryIds: [],
       internalIds: [],
+      selectedInternalIds: [],
     };
   });
 }
@@ -171,6 +182,7 @@ function parseNodeIds(result: string) {
   const lines = result.split("\n").filter((line) => line.trim() !== "").slice(1);
   const boundaryIds: string[] = [];
   const internalIds: string[] = [];
+  const selectedInternalIds: string[] = [];
 
   lines.forEach((line) => {
     const [node, type] = line.split("\t").map((value) => value.replace(/[<>"]/g, "").trim());
@@ -178,8 +190,10 @@ function parseNodeIds(result: string) {
       boundaryIds.push(node);
     } else if (type === "insideBoundary") {
       internalIds.push(node);
+    } else if (type === "selectedInternal") {
+      selectedInternalIds.push(node);
     }
   });
 
-  return { boundaryIds, internalIds };
+  return { boundaryIds, internalIds, selectedInternalIds };
 }

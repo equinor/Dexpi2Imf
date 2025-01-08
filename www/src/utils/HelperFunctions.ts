@@ -5,22 +5,18 @@ export function ensureArray<T>(value: T | T[]): T[] {
   return Array.isArray(value) ? value : [value];
 }
 
-export function isBoundary (
+export const isBoundary = (
   id: string,
   context: CommissioningPackageContextProps,
-)
-{
-  console.log("boundaries ", context.activePackage.boundaryIds);
-  console.log("id ", id);
-  console.log("includes boundary ", context.activePackage.boundaryIds.includes(id));
-  return context.activePackage.boundaryIds.includes(id);
-}
-export function isInternal (
+) => context.activePackage.boundaryIds.includes(id);
+export const isInternal = (
   id: string,
   context: CommissioningPackageContextProps,
-) {
-  return context.activePackage.internalIds.includes(id);
-}
+) => context.activePackage.internalIds.includes(id);
+export const isSelectedInternal = (
+  id: string,
+  context: CommissioningPackageContextProps,
+) => context.activePackage.selectedInternalIds?.includes(id);
 
 export function iriFromSvgNode(id: string) {
   return `https://assetid.equinor.com/plantx#${id}`;
