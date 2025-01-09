@@ -22,12 +22,16 @@ export default function CenterLine(props: CenterLineComponentProps) {
   const tool = useContext(ToolContext).activeTool;
   let color: HighlightColors | undefined;
   let iri: string;
+  let hasBoundaryNode: boolean;
+  let hasSelectedInternalNode: boolean;
   if (props.id) {
     iri = iriFromSvgNode(props.id);
     const commissioningPackage = context.commissioningPackages.find((pkg) =>
       pkg.boundaryIds.includes(iri) || pkg.internalIds.includes(iri),
     );
     color = commissioningPackage?.color;
+    hasBoundaryNode = context.activePackage.boundaryIds.length > 0;
+    hasSelectedInternalNode = context.activePackage.selectedInternalIds.length > 0;
   }
 
   return (
@@ -35,7 +39,7 @@ export default function CenterLine(props: CenterLineComponentProps) {
       {props.centerLines.map((centerline: CenterLineProps, index: number) =>
         centerline !== undefined ? (
           <React.Fragment key={index}>
-            {color && (
+            {color && hasBoundaryNode && hasSelectedInternalNode && (
               <path
                 id={iri ? iri : props.id}
                 key={index + "_highlight"}
