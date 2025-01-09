@@ -74,7 +74,7 @@ export default function PipeSystem(props: PipingNetworkSystemProps) {
           <PipeSegment
             key={index}
             onClick={() =>
-              selectHandleFunction(props.ID, context, setAction, tool)
+              selectHandleFunction(iri, context, setAction, tool)
             }
             {...pipingNetworkSegment}
           />

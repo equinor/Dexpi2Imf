@@ -26,6 +26,7 @@ services:
     working_dir: /app/local/www
     environment:
       - NODE_ENV=development
+      - WATCHPACK_POLLING=true
     ports:
       - 8081:8081
     volumes:

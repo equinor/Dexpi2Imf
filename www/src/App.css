@@ -19,7 +19,7 @@ body,
     }
 }
 
-.internal {
+.selectedInternal {
     path {
         stroke: green;
     }

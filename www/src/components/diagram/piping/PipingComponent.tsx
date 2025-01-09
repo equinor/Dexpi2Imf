@@ -21,7 +21,7 @@ export default function PipingComponent(props: PipingComponentProps) {
 
   const iri = iriFromSvgNode(props.ID);
   const commissioningPackage = context.commissioningPackages.find((pkg) =>
-    pkg.nodeIds.find((node) => node === iri),
+    pkg.boundaryIds.includes(iri) || pkg.internalIds.includes(iri),
   );
   const isInActivePackage = commissioningPackage
     ? context.activePackage.id === commissioningPackage.id
@@ -31,7 +31,7 @@ export default function PipingComponent(props: PipingComponentProps) {
     <g
       onClick={() =>
         isInActivePackage
-          ? selectHandleFunction(props.ID, context, setAction, tool)
+          ? selectHandleFunction(iri, context, setAction, tool)
           : {}
       }
     >
