@@ -2,7 +2,7 @@ import Pandid from "../diagram/Pandid.tsx";
 import EditorSidebar from "./EditorSidebar.tsx";
 import { useState } from "react";
 import Tools from "../../enums/Tools.ts";
-import { Action } from "../../types/Action.ts";
+import Action from "../../types/Action.ts";
 import { CommissioningPackageContextProvider } from "../../context/CommissioningPackageContext.tsx";
 import ToolContext from "../../context/ToolContext.ts";
 import EditorTopBar from "./EditorTopBar.tsx";
