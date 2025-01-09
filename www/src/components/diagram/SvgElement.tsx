@@ -10,13 +10,14 @@ import PandidContext from "../../context/PandidContext.ts";
 import { useCommissioningPackageContext } from "../../hooks/useCommissioningPackageContext.tsx";
 
 import StyledSvgElement from "./StyledSvgElement.tsx";
-import selectHandleFunction from "../../utils/HandlerFunctionHelper.tsx";
+import selectHandleFunction from "../../utils/CommissioningPackageHandler.tsx";
 import ToolContext from "../../context/ToolContext.ts";
 import {
   iriFromSvgNode,
   isBoundary,
   isInternal,
 } from "../../utils/HelperFunctions.ts";
+import ActionContext from "../../context/ActionContext.ts";
 
 interface SvgElementProps {
   id: string;
@@ -36,6 +37,7 @@ export default function SvgElement({
 }: SvgElementProps) {
   const height = useContext(PandidContext).height;
   const context = useCommissioningPackageContext();
+  const setAction = useContext(ActionContext).setAction;
   const tool = useContext(ToolContext).activeTool;
   const svg = useSerializeNodeSvg({
     id: id,
@@ -66,7 +68,9 @@ export default function SvgElement({
           <g
             id={iri}
             onClick={() =>
-              isInActivePackage ? selectHandleFunction(id, context, tool) : {}
+              isInActivePackage
+                ? selectHandleFunction(id, context, setAction, tool)
+                : {}
             }
             transform={
               position

@@ -1,5 +1,13 @@
 import { SideBar, SidebarLinkProps } from "@equinor/eds-core-react";
-import { add, boundaries, category, texture, delete_to_trash } from "@equinor/eds-icons";
+import {
+  add,
+  undo,
+  redo,
+  boundaries,
+  category,
+  texture,
+  delete_to_trash,
+} from "@equinor/eds-icons";
 import styled from "styled-components";
 import { useContext, useState } from "react";
 import Tools from "../../enums/Tools.ts";
@@ -7,6 +15,7 @@ import { useCommissioningPackageContext } from "../../hooks/useCommissioningPack
 import ToolContext from "../../context/ToolContext.ts";
 import CommissioningPackageCreationDialog from "./CommissioningPackageCreationDialog.tsx";
 import CommissioningPackageDeletionDialog from "./CommissioningPackageDeletionDialog.tsx";
+import useUndoRedo from "../../hooks/useUndoRedo.tsx";
 
 const StyledSideBar = styled.div`
   height: 100%;
@@ -14,6 +23,7 @@ const StyledSideBar = styled.div`
 
 export default function EditorSidebar() {
   const context = useCommissioningPackageContext();
+  const { handleUndo, handleRedo } = useUndoRedo();
   const { activeTool, setActiveTool } = useContext(ToolContext);
   const [isCreationOpen, setIsCreationOpen] = useState<boolean>(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState<boolean>(false);
@@ -34,6 +44,22 @@ export default function EditorSidebar() {
         setActiveTool(Tools.INSIDEBOUNDARY);
       },
       active: activeTool === Tools.INSIDEBOUNDARY,
+    },
+    {
+      label: "Undo",
+      icon: undo,
+      onClick: async () => {
+        await handleUndo();
+      },
+      active: false,
+    },
+    {
+      label: "Redo",
+      icon: redo,
+      onClick: async () => {
+        await handleRedo();
+      },
+      active: false,
     },
     {
       label: "Delete commissioning packages",

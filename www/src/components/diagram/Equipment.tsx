@@ -11,10 +11,12 @@ import {
   isInternal,
 } from "../../utils/HelperFunctions.ts";
 import ToolContext from "../../context/ToolContext.ts";
-import selectHandleFunction from "../../utils/HandlerFunctionHelper.tsx";
+import selectHandleFunction from "../../utils/CommissioningPackageHandler.tsx";
+import ActionContext from "../../context/ActionContext.ts";
 
 export default function Equipment(props: EquipmentProps) {
   const context = useCommissioningPackageContext();
+  const setAction = useContext(ActionContext).setAction;
   const height = useContext(PandidContext).height;
   const tool = useContext(ToolContext).activeTool;
   const svg = useSerializeNodeSvg({
@@ -37,7 +39,9 @@ export default function Equipment(props: EquipmentProps) {
     <>
       <g
         onClick={() =>
-          isInActivePackage ? selectHandleFunction(props.ID, context, tool) : {}
+          isInActivePackage
+            ? selectHandleFunction(props.ID, context, setAction, tool)
+            : {}
         }
       >
         {svg && (
