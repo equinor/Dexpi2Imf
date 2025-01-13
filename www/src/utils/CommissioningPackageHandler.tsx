@@ -1,7 +1,7 @@
 import {
   BoundaryActions,
   BoundaryParts,
-  getNodeIdsInCommissioningPackage,
+  getCommissioningPackage,
   makeSparqlAndUpdateStore,
 } from "./Triplestore.ts";
 import Tools from "../enums/Tools.ts";
@@ -33,6 +33,12 @@ export async function handleAddInternal(
   // If element is already internal, remove it as internal
   if (context.activePackage.internalIds.includes(id)) {
     await removeNode(id, context, BoundaryParts.InsideBoundary, "internalIds");
+    await removeNode(
+      id,
+      context,
+      BoundaryParts.SelectedInternal,
+      "selectedInternalIds",
+    );
   } else {
     // If the clicked element is a boundary, remove it as a boundary
     if (context.activePackage.boundaryIds.includes(id)) {
@@ -40,6 +46,12 @@ export async function handleAddInternal(
     }
     // Then, add it as an internal element
     await addNode(id, context, BoundaryParts.InsideBoundary, "internalIds");
+    await addNode(
+      id,
+      context,
+      BoundaryParts.SelectedInternal,
+      "selectedInternalIds",
+    );
   }
   // Then, update the nodes in package
   await updateNodesInPackage(context);
@@ -62,6 +74,16 @@ export async function handleAddBoundary(
         "internalIds",
       );
     }
+    // If it is selected internal, remove it as selected internal.
+    if (context.activePackage.selectedInternalIds.includes(id)) {
+      await removeNode(
+        id,
+        context,
+        BoundaryParts.SelectedInternal,
+        "selectedInternalIds",
+      );
+    }
+    // Then, add it as a boundary
     await addNode(id, context, BoundaryParts.Boundary, "boundaryIds");
   }
   // Then, update the nodes in package
@@ -72,7 +94,7 @@ async function addNode(
   id: string,
   context: CommissioningPackageContextProps,
   part: BoundaryParts,
-  key: "boundaryIds" | "internalIds",
+  key: "boundaryIds" | "internalIds" | "selectedInternalIds",
 ) {
   context.setActivePackage((prev) => ({
     ...prev,
@@ -90,7 +112,7 @@ async function removeNode(
   id: string,
   context: CommissioningPackageContextProps,
   part: BoundaryParts,
-  key: "boundaryIds" | "internalIds",
+  key: "boundaryIds" | "internalIds" | "selectedInternalIds",
 ) {
   context.setActivePackage((prev) => ({
     ...prev,
@@ -105,11 +127,18 @@ async function removeNode(
 }
 
 async function updateNodesInPackage(context: CommissioningPackageContextProps) {
-  const nodeIds = await getNodeIdsInCommissioningPackage(
+  const commissioningPackage = await getCommissioningPackage(
     context.activePackage.id,
   );
   context.setActivePackage((prev) => {
-    const updatedPackage = { ...prev, nodeIds: nodeIds };
+    const updatedPackage = {
+      ...prev,
+      boundaryIds: commissioningPackage.boundaryIds,
+      internalIds: commissioningPackage.internalIds,
+      selectedInternalIds: commissioningPackage.selectedInternalIds,
+      name: commissioningPackage.name,
+      color: commissioningPackage.color,
+    };
 
     context.setCommissioningPackages((prevPackages) =>
       prevPackages.map((pkg) =>
