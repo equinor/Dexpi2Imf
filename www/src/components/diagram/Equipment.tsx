@@ -44,7 +44,7 @@ export default function Equipment(props: EquipmentProps) {
           <>
             {color && (
               <StyledSvgElement
-                id={iri + "_highlight"}
+                id={iri}
                 position={props.Position}
                 svg={svg}
                 color={color}

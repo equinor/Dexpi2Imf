@@ -28,33 +28,36 @@ export default function StyledSvgElement({
 }: StyledSvgElementProps) {
   const height = useContext(PandidContext).height;
   const context = useCommissioningPackageContext();
-  const hasBoundaryNode = context.activePackage.boundaryIds.length > 0;
-  const hasSelectedInternalNode = context.activePackage.selectedInternalIds.length > 0;
+  const commissioningPackage = context.commissioningPackages.find((pkg) =>
+    pkg.boundaryIds.includes(id) || pkg.internalIds.includes(id),
+  );
+  let hasSelectedInternalNode: boolean;
+  if (commissioningPackage) {
+    hasSelectedInternalNode = commissioningPackage.selectedInternalIds.length > 0;
 
-  if (!hasBoundaryNode || !hasSelectedInternalNode) {
-    return null;
-  }
-
-  return (
-    <>
-      {svg && (
-        <StyledG
-          id={id}
-          color={color}
-          transform={
-            position
-              ? calculateAngleAndRotation(
+    return (
+      <>
+        {svg && hasSelectedInternalNode && (
+          <StyledG
+            id={id}
+            color={color}
+            transform={
+              position
+                ? calculateAngleAndRotation(
                   position.Reference.X,
                   position.Reference.Y,
                   position.Location.X,
                   height - position.Location.Y,
                 )
-              : ""
-          }
-          className={".node"}
-          dangerouslySetInnerHTML={{ __html: svg }}
-        />
-      )}
-    </>
-  );
+                : ""
+            }
+            className={".node"}
+            dangerouslySetInnerHTML={{ __html: svg }}
+          />
+        )}
+      </>
+    );
+  }
+
+  return null;
 }
