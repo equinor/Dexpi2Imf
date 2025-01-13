@@ -11,9 +11,10 @@ import {
 import useSerializePipeSvg from "../../../hooks/useSerializePipeSvg.tsx";
 import { ensureArray, iriFromSvgNode } from "../../../utils/HelperFunctions.ts";
 import PipeSegment from "./PipeSegment.tsx";
-import selectHandleFunction from "../../../utils/HandlerFunctionHelper.tsx";
+import selectHandleFunction from "../../../utils/CommissioningPackageHandler.tsx";
 import ToolContext from "../../../context/ToolContext.ts";
 import { useCommissioningPackageContext } from "../../../hooks/useCommissioningPackageContext.tsx";
+import ActionContext from "../../../context/ActionContext.ts";
 
 interface PipeSystemSVGProps {
   id: string;
@@ -53,6 +54,7 @@ function PipeSystemSVG({
 export default function PipeSystem(props: PipingNetworkSystemProps) {
   const height = useContext(PandidContext).height;
   const context = useCommissioningPackageContext();
+  const setAction = useContext(ActionContext).setAction;
   const tool = useContext(ToolContext).activeTool;
   const iri = iriFromSvgNode(props.ID);
 
@@ -71,7 +73,9 @@ export default function PipeSystem(props: PipingNetworkSystemProps) {
         (pipingNetworkSegment: PipingNetworkSegmentProps, index: number) => (
           <PipeSegment
             key={index}
-            onClick={() => selectHandleFunction(iri, context, tool)}
+            onClick={() =>
+              selectHandleFunction(iri, context, setAction, tool)
+            }
             {...pipingNetworkSegment}
           />
         ),

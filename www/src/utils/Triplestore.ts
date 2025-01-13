@@ -22,24 +22,22 @@ export async function makeSparqlAndUpdateStore(
   action: string,
   type: string,
   packageIri: string,
-  isSelectedInternal: boolean = false,
 ) {
   const sparql = `${action} { <${nodeId}> ${type} ${packageIri} . }`;
   await queryTripleStore(sparql, Method.Post);
-
-  if (isSelectedInternal) {
-    const selectedInternalSparql = `${action} { <${nodeId}> ${BoundaryParts.SelectedInternal} ${packageIri} . }`;
-    await queryTripleStore(selectedInternalSparql, Method.Post);
-  }
 }
 
 export async function deletePackageFromTripleStore(packageId: string) {
   const deleteBoundary = "DELETE WHERE { ?boundary comp:isBoundaryOf " + packageId + " . }";
   const deleteInternal = "DELETE WHERE { ?internal comp:isInPackage " + packageId + " . }";
   const deleteSelectedInternal = "DELETE WHERE { ?selectedInternal comp:isSelectedInternal " + packageId + " . }";
+  const deleteName = `DELETE WHERE { <${packageId}> comp:hasName ?name . }`;
+  const deleteColor = `DELETE WHERE { <${packageId}> comp:hasColor ?color . }`;
   await queryTripleStore(deleteBoundary, Method.Post);
   await queryTripleStore(deleteInternal, Method.Post);
   await queryTripleStore(deleteSelectedInternal, Method.Post);
+  await queryTripleStore(deleteName, Method.Post);
+  await queryTripleStore(deleteColor, Method.Post);
 }
 
 export async function queryTripleStore(
@@ -109,10 +107,16 @@ export async function getNodes(packageIri: string) {
 
 function parseCommissioningPackage(result: string, packageIri: string) {
   const lines = result.split("\n").filter((line) => line.trim() !== "");
-  const [nameValue, colorValue] = lines[1].split("\t").map((value) => value.replace(/[<>"]/g, "").trim());
+  const [nameValue, colorValue] = lines[1]
+    .split("\t")
+    .map((value) => value.replace(/[<>"]/g, "").trim());
 
   const name = nameValue || "Unnamed Package";
-  const color = Object.values(HighlightColors).includes(colorValue as HighlightColors) ? colorValue as HighlightColors : HighlightColors.LASER_LEMON;
+  const color = Object.values(HighlightColors).includes(
+    colorValue as HighlightColors,
+  )
+    ? (colorValue as HighlightColors)
+    : HighlightColors.LASER_LEMON;
 
   return {
     id: packageIri.replace(/[<>]/g, ""),
@@ -145,13 +149,20 @@ export async function getAllCommissioningPackages() {
 }
 
 function parseAllCommissioningPackages(result: string): CommissioningPackage[] {
-  const lines = result.split("\n").filter((line) => line.trim() !== "").slice(1);
+  const lines = result
+    .split("\n")
+    .filter((line) => line.trim() !== "")
+    .slice(1);
   return lines.map((line) => {
-    const [packageIri, name, color] = line.split("\t").map((value) => value.replace(/"/g, "").trim());
+    const [packageIri, name, color] = line
+      .split("\t")
+      .map((value) => value.replace(/"/g, "").trim());
     return {
       id: packageIri.replace(/[<>]/g, ""),
       name: name,
-      color: Object.values(HighlightColors).includes(color as HighlightColors) ? color as HighlightColors : HighlightColors.LASER_LEMON,
+      color: Object.values(HighlightColors).includes(color as HighlightColors)
+        ? (color as HighlightColors)
+        : HighlightColors.LASER_LEMON,
       boundaryIds: [],
       internalIds: [],
       selectedInternalIds: [],
@@ -160,13 +171,18 @@ function parseAllCommissioningPackages(result: string): CommissioningPackage[] {
 }
 
 function parseNodeIds(result: string) {
-  const lines = result.split("\n").filter((line) => line.trim() !== "").slice(1);
+  const lines = result
+    .split("\n")
+    .filter((line) => line.trim() !== "")
+    .slice(1);
   const boundaryIds: string[] = [];
   const internalIds: string[] = [];
   const selectedInternalIds: string[] = [];
 
   lines.forEach((line) => {
-    const [node, type] = line.split("\t").map((value) => value.replace(/[<>"]/g, "").trim());
+    const [node, type] = line
+      .split("\t")
+      .map((value) => value.replace(/[<>"]/g, "").trim());
     const typeShort = type.split("#")[1];
     if (typeShort === BoundaryParts.Boundary.split(":")[1]) {
       boundaryIds.push(node);

@@ -6,12 +6,14 @@ import constructPath from "../../../utils/Path.ts";
 import StyledPath from "../StyledPath.tsx";
 import { useCommissioningPackageContext } from "../../../hooks/useCommissioningPackageContext.tsx";
 import { iriFromSvgNode } from "../../../utils/HelperFunctions.ts";
-import selectHandleFunction from "../../../utils/HandlerFunctionHelper.tsx";
+import selectHandleFunction from "../../../utils/CommissioningPackageHandler.tsx";
 import ToolContext from "../../../context/ToolContext.ts";
+import ActionContext from "../../../context/ActionContext.ts";
 
 export default function PipingComponent(props: PipingComponentProps) {
   const height = useContext(PandidContext).height;
   const context = useCommissioningPackageContext();
+  const setAction = useContext(ActionContext).setAction;
   const tool = useContext(ToolContext).activeTool;
 
   const componentName = props.ComponentName;
@@ -28,7 +30,9 @@ export default function PipingComponent(props: PipingComponentProps) {
   return (
     <g
       onClick={() =>
-        isInActivePackage ? selectHandleFunction(iri, context, tool) : {}
+        isInActivePackage
+          ? selectHandleFunction(iri, context, setAction, tool)
+          : {}
       }
     >
       {componentName && (
