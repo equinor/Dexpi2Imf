@@ -28,14 +28,9 @@ export async function makeSparqlAndUpdateStore(
 }
 
 export async function deletePackageFromTripleStore(packageId: string) {
-  const deleteBoundary =
-    "DELETE WHERE { ?boundary comp:isBoundaryOf " + packageId + " . }";
-  const deleteInternal =
-    "DELETE WHERE { ?internal comp:isInPackage " + packageId + " . }";
-  const deleteSelectedInternal =
-    "DELETE WHERE { ?selectedInternal comp:isSelectedInternal " +
-    packageId +
-    " . }";
+  const deleteBoundary = "DELETE WHERE { ?boundary comp:isBoundaryOf " + packageId + " . }";
+  const deleteInternal = "DELETE WHERE { ?internal comp:isInPackage " + packageId + " . }";
+  const deleteSelectedInternal = "DELETE WHERE { ?selectedInternal comp:isSelectedInternal " + packageId + " . }";
   await queryTripleStore(deleteBoundary, Method.Post);
   await queryTripleStore(deleteInternal, Method.Post);
   await queryTripleStore(deleteSelectedInternal, Method.Post);
