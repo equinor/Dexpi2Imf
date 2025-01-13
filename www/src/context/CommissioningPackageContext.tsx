@@ -49,24 +49,24 @@ export const CommissioningPackageContextProvider: React.FC<{
   const deleteCommissioningPackage = async (packageId: string) => {
     await deletePackageFromTripleStore(packageId);
 
-    if (commissioningPackages.length === 1) {
-      const initialPackage = createInitialPackage();
-      await addCommissioningPackage(
-        initialPackage.id,
-        initialPackage.name,
-        initialPackage.color,
-      );
-      setCommissioningPackages([initialPackage]);
-      setActivePackage(initialPackage);
-    } else {
-      setCommissioningPackages((prevPackages) => {
-        const updatedPackages = prevPackages.filter((pkg) => pkg.id !== packageId);
+    setCommissioningPackages((prevPackages) => {
+      const updatedPackages = prevPackages.filter((pkg) => pkg.id !== packageId);
+      if (updatedPackages.length === 0) {
+        const initialPackage = createInitialPackage();
+        addCommissioningPackage(
+          initialPackage.id,
+          initialPackage.name,
+          initialPackage.color,
+        );
+        setActivePackage(initialPackage);
+        return [initialPackage];
+      } else {
         if (activePackage.id === packageId) {
           setActivePackage(updatedPackages[0]);
         }
         return updatedPackages;
-      });
-    }
+      }
+    });
 
     setCommissioningPackages((prevPackages) =>
       prevPackages.map((pkg) => ({
