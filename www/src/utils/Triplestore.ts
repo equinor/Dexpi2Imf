@@ -31,9 +31,13 @@ export async function deletePackageFromTripleStore(packageId: string) {
   const deleteBoundary = "DELETE WHERE { ?boundary comp:isBoundaryOf " + packageId + " . }";
   const deleteInternal = "DELETE WHERE { ?internal comp:isInPackage " + packageId + " . }";
   const deleteSelectedInternal = "DELETE WHERE { ?selectedInternal comp:isSelectedInternal " + packageId + " . }";
+  const deleteName = `DELETE WHERE { <${packageId}> comp:hasName ?name . }`;
+  const deleteColor = `DELETE WHERE { <${packageId}> comp:hasColor ?color . }`;
   await queryTripleStore(deleteBoundary, Method.Post);
   await queryTripleStore(deleteInternal, Method.Post);
   await queryTripleStore(deleteSelectedInternal, Method.Post);
+  await queryTripleStore(deleteName, Method.Post);
+  await queryTripleStore(deleteColor, Method.Post);
 }
 
 export async function queryTripleStore(
