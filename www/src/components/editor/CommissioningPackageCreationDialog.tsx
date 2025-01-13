@@ -45,6 +45,7 @@ export default function CommissioningPackageCreationDialog(
       color: selectedColor!,
       boundaryIds: [],
       internalIds: [],
+      selectedInternalIds: [],
     };
 
     await addCommissioningPackage(
