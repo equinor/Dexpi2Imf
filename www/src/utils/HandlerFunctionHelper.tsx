@@ -1,7 +1,7 @@
 import {
   BoundaryActions,
   BoundaryParts,
-  getNodeIdsInCommissioningPackage,
+  getCommissioningPackage,
   makeSparqlAndUpdateStore,
 } from "./Triplestore.ts";
 import Tools from "../enums/Tools.ts";
@@ -28,23 +28,16 @@ export async function handleAddInternal(
 ) {
   // If element is already inside
   if (context.activePackage.internalIds.includes(id)) {
-    context.setActivePackage((prev) => ({
-      ...prev,
-      internalIds: prev.internalIds.filter((item) => item !== id),
-    }));
     await makeSparqlAndUpdateStore(
       id,
       BoundaryActions.Delete,
       BoundaryParts.InsideBoundary,
       context.activePackage.id,
+      true
     );
   } else {
     // If the clicked element is a boundary, remove it as a boundary
     if (context.activePackage.boundaryIds.includes(id)) {
-      context.setActivePackage((prev) => ({
-        ...prev,
-        boundaryIds: prev.boundaryIds.filter((item) => item !== id),
-      }));
       await makeSparqlAndUpdateStore(
         id,
         BoundaryActions.Delete,
@@ -53,23 +46,27 @@ export async function handleAddInternal(
       );
     }
     // Then, add it as an internal element
-    context.setActivePackage((prev) => ({
-      ...prev,
-      internalIds: prev.internalIds.concat(id),
-    }));
     await makeSparqlAndUpdateStore(
       id,
       BoundaryActions.Insert,
       BoundaryParts.InsideBoundary,
       context.activePackage.id,
+      true
     );
   }
   // Then, update the nodes in package
-  const nodeIds = await getNodeIdsInCommissioningPackage(
+  const commissioningPackage = await getCommissioningPackage(
     context.activePackage.id,
   );
   context.setActivePackage((prev) => {
-    const updatedPackage = { ...prev, nodeIds: nodeIds };
+    const updatedPackage = {
+      ...prev,
+      boundaryIds: commissioningPackage.boundaryIds,
+      internalIds: commissioningPackage.internalIds,
+      selectedInternalIds: commissioningPackage.selectedInternalIds,
+      name: commissioningPackage.name,
+      color: commissioningPackage.color
+    };
 
     context.setCommissioningPackages((prevPackages) =>
       prevPackages.map((pkg) =>
@@ -87,10 +84,6 @@ export async function handleAddBoundary(
 ) {
   // If the element is already a boundary, remove it as boundary
   if (context.activePackage.boundaryIds.includes(id)) {
-    context.setActivePackage((prev) => ({
-      ...prev,
-      boundaryIds: prev.boundaryIds.filter((item) => item !== id),
-    }));
     await makeSparqlAndUpdateStore(
       id,
       BoundaryActions.Delete,
@@ -101,21 +94,14 @@ export async function handleAddBoundary(
     // If element is not already a boundary, add it as boundary.
     // If it is internal, remove it as internal.
     if (context.activePackage.internalIds.includes(id)) {
-      context.setActivePackage((prev) => ({
-        ...prev,
-        internalIds: prev.internalIds.filter((item) => item !== id),
-      }));
       await makeSparqlAndUpdateStore(
         id,
         BoundaryActions.Delete,
         BoundaryParts.InsideBoundary,
         context.activePackage.id,
+        true
       );
     }
-    context.setActivePackage((prev) => ({
-      ...prev,
-      boundaryIds: prev.boundaryIds.concat(id),
-    }));
     await makeSparqlAndUpdateStore(
       id,
       BoundaryActions.Insert,
@@ -124,11 +110,18 @@ export async function handleAddBoundary(
     );
   }
   // Then, update the nodes in package
-  const nodeIds = await getNodeIdsInCommissioningPackage(
+  const commissioningPackage = await getCommissioningPackage(
     context.activePackage.id,
   );
   context.setActivePackage((prev) => {
-    const updatedPackage = { ...prev, nodeIds: nodeIds };
+    const updatedPackage = {
+      ...prev,
+      boundaryIds: commissioningPackage.boundaryIds,
+      internalIds: commissioningPackage.internalIds,
+      selectedInternalIds: commissioningPackage.selectedInternalIds,
+      name: commissioningPackage.name,
+      color: commissioningPackage.color
+    };
 
     context.setCommissioningPackages((prevPackages) =>
       prevPackages.map((pkg) =>

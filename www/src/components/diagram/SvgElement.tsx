@@ -15,7 +15,7 @@ import ToolContext from "../../context/ToolContext.ts";
 import {
   iriFromSvgNode,
   isBoundary,
-  isInternal,
+  isSelectedInternal,
 } from "../../utils/HelperFunctions.ts";
 
 interface SvgElementProps {
@@ -45,7 +45,7 @@ export default function SvgElement({
   });
   const iri = iriFromSvgNode(id);
   const commissioningPackage = context.commissioningPackages.find((pkg) =>
-    pkg.nodeIds.find((node) => node === iri),
+    pkg.boundaryIds.includes(iri) || pkg.internalIds.includes(iri),
   );
   const isInActivePackage = commissioningPackage
     ? context.activePackage.id === commissioningPackage.id
@@ -66,7 +66,7 @@ export default function SvgElement({
           <g
             id={iri}
             onClick={() =>
-              isInActivePackage ? selectHandleFunction(id, context, tool) : {}
+              isInActivePackage ? selectHandleFunction(iri, context, tool) : {}
             }
             transform={
               position
@@ -78,7 +78,7 @@ export default function SvgElement({
                   )
                 : ""
             }
-            className={`.node ${isBoundary(id, context) ? "boundary" : ""} ${isInternal(id, context) ? "internal" : ""}`}
+            className={`.node ${isBoundary(iri, context) ? "boundary" : ""} ${isSelectedInternal(iri, context) ? "selectedInternal" : ""}`}
             dangerouslySetInnerHTML={{ __html: svg }}
           />
         </>

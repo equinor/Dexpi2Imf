@@ -1,7 +1,7 @@
 import React, { createContext, useEffect, useState } from "react";
 import CommissioningPackage from "../types/CommissioningPackage.ts";
 import HighlightColors from "../enums/HighlightColors.ts";
-import { deletePackageFromTripleStore } from "../utils/Triplestore.ts";
+import { deletePackageFromTripleStore, addCommissioningPackage } from "../utils/Triplestore.ts";
 
 export interface CommissioningPackageContextProps {
   activePackage: CommissioningPackage;
@@ -24,53 +24,63 @@ export const createInitialPackage = (): CommissioningPackage => ({
   color: HighlightColors.LASER_LEMON,
   boundaryIds: [],
   internalIds: [],
-  nodeIds: [],
+  selectedInternalIds: [],
 });
 
 export const CommissioningPackageContextProvider: React.FC<{
   children: React.ReactNode;
-}> = ({ children }) => {
+}> = ({children }) => {
   const [activePackage, setActivePackage] = useState<CommissioningPackage>(createInitialPackage());
   const [commissioningPackages, setCommissioningPackages] = useState<CommissioningPackage[]>([]);
 
   useEffect(() => {
     if (activePackage && commissioningPackages.length === 0) {
       setCommissioningPackages([activePackage]);
+      (async () => {
+        await addCommissioningPackage(
+          activePackage.id,
+          activePackage.name,
+          activePackage.color,
+        );
+      })();
     }
   }, [activePackage, commissioningPackages]);
 
   const deleteCommissioningPackage = async (packageId: string) => {
-      await deletePackageFromTripleStore(packageId);
+    await deletePackageFromTripleStore(packageId);
 
-      if (commissioningPackages.length === 1) {
-      const initialPackage = createInitialPackage();
-      setCommissioningPackages([initialPackage]);
-      setActivePackage(initialPackage);
-    } else {
-      setCommissioningPackages((prevPackages) => {
-        const updatedPackages = prevPackages.filter((pkg) => pkg.id !== packageId);
+    setCommissioningPackages((prevPackages) => {
+      const updatedPackages = prevPackages.filter((pkg) => pkg.id !== packageId);
+      if (updatedPackages.length === 0) {
+        const initialPackage = createInitialPackage();
+        addCommissioningPackage(
+          initialPackage.id,
+          initialPackage.name,
+          initialPackage.color,
+        );
+        setActivePackage(initialPackage);
+        return [initialPackage];
+      } else {
         if (activePackage.id === packageId) {
           setActivePackage(updatedPackages[0]);
         }
         return updatedPackages;
-      });
-    }
+      }
+    });
 
     setCommissioningPackages((prevPackages) =>
       prevPackages.map((pkg) => ({
-          ...pkg,
-          boundaryIds: pkg.boundaryIds.filter((id) => id !== packageId),
-          internalIds: pkg.internalIds.filter((id) => id !== packageId),
-          nodeIds: pkg.nodeIds.filter((id) => id !== packageId),
+        ...pkg,
+        boundaryIds: pkg.boundaryIds.filter((id) => id !== packageId),
+        internalIds: pkg.internalIds.filter((id) => id !== packageId),
       }))
     );
 
     if (activePackage.id === packageId) {
       setActivePackage((prevPackage) => ({
-          ...prevPackage,
-          boundaryIds: [],
-          internalIds: [],
-          nodeIds: [],
+        ...prevPackage,
+        boundaryIds: [],
+        internalIds: [],
       }));
     }
   };

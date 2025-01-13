@@ -11,6 +11,7 @@ import React, { useEffect, useState } from "react";
 import CommissioningPackage from "../../types/CommissioningPackage.ts";
 import { useCommissioningPackageContext } from "../../hooks/useCommissioningPackageContext.tsx";
 import ColorPreview from "./ColorPreview.tsx";
+import { addCommissioningPackage } from "../../utils/Triplestore.ts";
 
 const ColorSelectionContainer = styled.div`
   display: flex;
@@ -37,15 +38,22 @@ export default function CommissioningPackageCreationDialog(
     HighlightColors | undefined
   >();
 
-  function handleCreate() {
-    setCommissioningPackage({
+  async function handleCreate() {
+    const newPackage = {
       id: "asset:" + id,
       name: name,
       color: selectedColor!,
       boundaryIds: [],
       internalIds: [],
-      nodeIds: [],
-    });
+    };
+
+    await addCommissioningPackage(
+      newPackage.id,
+      newPackage.name,
+      newPackage.color,
+    );
+
+    setCommissioningPackage(newPackage);
     props.setOpen(false);
   }
 

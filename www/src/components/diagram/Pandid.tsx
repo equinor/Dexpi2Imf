@@ -9,7 +9,7 @@ import { ActuatingSystemProps } from "../../types/diagram/ActuatingSystem.ts";
 import ActuatingSystem from "./ActuatingSystem.tsx";
 import PandidContext from "../../context/PandidContext.ts";
 import PipeSystem from "./piping/PipeSystem.tsx";
-import { cleanTripleStore } from "../../utils/Triplestore.ts";
+import { getAllCommissioningPackages } from "../../utils/Triplestore.ts";
 import { useCommissioningPackageContext } from "../../hooks/useCommissioningPackageContext.tsx";
 import styled from "styled-components";
 import { preloadSVGs } from "../../utils/SvgEdit.ts";
@@ -41,11 +41,13 @@ export default function Pandid() {
     attributeNamePrefix: "",
   });
 
-  // Step 1: Clean triplestore on mount
+// Step 1: Fetch existing commissioning packages
   useEffect(() => {
     (async () => {
-      await cleanTripleStore();
-      context.setCommissioningPackages([]);
+      const packages = await getAllCommissioningPackages();
+      context.setCommissioningPackages(packages);
+      if (packages[0])
+        context.setActivePackage(packages[0]);
     })();
   }, []);
 
