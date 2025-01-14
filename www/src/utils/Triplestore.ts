@@ -203,13 +203,13 @@ function parseNodeIds(result: string) {
 
 function parseSparqlSelectResult(result: string) {
   return result
-      .split("\n")
-      .filter((line) => line.trim() !== "")
-      .slice(1);
+    .split("\n")
+    .filter((line) => line.trim() !== "")
+    .slice(1);
 }
 
 export async function getInsideNodesForTable(completionPackageIri: string) {
-  let queryInside = `
+  const queryInside = `
     SELECT ?tagNr WHERE {
         ?node comp:isInPackage ${completionPackageIri} . 
         ?node <http://noaka.org/rdl/SequenceAssignmentClass> ?o .
@@ -219,7 +219,7 @@ export async function getInsideNodesForTable(completionPackageIri: string) {
           FILTER NOT EXISTS { ?node a imf:Terminal . }
     }
     `;
-  let result = await queryTripleStore(queryInside, Method.Get);
+  const result = await queryTripleStore(queryInside, Method.Get);
   if (result === undefined) {
     throw new Error("Query for inside nodes returned undefined");
   }
@@ -227,7 +227,7 @@ export async function getInsideNodesForTable(completionPackageIri: string) {
 }
 
 export async function getBoundaryNodesForTable(completionPackageIri: string) {
-  let queryBoundary = `
+  const queryBoundary = `
     SELECT DISTINCT  ?tagNr WHERE {
     ?node comp:isBoundaryOf ${completionPackageIri} . 
     ?node <http://noaka.org/rdl/SequenceAssignmentClass> ?o .
@@ -241,9 +241,9 @@ export async function getBoundaryNodesForTable(completionPackageIri: string) {
     }
     `;
 
-  let resultBoundary = await queryTripleStore(queryBoundary, Method.Get);
+  const resultBoundary = await queryTripleStore(queryBoundary, Method.Get);
   if (resultBoundary === undefined) {
     throw new Error("Query for boundary nodes returned undefined");
   }
-  return parseSparqlSelectResult(resultBoundary)
+  return parseSparqlSelectResult(resultBoundary);
 }
