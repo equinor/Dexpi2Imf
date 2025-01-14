@@ -1,40 +1,59 @@
-import { saveAs } from 'file-saver';
-import * as XLSX from 'xlsx';
+import { saveAs } from "file-saver";
+import * as XLSX from "xlsx";
 
-// @ts-ignore
-const DownloadButton = ({ nodeIdsInside, nodeIdsBoundary, filename }) => {
-    const downloadWorkbook = () => {
-        const wb = XLSX.utils.book_new();
+interface DownloadButtonProps {
+  nodeIdsInside: string[];
+  nodeIdsBoundary: string[];
+  filename: string;
+}
 
-        const wsInside = XLSX.utils.json_to_sheet(nodeIdsInside.map((id: any) => ({ 'Inside boundary': id })));
-        XLSX.utils.book_append_sheet(wb, wsInside, 'Inside Boundary');
+export default function DownloadButton({
+  nodeIdsInside,
+  nodeIdsBoundary,
+  filename,
+}: DownloadButtonProps) {
+  const downloadWorkbook = () => {
+    const wb = XLSX.utils.book_new();
 
-        const wsBoundary = XLSX.utils.json_to_sheet(nodeIdsBoundary.map((id: any) => ({ 'Boundary': id })));
-        XLSX.utils.book_append_sheet(wb, wsBoundary, 'Boundary');
+    const wsInside = XLSX.utils.json_to_sheet(
+      nodeIdsInside.map((id: string) => ({ "Inside boundary": id })),
+    );
+    XLSX.utils.book_append_sheet(wb, wsInside, "Inside Boundary");
 
-        const combinedData = nodeIdsInside.concat(nodeIdsBoundary);
-        const wsCombined = XLSX.utils.json_to_sheet(combinedData.map((id: any) => ({ 'Combined': id })));
-        XLSX.utils.book_append_sheet(wb, wsCombined, 'Combined');
+    const wsBoundary = XLSX.utils.json_to_sheet(
+      nodeIdsBoundary.map((id: string) => ({ Boundary: id })),
+    );
+    XLSX.utils.book_append_sheet(wb, wsBoundary, "Boundary");
 
-        const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'binary' });
+    const combinedData = nodeIdsInside.concat(nodeIdsBoundary);
+    const wsCombined = XLSX.utils.json_to_sheet(
+      combinedData.map((id: string) => ({ Combined: id })),
+    );
+    XLSX.utils.book_append_sheet(wb, wsCombined, "Combined");
 
-        const s2ab = (s: string) => {
-            const buffer = new ArrayBuffer(s.length);
-            const view = new Uint8Array(buffer);
-            for (let i = 0; i < s.length; i++) {
-                view[i] = s.charCodeAt(i) & 0xFF;
-            }
-            return buffer;
-        };
+    const wbout = XLSX.write(wb, { bookType: "xlsx", type: "binary" });
 
-        saveAs(new Blob([s2ab(wbout)], { type: "application/octet-stream" }), filename);
+    const s2ab = (s: string) => {
+      const buffer = new ArrayBuffer(s.length);
+      const view = new Uint8Array(buffer);
+      for (let i = 0; i < s.length; i++) {
+        view[i] = s.charCodeAt(i) & 0xff;
+      }
+      return buffer;
     };
 
-    return (
-        <button onClick={downloadWorkbook} style={{ margin: '10px', padding: '5px 10px', cursor: 'pointer' }}>
-            Download Excel
-        </button>
+    saveAs(
+      new Blob([s2ab(wbout)], { type: "application/octet-stream" }),
+      filename,
     );
-};
+  };
 
-export default DownloadButton;
+  return (
+    <button
+      onClick={downloadWorkbook}
+      style={{ margin: "10px", padding: "5px 10px", cursor: "pointer" }}
+    >
+      Download Excel
+    </button>
+  );
+}
