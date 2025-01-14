@@ -28,9 +28,14 @@ export async function makeSparqlAndUpdateStore(
 }
 
 export async function deletePackageFromTripleStore(packageId: string) {
-  const deleteBoundary = "DELETE WHERE { ?boundary comp:isBoundaryOf " + packageId + " . }";
-  const deleteInternal = "DELETE WHERE { ?internal comp:isInPackage " + packageId + " . }";
-  const deleteSelectedInternal = "DELETE WHERE { ?selectedInternal comp:isSelectedInternal " + packageId + " . }";
+  const deleteBoundary =
+    "DELETE WHERE { ?boundary comp:isBoundaryOf " + packageId + " . }";
+  const deleteInternal =
+    "DELETE WHERE { ?internal comp:isInPackage " + packageId + " . }";
+  const deleteSelectedInternal =
+    "DELETE WHERE { ?selectedInternal comp:isSelectedInternal " +
+    packageId +
+    " . }";
   const deleteName = `DELETE WHERE { <${packageId}> comp:hasName ?name . }`;
   const deleteColor = `DELETE WHERE { <${packageId}> comp:hasColor ?color . }`;
   await queryTripleStore(deleteBoundary, Method.Post);
@@ -39,8 +44,6 @@ export async function deletePackageFromTripleStore(packageId: string) {
   await queryTripleStore(deleteName, Method.Post);
   await queryTripleStore(deleteColor, Method.Post);
 }
-
-
 
 export async function queryTripleStore(
   sparql: string,
@@ -198,7 +201,6 @@ function parseNodeIds(result: string) {
   return { boundaryIds, internalIds, selectedInternalIds };
 }
 
-
 export async function getInsideNodesForTable(completionPackageIri: string) {
   let queryInside = `
     SELECT * WHERE {
@@ -210,15 +212,15 @@ export async function getInsideNodesForTable(completionPackageIri: string) {
           FILTER NOT EXISTS { ?node a imf:Terminal . }
     }
     `;
-  let resultInside = await queryTripleStore(queryInside, Method.Get);
-  if (resultInside === undefined) {
-    throw new Error('Query for inside nodes returned undefined');
-  }
-  return parseNodeIds(resultInside);
+  return queryTripleStore(queryInside, Method.Get).then((result) => {
+    if (result === undefined) {
+      throw new Error("Query for inside nodes returned undefined");
+    }
+    return parseNodeIds(result);
+  });
 }
 
 export async function getBoundaryNodesForTable(completionPackageIri: string) {
-
   let queryBoundary = `
     SELECT DISTINCT  ?node ?tagNr WHERE {
     ?node comp:isBoundaryOf ${completionPackageIri} . 
@@ -235,8 +237,7 @@ export async function getBoundaryNodesForTable(completionPackageIri: string) {
 
   let resultBoundary = await queryTripleStore(queryBoundary, Method.Get);
   if (resultBoundary === undefined) {
-    throw new Error('Query for boundary nodes returned undefined');
+    throw new Error("Query for boundary nodes returned undefined");
   }
   return parseNodeIds(resultBoundary);
 }
-
