@@ -205,6 +205,7 @@ function parseSparqlSelectResult(result: string) {
   return result
     .split("\n")
     .filter((line) => line.trim() !== "")
+      .map((line) => line.replace(/^"|"$/g, ""))
     .slice(1);
 }
 

@@ -27,6 +27,7 @@ const SideBarAndPandid = styled.div`
 export default function Editor() {
   const [activeTool, setActiveTool] = useState(Tools.BOUNDARY);
   const [action, setAction] = useState<Action>({ tool: null, node: "" });
+  const [tableIsVisible, setTableIsVisible] = useState(true);
   return (
     <CommissioningPackageContextProvider>
       <ToolContext.Provider value={{ activeTool, setActiveTool }}>
@@ -34,13 +35,13 @@ export default function Editor() {
           <EditorContainer>
             <EditorTopBar />
             <SideBarAndPandid>
-              <EditorSidebar />
+              <EditorSidebar tableIsVisible={tableIsVisible} setTableIsVisible={setTableIsVisible} />
               <Pandid />
             </SideBarAndPandid>
           </EditorContainer>
         </ActionContext.Provider>
       </ToolContext.Provider>
-      <NodeTable />
+        {tableIsVisible && <NodeTable/>}
     </CommissioningPackageContextProvider>
   );
 }
