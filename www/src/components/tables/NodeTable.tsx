@@ -6,6 +6,9 @@ import {
 } from "../../utils/Triplestore.ts";
 import { useEffect, useState } from "react";
 import DownloadButton from "./DownloadButton.tsx";
+import styled from "styled-components";
+
+const StyledTableCaption = styled.div`display:flex;flex-direction:row;caption-side:top ;`;
 
 export default function NodeTable() {
   const { activePackage } = useCommissioningPackageContext();
@@ -28,11 +31,16 @@ export default function NodeTable() {
 
   return (
     <>
+      <StyledTableCaption>
+        <Typography variant="h2">{activePackage.name} </Typography>
+        <DownloadButton
+            filename={activePackage.name}
+            nodeIdsInside={insideNodes}
+            nodeIdsBoundary={boundaryNodes}
+        />
+      </StyledTableCaption>
       <Table>
-        <Table.Caption>
-          <Typography variant="h2">{activePackage.name}</Typography>
-        </Table.Caption>
-        <Table.Head>
+  <Table.Head>
           <Table.Row>
             <Table.Cell>Inside Boundary</Table.Cell>
             <Table.Cell>Boundary</Table.Cell>
@@ -53,11 +61,7 @@ export default function NodeTable() {
           ))}
         </Table.Body>
       </Table>
-      <DownloadButton
-        filename={activePackage.name}
-        nodeIdsInside={insideNodes}
-        nodeIdsBoundary={boundaryNodes}
-      />
+
     </>
   );
 }

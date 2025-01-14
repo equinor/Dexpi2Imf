@@ -1,4 +1,5 @@
 import * as XLSX from "xlsx";
+import {Button} from "@equinor/eds-core-react";
 
 interface DownloadButtonProps {
   nodeIdsInside: string[];
@@ -40,11 +41,10 @@ export default function DownloadButton({
   };
 
   return (
-    <button
+    <Button
       onClick={downloadWorkbook}
-      style={{ margin: "10px", padding: "5px 10px", cursor: "pointer" }}
     >
       Download Excel
-    </button>
+    </Button>
   );
 }
