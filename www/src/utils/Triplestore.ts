@@ -40,6 +40,8 @@ export async function deletePackageFromTripleStore(packageId: string) {
   await queryTripleStore(deleteColor, Method.Post);
 }
 
+
+
 export async function queryTripleStore(
   sparql: string,
   method: Method.Get | Method.Post,
@@ -195,3 +197,46 @@ function parseNodeIds(result: string) {
 
   return { boundaryIds, internalIds, selectedInternalIds };
 }
+
+
+export async function getInsideNodesForTable(completionPackageIri: string) {
+  let queryInside = `
+    SELECT * WHERE {
+        ?node comp:isInPackage ${completionPackageIri} . 
+        ?node <http://noaka.org/rdl/SequenceAssignmentClass> ?o .
+        { ?node <http://sandbox.dexpi.org/rdl/TagNameAssignmentClass> ?tagNr. }
+            UNION
+            { ?node <http://noaka.org/rdl/ItemTagAssignmentClass> ?tagNr. }
+          FILTER NOT EXISTS { ?node a imf:Terminal . }
+    }
+    `;
+  let resultInside = await queryTripleStore(queryInside, Method.Get);
+  if (resultInside === undefined) {
+    throw new Error('Query for inside nodes returned undefined');
+  }
+  return parseNodeIds(resultInside);
+}
+
+export async function getBoundaryNodesForTable(completionPackageIri: string) {
+
+  let queryBoundary = `
+    SELECT DISTINCT  ?node ?tagNr WHERE {
+    ?node comp:isBoundaryOf ${completionPackageIri} . 
+    ?node <http://noaka.org/rdl/SequenceAssignmentClass> ?o .
+        {
+            { ?node <http://sandbox.dexpi.org/rdl/TagNameAssignmentClass> ?tagNr. }
+            UNION
+            { ?node <http://noaka.org/rdl/ObjectDisplayNameAssignmentClass> ?tagNr. }
+            UNION 
+            { ?node <http://noaka.org/rdl/ItemTagAssignmentClass> ?tagNr. }
+        }
+    }
+    `;
+
+  let resultBoundary = await queryTripleStore(queryBoundary, Method.Get);
+  if (resultBoundary === undefined) {
+    throw new Error('Query for boundary nodes returned undefined');
+  }
+  return parseNodeIds(resultBoundary);
+}
+

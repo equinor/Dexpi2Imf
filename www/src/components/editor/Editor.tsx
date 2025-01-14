@@ -8,6 +8,8 @@ import ToolContext from "../../context/ToolContext.ts";
 import EditorTopBar from "./EditorTopBar.tsx";
 import styled from "styled-components";
 import ActionContext from "../../context/ActionContext.ts";
+import NodeTable from "../tables/NodeTable.tsx";
+import DownloadButton from "../tables/DownloadButton.tsx";
 
 const EditorContainer = styled.div`
   height: 100%;
@@ -39,6 +41,7 @@ export default function Editor() {
           </EditorContainer>
         </ActionContext.Provider>
       </ToolContext.Provider>
+      <NodeTable />
     </CommissioningPackageContextProvider>
   );
 }
