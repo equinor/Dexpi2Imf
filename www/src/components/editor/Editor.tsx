@@ -9,7 +9,6 @@ import EditorTopBar from "./EditorTopBar.tsx";
 import styled from "styled-components";
 import ActionContext from "../../context/ActionContext.ts";
 import NodeTable from "../tables/NodeTable.tsx";
-import DownloadButton from "../tables/DownloadButton.tsx";
 
 const EditorContainer = styled.div`
   height: 100%;

@@ -4,18 +4,30 @@ import {
   getBoundaryNodesForTable,
   getInsideNodesForTable,
 } from "../../utils/Triplestore.ts";
-import { useEffect } from "react";
+import {useEffect, useState} from "react";
 
 export default function NodeTable() {
-  const packageIri = useCommissioningPackageContext().activePackage.id;
-  const insideNodes: string[] = getInsideNodesForTable(packageIri);
-  const boundaryNodes: string[] = getBoundaryNodesForTable(packageIri);
+    const { activePackage } = useCommissioningPackageContext();
+    const [insideNodes, setInsideNodes] = useState<string[]>([]);
+    const [boundaryNodes, setBoundaryNodes] = useState<string[]>([]);
+    const packageIri = activePackage.id;
 
-  useEffect(() => {}, []);
+    useEffect(() => {
+        const fetchNodes = async () => {
+            try {
+                setInsideNodes(await getInsideNodesForTable(packageIri));
+                setBoundaryNodes(await getBoundaryNodesForTable(packageIri));
+            } catch (error) {
+                console.error("Error fetching nodes:", error);
+            }
+        };
+
+        fetchNodes();
+    }, [activePackage]);
   return (
     <Table>
       <Table.Caption>
-        <Typography variant="h2">{headerTitle}</Typography>
+        <Typography variant="h2">{activePackage.name}</Typography>
       </Table.Caption>
       <Table.Head>
         <Table.Row>
