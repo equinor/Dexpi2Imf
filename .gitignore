@@ -5,9 +5,6 @@ rml/segments.trig
 client/.idea
 .idea
 .vs
-client/Boundaries/Dexpi2Svg/test.svg
-client/Boundaries/Dexpi2Svg/bin
-client/Boundaries/Dexpi2Svg/obj
 client/Boundaries/Boundaries/bin
 client/Boundaries/Boundaries/obj
 client/Boundaries/TestBoundaries/obj
