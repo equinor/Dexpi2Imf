@@ -7,8 +7,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Boundaries", "Boundaries\Bo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestBoundaries", "TestBoundaries\TestBoundaries.csproj", "{6389698E-C0E2-4262-AE30-FD2A01654FA5}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dexpi2Svg", "Dexpi2Svg\Dexpi2Svg.csproj", "{18B982C7-6B76-46E5-A662-4F6C56A3744E}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Backend", "Backend\Backend.csproj", "{49E561FC-F64F-4877-8F24-B8D593568DA9}"
 EndProject
 Global
@@ -25,10 +23,6 @@ Global
 		{6389698E-C0E2-4262-AE30-FD2A01654FA5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6389698E-C0E2-4262-AE30-FD2A01654FA5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6389698E-C0E2-4262-AE30-FD2A01654FA5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{18B982C7-6B76-46E5-A662-4F6C56A3744E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{18B982C7-6B76-46E5-A662-4F6C56A3744E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{18B982C7-6B76-46E5-A662-4F6C56A3744E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{18B982C7-6B76-46E5-A662-4F6C56A3744E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{49E561FC-F64F-4877-8F24-B8D593568DA9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{49E561FC-F64F-4877-8F24-B8D593568DA9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{49E561FC-F64F-4877-8F24-B8D593568DA9}.Release|Any CPU.ActiveCfg = Release|Any CPU
