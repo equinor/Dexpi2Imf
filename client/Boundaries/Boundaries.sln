@@ -10,6 +10,9 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dexpi2Svg", "Dexpi2Svg\Dexpi2Svg.csproj", "{18B982C7-6B76-46E5-A662-4F6C56A3744E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Backend", "Backend\Backend.csproj", "{49E561FC-F64F-4877-8F24-B8D593568DA9}"
+	ProjectSection(ProjectDependencies) = postProject
+		{B7723633-9BCD-44C6-BC90-1E3F5C6C8101} = {B7723633-9BCD-44C6-BC90-1E3F5C6C8101}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -1,4 +1,8 @@
 using Backend.Model;
+using Boundaries;
+using System;
+using System.Text;
+using System.Threading.Tasks;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,11 +19,26 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+// Establish connection to Rdfox
+var conn = RdfoxApi.GetDefaultConnectionSettings();
 
-//Add node as boundary
-app.MapPost("/commissioning-package/{packageId}/boundary/{nodeId}", (string packageId, string nodeId) =>
+
+app.MapGet("/", () => "Hello World!");
+
+// Add node as boundary
+app.MapPost("/commissioning-package/{packageId}/boundary/{nodeId}", async (string packageId, string nodeId) =>
 {
-    throw new NotImplementedException("TODO: Not implemented...");
+    // Example triple in Turtle syntax
+    var data = $@"
+        @prefix ex: <http://example.com/> .
+        ex:Package-{packageId} ex:hasBoundary ex:Node-{nodeId} .
+    ";
+
+    // Load data into RDFox
+    await RdfoxApi.LoadData(conn, data);
+
+    // Return success response
+    return Results.Ok($"Triple for package {packageId} and node {nodeId} inserted successfully.");
 });
 
 //Add node as internal
