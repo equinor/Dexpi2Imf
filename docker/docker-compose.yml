@@ -22,16 +22,12 @@ services:
         source: ../
         target: /app/local/
   backend: 
-    build: 
-      context: ..
-      dockerfile: docker/backend/Dockerfile 
+    build:
+      context: ../
+      dockerfile: docker/backend/Dockerfile
     tty: true
     ports:
       -  8000:8000
-    volumes:
-      - type: bind
-        source: client/Boundaries/Backend
-        target: /app
   frontend:
     image: node:23
     working_dir: /app/local/www
@@ -58,6 +54,8 @@ services:
       rml-mapper:
         condition: service_completed_successfully
   symbols:
-    build: ../SymbolLibrary/src
+    build:
+      context: ../
+      dockerfile: docker/symbol-library/Dockerfile
     ports:
       - 5000:5000

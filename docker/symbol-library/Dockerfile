@@ -1,7 +1,7 @@
 ﻿FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build-env
 WORKDIR /app
 
-COPY . .
+COPY SymbolLibrary/src/. .
 RUN curl -o /app/Data/Symbols.xlsm https://raw.githubusercontent.com/equinor/NOAKADEXPI/main/Symbols.xlsm
 RUN dotnet publish -c Release -o out
 
