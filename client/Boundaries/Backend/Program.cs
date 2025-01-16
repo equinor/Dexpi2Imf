@@ -25,6 +25,9 @@ var conn = RdfoxApi.GetDefaultConnectionSettings();
 // Add node as boundary
 app.MapPost("/commissioning-package/{packageId}/boundary/{nodeId}", async (string packageId, string nodeId) =>
 {
+    packageId = Uri.UnescapeDataString(packageId);
+    nodeId = Uri.UnescapeDataString(nodeId);
+
     var data = $@"
         <{packageId}> comp:hasBoundary <{nodeId}> .
     ";
@@ -33,6 +36,8 @@ app.MapPost("/commissioning-package/{packageId}/boundary/{nodeId}", async (strin
 
     return Results.Ok($"Triple with subject {packageId} and object {nodeId} inserted successfully.");
 });
+
+
 
 //Add node as internal
 app.MapPost("/commissioning-package/{packageId}/internal/{nodeId}", async (string packageId, string nodeId) =>
@@ -49,12 +54,28 @@ app.MapPost("/commissioning-package/{packageId}/internal/{nodeId}", async (strin
 // Remove node as boundary
 app.MapDelete("/commissioning-package/{packageId}/boundary/{nodeId}", async (string packageId, string nodeId) =>
 {
+    packageId = Uri.UnescapeDataString(packageId);
+    nodeId = Uri.UnescapeDataString(nodeId);
+
+    // Define the SPARQL query to check if the triple exists
+    var checkQuery = $@"
+        ASK WHERE {{
+            <{packageId}> comp:hasBoundary <{nodeId}> .
+        }}";
+
+    var existsResult = await RdfoxApi.QuerySparql(conn, checkQuery);
+    // Check if the triple exists
+    if (!existsResult.Contains("true"))
+    {
+        return Results.NotFound($"Triple for package {packageId} and node {nodeId} not found.");
+    }
+
+    // Define the data to delete
     var data = $@"
         <{packageId}> comp:hasBoundary <{nodeId}> .
     ";
 
     await RdfoxApi.DeleteData(conn, data);
-
     return Results.Ok($"Triple for package {packageId} and node {nodeId} deleted successfully.");
 });
 
