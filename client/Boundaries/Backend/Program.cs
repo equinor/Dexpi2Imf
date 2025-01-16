@@ -29,7 +29,7 @@ app.MapPost("/commissioning-package/{packageId}/boundary/{nodeId}", async (strin
     nodeId = Uri.UnescapeDataString(nodeId);
 
     var data = $@"
-        <{packageId}> comp:hasBoundary <{nodeId}> .
+         <{nodeId}> comp:isBoundaryOf <{packageId}> .
     ";
 
     await RdfoxApi.LoadData(conn, data);
@@ -42,6 +42,7 @@ app.MapPost("/commissioning-package/{packageId}/boundary/{nodeId}", async (strin
 //Add node as internal
 app.MapPost("/commissioning-package/{packageId}/internal/{nodeId}", async (string packageId, string nodeId) =>
 {
+    // Add check for package existing
     var data = $@"
         <{packageId}> comp:isInPackage <{nodeId}> .
     ";
@@ -60,7 +61,7 @@ app.MapDelete("/commissioning-package/{packageId}/boundary/{nodeId}", async (str
     // Define the SPARQL query to check if the triple exists
     var checkQuery = $@"
         ASK WHERE {{
-            <{packageId}> comp:hasBoundary <{nodeId}> .
+             <{nodeId}> comp:isBoundaryOf <{packageId}> .
         }}";
 
     var existsResult = await RdfoxApi.QuerySparql(conn, checkQuery);
@@ -72,7 +73,7 @@ app.MapDelete("/commissioning-package/{packageId}/boundary/{nodeId}", async (str
 
     // Define the data to delete
     var data = $@"
-        <{packageId}> comp:hasBoundary <{nodeId}> .
+         <{nodeId}> comp:isBoundaryOf <{packageId}> .
     ";
 
     await RdfoxApi.DeleteData(conn, data);
@@ -97,6 +98,7 @@ app.MapDelete("/commissioning-package/{packageId}/internal/{nodeId}", async (str
 //Get adjacent nodes
 app.MapGet("/nodes/{nodeId}/adjacent", (string nodeId) =>
 {
+    // SELECT ?neighb WHERE {<nodeId> imf:adjacentTo ?neighb }
     throw new NotImplementedException("TODO: Not implemented...");
 });
 
@@ -109,15 +111,6 @@ app.MapPost("/commissioning-package", async (CommissioningPackage commissioningP
     data.AppendLine($@"<{commissioningPackage.Id}> comp:hasName ""{commissioningPackage.Name}"" .");
     data.AppendLine($@"<{commissioningPackage.Id}> comp:hasColour ""{commissioningPackage.Colour}"" .");
 
-    commissioningPackage.Boundary?.ForEach(node =>
-        data.AppendLine($@"<{commissioningPackage.Id}> comp:hasBoundary <{node.Id}> ."));
-
-    commissioningPackage.CalculatedInternal?.ForEach(node =>
-        data.AppendLine($@"<{commissioningPackage.Id}> comp:hasCalculatedInternal <{node.Id}> ."));
-
-    commissioningPackage.SelectedInternal?.ForEach(node =>
-        data.AppendLine($@"<{commissioningPackage.Id}> comp:hasSelectedInternal <{node.Id}> ."));
-
     // Save the commissioning package data to RDFox
     await RdfoxApi.LoadData(conn, data.ToString());
 
@@ -125,8 +118,7 @@ app.MapPost("/commissioning-package", async (CommissioningPackage commissioningP
     return Results.Ok($"Commissioning package {commissioningPackage.Id} added successfully.");
 });
 
-//Update commissioning package - updating information like name, color and id while persisting the calculated internal nodes, and boundaries. 
-//Note if we want to update the id aswell, the old ID must be passed as an argument to the endpoint
+//Update commissioning package - updating information like name and color while persisting the calculated internal nodes, and boundaries. 
 app.MapPut("/commissioning-package", async (CommissioningPackage updatedPackage) =>
 {
     var queryName = $@"
@@ -147,7 +139,7 @@ app.MapPut("/commissioning-package", async (CommissioningPackage updatedPackage)
         }}";
     var existingPackageColor = await RdfoxApi.QuerySparql(conn, queryColor);
 
-
+    // DELETE {<{updatedPackage.Id}> comp:hasColor ?color .} INSERT { <{updatedPackage.Id}> comp:hasColor <{updatedPackage.Colour}> } } WHERE {<{updatedPackage.Id}> comp:hasColor ?color .}
     // Delete the old triples for the mutable properties
     var deleteData = new StringBuilder();
     deleteData.AppendLine($@"<{updatedPackage.Id}> comp:hasName ""{existingPackageName}"" .");
