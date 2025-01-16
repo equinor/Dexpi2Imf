@@ -80,7 +80,6 @@ app.MapGet("/nodes/{nodeId}/adjacent", (string nodeId) =>
 });
 
 //Add commissioning packageadd commision package endpoint?
-
 app.MapPost("/commissioning-package", async (CommissioningPackage commissioningPackage) =>
 {
     // Construct the RDF data for the new commissioning package
@@ -89,7 +88,6 @@ app.MapPost("/commissioning-package", async (CommissioningPackage commissioningP
     data.AppendLine($@"<{commissioningPackage.Id}> comp:hasName ""{commissioningPackage.Name}"" .");
     data.AppendLine($@"<{commissioningPackage.Id}> comp:hasColour ""{commissioningPackage.Colour}"" .");
 
-    // Optionally add boundary and internal nodes to the data if they are provided
     commissioningPackage.Boundary?.ForEach(node =>
         data.AppendLine($@"<{commissioningPackage.Id}> comp:hasBoundary <{node.Id}> ."));
 
@@ -107,6 +105,7 @@ app.MapPost("/commissioning-package", async (CommissioningPackage commissioningP
 });
 
 //Update commissioning package - updating information like name, color and id while persisting the calculated internal nodes, and boundaries. 
+//Note if we want to update the id aswell, the old ID must be passed as an argument to the endpoint
 app.MapPut("/commissioning-package", async (CommissioningPackage updatedPackage) =>
 {
     var queryName = $@"
@@ -161,12 +160,12 @@ app.MapDelete("/commissioning-package/{commissioningPackageId}", async (string c
 //Get commissioning package
 app.MapGet("/commissioning-package/{commissioningPackageId}", async (string commissioningPackageId) =>
 {
-    // Define the SPARQL query to get all triples for the commissioning package
     var query = $@"
             SELECT ?predicate ?object WHERE {{
                 <{commissioningPackageId}> ?predicate ?object .
             }}";
 
+    //NOTE, should it just return all the trippels associated with the package, or should it return a commissioning package object?
     // Execute the SPARQL query
     var result = await RdfoxApi.QuerySparql(conn, query);
 
