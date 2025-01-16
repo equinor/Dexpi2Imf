@@ -1,5 +1,7 @@
 # RML mappings
 
+This folder contains RML mappings, [to IMF](http://www.imfid.org/) in the folder [imf](imf) and to our custom [graphical format](../examples/graphical.trig) in the folder [graphics](graphics)
+
 ## Prerequisites
 
 * Download a proteus xml file, for example [DISC_EXAMPLE-02-01.xml](https://github.com/equinor/NOAKADEXPI/blob/main/Blueprint/DISC_EXAMPLE-02/DISC_EXAMPLE-02-01.xml) to this folder and rename it to "pandid.xml"
@@ -20,7 +22,7 @@ Or you can run it using java:
     
 ## Run 
 ```
-java -jar ../../rmlmapper-java/target/rmlmapper-*-all.jar -m *map* -s trig -o pandid.trig
+java -jar ../../rmlmapper-java/target/rmlmapper-*-all.jar -m imf/*map* -s trig -o pandid.trig
 ``` 
 
 ## Example files resources

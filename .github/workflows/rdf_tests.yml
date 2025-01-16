@@ -1,0 +1,92 @@
+name: "⛓️Test rml-mappings⛓️"
+
+on:
+  workflow_dispatch:
+  merge_group:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 19
+        uses: actions/setup-java@v4
+        with:
+          java-version: "19"
+          distribution: "temurin"
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: install apache jena
+        run: |
+          wget https://dlcdn.apache.org/jena/binaries/apache-jena-5.2.0.tar.gz
+          tar -xzvf apache-jena-*.tar.gz
+          
+      - name: Check ontologies and mappings are valid rdf
+        id: validate_ontology_rdf
+        run: |
+          export JENA_HOME=$(pwd)/apache-jena-5.2.0/
+          export PATH="$PATH:$JENA_HOME/bin"
+          riot --validate owl/*ttl
+          riot --validate rml_mappings/imf/*
+          riot --validate rml_mappings/graphics/*
+          
+      - name: Test imf mappings
+        run: |
+          export JENA_HOME=$(pwd)/apache-jena-5.2.0/
+          export PATH="$PATH:$JENA_HOME/bin"
+          docker run -v .:/data rmlio/rmlmapper-java:7.2.0 -m rml_mappings/imf/* -o /data/imf.ttl
+          shacl v --shapes shacl/imf-dexpi.shacl.ttl --data imf.ttl
+
+      - name: Test graphics mappings
+        run: |
+          export JENA_HOME=$(pwd)/apache-jena-5.2.0/
+          export PATH="$PATH:$JENA_HOME/bin"
+          docker run -v .:/data rmlio/rmlmapper-java:7.2.0 -m rml_mappings/graphics/* -o /data/graphics.ttl
+          shacl v --shapes shacl/imf-graphics.shacl.ttl --data graphics.ttl
+
+      - name: SHACL validation
+        id: shacl_result
+        run: |
+          export JENA_HOME=$(pwd)/apache-jena-5.2.0/
+          export PATH="$PATH:$JENA_HOME/bin"
+          shacl v --shapes  ${{matrix.document_type}}/shacl/*in_transit* --data ${{matrix.document_type}}/results.ttl > shacl_output.txt
+
+      - name: format result
+        id: format
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const shacl = fs.readFileSync('shacl_output.txt', 'utf8');
+            const result = `
+              <details><summary>⛓️ Show SHACL result  for ${{ matrix.document_type }}⛓️</summary>
+
+              \`\`\` trig \n
+              ${shacl}
+              \`\`\`
+              </details>
+             `
+            return result;
+          result-encoding: string
+
+      - name: Find PR Number
+        uses: jwalton/gh-find-current-pr@v1
+        id: pr_number
+
+      - name: comment results
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          header: ${{ matrix.document_type }}
+          number: ${{ steps.pr_number.outputs.pr }}
+          message: ${{ steps.format.outputs.result }}

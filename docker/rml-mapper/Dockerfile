@@ -14,6 +14,7 @@ RUN apt-get update && \
 # Clone the NOAKADEXPI Git repo
 RUN git clone https://github.com/equinor/NOAKADEXPI.git /app/NOAKADEXPI
 
+
 # Copy the demo bash script
 COPY demo.sh /app/demo.sh
 RUN dos2unix /app/demo.sh

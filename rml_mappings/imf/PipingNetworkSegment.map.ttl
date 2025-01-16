@@ -7,6 +7,7 @@
 @prefix dexpi: <https://rdf.equinor.com/dexpi#> .
 @prefix asset: <https://assetid.equinor.com/plantx#> .
 @prefix imf: <http://ns.imfid.org/imf#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 
 
 :hasNetworkSegmentConnector 
@@ -20,7 +21,7 @@
 
 :PipingComponentSegmentFromTerminalMap a rr:TriplesMap;
   rml:logicalSource [
-    rml:source "pandid.xml";
+    rml:source "../pandid.xml";
     rml:referenceFormulation ql:XPath;
     rml:iterator "//PipingNetworkSystem/PipingNetworkSegment"
   ];
@@ -48,7 +49,7 @@
 
 :PipingComponentSegmentToTerminalMap a rr:TriplesMap;
   rml:logicalSource [
-    rml:source "pandid.xml";
+    rml:source "../pandid.xml";
     rml:referenceFormulation ql:XPath;
     rml:iterator "//PipingNetworkSegment"
   ];

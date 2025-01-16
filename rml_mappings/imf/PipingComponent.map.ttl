@@ -10,7 +10,7 @@
 
 :PipingComponentConnectorMap a rr:TriplesMap;
   rml:logicalSource [
-    rml:source "pandid.xml";
+    rml:source "../pandid.xml";
     rml:referenceFormulation ql:XPath;
     rml:iterator "//PipingNetworkSegment/PipingComponent | //PipingNetworkSegment/PropertyBreak"
   ];
@@ -29,7 +29,7 @@
 
 :PipingComponentTerminalMap a rr:TriplesMap;
   rml:logicalSource [
-    rml:source "pandid.xml";
+    rml:source "../pandid.xml";
     rml:referenceFormulation ql:XPath;
     rml:iterator "//PipingNetworkSegment/PipingComponent/ConnectionPoints/Node[@Type='process'] | //PipingNetworkSegment/PropertyBreak/ConnectionPoints/Node[@Type='process']"
   ];
@@ -62,7 +62,7 @@
 
 :PipingComponentBlockMap a rr:TriplesMap;
   rml:logicalSource [
-    rml:source "pandid.xml";
+    rml:source "../pandid.xml";
     rml:referenceFormulation ql:XPath;
     rml:iterator "//PipingNetworkSegment/PipingComponent | //PipingNetworkSegment/PropertyBreak"
   ];

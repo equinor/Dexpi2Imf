@@ -1,0 +1,118 @@
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <http://example.org/> .
+@prefix css: <https://www.w3.org/TR/css-color-4#> .
+
+:DocumentShape a sh:NodeShape ;
+    sh:targetClass :PID ;
+    sh:property [
+                    sh:path :visualisedAs ;
+                    sh:node :GraphicShape ;
+                ] .
+
+:GraphicShape a sh:NodeShape ;
+    sh:property [
+                    sh:path :hasExtent ;
+                    sh:node :ExtentShape ;
+                ] ;
+    sh:property [
+                    sh:path :hasSymbol ;
+                    sh:node :SymbolShape ;
+                ] ;
+    sh:property [
+                    sh:path :hasLine ;
+                    sh:node :LineShape ;
+                ] .
+
+:ExtentShape a sh:NodeShape ;
+    sh:property [
+                    sh:path :minimumExtent ;
+                    sh:node :PositionShape ;
+                ] ;
+    sh:property [
+                    sh:path :maximumExtent ;
+                    sh:node :PositionShape ;
+                ] .
+
+:PositionShape a sh:NodeShape ;
+    sh:property [
+                    sh:path :x ;
+                    sh:datatype xsd:int ;
+                ] ;
+    sh:property [
+                    sh:path :y ;
+                    sh:datatype xsd:int ;
+                ] ;
+    sh:property [
+                    sh:path :rotation ;
+                    sh:datatype xsd:int ;
+                    sh:minCount 0 ;
+                ] .
+
+:SymbolShape a sh:NodeShape ;
+    sh:property [
+                    sh:path :hasPosition ;
+                    sh:node :PositionShape ;
+                ] ;
+    sh:property [
+                    sh:path :hasGraphics ;
+                    sh:node :GraphicsShape ;
+                ] .
+
+:GraphicsShape a sh:NodeShape ;
+    sh:property [
+                    sh:path :hasGraphics ;
+                    sh:node :SymbolShape ;
+                ] .
+
+:LineShape a sh:NodeShape ;
+    sh:property [
+                    sh:path :hasCoordinates ;
+                    sh:node :PositionShape ;
+                ] ;
+    sh:property [
+                    sh:path :hasStyle ;
+                    sh:node :StyleShape ;
+                ] .
+
+:StyleShape a sh:NodeShape ;
+    sh:property [
+                    sh:path :hasStroke ;
+                    sh:node :StrokeShape ;
+                ] ;
+    sh:property [
+                    sh:path :hasStyle ;
+                    sh:datatype css:style ;
+                ] .
+
+:StrokeShape a sh:NodeShape ;
+    sh:property [
+                    sh:path :dasharray ;
+                    sh:datatype xsd:string ;
+                ] ;
+    sh:property [
+                    sh:path :width ;
+                    sh:datatype xsd:float ;
+                ] ;
+    sh:property [
+                    sh:path :color ;
+                    sh:node :ColorShape ;
+                ] .
+
+:ColorShape a sh:NodeShape ;
+    sh:property [
+                    sh:path :type ;
+                    sh:datatype xsd:string ;
+                ] ;
+    sh:property [
+                    sh:path :red ;
+                    sh:datatype xsd:int ;
+                ] ;
+    sh:property [
+                    sh:path :green ;
+                    sh:datatype xsd:int ;
+                ] ;
+    sh:property [
+                    sh:path :blue ;
+                    sh:datatype xsd:int ;
+                ] .
