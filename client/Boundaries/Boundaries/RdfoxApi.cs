@@ -145,4 +145,24 @@ public class RdfoxApi
         }
     }
 
+    public static async Task<bool> AskSparql(ConnectionSettings conn, string query)
+    {
+        using (var client = new HttpClient())
+        {
+            var uri = new Uri($"http://{conn.Host}:{conn.Port}/datastores/{conn.Datastore}/sparql");
+            var content = new StringContent(query, Encoding.UTF8, "application/sparql-query");
+
+            var request = new HttpRequestMessage(HttpMethod.Post, uri)
+            {
+                Content = content
+            };
+
+            var response = await client.SendAsync(request);
+            if (!response.IsSuccessStatusCode)
+                throw new Exception(await response.Content.ReadAsStringAsync());
+
+            return response.IsSuccessStatusCode;
+        }
+    }
+
 }

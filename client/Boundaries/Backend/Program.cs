@@ -44,7 +44,7 @@ app.MapPost("/commissioning-package/{packageId}/internal/{nodeId}", async (strin
 {
     // Add check for package existing
     var data = $@"
-        <{packageId}> comp:isInPackage <{nodeId}> .
+         <{nodeId}> comp:isInPackage <{packageId}> .
     ";
 
     await RdfoxApi.LoadData(conn, data);
@@ -64,9 +64,9 @@ app.MapDelete("/commissioning-package/{packageId}/boundary/{nodeId}", async (str
              <{nodeId}> comp:isBoundaryOf <{packageId}> .
         }}";
 
-    var existsResult = await RdfoxApi.QuerySparql(conn, checkQuery);
+    var existsResult = await RdfoxApi.AskSparql(conn, checkQuery);
     // Check if the triple exists
-    if (!existsResult.Contains("true"))
+    if (!existsResult)
     {
         return Results.NotFound($"Triple for package {packageId} and node {nodeId} not found.");
     }
@@ -85,7 +85,7 @@ app.MapDelete("/commissioning-package/{packageId}/internal/{nodeId}", async (str
 {
     // Example triple in Turtle syntax to delete
     var data = $@"
-        <{packageId}> comp:isInPackage <{nodeId}> .
+        <{nodeId}> comp:isInPackage <{packageId}> .
     ";
 
     // Delete data from RDFox
