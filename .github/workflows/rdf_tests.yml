@@ -55,38 +55,9 @@ jobs:
           docker run -v .:/data rmlio/rmlmapper-java:7.2.0 -m rml_mappings/graphics/* -o /data/graphics.ttl
           shacl v --shapes shacl/imf-graphics.shacl.ttl --data graphics.ttl
 
-      - name: SHACL validation
-        id: shacl_result
+      - name: Test rdf examples
         run: |
           export JENA_HOME=$(pwd)/apache-jena-5.2.0/
           export PATH="$PATH:$JENA_HOME/bin"
-          shacl v --shapes  ${{matrix.document_type}}/shacl/*in_transit* --data ${{matrix.document_type}}/results.ttl > shacl_output.txt
-
-      - name: format result
-        id: format
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const fs = require('fs');
-            const shacl = fs.readFileSync('shacl_output.txt', 'utf8');
-            const result = `
-              <details><summary>⛓️ Show SHACL result  for ${{ matrix.document_type }}⛓️</summary>
-
-              \`\`\` trig \n
-              ${shacl}
-              \`\`\`
-              </details>
-             `
-            return result;
-          result-encoding: string
-
-      - name: Find PR Number
-        uses: jwalton/gh-find-current-pr@v1
-        id: pr_number
-
-      - name: comment results
-        uses: marocchino/sticky-pull-request-comment@v2
-        with:
-          header: ${{ matrix.document_type }}
-          number: ${{ steps.pr_number.outputs.pr }}
-          message: ${{ steps.format.outputs.result }}
+          riot --validate examples/graphical.trig
+          shacl v --shapes  shacl/graphic-dexpi.shacl.ttl --data examples/graphical.trig
