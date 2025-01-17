@@ -38,3 +38,4 @@ __pycache__
 /SymbolLibrary/src/Data/Symbols.xlsm
 /client/Boundaries/Backend/out
 graphics.ttl
+imf.ttl

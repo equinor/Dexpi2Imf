@@ -45,6 +45,7 @@ jobs:
         run: |
           export JENA_HOME=$(pwd)/apache-jena-5.2.0/
           export PATH="$PATH:$JENA_HOME/bin"
+          curl -o rml_mappings/pandid.xml https://raw.githubusercontent.com/equinor/NOAKADEXPI/refs/heads/main/Blueprint/DISC_EXAMPLE-02/DISC_EXAMPLE-02-02.xml
           docker run -v .:/data rmlio/rmlmapper-java:7.2.0 -m rml_mappings/imf/* -o /data/imf.ttl
           shacl v --shapes shacl/imf-dexpi.shacl.ttl --data imf.ttl
 
@@ -52,6 +53,7 @@ jobs:
         run: |
           export JENA_HOME=$(pwd)/apache-jena-5.2.0/
           export PATH="$PATH:$JENA_HOME/bin"
+          curl -o rml_mappings/pandid.xml https://raw.githubusercontent.com/equinor/NOAKADEXPI/refs/heads/main/Blueprint/DISC_EXAMPLE-02/DISC_EXAMPLE-02-02.xml
           docker run -v .:/data rmlio/rmlmapper-java:7.2.0 -m rml_mappings/graphics/* -o /data/graphics.ttl
           shacl v --shapes shacl/graphic-dexpi.shacl.ttl --data graphics.ttl
 
