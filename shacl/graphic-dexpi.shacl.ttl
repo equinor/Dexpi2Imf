@@ -4,6 +4,7 @@
 @prefix document: <https://assetid.equinor.com/plantx/document/> .
 @prefix css: <https://www.w3.org/TR/css-color-4#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 
 :DocumentShape a sh:NodeShape ;
     sh:targetClass :PID ;
@@ -108,7 +109,11 @@
                     sh:message "A Dexpi symbol is a visualization of at most one IMF concept (propably block or terminal)"
                 ] , [
                     sh:path rdf:type;
-                ] ;
+                ] , [
+                    sh:path rdfs:label;
+                    sh:datatype xsd:string;
+                    sh:maxCount 1;
+                ];
     sh:closed true .
 
 

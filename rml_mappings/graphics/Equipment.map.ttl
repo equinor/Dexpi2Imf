@@ -3,11 +3,12 @@
 @prefix rr: <http://www.w3.org/ns/r2rml#> .
 @prefix ql: <http://semweb.mmlab.be/ns/ql#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-@prefix : <http://rdf.equinor.com/dexpi/mappings/imf#> .
+@prefix graphic: <http://rdf.equinor.com/graphic#> .
 @prefix schema: <http://schema.org/> .
 @prefix dexpi: <https://rdf.equinor.com/dexpi#> .
 @prefix asset: <https://assetid.equinor.com/plantx#> .
 @prefix imf: <http://ns.imfid.org/imf#> .
+@prefix : <http://rdf.equinor.com/dexpi/mappings/graphic#> .
 
 :EquipmentBlockMap a rr:TriplesMap;
   rml:logicalSource [
@@ -16,14 +17,14 @@
     rml:iterator "PlantModel/Equipment"
   ];
   rr:subjectMap [
-    rr:template "https://assetid.equinor.com/plantx#{@ID}";
+    rr:template "https://assetid.equinor.com/plantx/{/PlantModel/MetaData/GenericAttributes/GenericAttribute[@Name='DrawingNumberAssignmentClass']/@Value}/symbols#{@ID}";
     rr:termType rr:IRI;
-    rr:class dexpi:Equipment, imf:Block;
+    rr:class graphic:Symbol 
   ];
   rr:predicateObjectMap [
-    rr:predicate imf:hasTerminal;
+    rr:predicate graphic:hasGraphics;
     rr:objectMap [ 
-      rr:template "https://assetid.equinor.com/plantx#{Nozzle/@ID}";
+      rr:template "https://example.com/pca/symbol/{@ComponentName}";
       rr:termType rr:IRI;
     ]
   ],

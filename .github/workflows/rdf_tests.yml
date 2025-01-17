@@ -53,7 +53,7 @@ jobs:
           export JENA_HOME=$(pwd)/apache-jena-5.2.0/
           export PATH="$PATH:$JENA_HOME/bin"
           docker run -v .:/data rmlio/rmlmapper-java:7.2.0 -m rml_mappings/graphics/* -o /data/graphics.ttl
-          shacl v --shapes shacl/imf-graphics.shacl.ttl --data graphics.ttl
+          shacl v --shapes shacl/graphic-dexpi.shacl.ttl --data graphics.ttl
 
       - name: Test rdf examples
         run: |
