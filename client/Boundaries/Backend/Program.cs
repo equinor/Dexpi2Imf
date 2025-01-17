@@ -29,28 +29,27 @@ app.MapPost("/commissioning-package/{packageId}/boundary/{nodeId}", async (strin
     packageId = Uri.UnescapeDataString(packageId);
     nodeId = Uri.UnescapeDataString(nodeId);
 
-    //Check if the packageID exists
+    // Check if the packageID exists
     var checkQuery = $@"
-        ASK WHERE {{
-             <{packageId}> {Types.type} {Types.CommissioningPackage} .
+        SELECT ?type WHERE {{
+             <{packageId}> {Types.type} ?type .
         }}";
 
-    var existsResult = await RdfoxApi.AskSparql(conn, checkQuery);
-    // Check if the triple exists
-    if (!existsResult)
+    var existsResult = await RdfoxApi.QuerySparql(conn, checkQuery);
+    // Check if the result is empty
+    if (string.IsNullOrEmpty(existsResult))
     {
         return Results.NotFound($"Commissioning package {packageId} not found.");
     }
 
-
     var data = $@"
-         <{nodeId}> {Types.isBoundaryOf} <{packageId}> .
-    ";
+         <{nodeId}> {Types.isBoundaryOf} <{packageId}> .";
 
     await RdfoxApi.LoadData(conn, data);
 
     return Results.Ok($"Triple with subject {packageId} and object {nodeId} inserted successfully.");
 });
+
 
 
 
