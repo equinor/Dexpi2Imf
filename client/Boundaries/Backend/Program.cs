@@ -42,7 +42,9 @@ app.MapPost("/commissioning-package/{packageId}/boundary/{nodeId}", async (strin
 //Add node as internal
 app.MapPost("/commissioning-package/{packageId}/internal/{nodeId}", async (string packageId, string nodeId) =>
 {
-    // Add check for package existing
+    packageId = Uri.UnescapeDataString(packageId);
+    nodeId = Uri.UnescapeDataString(nodeId);
+
     var data = $@"
          <{nodeId}> comp:isInPackage <{packageId}> .
     ";
@@ -58,7 +60,6 @@ app.MapDelete("/commissioning-package/{packageId}/boundary/{nodeId}", async (str
     packageId = Uri.UnescapeDataString(packageId);
     nodeId = Uri.UnescapeDataString(nodeId);
 
-    // Define the SPARQL query to check if the triple exists
     var checkQuery = $@"
         ASK WHERE {{
              <{nodeId}> comp:isBoundaryOf <{packageId}> .
@@ -71,7 +72,6 @@ app.MapDelete("/commissioning-package/{packageId}/boundary/{nodeId}", async (str
         return Results.NotFound($"Triple for package {packageId} and node {nodeId} not found.");
     }
 
-    // Define the data to delete
     var data = $@"
          <{nodeId}> comp:isBoundaryOf <{packageId}> .
     ";
@@ -83,15 +83,12 @@ app.MapDelete("/commissioning-package/{packageId}/boundary/{nodeId}", async (str
 // Remove node as internal
 app.MapDelete("/commissioning-package/{packageId}/internal/{nodeId}", async (string packageId, string nodeId) =>
 {
-    // Example triple in Turtle syntax to delete
     var data = $@"
         <{nodeId}> comp:isInPackage <{packageId}> .
     ";
 
-    // Delete data from RDFox
     await RdfoxApi.DeleteData(conn, data);
 
-    // Return success response
     return Results.Ok($"Triple for package {packageId} and node {nodeId} deleted successfully.");
 });
 
@@ -105,16 +102,13 @@ app.MapGet("/nodes/{nodeId}/adjacent", (string nodeId) =>
 //Add commissioning packageadd commision package endpoint?
 app.MapPost("/commissioning-package", async (CommissioningPackage commissioningPackage) =>
 {
-    // Construct the RDF data for the new commissioning package
     var data = new StringBuilder();
     data.AppendLine($@"<{commissioningPackage.Id}> rdf:type comp:CommissioningPackage .");
     data.AppendLine($@"<{commissioningPackage.Id}> comp:hasName ""{commissioningPackage.Name}"" .");
     data.AppendLine($@"<{commissioningPackage.Id}> comp:hasColour ""{commissioningPackage.Colour}"" .");
 
-    // Save the commissioning package data to RDFox
     await RdfoxApi.LoadData(conn, data.ToString());
 
-    // Return success response
     return Results.Ok($"Commissioning package {commissioningPackage.Id} added successfully.");
 });
 
@@ -126,7 +120,6 @@ app.MapPut("/commissioning-package", async (CommissioningPackage updatedPackage)
             <{updatedPackage.Id}> comp:hasName ?name .
         }}";
     var existingPackageName = await RdfoxApi.QuerySparql(conn, queryName);
-
 
     // Check if the package exists
     if (existingPackageName == null)
@@ -166,7 +159,6 @@ app.MapDelete("/commissioning-package/{commissioningPackageId}", async (string c
 
     await RdfoxApi.DeleteData(conn, deleteQuery);
 
-    // Return success response
     return Results.Ok($"Commissioning package {commissioningPackageId} deleted");
 });
 
@@ -178,11 +170,8 @@ app.MapGet("/commissioning-package/{commissioningPackageId}", async (string comm
                 <{commissioningPackageId}> ?predicate ?object .
             }}";
 
-    //NOTE, should it just return all the trippels associated with the package, or should it return a commissioning package object?
-    // Execute the SPARQL query
     var result = await RdfoxApi.QuerySparql(conn, query);
 
-    // Parse the result to populate the CommissioningPackage object
     var commissioningPackage = new CommissioningPackage
     {
         Id = commissioningPackageId,
@@ -193,7 +182,7 @@ app.MapGet("/commissioning-package/{commissioningPackageId}", async (string comm
         SelectedInternal = new List<Node>()
     };
 
-    // Parse the SPARQL result (assuming it's in a format that can be parsed line by line)
+    // Parse the SPARQL result line by line)
     var lines = result.Split('\n');
     foreach (var line in lines)
     {
@@ -223,7 +212,6 @@ app.MapGet("/commissioning-package/{commissioningPackageId}", async (string comm
         }
     }
 
-    // Return the populated CommissioningPackage object
     return Results.Ok(commissioningPackage);
 });  
 
