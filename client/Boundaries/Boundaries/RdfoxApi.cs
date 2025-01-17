@@ -1,4 +1,5 @@
 using System.Text;
+using IriTools;
 
 namespace Boundaries;
 
@@ -20,7 +21,7 @@ public class RdfoxApi
         return new ConnectionSettings
         {
             Host = "localhost",
-            Port = 8000,
+            Port = 12110,
             Username = "admin",
             Password = "admin",
             Datastore = "boundaries"
