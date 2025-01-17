@@ -83,8 +83,6 @@ app.MapDelete("/commissioning-package/{packageId}/boundary/{nodeId}", async (str
 // Remove node as internal
 app.MapDelete("/commissioning-package/{packageId}/internal/{nodeId}", async (string packageId, string nodeId) =>
 {
-    packageId = Uri.UnescapeDataString(packageId);
-    nodeId = Uri.UnescapeDataString(nodeId);
     var data = $@"
         <{nodeId}> comp:isInPackage <{packageId}> .
     ";
@@ -97,7 +95,7 @@ app.MapDelete("/commissioning-package/{packageId}/internal/{nodeId}", async (str
 //Get adjacent nodes
 app.MapGet("/nodes/{nodeId}/adjacent", async (string nodeId) =>
 {
-    nodeId = Uri.UnescapeDataString(nodeId);
+
     var quey = $@"SELECT ?neighb WHERE {{ <{nodeId}> imf:adjacentTo ?neighb }}";
 
     await RdfoxApi.QuerySparql(conn, quey);
@@ -143,8 +141,6 @@ app.MapPut("/commissioning-package", async (CommissioningPackage updatedPackage)
 //Delete commissioning package 
 app.MapDelete("/commissioning-package/{commissioningPackageId}", async (string commissioningPackageId) =>
 {
-    commissioningPackageId = Uri.UnescapeDataString(commissioningPackageId);
-
     var deleteQuery = $@"
         DELETE WHERE {{
             <{commissioningPackageId}> ?predicate ?object .
@@ -158,8 +154,6 @@ app.MapDelete("/commissioning-package/{commissioningPackageId}", async (string c
 //Get commissioning package
 app.MapGet("/commissioning-package/{commissioningPackageId}", async (string commissioningPackageId) =>
 {
-    commissioningPackageId = Uri.UnescapeDataString(commissioningPackageId);
-
     var query = $@"
             SELECT ?predicate ?object WHERE {{
                 <{commissioningPackageId}> ?predicate ?object .
