@@ -100,7 +100,7 @@ app.MapGet("/nodes/{nodeId}/adjacent", async (string nodeId) =>
 
     await RdfoxApi.QuerySparql(conn, quey);
 
-    return Results.Ok($"Adjacent nodes for node {nodeId} retrieved successfully."); 
+    return Results.Ok($"Adjacent nodes for node {nodeId} retrieved successfully.");
 });
 
 //Add commissioning packageadd commision package endpoint?
@@ -202,6 +202,6 @@ app.MapGet("/commissioning-package/{commissioningPackageId}", async (string comm
     }
 
     return Results.Ok(commissioningPackage);
-});  
+});
 
 app.Run();
