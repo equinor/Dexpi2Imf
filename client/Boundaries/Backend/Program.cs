@@ -1,6 +1,7 @@
 using Backend.Model;
 using Boundaries;
 using System.Text;
+using Backend.Utils;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -29,7 +30,7 @@ app.MapPost("/commissioning-package/{packageId}/boundary/{nodeId}", async (strin
     nodeId = Uri.UnescapeDataString(nodeId);
 
     var data = $@"
-         <{nodeId}> comp:isBoundaryOf <{packageId}> .
+         <{nodeId}> {Types.isBoundaryOf} <{packageId}> .
     ";
 
     await RdfoxApi.LoadData(conn, data);
@@ -46,7 +47,7 @@ app.MapPost("/commissioning-package/{packageId}/internal/{nodeId}", async (strin
     nodeId = Uri.UnescapeDataString(nodeId);
 
     var data = $@"
-         <{nodeId}> comp:isInPackage <{packageId}> .
+         <{nodeId}> {Types.isInPackage} <{packageId}> .
     ";
 
     await RdfoxApi.LoadData(conn, data);
@@ -62,7 +63,7 @@ app.MapDelete("/commissioning-package/{packageId}/boundary/{nodeId}", async (str
 
     var checkQuery = $@"
         ASK WHERE {{
-             <{nodeId}> comp:isBoundaryOf <{packageId}> .
+             <{nodeId}> {Types.isBoundaryOf} <{packageId}> .
         }}";
 
     var existsResult = await RdfoxApi.AskSparql(conn, checkQuery);
@@ -73,7 +74,7 @@ app.MapDelete("/commissioning-package/{packageId}/boundary/{nodeId}", async (str
     }
 
     var data = $@"
-         <{nodeId}> comp:isBoundaryOf <{packageId}> .
+         <{nodeId}> {Types.isBoundaryOf} <{packageId}> .
     ";
 
     await RdfoxApi.DeleteData(conn, data);
@@ -87,7 +88,7 @@ app.MapDelete("/commissioning-package/{packageId}/internal/{nodeId}", async (str
     nodeId = Uri.UnescapeDataString(nodeId);
 
     var data = $@"
-        <{nodeId}> comp:isInPackage <{packageId}> .
+        <{nodeId}> {Types.isInPackage} <{packageId}> .
     ";
 
     await RdfoxApi.DeleteData(conn, data);
@@ -100,7 +101,7 @@ app.MapGet("/nodes/{nodeId}/adjacent", async (string nodeId) =>
 {
     nodeId = Uri.UnescapeDataString(nodeId);
 
-    var quey = $@"SELECT ?neighb WHERE {{ <{nodeId}> imf:adjacentTo ?neighb }}";
+    var quey = $@"SELECT ?neighb WHERE {{ <{nodeId}> {Types.adjacentTo} ?neighb }}";
 
     await RdfoxApi.QuerySparql(conn, quey);
 
@@ -111,7 +112,7 @@ app.MapGet("/nodes/{nodeId}/adjacent", async (string nodeId) =>
 app.MapPost("/commissioning-package", async (CommissioningPackage commissioningPackage) =>
 {
     var data = new StringBuilder();
-    data.AppendLine($@"<{commissioningPackage.Id}> rdf:type comp:CommissioningPackage .");
+    data.AppendLine($@"<{commissioningPackage.Id}> rdf:type {Types.CommissioningPackage} .");
     data.AppendLine($@"<{commissioningPackage.Id}> comp:hasName ""{commissioningPackage.Name}"" .");
     data.AppendLine($@"<{commissioningPackage.Id}> comp:hasColour ""{commissioningPackage.Colour}"" .");
 
@@ -123,20 +124,20 @@ app.MapPost("/commissioning-package", async (CommissioningPackage commissioningP
 //Update commissioning package - updating information like name and color while persisting the calculated internal nodes, and boundaries. 
 app.MapPut("/commissioning-package", async (CommissioningPackage updatedPackage) =>
 {
-    var queryColor = $@"
-        DELETE {{<{updatedPackage.Id}> comp:hasColor ?color .}} 
-        INSERT {{ <{updatedPackage.Id}> comp:hasColor <{updatedPackage.Colour}> }} 
-        WHERE {{<{updatedPackage.Id}> comp:hasColor ?color .
+    var queryColour = $@"
+        DELETE {{<{updatedPackage.Id}> {Types.hasColour} ?colour .}} 
+        INSERT {{ <{updatedPackage.Id}> {Types.hasColour} <{updatedPackage.Colour}> }} 
+        WHERE {{<{updatedPackage.Id}> {Types.hasColour} ?colour .
         }}";
 
     var queryName = $@"
-        DELETE {{<{updatedPackage.Id}> comp:hasName ?name.}} 
-        INSERT {{ <{updatedPackage.Id}> comp:hasName <{updatedPackage.Name}> }} 
-        WHERE {{<{updatedPackage.Id}> comp:hasName ?name .
+        DELETE {{<{updatedPackage.Id}> {Types.hasName} ?name.}} 
+        INSERT {{ <{updatedPackage.Id}> {Types.hasName} <{updatedPackage.Name}> }} 
+        WHERE {{<{updatedPackage.Id}> {Types.hasName} ?name .
         }}";
 
 
-    await RdfoxApi.LoadData(conn, queryColor.ToString());
+    await RdfoxApi.LoadData(conn, queryColour.ToString());
     await RdfoxApi.LoadData(conn, queryName.ToString());
 
     return Results.Ok($"Commissioning package {updatedPackage.Id} updated successfully.");
@@ -189,23 +190,25 @@ app.MapGet("/commissioning-package/{commissioningPackageId}", async (string comm
         var predicate = parts[1];
         var obj = parts[2].Trim('<', '>');
 
-        switch (predicate)
+        if (predicate == Types.hasName)
         {
-            case "comp:hasName":
-                commissioningPackage.Name = obj.Trim('"');
-                break;
-            case "comp:hasColour":
-                commissioningPackage.Colour = obj.Trim('"');
-                break;
-            case "comp:hasBoundary":
-                commissioningPackage.Boundary.Add(new Node { Id = obj });
-                break;
-            case "comp:hasCalculatedInternal":
-                commissioningPackage.CalculatedInternal.Add(new Node { Id = obj });
-                break;
-            case "comp:hasSelectedInternal":
-                commissioningPackage.SelectedInternal.Add(new Node { Id = obj });
-                break;
+            commissioningPackage.Name = obj;
+        }
+        else if (predicate == Types.hasColour)
+        {
+            commissioningPackage.Colour = obj;
+        }
+        else if (predicate == Types.isBoundaryOf)
+        {
+            commissioningPackage.Boundary.Add(new Node { Id = obj });
+        }
+        else if (predicate == "comp:hasCalculatedInternal")
+        {
+            commissioningPackage.CalculatedInternal.Add(new Node { Id = obj });
+        }
+        else if (predicate == "comp:hasSelectedInternal")
+        {
+            commissioningPackage.SelectedInternal.Add(new Node { Id = obj });
         }
     }
 
