@@ -93,10 +93,14 @@ app.MapDelete("/commissioning-package/{packageId}/internal/{nodeId}", async (str
 });
 
 //Get adjacent nodes
-app.MapGet("/nodes/{nodeId}/adjacent", (string nodeId) =>
+app.MapGet("/nodes/{nodeId}/adjacent", async (string nodeId) =>
 {
-    // SELECT ?neighb WHERE {<nodeId> imf:adjacentTo ?neighb }
-    throw new NotImplementedException("TODO: Not implemented...");
+
+    var quey = $@"SELECT ?neighb WHERE {{ <{nodeId}> imf:adjacentTo ?neighb }}";
+
+    await RdfoxApi.QuerySparql(conn, quey);
+
+    return Results.Ok($"Adjacent nodes for node {nodeId} retrieved successfully."); 
 });
 
 //Add commissioning packageadd commision package endpoint?
@@ -115,36 +119,21 @@ app.MapPost("/commissioning-package", async (CommissioningPackage commissioningP
 //Update commissioning package - updating information like name and color while persisting the calculated internal nodes, and boundaries. 
 app.MapPut("/commissioning-package", async (CommissioningPackage updatedPackage) =>
 {
-    var queryName = $@"
-        SELECT ?name WHERE {{
-            <{updatedPackage.Id}> comp:hasName ?name .
-        }}";
-    var existingPackageName = await RdfoxApi.QuerySparql(conn, queryName);
-
-    // Check if the package exists
-    if (existingPackageName == null)
-    {
-        return Results.NotFound($"Commissioning package with ID {updatedPackage.Id} not found.");
-    }
     var queryColor = $@"
-        SELECT ?name WHERE {{
-            <{updatedPackage.Id}> comp:hasColor ?color .
+        DELETE {{<{updatedPackage.Id}> comp:hasColor ?color .}} 
+        INSERT {{ <{updatedPackage.Id}> comp:hasColor <{updatedPackage.Colour}> }} 
+        WHERE {{<{updatedPackage.Id}> comp:hasColor ?color .
         }}";
-    var existingPackageColor = await RdfoxApi.QuerySparql(conn, queryColor);
 
-    // DELETE {<{updatedPackage.Id}> comp:hasColor ?color .} INSERT { <{updatedPackage.Id}> comp:hasColor <{updatedPackage.Colour}> } } WHERE {<{updatedPackage.Id}> comp:hasColor ?color .}
-    // Delete the old triples for the mutable properties
-    var deleteData = new StringBuilder();
-    deleteData.AppendLine($@"<{updatedPackage.Id}> comp:hasName ""{existingPackageName}"" .");
-    deleteData.AppendLine($@"<{updatedPackage.Id}> comp:hasColour ""{existingPackageColor}"" .");
-    await RdfoxApi.DeleteData(conn, deleteData.ToString());
+    var queryName = $@"
+        DELETE {{<{updatedPackage.Id}> comp:hasName ?name.}} 
+        INSERT {{ <{updatedPackage.Id}> comp:hasName <{updatedPackage.Name}> }} 
+        WHERE {{<{updatedPackage.Id}> comp:hasName ?name .
+        }}";
 
-    // Construct the new triples with the updated properties
-    var insertData = new StringBuilder();
-    insertData.AppendLine($@"<{updatedPackage.Id}> comp:hasName ""{updatedPackage.Name}"" .");
-    insertData.AppendLine($@"<{updatedPackage.Id}> comp:hasColour ""{updatedPackage.Colour}"" .");
 
-    await RdfoxApi.LoadData(conn, insertData.ToString());
+    await RdfoxApi.LoadData(conn, queryColor.ToString());
+    await RdfoxApi.LoadData(conn, queryName.ToString());
 
     return Results.Ok($"Commissioning package {updatedPackage.Id} updated successfully.");
 });
