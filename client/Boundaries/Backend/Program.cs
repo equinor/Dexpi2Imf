@@ -29,6 +29,20 @@ app.MapPost("/commissioning-package/{packageId}/boundary/{nodeId}", async (strin
     packageId = Uri.UnescapeDataString(packageId);
     nodeId = Uri.UnescapeDataString(nodeId);
 
+    //Check if the packageID exists
+    var checkQuery = $@"
+        ASK WHERE {{
+             <{packageId}> {Types.type} {Types.CommissioningPackage} .
+        }}";
+
+    var existsResult = await RdfoxApi.AskSparql(conn, checkQuery);
+    // Check if the triple exists
+    if (!existsResult)
+    {
+        return Results.NotFound($"Commissioning package {packageId} not found.");
+    }
+
+
     var data = $@"
          <{nodeId}> {Types.isBoundaryOf} <{packageId}> .
     ";
@@ -45,6 +59,19 @@ app.MapPost("/commissioning-package/{packageId}/internal/{nodeId}", async (strin
 {
     packageId = Uri.UnescapeDataString(packageId);
     nodeId = Uri.UnescapeDataString(nodeId);
+
+    //Check if the packageID exists
+    var checkQuery = $@"
+        ASK WHERE {{
+             <{packageId}> {Types.type} {Types.CommissioningPackage} .
+        }}";
+
+    var existsResult = await RdfoxApi.AskSparql(conn, checkQuery);
+    // Check if the triple exists
+    if (!existsResult)
+    {
+        return Results.NotFound($"Commissioning package {packageId} not found.");
+    }
 
     var data = $@"
          <{nodeId}> {Types.isInPackage} <{packageId}> .
@@ -114,9 +141,9 @@ app.MapGet("/nodes/{nodeId}/adjacent", async (string nodeId) =>
 {
     nodeId = Uri.UnescapeDataString(nodeId);
 
-    var quey = $@"SELECT ?neighb WHERE {{ <{nodeId}> {Types.adjacentTo} ?neighb }}";
+    var query = $@"SELECT ?neighb WHERE {{ <{nodeId}> {Types.adjacentTo} ?neighb }}";
 
-    await RdfoxApi.QuerySparql(conn, quey);
+    await RdfoxApi.QuerySparql(conn, query);
 
     return Results.Ok($"Adjacent nodes for node {nodeId} retrieved successfully.");
 });
