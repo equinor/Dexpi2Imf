@@ -215,4 +215,17 @@ app.MapGet("/commissioning-package/{commissioningPackageId}", async (string comm
     return Results.Ok(commissioningPackage);
 });
 
+//Get the ID of all commissioning packages
+app.MapGet("/commissioning-package/get-all-commisioning-packages-ids", async () =>
+{
+    var query = $@"
+        SELECT ?packageId WHERE {{
+            ?packageId rdf:type {Types.CommissioningPackage} .
+        }}";
+
+    var result = await RdfoxApi.QuerySparql(conn, query);
+
+    return Results.Ok();
+});
+
 app.Run();
