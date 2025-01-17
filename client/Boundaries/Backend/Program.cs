@@ -78,6 +78,7 @@ app.MapDelete("/commissioning-package/{packageId}/boundary/{nodeId}", async (str
     ";
 
     await RdfoxApi.DeleteData(conn, data);
+
     return Results.Ok($"Triple for package {packageId} and node {nodeId} deleted successfully.");
 });
 
@@ -87,8 +88,20 @@ app.MapDelete("/commissioning-package/{packageId}/internal/{nodeId}", async (str
     packageId = Uri.UnescapeDataString(packageId);
     nodeId = Uri.UnescapeDataString(nodeId);
 
+    var checkQuery = $@"
+        ASK WHERE {{
+             <{nodeId}> {Types.isInPackage} <{packageId}> .
+        }}";
+
+    var existsResult = await RdfoxApi.AskSparql(conn, checkQuery);
+    // Check if the triple exists
+    if (!existsResult)
+    {
+        return Results.NotFound($"Triple for package {packageId} and node {nodeId} not found.");
+    }
+
     var data = $@"
-        <{nodeId}> {Types.isInPackage} <{packageId}> .
+         <{nodeId}> {Types.isInPackage} <{packageId}> .
     ";
 
     await RdfoxApi.DeleteData(conn, data);
@@ -112,9 +125,9 @@ app.MapGet("/nodes/{nodeId}/adjacent", async (string nodeId) =>
 app.MapPost("/commissioning-package", async (CommissioningPackage commissioningPackage) =>
 {
     var data = new StringBuilder();
-    data.AppendLine($@"<{commissioningPackage.Id}> rdf:type {Types.CommissioningPackage} .");
-    data.AppendLine($@"<{commissioningPackage.Id}> comp:hasName ""{commissioningPackage.Name}"" .");
-    data.AppendLine($@"<{commissioningPackage.Id}> comp:hasColour ""{commissioningPackage.Colour}"" .");
+    data.AppendLine($@"<{commissioningPackage.Id}> {Types.type} {Types.CommissioningPackage} .");
+    data.AppendLine($@"<{commissioningPackage.Id}> {Types.hasName} ""{commissioningPackage.Name}"" .");
+    data.AppendLine($@"<{commissioningPackage.Id}> {Types.hasColour} ""{commissioningPackage.Colour}"" .");
 
     await RdfoxApi.LoadData(conn, data.ToString());
 
