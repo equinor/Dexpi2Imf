@@ -166,9 +166,9 @@ app.MapGet("/commissioning-package/{commissioningPackageId}", async (string comm
         Id = commissioningPackageId,
         Name = string.Empty,
         Colour = string.Empty,
-        Boundary = new List<Node>(),
-        CalculatedInternal = new List<Node>(),
-        SelectedInternal = new List<Node>()
+        Boundary = [],
+        CalculatedInternal = [],
+        SelectedInternal = []
     };
 
     // Parse the SPARQL result line by line)
