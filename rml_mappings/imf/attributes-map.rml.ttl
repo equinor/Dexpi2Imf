@@ -13,7 +13,7 @@
 
 :AttributesMap a rr:TriplesMap;
   rml:logicalSource [
-    rml:source "pandid.xml";
+    rml:source "../pandid.xml";
     rml:referenceFormulation ql:XPath;
     rml:iterator "//GenericAttributes/GenericAttribute"
   ].

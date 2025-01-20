@@ -1,0 +1,65 @@
+name: "⛓️Test rml-mappings⛓️"
+
+on:
+  workflow_dispatch:
+  merge_group:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 19
+        uses: actions/setup-java@v4
+        with:
+          java-version: "19"
+          distribution: "temurin"
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: install apache jena
+        run: |
+          wget https://dlcdn.apache.org/jena/binaries/apache-jena-5.2.0.tar.gz
+          tar -xzvf apache-jena-*.tar.gz
+          
+      - name: Check ontologies and mappings are valid rdf
+        id: validate_ontology_rdf
+        run: |
+          export JENA_HOME=$(pwd)/apache-jena-5.2.0/
+          export PATH="$PATH:$JENA_HOME/bin"
+          riot --validate owl/*ttl
+          riot --validate rml_mappings/imf/*
+          riot --validate rml_mappings/graphics/*
+          
+      - name: Test imf mappings
+        run: |
+          export JENA_HOME=$(pwd)/apache-jena-5.2.0/
+          export PATH="$PATH:$JENA_HOME/bin"
+          curl -o rml_mappings/pandid.xml https://raw.githubusercontent.com/equinor/NOAKADEXPI/refs/heads/main/Blueprint/DISC_EXAMPLE-02/DISC_EXAMPLE-02-02.xml
+          docker run -v .:/data rmlio/rmlmapper-java:7.2.0 -m rml_mappings/imf/* -o /data/imf.ttl -s Turtle
+          shacl v --shapes shacl/imf-dexpi.shacl.ttl --data imf.ttl
+
+      - name: Test graphics mappings
+        run: |
+          export JENA_HOME=$(pwd)/apache-jena-5.2.0/
+          export PATH="$PATH:$JENA_HOME/bin"
+          curl -o rml_mappings/pandid.xml https://raw.githubusercontent.com/equinor/NOAKADEXPI/refs/heads/main/Blueprint/DISC_EXAMPLE-02/DISC_EXAMPLE-02-02.xml
+          docker run -v .:/data rmlio/rmlmapper-java:7.2.0 -m rml_mappings/graphics/* -o /data/graphics.ttl -s Turtle
+          shacl v --shapes shacl/graphic-dexpi.shacl.ttl --data graphics.ttl
+
+      - name: Test rdf examples
+        run: |
+          export JENA_HOME=$(pwd)/apache-jena-5.2.0/
+          export PATH="$PATH:$JENA_HOME/bin"
+          riot --validate examples/graphical.trig
+          shacl v --shapes  shacl/graphic-dexpi.shacl.ttl --data examples/graphical.trig

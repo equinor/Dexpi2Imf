@@ -1,0 +1,39 @@
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rml: <http://semweb.mmlab.be/ns/rml#> .
+@prefix rr: <http://www.w3.org/ns/r2rml#> .
+@prefix ql: <http://semweb.mmlab.be/ns/ql#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix graphic: <http://rdf.equinor.com/graphic#> .
+@prefix schema: <http://schema.org/> .
+@prefix dexpi: <https://rdf.equinor.com/dexpi#> .
+@prefix asset: <https://assetid.equinor.com/plantx#> .
+@prefix imf: <http://ns.imfid.org/imf#> .
+@prefix : <http://rdf.equinor.com/dexpi/mappings/graphic#> .
+
+:documentSubject 
+    rr:template "https://assetid.equinor.com/plantx/drawing#{MetaData/GenericAttributes/GenericAttribute[@Name='DrawingNumberAssignmentClass']/@Value}";
+    rr:termType rr:IRI;
+    rr:class graphic:Diagram .
+
+:PlantModelDrawingMap a rr:TriplesMap;
+  rml:logicalSource [
+    rml:source "../pandid.xml";
+    rml:referenceFormulation ql:XPath;
+    rml:iterator "/PlantModel"
+  ];
+  rr:subjectMap :documentSubject .
+
+:PlantModelDocumentMap a rr:TriplesMap;
+  rml:logicalSource [
+    rml:source "../pandid.xml";
+    rml:referenceFormulation ql:XPath;
+    rml:iterator "/PlantModel"
+  ];
+  rr:subjectMap [
+    rr:template "https://assetid.equinor.com/plantx#{MetaData/GenericAttributes/GenericAttribute[@Name='DrawingNumberAssignmentClass']/@Value}";
+    rr:termType rr:IRI
+  ] ; 
+    rr:predicateObjectMap [
+        rr:predicate graphic:visualisedAs;
+        rr:objectMap :documentSubject
+    ].

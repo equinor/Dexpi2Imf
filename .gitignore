@@ -36,3 +36,6 @@ __pycache__
 /SymbolLibrary/SymolLibrary.Tests/bin/
 /SymbolLibrary/SymbolLibrary.sln.DotSettings.user
 /SymbolLibrary/src/Data/Symbols.xlsm
+/client/Boundaries/Backend/out
+graphics.ttl
+imf.ttl

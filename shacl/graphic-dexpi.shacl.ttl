@@ -1,0 +1,206 @@
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix : <http://rdf.equinor.com/graphic#> .
+@prefix document: <https://assetid.equinor.com/plantx/document/> .
+@prefix css: <https://www.w3.org/TR/css-color-4#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+:DocumentShape a sh:NodeShape ;
+    sh:targetClass :PID ;
+    sh:property [
+        sh:path :visualisedAs ;
+        sh:class :Diagram ;
+        sh:minCount 1;
+        sh:name "documentVisualisedAs";
+        sh:message "A dexpi document in transit must have at least one visualisation" ;
+        ] .
+
+:DiagramShape a sh:NodeShape ;
+    sh:targetClass :Diagram ;
+    sh:property [
+        sh:path :hasExtent ;
+        sh:node :ExtentShape ;
+        sh:class :Extent ;
+        sh:minCount 1;
+        sh:maxCount 1;
+        sh:message "A Dexpi diagram must have exactly one extent" ;
+        ] , [
+            sh:path :hasSymbol ;
+            sh:class :Symbol ;
+            sh:minCount 1;
+                    sh:message "A Dexpi graphic must have at least one symbol"
+                ] , [
+                    sh:path :hasLine ;
+                    sh:class :Line ;
+                    sh:minCount 1;
+                    sh:message "A Dexpi graphic must have at least one line"
+                ] , [
+                    sh:path [sh:inversePath :visualisedAs] ;
+                    sh:class :PID ;
+                    sh:minCount 1;
+                    sh:maxCount 1;
+                    sh:message "A Dexpi graphic must be a visualization of exaxtly one P&ID document"
+                ].
+
+:ExtentShape a sh:NodeShape ;
+    sh:targetClass :Extent ;
+    sh:property [
+                    sh:path :minimumExtent ;
+                    sh:minCount 1;
+                    sh:maxCount 1;
+                    sh:message "An extent must have exactly one minimum"
+                ] , [
+                    sh:path :maximumExtent ;
+                    sh:minCount 1;
+                    sh:maxCount 1;
+                    sh:message "An extent must have exactly one maximum"
+                ] , [
+                    sh:path rdf:type;
+                ]
+    ;
+    sh:closed true
+                    .
+
+:PositionShape a sh:NodeShape ;
+    sh:targetClass :Position;
+    sh:property [
+                    sh:path :x ;
+                    sh:datatype xsd:integer ;
+                    sh:minCount 1;
+                    sh:maxCount 1;
+                    sh:message "A position must have exactly one x coordinate"
+                ] ;
+    sh:property [
+                    sh:path :y ;
+                    sh:datatype xsd:integer ;
+                    sh:minCount 1;
+                    sh:maxCount 1;
+                    sh:message "A position must have exactly one y coordinate"
+                ] ;
+    sh:property [
+                    sh:path :rotation ;
+                    sh:datatype xsd:integer ;
+                    sh:minCount 0 ;
+                    sh:maxCount 1 ;
+                    sh:message "A position may have one rotation"
+                ] , [
+                    sh:path rdf:type;
+                ] ;
+    sh:closed true .
+
+:SymbolShape a sh:NodeShape ;
+    sh:targetClass :Symbol;
+    sh:property [
+                    sh:path :hasPosition ;
+                    sh:class :Position ;
+                    sh:minCount 1;
+                    sh:maxCount 1;
+                    sh:message "A symbol must have exactly one position"
+                ] , [
+                    sh:path :hasGraphics ;
+                    sh:node :GraphicsShape ;
+                    sh:minCount 1;
+                    sh:maxCount 1;
+                    sh:message "A symbol must have exactly one graphics"
+                ] , [
+                    sh:path [sh:inversePath :visualisedAs] ;
+                    sh:maxCount 1;
+                    sh:message "A Dexpi symbol is a visualization of at most one IMF concept (propably block or terminal)"
+                ] , [
+                    sh:path rdf:type;
+                ] , [
+                    sh:path rdfs:label;
+                    sh:datatype xsd:string;
+                    sh:maxCount 1;
+                ];
+    sh:closed true .
+
+
+:LineShape a sh:NodeShape ;
+    sh:targetClass :Line;
+    sh:property [
+                    sh:path :hasCoordinates ;
+                    sh:minCount 1;
+                    sh:maxCount 1;
+                    sh:message "A line must have exactly one coordinate list";
+                    sh:node :CoordinateListShape ;
+                ] , [
+                    sh:path :hasStyle ;
+                    sh:minCount 1;
+                    sh:message "A line must have at least one style";
+                    sh:node :StyleShape ;
+                ] , [
+                    sh:path [sh:inversePath :visualisedAs] ;
+                    sh:maxCount 1;
+                    sh:message "A Dexpi line is a visualization of at most one IMF concept (propably connector)"
+                ], [
+                    sh:path rdf:type;
+                ] ;
+    sh:closed true .
+
+:CoordinateListShape a sh:NodeShape ;
+    sh:property [
+        sh:path rdf:first ;
+        sh:class :Position ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:message "A coordinate list must have exactly one rdf:first element" ;
+    ] ;
+    sh:property [
+        sh:path rdf:rest ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:message "An coordinate list must have an rdf:rest element that is an IRI" ;
+    ]  ;
+    sh:or (
+        [ sh:property [ sh:path rdf:rest ; sh:hasValue rdf:nil ] ]
+        [ sh:property [ sh:path rdf:rest ; sh:node :CoordinateListShape ] ]
+    ) ;
+    sh:closed true.
+
+:StyleShape a sh:NodeShape ;
+    sh:property [
+                    sh:path :hasStroke ;
+                    sh:maxCount 1;
+                    sh:node :StrokeShape ;
+                ] ;
+    sh:property [
+                    sh:path :hasStyle ;
+                    sh:maxCount 1;
+                    sh:datatype css:style ;
+                ] ;
+    sh:closed true.
+
+:StrokeShape a sh:NodeShape ;
+    sh:targetClass :Stroke;
+    sh:property [
+                    sh:path :dasharray ;
+                    sh:datatype xsd:string ;
+                ], [
+                    sh:path :width ;
+                    sh:datatype xsd:decimal ;
+                ] , [
+                    sh:path :color ;
+                    sh:minCount 1;
+                    sh:maxCount 1;
+                    sh:node :ColorShape ;
+                ], [
+                    sh:path rdf:type;
+                ];
+    sh:closed true.
+
+:ColorShape a sh:NodeShape ;
+    sh:property [
+                    sh:path :red ;
+                    sh:datatype xsd:integer ;
+                ] , [
+                    sh:path :green ;
+                    sh:datatype xsd:integer ;
+                ] , [
+                    sh:path :blue ;
+                    sh:datatype xsd:integer ;
+                ] , [
+                    sh:path rdf:type; 
+                ] ;
+                sh:closed true.

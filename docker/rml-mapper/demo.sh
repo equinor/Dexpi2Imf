@@ -2,12 +2,12 @@
 # This script is for use inside the docker container defined in the Dockerfile in this folder
 # See README.md for instructions
 
-# Copy xml for frontend
-cp /app/local/rml_mappings/pandid.xml /app/local/www/public/DISC_EXAMPLE-02-02.xml
+cp /app/NOAKADEXPI/Blueprint/DISC_EXAMPLE-02/DISC_EXAMPLE-02-02.xml /app/local/www/public/
+cp /app/NOAKADEXPI/Blueprint/DISC_EXAMPLE-02/DISC_EXAMPLE-02-02.xml /app/local/rml_mappings/pandid.xml
 
 # Create rdf
 cd local/rml_mappings
-java -jar /app/rmlmapper.jar -m *map*ttl -s trig -o pandid.trig
+java -jar /app/rmlmapper.jar -m imf/*map*ttl -s trig -o pandid.trig
 cd /app/
 
 # Copy the lacking Origo symbol

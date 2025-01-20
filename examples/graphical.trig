@@ -1,19 +1,20 @@
-@prefix : <http://example.org/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix css: <https://www.w3.org/TR/css-color-4#> .
-@prefix graphic: <http://example.org/data/> .
+@prefix : <http://rdf.equinor.com/graphic#> .
 @prefix document: <https://assetid.equinor.com/plantx/document/> .
+@prefix graphic: <https://assetid.equinor.com/plantx/document/graphic/> .
 @prefix symbol: <https://example.com/pca/symbol/> .
 
 # This example is based on the examples in <file>
 
 document:doc1234 a :PID ;
-    :visualisedAs graphic:doc1234 .
+    :visualisedAs document:graphic1234 .
 
 document:PressureVessel-1 :visualisedAs graphic:PressureVessel-1 .
 document:GateValve-5-node2-connector :visualisedAs graphic:GateValve-5-node2-connector .
 
 
-graphic:doc1234 a :Diagram ;
+document:graphic1234 a :Diagram ;
     :hasExtent [
         a :Extent ;
         :minimumExtent [ :x 100 ; :y 100 ] ;
@@ -53,16 +54,13 @@ graphic:GateValve-5-node2-connector a :Line ;
     :hasStyle [
         :hasStroke [
             a :Stroke ;
-            :dasharray "none"^^xsd:css ;
+            :dasharray "none"^^xsd:string ;
             :width 1.4 ;
             :color [
-                a :Color ;
-                :type :rgb ;
+                a :RgbColor ;
                 :red 255 ;
                 :green 255 ;
                 :blue 255
             ] ;
-            :color "rgb(255,255,255)"^^css:funcdef-rgb
         ]
-    ] ;
-    :hasStyle "stroke-dasharray:none; stroke:rgb(255,255,255); stroke-width:1.4"^^css:style .
+    ] .
