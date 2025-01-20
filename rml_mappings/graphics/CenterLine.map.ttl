@@ -9,6 +9,7 @@
 @prefix asset: <https://assetid.equinor.com/plantx#> .
 @prefix imf: <http://ns.imfid.org/imf#> .
 @prefix : <http://rdf.equinor.com/dexpi/mappings/graphic#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
 :centerLineSubject rr:template "https://assetid.equinor.com/plantx/{/PlantModel/MetaData/GenericAttributes/GenericAttribute[@Name='DrawingNumberAssignmentClass']/@Value}/lines#{../Connection/@ToID}";
     rr:termType rr:IRI;
@@ -23,8 +24,83 @@
   rr:subjectMap :centerLineSubject ;
   rr:predicateObjectMap [
     rr:predicate graphic:hasCoordinates;
-    rr:objectMap [ 
-      rr:template "https://assetid.equinor.com/plantx/{/PlantModel/MetaData/GenericAttributes/GenericAttribute[@Name='DrawingNumberAssignmentClass']/@Value}/lines#{../Connection/@ToID}/coordinates";
-      rr:termType rr:IRI;
+    rr:objectMap [
+      a rr:RefObjectMap ;
+      rr:parentTriplesMap :CoordinateListMap ;
+      rr:joinConidtion [
+        rr:child "ID";
+        rr:parent "../Connection/@ToID";
+      ]
     ]
   ] .
+
+
+:CoordinateListMap a rr:TriplesMap;
+  rml:logicalSource [
+    rml:source "../pandid.xml";
+    rml:referenceFormulation ql:XPath;
+    rml:iterator "//*/CenterLine/Coordinate[position() = 1]"
+  ];
+  rr:subjectMap [
+    rr:termType rr:BlankNode;
+  ];
+  rr:predicateObjectMap [
+    rr:predicate rdf:first;
+    rr:objectMap [
+      a rr:RefObjectMap ;
+      rr:parentTriplesMap :CoordinateMap ;
+    ]
+  ] .
+
+
+:CoordinateListElementMap a rr:TriplesMap;
+  rml:logicalSource [
+    rml:source "../pandid.xml";
+    rml:referenceFormulation ql:XPath;
+    rml:iterator "//*/CenterLine/Coordinate[position() != last() and position() > 1]"
+  ];
+  rr:subjectMap [
+    rr:termType rr:BlankNode;
+  ];
+  rr:predicateObjectMap [
+    rr:predicate rdf:first;
+    rr:objectMap [
+      a rr:RefObjectMap ;
+      rr:parentTriplesMap :CoordinateMap ;
+    ]
+  # ];
+  # rr:predicateObjectMap [
+  #   rr:predicate rdf:rest;
+  #   rr:objectMap [
+  #     rr:parentTriplesMap :CoordinateListMap ;
+      
+  #   ]
+  ] .
+
+:CoordinateMap a rr:TriplesMap;
+  rml:logicalSource [
+    rml:source "../pandid.xml";
+    rml:referenceFormulation ql:XPath;
+    rml:iterator "//*/CenterLine/Coordinate"
+  ];
+  
+  rr:subjectMap [
+    a rr:RefObjectMap ;
+    rr:termType rr:BlankNode;
+  ]
+  #;
+#   rr:predicateObjectMap [
+#     rr:predicate graphic:x;
+#     rr:objectMap [
+#       rml:reference "@X";
+#       rr:datatype xsd:integer;
+#     ]
+#   ];
+#   rr:predicateObjectMap [
+#     rr:predicate graphic:y;
+#     rr:objectMap [
+#       rml:reference "@Y";
+#       rr:datatype xsd:integer;
+#     ]
+   #] 
+   .
