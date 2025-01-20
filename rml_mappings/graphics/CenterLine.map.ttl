@@ -18,7 +18,7 @@
   rml:logicalSource [
     rml:source "../pandid.xml";
     rml:referenceFormulation ql:XPath;
-    rml:iterator "CenterLine" 
+    rml:iterator "//*/CenterLine" 
   ];
   rr:subjectMap :centerLineSubject ;
   rr:predicateObjectMap [
