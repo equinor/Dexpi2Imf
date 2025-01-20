@@ -24,7 +24,7 @@
   rr:predicateObjectMap [
     rr:predicate graphic:hasCoordinates;
     rr:objectMap [ 
-      rr:template "https://assetid.equinor.com/plantx/{/PlantModel/MetaData/GenericAttributes/GenericAttribute[@Name='DrawingNumberAssignmentClass']/@Value}/lines{../Connection/@ToID}/coordinates";
+      rr:template "https://assetid.equinor.com/plantx/{/PlantModel/MetaData/GenericAttributes/GenericAttribute[@Name='DrawingNumberAssignmentClass']/@Value}/lines#{../Connection/@ToID}/coordinates";
       rr:termType rr:IRI;
     ]
   ] .
