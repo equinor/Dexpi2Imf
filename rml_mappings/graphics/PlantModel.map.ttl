@@ -31,8 +31,7 @@
   ];
   rr:subjectMap [
     rr:template "https://assetid.equinor.com/plantx#{MetaData/GenericAttributes/GenericAttribute[@Name='DrawingNumberAssignmentClass']/@Value}";
-    rr:termType rr:IRI;
-    rr:class graphic:PID 
+    rr:termType rr:IRI
   ] ; 
     rr:predicateObjectMap [
         rr:predicate graphic:visualisedAs;
