@@ -31,13 +31,13 @@ app.MapPost("/commissioning-package/{packageId}/boundary/{nodeId}", async (strin
 
     // Check if the packageID exists
     var checkQuery = $@"
-        SELECT ?type WHERE {{
+        ASK ?type WHERE {{
              <{packageId}> {Types.type} ?type .
         }}";
 
-    var existsResult = await RdfoxApi.QuerySparql(conn, checkQuery);
-    // Check if the result is empty
-    if (string.IsNullOrEmpty(existsResult))
+    var existsResult = await RdfoxApi.AskSparql(conn, checkQuery);
+
+    if (!existsResult)
     {
         return Results.NotFound($"Commissioning package {packageId} not found.");
     }
@@ -66,7 +66,7 @@ app.MapPost("/commissioning-package/{packageId}/internal/{nodeId}", async (strin
         }}";
 
     var existsResult = await RdfoxApi.AskSparql(conn, checkQuery);
-    // Check if the triple exists
+
     if (!existsResult)
     {
         return Results.NotFound($"Commissioning package {packageId} not found.");
@@ -93,7 +93,7 @@ app.MapDelete("/commissioning-package/{packageId}/boundary/{nodeId}", async (str
         }}";
 
     var existsResult = await RdfoxApi.AskSparql(conn, checkQuery);
-    // Check if the triple exists
+
     if (!existsResult)
     {
         return Results.NotFound($"Triple for package {packageId} and node {nodeId} not found.");
@@ -120,7 +120,7 @@ app.MapDelete("/commissioning-package/{packageId}/internal/{nodeId}", async (str
         }}";
 
     var existsResult = await RdfoxApi.AskSparql(conn, checkQuery);
-    // Check if the triple exists
+
     if (!existsResult)
     {
         return Results.NotFound($"Triple for package {packageId} and node {nodeId} not found.");

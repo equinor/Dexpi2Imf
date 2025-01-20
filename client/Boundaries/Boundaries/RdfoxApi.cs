@@ -158,8 +158,6 @@ public class RdfoxApi
             };
 
             var response = await client.SendAsync(request);
-            if (!response.IsSuccessStatusCode)
-                throw new Exception(await response.Content.ReadAsStringAsync());
 
             return response.IsSuccessStatusCode;
         }
