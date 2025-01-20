@@ -32,7 +32,7 @@ app.MapPost("/commissioning-package/{packageId}/boundary/{nodeId}", async (strin
     // Check if the packageID exists
     var checkQuery = $@"
         ASK ?type WHERE {{
-             <{packageId}> {Types.type} ?type .
+             <{packageId}> {TypesProvider.type} ?type .
         }}";
 
     var existsResult = await RdfoxApi.AskSparql(conn, checkQuery);
@@ -43,7 +43,7 @@ app.MapPost("/commissioning-package/{packageId}/boundary/{nodeId}", async (strin
     }
 
     var data = $@"
-         <{nodeId}> {Types.isBoundaryOf} <{packageId}> .";
+         <{nodeId}> {PropertiesProvider.isBoundaryOf} <{packageId}> .";
 
     await RdfoxApi.LoadData(conn, data);
 
@@ -62,7 +62,7 @@ app.MapPost("/commissioning-package/{packageId}/internal/{nodeId}", async (strin
     //Check if the packageID exists
     var checkQuery = $@"
         ASK WHERE {{
-             <{packageId}> {Types.type} {Types.CommissioningPackage} .
+             <{packageId}> {TypesProvider.type} {PropertiesProvider.CommissioningPackage} .
         }}";
 
     var existsResult = await RdfoxApi.AskSparql(conn, checkQuery);
@@ -73,7 +73,7 @@ app.MapPost("/commissioning-package/{packageId}/internal/{nodeId}", async (strin
     }
 
     var data = $@"
-         <{nodeId}> {Types.isInPackage} <{packageId}> .
+         <{nodeId}> {PropertiesProvider.isInPackage} <{packageId}> .
     ";
 
     await RdfoxApi.LoadData(conn, data);
@@ -89,7 +89,7 @@ app.MapDelete("/commissioning-package/{packageId}/boundary/{nodeId}", async (str
 
     var checkQuery = $@"
         ASK WHERE {{
-             <{nodeId}> {Types.isBoundaryOf} <{packageId}> .
+             <{nodeId}> {PropertiesProvider.isBoundaryOf} <{packageId}> .
         }}";
 
     var existsResult = await RdfoxApi.AskSparql(conn, checkQuery);
@@ -100,7 +100,7 @@ app.MapDelete("/commissioning-package/{packageId}/boundary/{nodeId}", async (str
     }
 
     var data = $@"
-         <{nodeId}> {Types.isBoundaryOf} <{packageId}> .
+         <{nodeId}> {PropertiesProvider.isBoundaryOf} <{packageId}> .
     ";
 
     await RdfoxApi.DeleteData(conn, data);
@@ -116,7 +116,7 @@ app.MapDelete("/commissioning-package/{packageId}/internal/{nodeId}", async (str
 
     var checkQuery = $@"
         ASK WHERE {{
-             <{nodeId}> {Types.isInPackage} <{packageId}> .
+             <{nodeId}> {PropertiesProvider.isInPackage} <{packageId}> .
         }}";
 
     var existsResult = await RdfoxApi.AskSparql(conn, checkQuery);
@@ -127,7 +127,7 @@ app.MapDelete("/commissioning-package/{packageId}/internal/{nodeId}", async (str
     }
 
     var data = $@"
-         <{nodeId}> {Types.isInPackage} <{packageId}> .
+         <{nodeId}> {PropertiesProvider.isInPackage} <{packageId}> .
     ";
 
     await RdfoxApi.DeleteData(conn, data);
@@ -140,7 +140,7 @@ app.MapGet("/nodes/{nodeId}/adjacent", async (string nodeId) =>
 {
     nodeId = Uri.UnescapeDataString(nodeId);
 
-    var query = $@"SELECT ?neighb WHERE {{ <{nodeId}> {Types.adjacentTo} ?neighb }}";
+    var query = $@"SELECT ?neighb WHERE {{ <{nodeId}> {PropertiesProvider.adjacentTo} ?neighb }}";
 
     await RdfoxApi.QuerySparql(conn, query);
 
@@ -151,9 +151,9 @@ app.MapGet("/nodes/{nodeId}/adjacent", async (string nodeId) =>
 app.MapPost("/commissioning-package", async (CommissioningPackage commissioningPackage) =>
 {
     var data = new StringBuilder();
-    data.AppendLine($@"<{commissioningPackage.Id}> {Types.type} {Types.CommissioningPackage} .");
-    data.AppendLine($@"<{commissioningPackage.Id}> {Types.hasName} ""{commissioningPackage.Name}"" .");
-    data.AppendLine($@"<{commissioningPackage.Id}> {Types.hasColour} ""{commissioningPackage.Colour}"" .");
+    data.AppendLine($@"<{commissioningPackage.Id}> {TypesProvider.type} {PropertiesProvider.CommissioningPackage} .");
+    data.AppendLine($@"<{commissioningPackage.Id}> {PropertiesProvider.hasName} ""{commissioningPackage.Name}"" .");
+    data.AppendLine($@"<{commissioningPackage.Id}> {PropertiesProvider.hasColour} ""{commissioningPackage.Colour}"" .");
 
     await RdfoxApi.LoadData(conn, data.ToString());
 
@@ -162,17 +162,17 @@ app.MapPost("/commissioning-package", async (CommissioningPackage commissioningP
 
 //Update commissioning package - updating information like name and color while persisting the calculated internal nodes, and boundaries. 
 app.MapPut("/commissioning-package", async (CommissioningPackage updatedPackage) =>
-{
+{ 
     var queryColour = $@"
-        DELETE {{<{updatedPackage.Id}> {Types.hasColour} ?colour .}} 
-        INSERT {{ <{updatedPackage.Id}> {Types.hasColour} <{updatedPackage.Colour}> }} 
-        WHERE {{<{updatedPackage.Id}> {Types.hasColour} ?colour .
+        DELETE {{<{updatedPackage.Id}> {PropertiesProvider.hasColour} ?colour .}} 
+        INSERT {{ <{updatedPackage.Id}> {PropertiesProvider.hasColour} <{updatedPackage.Colour}> }} 
+        WHERE {{<{updatedPackage.Id}> {PropertiesProvider.hasColour} ?colour .
         }}";
 
     var queryName = $@"
-        DELETE {{<{updatedPackage.Id}> {Types.hasName} ?name.}} 
-        INSERT {{ <{updatedPackage.Id}> {Types.hasName} <{updatedPackage.Name}> }} 
-        WHERE {{<{updatedPackage.Id}> {Types.hasName} ?name .
+        DELETE {{<{updatedPackage.Id}> {PropertiesProvider.hasName} ?name.}} 
+        INSERT {{ <{updatedPackage.Id}> {PropertiesProvider.hasName} <{updatedPackage.Name}> }} 
+        WHERE {{<{updatedPackage.Id}> {PropertiesProvider.hasName} ?name .
         }}";
 
 
@@ -229,15 +229,15 @@ app.MapGet("/commissioning-package/{commissioningPackageId}", async (string comm
         var predicate = parts[1];
         var obj = parts[2].Trim('<', '>');
 
-        if (predicate == Types.hasName)
+        if (predicate == PropertiesProvider.hasName)
         {
             commissioningPackage.Name = obj;
         }
-        else if (predicate == Types.hasColour)
+        else if (predicate == PropertiesProvider.hasColour)
         {
             commissioningPackage.Colour = obj;
         }
-        else if (predicate == Types.isBoundaryOf)
+        else if (predicate == PropertiesProvider.isBoundaryOf)
         {
             commissioningPackage.Boundary.Add(new Node { Id = obj });
         }
@@ -259,7 +259,7 @@ app.MapGet("/commissioning-package/get-all-commisioning-packages-ids", async () 
 {
     var query = $@"
         SELECT ?packageId WHERE {{
-            ?packageId rdf:type {Types.CommissioningPackage} .
+            ?packageId rdf:type {PropertiesProvider.CommissioningPackage} .
         }}";
 
     var result = await RdfoxApi.QuerySparql(conn, query);
