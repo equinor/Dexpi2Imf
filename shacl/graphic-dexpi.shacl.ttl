@@ -76,7 +76,7 @@
                     sh:datatype xsd:integer ;
                     sh:minCount 1;
                     sh:maxCount 1;
-                    sh:message "A position must have exactly one y"
+                    sh:message "A position must have exactly one y coordinate"
                 ] ;
     sh:property [
                     sh:path :rotation ;
