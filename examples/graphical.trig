@@ -63,4 +63,4 @@ graphic:GateValve-5-node2-connector a :Line ;
                 :blue 255
             ] ;
         ]
-    ] ;
+    ] .
