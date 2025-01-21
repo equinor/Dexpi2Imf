@@ -15,24 +15,52 @@
     rr:termType rr:IRI;
     rr:class graphic:Line  .
 
-:CenterLineMap a rr:TriplesMap;
-  rml:logicalSource [
-    rml:source "../pandid.xml";
-    rml:referenceFormulation ql:XPath;
-    rml:iterator "//*/CenterLine" 
-  ];
-  rr:subjectMap :centerLineSubject ;
-  rr:predicateObjectMap [
+:hasCoordinatesMap 
     rr:predicate graphic:hasCoordinates;
     rr:objectMap [
       a rr:RefObjectMap ;
       rr:parentTriplesMap :CoordinateListMap ;
-      rr:joinConidtion [
-        rr:child "ID";
-        rr:parent "../Connection/@ToID";
+      rr:joinCondition [
+        rr:child "../@ID";
+        rr:parent "../../@ID";
+      ], [
+        rr:child "position()";
+        rr:parent "../position()";
       ]
     ]
-  ] .
+   .
+
+
+:CenterLineMap a rr:TriplesMap;
+  rml:logicalSource [
+    rml:source "../pandid.xml";
+    rml:referenceFormulation ql:XPath;
+    rml:iterator "//*/CenterLine[../Connection/@ToID and not (following-sibling::PipingComponent or following-sibling::PropertyBreak)]" 
+  ];
+  rr:subjectMap [
+    rr:template "https://assetid.equinor.com/plantx/{/PlantModel/MetaData/GenericAttributes/GenericAttribute[@Name='DrawingNumberAssignmentClass']/@Value}/lines#{../Connection/@ToID}-node{../Connection/@ToNode}";
+    rr:termType rr:IRI;
+    rr:class graphic:Line 
+  ] ;
+  rr:predicateObjectMap :hasCoordinatesMap .
+
+
+:coordinateListContentMap a rr:PredicateObjectMap;
+    rr:predicate rdf:first;
+    rr:objectMap [
+      a rr:RefObjectMap ;
+      rr:parentTriplesMap :CoordinateMap ;
+      rr:joinCondition [
+        rr:child "../../@ID";
+        rr:parent "../../@ID";
+      ], [
+        rr:child "../position()";
+        rr:parent "../position()";
+      ], [
+        rr:child "../../position()";
+        rr:parent "../../position()";
+      ]
+    ].
 
 
 :CoordinateListMap a rr:TriplesMap;
@@ -42,15 +70,10 @@
     rml:iterator "//*/CenterLine/Coordinate[position() = 1]"
   ];
   rr:subjectMap [
+    rr:template "{/PlantModel/MetaData/GenericAttributes/GenericAttribute[@Name='DrawingNumberAssignmentClass']/@Value}_{../../@ID}_{../position()}_{position()}_coordinateListElement";
     rr:termType rr:BlankNode;
   ];
-  rr:predicateObjectMap [
-    rr:predicate rdf:first;
-    rr:objectMap [
-      a rr:RefObjectMap ;
-      rr:parentTriplesMap :CoordinateMap ;
-    ]
-  ] .
+  rr:predicateObjectMap :coordinateListContentMap .
 
 
 :CoordinateListElementMap a rr:TriplesMap;
@@ -60,14 +83,10 @@
     rml:iterator "//*/CenterLine/Coordinate[position() != last() and position() > 1]"
   ];
   rr:subjectMap [
+    rr:template "{/PlantModel/MetaData/GenericAttributes/GenericAttribute[@Name='DrawingNumberAssignmentClass']/@Value}_{../../@ID}_{../position()}_{position()}_coordinateListElement";
     rr:termType rr:BlankNode;
   ];
-  rr:predicateObjectMap [
-    rr:predicate rdf:first;
-    rr:objectMap [
-      a rr:RefObjectMap ;
-      rr:parentTriplesMap :CoordinateMap ;
-    ]
+  rr:predicateObjectMap :coordinateListContentMap .
   # ];
   # rr:predicateObjectMap [
   #   rr:predicate rdf:rest;
@@ -75,7 +94,7 @@
   #     rr:parentTriplesMap :CoordinateListMap ;
       
   #   ]
-  ] .
+  
 
 :CoordinateMap a rr:TriplesMap;
   rml:logicalSource [
@@ -83,24 +102,22 @@
     rml:referenceFormulation ql:XPath;
     rml:iterator "//*/CenterLine/Coordinate"
   ];
-  
   rr:subjectMap [
-    a rr:RefObjectMap ;
+    rr:template "{/PlantModel/MetaData/GenericAttributes/GenericAttribute[@Name='DrawingNumberAssignmentClass']/@Value}_{../../@ID}_{../position()}_{position()}_coordinate";
     rr:termType rr:BlankNode;
-  ]
-  #;
-#   rr:predicateObjectMap [
-#     rr:predicate graphic:x;
-#     rr:objectMap [
-#       rml:reference "@X";
-#       rr:datatype xsd:integer;
-#     ]
-#   ];
-#   rr:predicateObjectMap [
-#     rr:predicate graphic:y;
-#     rr:objectMap [
-#       rml:reference "@Y";
-#       rr:datatype xsd:integer;
-#     ]
-   #] 
+  ];
+  rr:predicateObjectMap [
+    rr:predicate graphic:x;
+    rr:objectMap [
+      rml:reference "@X";
+      rr:datatype xsd:integer;
+    ]
+  ];
+  rr:predicateObjectMap [
+    rr:predicate graphic:y;
+    rr:objectMap [
+      rml:reference "@Y";
+      rr:datatype xsd:integer;
+    ]
+   ] 
    .
