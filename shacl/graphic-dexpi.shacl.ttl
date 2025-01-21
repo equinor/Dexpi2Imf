@@ -66,21 +66,21 @@
     sh:targetClass :Position;
     sh:property [
                     sh:path :x ;
-                    sh:datatype xsd:integer ;
+                    sh:datatype xsd:double ;
                     sh:minCount 1;
                     sh:maxCount 1;
                     sh:message "A position must have exactly one x coordinate"
                 ] ;
     sh:property [
                     sh:path :y ;
-                    sh:datatype xsd:integer ;
+                    sh:datatype xsd:double ;
                     sh:minCount 1;
                     sh:maxCount 1;
                     sh:message "A position must have exactly one y coordinate"
                 ] ;
     sh:property [
                     sh:path :rotation ;
-                    sh:datatype xsd:integer ;
+                    sh:datatype xsd:double ;
                     sh:minCount 0 ;
                     sh:maxCount 1 ;
                     sh:message "A position may have one rotation"
