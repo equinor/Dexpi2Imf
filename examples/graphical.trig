@@ -27,8 +27,8 @@ document:graphic1234 a :Diagram ;
 graphic:PressureVessel-1 a :Symbol ;
     :hasPosition [
         a :Position ;
-        :x 390 ;
-        :y 210 ;
+        :x "390"^^xsd:double ;
+        :y "210"^^xsd:double ;
         :rotation 0
     ];
     :hasGraphics symbol:PT002A .
@@ -37,18 +37,18 @@ graphic:GateValve-5-node2-connector a :Line ;
     :hasCoordinates (
         [
             a :Position ;
-            :x 646 ;
-            :y 188
+            :x "646"^^xsd:double ;
+            :y "188"^^xsd:double
         ] 
         [            
             a :Position ;
-            :x 646 ;
-            :y 180
+            :x "646"^^xsd:double ;
+            :y "180"^^xsd:double
         ]
         [            
             a :Position ;
-            :x 412 ;
-            :y 180
+            :x "412"^^xsd:double ;
+            :y "180"^^xsd:double
         ]
     );
     :hasStyle [
