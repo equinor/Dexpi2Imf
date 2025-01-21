@@ -16,7 +16,12 @@ app.UseSwagger();
 app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
-
+builder.Services.AddCors();
+app.UseCors(builder => builder
+    .AllowAnyOrigin()
+    .AllowAnyMethod()
+    .AllowAnyHeader()
+);
 // Establish connection to Rdfox
 var conn = RdfoxApi.GetDefaultConnectionSettings();
 

@@ -8,6 +8,7 @@ import Tools from "../enums/Tools.ts";
 import { CommissioningPackageContextProps } from "../context/CommissioningPackageContext.tsx";
 import Action from "../types/Action.ts";
 import React from "react";
+import { addBoundary } from "./Api.ts";
 
 export default async function selectHandleFunction(
   id: string,
@@ -84,7 +85,8 @@ export async function handleAddBoundary(
       );
     }
     // Then, add it as a boundary
-    await addNode(id, context, BoundaryParts.Boundary, "boundaryIds");
+    const response = await addBoundary(context.activePackage.id, id);
+    console.log(response);
   }
   // Then, update the nodes in package
   await updateNodesInPackage(context);
