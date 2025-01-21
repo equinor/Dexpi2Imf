@@ -57,6 +57,7 @@ export const addBoundary = async (
     `${BASE_URL}/commissioning-package/${packageId}/boundary/${nodeId}`,
     { method: "POST" },
   );
+  console.log(response);
   return response.json();
 };
 

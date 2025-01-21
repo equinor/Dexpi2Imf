@@ -21,13 +21,15 @@ services:
       - type: bind
         source: ../
         target: /app/local/
-  backend: 
+  backend:
     build:
       context: ../
       dockerfile: docker/backend/Dockerfile
     tty: true
     ports:
-      -  8000:8000
+      - 8000:8000
+    depends_on:
+      - rdfox
   frontend:
     image: node:23
     working_dir: /app/local/www

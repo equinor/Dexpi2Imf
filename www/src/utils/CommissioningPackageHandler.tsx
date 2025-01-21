@@ -62,6 +62,7 @@ export async function handleAddBoundary(
   id: string,
   context: CommissioningPackageContextProps,
 ) {
+  console.log(id);
   // If the element is already a boundary, remove it as boundary
   if (context.activePackage.boundaryIds.includes(id)) {
     await removeNode(id, context, BoundaryParts.Boundary, "boundaryIds");
@@ -85,8 +86,7 @@ export async function handleAddBoundary(
       );
     }
     // Then, add it as a boundary
-    const response = await addBoundary(context.activePackage.id, id);
-    console.log(response);
+    await addBoundary(context.activePackage.id, id);
   }
   // Then, update the nodes in package
   await updateNodesInPackage(context);

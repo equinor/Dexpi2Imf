@@ -20,7 +20,7 @@ public class RdfoxApi
     {
         return new ConnectionSettings
         {
-            Host = "localhost",
+            Host = "rdfox",
             Port = 12110,
             Username = "admin",
             Password = "admin",
