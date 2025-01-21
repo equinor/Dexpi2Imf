@@ -8,20 +8,19 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddCors();
 
 var app = builder.Build();
 
-
 app.UseSwagger();
 app.UseSwaggerUI();
-
-app.UseHttpsRedirection();
-builder.Services.AddCors();
 app.UseCors(builder => builder
     .AllowAnyOrigin()
     .AllowAnyMethod()
     .AllowAnyHeader()
 );
+app.UseHttpsRedirection();
+
 // Establish connection to Rdfox
 var conn = RdfoxApi.GetDefaultConnectionSettings();
 
