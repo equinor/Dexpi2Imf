@@ -53,11 +53,13 @@ export const addBoundary = async (
   packageId: string,
   nodeId: string,
 ): Promise<string> => {
-  const response = await fetch(
+  console.log(
     `${BASE_URL}/commissioning-package/${packageId}/boundary/${nodeId}`,
+  );
+  const response = await fetch(
+    `${BASE_URL}/commissioning-package/${encodeURIComponent(packageId)}/boundary/${encodeURIComponent(nodeId)}`,
     { method: "POST" },
   );
-  console.log(response);
   return response.json();
 };
 
@@ -66,7 +68,7 @@ export const deleteBoundary = async (
   nodeId: string,
 ): Promise<string> => {
   const response = await fetch(
-    `${BASE_URL}/commissioning-package/${packageId}/boundary/${nodeId}`,
+    `${BASE_URL}/commissioning-package/${encodeURIComponent(packageId)}/boundary/${encodeURIComponent(nodeId)}`,
     { method: "DELETE" },
   );
   return response.json();
@@ -78,7 +80,7 @@ export const addInternal = async (
   nodeId: string,
 ): Promise<string> => {
   const response = await fetch(
-    `${BASE_URL}/commissioning-package/${packageId}/internal/${nodeId}`,
+    `${BASE_URL}/commissioning-package/${encodeURIComponent(packageId)}/internal/${encodeURIComponent(nodeId)}`,
     { method: "POST" },
   );
   return response.json();
@@ -89,7 +91,7 @@ export const deleteInternal = async (
   nodeId: string,
 ): Promise<string> => {
   const response = await fetch(
-    `${BASE_URL}/commissioning-package/${packageId}/internal/${nodeId}`,
+    `${BASE_URL}/commissioning-package/${encodeURIComponent(packageId)}/internal/${encodeURIComponent(nodeId)}`,
     { method: "DELETE" },
   );
   return response.json();

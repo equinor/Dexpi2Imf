@@ -8,7 +8,7 @@ import Tools from "../enums/Tools.ts";
 import { CommissioningPackageContextProps } from "../context/CommissioningPackageContext.tsx";
 import Action from "../types/Action.ts";
 import React from "react";
-import { addBoundary } from "./Api.ts";
+import { addBoundary, deleteInternal } from "./Api.ts";
 
 export default async function selectHandleFunction(
   id: string,
@@ -78,12 +78,7 @@ export async function handleAddBoundary(
     }
     // If it is selected internal, remove it as selected internal.
     if (context.activePackage.selectedInternalIds.includes(id)) {
-      await removeNode(
-        id,
-        context,
-        BoundaryParts.SelectedInternal,
-        "selectedInternalIds",
-      );
+      await deleteInternal(context.activePackage.id, id);
     }
     // Then, add it as a boundary
     await addBoundary(context.activePackage.id, id);
