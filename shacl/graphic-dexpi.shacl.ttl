@@ -165,11 +165,6 @@
                     sh:maxCount 1;
                     sh:node :StrokeShape ;
                 ] ;
-    sh:property [
-                    sh:path :hasStyle ;
-                    sh:maxCount 1;
-                    sh:datatype css:style ;
-                ] ;
     sh:closed true.
 
 :StrokeShape a sh:NodeShape ;
@@ -179,12 +174,16 @@
                     sh:datatype xsd:string ;
                 ], [
                     sh:path :width ;
-                    sh:datatype xsd:decimal ;
-                ] , [
-                    sh:path :color ;
+                    sh:datatype xsd:double ;
                     sh:minCount 1;
                     sh:maxCount 1;
+                    sh:message "A stroke must specify a width";
+                ] , [
+                    sh:path :color ;
+                    sh:minCount 0;
+                    sh:maxCount 1;
                     sh:node :ColorShape ;
+                    sh:message "A stroke can have at most one color";
                 ], [
                     sh:path rdf:type;
                 ];
