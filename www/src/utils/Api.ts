@@ -60,7 +60,9 @@ export const createCommissioningPackage = async (
 export const getCommissioningPackage = async (
   id: string,
 ): Promise<CommissioningPackage> => {
-  const response = await fetch(`${BASE_URL}/commissioning-package/${id}`);
+  const response = await fetch(
+    `${BASE_URL}/commissioning-package/${encodeURIComponent(id)}`,
+  );
   return response.json();
 };
 
