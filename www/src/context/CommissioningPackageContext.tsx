@@ -15,28 +15,25 @@ export interface CommissioningPackageContextProps {
     React.SetStateAction<CommissioningPackage[]>
   >;
   deleteCommissioningPackage: (packageId: string) => void;
-  createInitialPackage: () => CommissioningPackage;
 }
 
 const CommissioningPackageContext = createContext<
   CommissioningPackageContextProps | undefined
 >(undefined);
 
-export const createInitialPackage = (): CommissioningPackage => ({
-  id: "asset:Package1",
-  name: "Initial Package",
-  color: HighlightColors.LASER_LEMON,
-  boundaryIds: [],
-  internalIds: [],
-  selectedInternalIds: [],
-});
-
 export const CommissioningPackageContextProvider: React.FC<{
   children: React.ReactNode;
 }> = ({ children }) => {
-  const [activePackage, setActivePackage] = useState<CommissioningPackage>(
-    createInitialPackage(),
-  );
+  const initialPackage: CommissioningPackage = {
+    id: "asset:Package1",
+    name: "Initial Package",
+    color: HighlightColors.LASER_LEMON,
+    boundaryIds: [],
+    internalIds: [],
+    selectedInternalIds: [],
+  };
+  const [activePackage, setActivePackage] =
+    useState<CommissioningPackage>(initialPackage);
   const [commissioningPackages, setCommissioningPackages] = useState<
     CommissioningPackage[]
   >([]);
@@ -58,7 +55,6 @@ export const CommissioningPackageContextProvider: React.FC<{
         (pkg) => pkg.id !== packageId,
       );
       if (updatedPackages.length === 0) {
-        const initialPackage = createInitialPackage();
         addCommissioningPackage(
           initialPackage.id,
           initialPackage.name,
@@ -99,7 +95,6 @@ export const CommissioningPackageContextProvider: React.FC<{
         commissioningPackages,
         setCommissioningPackages,
         deleteCommissioningPackage,
-        createInitialPackage,
       }}
     >
       {children}
