@@ -155,7 +155,7 @@ app.MapPost("/commissioning-package", async (CommissioningPackage commissioningP
     var data = new StringBuilder();
     data.AppendLine($@"<{commissioningPackage.Id}> {TypesProvider.type} {PropertiesProvider.CommissioningPackage} .");
     data.AppendLine($@"<{commissioningPackage.Id}> {PropertiesProvider.hasName} ""{commissioningPackage.Name}"" .");
-    data.AppendLine($@"<{commissioningPackage.Id}> {PropertiesProvider.hasColour} ""{commissioningPackage.Colour}"" .");
+    data.AppendLine($@"<{commissioningPackage.Id}> {PropertiesProvider.hascolor} ""{commissioningPackage.color}"" .");
 
     await RdfoxApi.LoadData(conn, data.ToString());
 
@@ -165,10 +165,10 @@ app.MapPost("/commissioning-package", async (CommissioningPackage commissioningP
 //Update commissioning package - updating information like name and color while persisting the calculated internal nodes, and boundaries. 
 app.MapPut("/commissioning-package", async (CommissioningPackage updatedPackage) =>
 { 
-    var queryColour = $@"
-        DELETE {{<{updatedPackage.Id}> {PropertiesProvider.hasColour} ?colour .}} 
-        INSERT {{ <{updatedPackage.Id}> {PropertiesProvider.hasColour} <{updatedPackage.Colour}> }} 
-        WHERE {{<{updatedPackage.Id}> {PropertiesProvider.hasColour} ?colour .
+    var querycolor = $@"
+        DELETE {{<{updatedPackage.Id}> {PropertiesProvider.hascolor} ?color .}} 
+        INSERT {{ <{updatedPackage.Id}> {PropertiesProvider.hascolor} <{updatedPackage.Color}> }} 
+        WHERE {{<{updatedPackage.Id}> {PropertiesProvider.hascolor} ?color .
         }}";
 
     var queryName = $@"
@@ -178,7 +178,7 @@ app.MapPut("/commissioning-package", async (CommissioningPackage updatedPackage)
         }}";
 
 
-    await RdfoxApi.LoadData(conn, queryColour.ToString());
+    await RdfoxApi.LoadData(conn, querycolor.ToString());
     await RdfoxApi.LoadData(conn, queryName.ToString());
 
     return Results.Ok($"Commissioning package {updatedPackage.Id} updated successfully.");
@@ -215,10 +215,10 @@ app.MapGet("/commissioning-package/{commissioningPackageId}", async (string comm
     {
         Id = commissioningPackageId,
         Name = string.Empty,
-        Colour = string.Empty,
-        Boundary = [],
-        CalculatedInternal = [],
-        SelectedInternal = []
+        color = string.Empty,
+        BoundaryIds = [],
+        InternalIds = [],
+        SelectedInternalIds = []
     };
 
     // Parse the SPARQL result line by line)
@@ -235,21 +235,21 @@ app.MapGet("/commissioning-package/{commissioningPackageId}", async (string comm
         {
             commissioningPackage.Name = obj;
         }
-        else if (predicate == PropertiesProvider.hasColour)
+        else if (predicate == PropertiesProvider.hascolor)
         {
-            commissioningPackage.Colour = obj;
+            commissioningPackage.color = obj;
         }
         else if (predicate == PropertiesProvider.isBoundaryOf)
         {
-            commissioningPackage.Boundary.Add(new Node { Id = obj });
+            commissioningPackage.BoundaryIds.Add(new Node { Id = obj });
         }
         else if (predicate == "comp:hasCalculatedInternal")
         {
-            commissioningPackage.CalculatedInternal.Add(new Node { Id = obj });
+            commissioningPackage.InternalIds.Add(new Node { Id = obj });
         }
         else if (predicate == "comp:hasSelectedInternal")
         {
-            commissioningPackage.SelectedInternal.Add(new Node { Id = obj });
+            commissioningPackage.SelectedInternalIds.Add(new Node { Id = obj });
         }
     }
 
