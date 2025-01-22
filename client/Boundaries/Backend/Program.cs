@@ -155,7 +155,7 @@ app.MapPost("/commissioning-package", async (CommissioningPackage commissioningP
     var data = new StringBuilder();
     data.AppendLine($@"<{commissioningPackage.Id}> {TypesProvider.type} {PropertiesProvider.CommissioningPackage} .");
     data.AppendLine($@"<{commissioningPackage.Id}> {PropertiesProvider.hasName} ""{commissioningPackage.Name}"" .");
-    data.AppendLine($@"<{commissioningPackage.Id}> {PropertiesProvider.hascolor} ""{commissioningPackage.color}"" .");
+    data.AppendLine($@"<{commissioningPackage.Id}> {PropertiesProvider.hasColor} ""{commissioningPackage.Color}"" .");
 
     await RdfoxApi.LoadData(conn, data.ToString());
 
@@ -166,9 +166,9 @@ app.MapPost("/commissioning-package", async (CommissioningPackage commissioningP
 app.MapPut("/commissioning-package", async (CommissioningPackage updatedPackage) =>
 { 
     var querycolor = $@"
-        DELETE {{<{updatedPackage.Id}> {PropertiesProvider.hascolor} ?color .}} 
-        INSERT {{ <{updatedPackage.Id}> {PropertiesProvider.hascolor} <{updatedPackage.Color}> }} 
-        WHERE {{<{updatedPackage.Id}> {PropertiesProvider.hascolor} ?color .
+        DELETE {{<{updatedPackage.Id}> {PropertiesProvider.hasColor} ?color .}} 
+        INSERT {{ <{updatedPackage.Id}> {PropertiesProvider.hasColor} <{updatedPackage.Color}> }} 
+        WHERE {{<{updatedPackage.Id}> {PropertiesProvider.hasColor} ?color .
         }}";
 
     var queryName = $@"
@@ -215,7 +215,7 @@ app.MapGet("/commissioning-package/{commissioningPackageId}", async (string comm
     {
         Id = commissioningPackageId,
         Name = string.Empty,
-        color = string.Empty,
+        Color = string.Empty,
         BoundaryIds = [],
         InternalIds = [],
         SelectedInternalIds = []
@@ -235,9 +235,9 @@ app.MapGet("/commissioning-package/{commissioningPackageId}", async (string comm
         {
             commissioningPackage.Name = obj;
         }
-        else if (predicate == PropertiesProvider.hascolor)
+        else if (predicate == PropertiesProvider.hasColor)
         {
-            commissioningPackage.color = obj;
+            commissioningPackage.Color = obj;
         }
         else if (predicate == PropertiesProvider.isBoundaryOf)
         {

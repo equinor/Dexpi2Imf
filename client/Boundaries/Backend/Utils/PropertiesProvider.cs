@@ -7,6 +7,6 @@
         public static readonly string adjacentTo = "imf:adjacentTo" ;
         public static readonly string CommissioningPackage = "comp:CommissioningPackage" ;
         public static readonly string hasName = "comp:hasName";
-        public static readonly string hasColour = "comp:hasColour";
+        public static readonly string hasColor = "comp:hasColour";
     }   
 }
