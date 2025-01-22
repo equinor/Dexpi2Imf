@@ -25,7 +25,7 @@ export const CommissioningPackageContextProvider: React.FC<{
   children: React.ReactNode;
 }> = ({ children }) => {
   const initialPackage: CommissioningPackage = {
-    id: "asset:Package1",
+    id: "https://assetid.equinor.com/plantx#Package1",
     name: "Initial Package",
     color: HighlightColors.LASER_LEMON,
     boundaryIds: [],

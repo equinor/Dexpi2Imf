@@ -1,4 +1,5 @@
 using System.Text;
+using System.Text.Json;
 using IriTools;
 
 namespace Boundaries;
@@ -126,7 +127,7 @@ public class RdfoxApi
     /// <param name="conn"></param>
     /// <param name="query"></param>
     /// <returns></returns>
-    public static async Task<string> QuerySparql(ConnectionSettings conn, string query)
+    public static async Task<string> QuerySparql(ConnectionSettings conn, string query, string acceptHeader = "application/sparql-results+json")
     {
         using (var client = new HttpClient())
         {
@@ -137,6 +138,7 @@ public class RdfoxApi
             {
                 Content = content
             };
+            request.Headers.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue(acceptHeader));
 
             var response = await client.SendAsync(request);
             if (!response.IsSuccessStatusCode)
@@ -156,11 +158,17 @@ public class RdfoxApi
             {
                 Content = content
             };
+            request.Headers.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/sparql-results+json"));
 
             var response = await client.SendAsync(request);
+            if (!response.IsSuccessStatusCode)
+                throw new Exception(await response.Content.ReadAsStringAsync());
 
-            return response.IsSuccessStatusCode;
+            var responseContent = await response.Content.ReadAsStringAsync();
+            var jsonResponse = JsonDocument.Parse(responseContent);
+            return jsonResponse.RootElement.GetProperty("boolean").GetBoolean();
         }
     }
+
 
 }
