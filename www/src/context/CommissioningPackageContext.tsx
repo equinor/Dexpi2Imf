@@ -1,7 +1,11 @@
 import React, { createContext, useEffect, useState } from "react";
 import CommissioningPackage from "../types/CommissioningPackage.ts";
 import HighlightColors from "../enums/HighlightColors.ts";
-import { deletePackageFromTripleStore, addCommissioningPackage } from "../utils/Triplestore.ts";
+import {
+  deletePackageFromTripleStore,
+  addCommissioningPackage,
+} from "../utils/Triplestore.ts";
+import { createCommissioningPackage } from "../utils/Api.ts";
 
 export interface CommissioningPackageContextProps {
   activePackage: CommissioningPackage;
@@ -29,19 +33,19 @@ export const createInitialPackage = (): CommissioningPackage => ({
 
 export const CommissioningPackageContextProvider: React.FC<{
   children: React.ReactNode;
-}> = ({children }) => {
-  const [activePackage, setActivePackage] = useState<CommissioningPackage>(createInitialPackage());
-  const [commissioningPackages, setCommissioningPackages] = useState<CommissioningPackage[]>([]);
+}> = ({ children }) => {
+  const [activePackage, setActivePackage] = useState<CommissioningPackage>(
+    createInitialPackage(),
+  );
+  const [commissioningPackages, setCommissioningPackages] = useState<
+    CommissioningPackage[]
+  >([]);
 
   useEffect(() => {
     if (activePackage && commissioningPackages.length === 0) {
       setCommissioningPackages([activePackage]);
       (async () => {
-        await addCommissioningPackage(
-          activePackage.id,
-          activePackage.name,
-          activePackage.color,
-        );
+        await createCommissioningPackage(activePackage);
       })();
     }
   }, [activePackage, commissioningPackages]);
@@ -50,7 +54,9 @@ export const CommissioningPackageContextProvider: React.FC<{
     await deletePackageFromTripleStore(packageId);
 
     setCommissioningPackages((prevPackages) => {
-      const updatedPackages = prevPackages.filter((pkg) => pkg.id !== packageId);
+      const updatedPackages = prevPackages.filter(
+        (pkg) => pkg.id !== packageId,
+      );
       if (updatedPackages.length === 0) {
         const initialPackage = createInitialPackage();
         addCommissioningPackage(
@@ -71,9 +77,9 @@ export const CommissioningPackageContextProvider: React.FC<{
     setCommissioningPackages((prevPackages) =>
       prevPackages.map((pkg) => ({
         ...pkg,
-        boundaryIds: pkg.boundaryIds.filter((id) => id !== packageId),
-        internalIds: pkg.internalIds.filter((id) => id !== packageId),
-      }))
+        boundaryIds: pkg.boundaryIds.filter((node) => node.id !== packageId),
+        internalIds: pkg.internalIds.filter((node) => node.id !== packageId),
+      })),
     );
 
     if (activePackage.id === packageId) {

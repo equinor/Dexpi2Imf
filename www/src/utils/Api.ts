@@ -2,6 +2,23 @@ import CommissioningPackage from "../types/CommissioningPackage.ts";
 
 const BASE_URL = "http://localhost:8000";
 
+async function request<TResponse>(
+  url: string,
+  requestInit: RequestInit,
+): Promise<TResponse> {
+  const response = await fetch(url, requestInit);
+  if (response.ok) {
+    if (response.status === 204) {
+      return {} as TResponse;
+    }
+
+    return response.json();
+  }
+  // response not ok and not unauthorized
+  const jsonError = await response.json();
+  return Promise.reject(jsonError);
+}
+
 const getRequestConfig = async (
   method: string,
   body: object | undefined = undefined,
@@ -10,9 +27,7 @@ const getRequestConfig = async (
     method: method,
     headers: {
       "Content-Type": "application/json",
-      "X-CSRF": "1",
     },
-    credentials: "include",
   };
 
   if (body) {
@@ -22,12 +37,24 @@ const getRequestConfig = async (
   return requestConfig;
 };
 
+const addParametersToUrl = (url: string, o: object): string => {
+  const newUrl = new URL(url);
+  const json = JSON.parse(JSON.stringify(o));
+  for (const [key, value] of Object.entries(json)) {
+    newUrl.searchParams.append(key, value as string);
+  }
+  return newUrl.toString();
+};
+
 // COMMISSIONING PACKAGE
 
 export const createCommissioningPackage = async (
   commissioningPackage: CommissioningPackage,
-): Promise<CommissioningPackage> => {
-  return commissioningPackage;
+): Promise<string> => {
+  return await request(
+    `${BASE_URL}/commissioning-package/`,
+    await getRequestConfig("POST", commissioningPackage),
+  );
 };
 
 export const getCommissioningPackage = async (

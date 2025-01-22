@@ -166,8 +166,8 @@ app.MapPost("/commissioning-package", async (CommissioningPackage commissioningP
 app.MapPut("/commissioning-package", async (CommissioningPackage updatedPackage) =>
 { 
     var querycolor = $@"
-        DELETE {{<{updatedPackage.Id}> {PropertiesProvider.hasColor} ?color .}} 
-        INSERT {{ <{updatedPackage.Id}> {PropertiesProvider.hasColor} <{updatedPackage.Color}> }} 
+        DELETE {{<{updatedPackage.Id}> {PropertiesProvider.hasColor} ?color .}}
+        INSERT {{ <{updatedPackage.Id}> {PropertiesProvider.hasColor} <{updatedPackage.Color}> }}
         WHERE {{<{updatedPackage.Id}> {PropertiesProvider.hasColor} ?color .
         }}";
 
@@ -266,7 +266,7 @@ app.MapGet("/commissioning-package/get-all-commisioning-packages-ids", async () 
 
     var result = await RdfoxApi.QuerySparql(conn, query);
 
-    return Results.Ok();
+    return Results.Ok(result);
 });
 
 app.Run();
