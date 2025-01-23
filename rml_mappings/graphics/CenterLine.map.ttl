@@ -21,7 +21,7 @@
     rml:iterator "//*/CenterLine[../Connection/@ToID and not (following-sibling::PipingComponent or following-sibling::PropertyBreak)]" 
   ];
   rr:subjectMap [
-    rr:template "https://assetid.equinor.com/plantx#{../Connection/@ToID}-node{../Connection/@ToNode}-connector-case1";
+    rr:template "https://assetid.equinor.com/plantx#{../Connection/@ToID}-node{../Connection/@ToNode}-connector";
     rr:termType rr:IRI;
     rr:class graphic:Line 
   ] ;
@@ -35,7 +35,7 @@
     rml:iterator "//*/CenterLine[preceding-sibling::PipingComponent and (following-sibling::PipingComponent or following-sibling::PropertyBreak)]" 
   ];
   rr:subjectMap [
-    rr:template "https://assetid.equinor.com/plantx#{preceding-sibling::PipingComponent[1]/@ID}-node2-connector-case2";
+    rr:template "https://assetid.equinor.com/plantx#{preceding-sibling::PipingComponent[1]/@ID}-node2-connector";
     rr:termType rr:IRI;
     rr:class graphic:Line 
   ] ;
@@ -49,7 +49,7 @@
     rml:iterator "//*/CenterLine[(../Connection/@FromID) and not (preceding-sibling::PipingComponent)]" 
   ];
   rr:subjectMap [
-    rr:template "https://assetid.equinor.com/plantx#{../Connection/@FromID}-node{../Connection/@FromNode}-connector-case3";
+    rr:template "https://assetid.equinor.com/plantx#{../Connection/@FromID}-node{../Connection/@FromNode}-connector";
     rr:termType rr:IRI;
     rr:class graphic:Line 
   ] ;
@@ -63,7 +63,7 @@
     rml:iterator "//*/CenterLine[(../Connection/@ToID) and (not ((../Connection/@FromID) or (preceding-sibling::PipingComponent)))]" 
   ];
   rr:subjectMap [
-    rr:template "https://assetid.equinor.com/plantx#{../Connection/@ToID}-node{../Connection/@ToNode}-connector-case4";
+    rr:template "https://assetid.equinor.com/plantx#{../Connection/@ToID}-node{../Connection/@ToNode}-connector";
     rr:termType rr:IRI;
     rr:class graphic:Line 
   ] ;
