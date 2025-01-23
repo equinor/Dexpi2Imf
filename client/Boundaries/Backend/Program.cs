@@ -299,7 +299,7 @@ app.MapGet("/commissioning-package/{commissioningPackageId}", async (string comm
         return Results.Problem("An error occurred while parsing the SPARQL result.");
     }
 
-    return Results.Ok(new {commissioningPackage });
+    return Results.Ok(commissioningPackage);
   
 });
 
