@@ -1,6 +1,6 @@
 import { XMLParser } from "fast-xml-parser";
 import Equipment from "./Equipment.tsx";
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import ProcessInstrumentationFunction from "./ProcessInstrumentationFunction.tsx";
 import { EquipmentProps, XMLProps } from "../../types/diagram/Diagram.ts";
 import { PipingNetworkSystemProps } from "../../types/diagram/Piping.ts";
@@ -90,7 +90,7 @@ export default function Pandid() {
           }}
         >
           {" "}
-          <ZoomableSVGWrapper containerRef={containerRef}>
+          <ZoomableSVGWrapper containerRef={containerRef as React.RefObject<HTMLDivElement>}>
             <svg
               viewBox={`${xmlData.PlantModel.Drawing.Extent.Min.X} ${xmlData.PlantModel.Drawing.Extent.Min.Y} ${xmlData.PlantModel.Drawing.Extent.Max.X} ${xmlData.PlantModel.Drawing.Extent.Max.Y}`}
               width={"100%"}
