@@ -4,8 +4,8 @@ namespace Backend.Utils;
 
 public static class QueryUtils
 {
-    public static async Task<bool> IsBoundaryOf(string packageId, string nodeId, ConnectionSettings conn) 
-        =>  await AskSparql(conn, $@"ASK WHERE {{ <{nodeId}> {PropertiesProvider.isSelectedInternalOf} <{packageId}> }}");
+    public static async Task<bool> IsBoundaryOf(string packageId, string nodeId, ConnectionSettings conn)
+        => await AskSparql(conn, $@"ASK WHERE {{ <{nodeId}> {PropertiesProvider.isSelectedInternalOf} <{packageId}> }}");
 
     public static async Task<bool> IsSelectedInternalOf(string packageId, string nodeId, ConnectionSettings conn)
         => await AskSparql(conn, $@"ASK WHERE {{ <{nodeId}> {PropertiesProvider.isSelectedInternalOf} <{packageId}> }}");

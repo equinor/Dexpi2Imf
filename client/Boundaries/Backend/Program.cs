@@ -25,7 +25,7 @@ app.UseHttpsRedirection();
 // Establish connection to Rdfox
 var conn = RdfoxApi.GetDefaultConnectionSettings();
 
-//update boundary 
+//Update boundary 
 app.MapPost("/commissioning-package/{packageId}/update-boundary/{nodeId}", async (string packageId, string nodeId) =>
 {
     packageId = Uri.UnescapeDataString(packageId);
@@ -43,12 +43,37 @@ app.MapPost("/commissioning-package/{packageId}/update-boundary/{nodeId}", async
     }
     else
     {
-      var addBoundary = $@"<{nodeId}> {PropertiesProvider.isBoundaryOf} <{packageId}> .";
-      await RdfoxApi.LoadData(conn, addBoundary);
+        await QueryUtils.AddBounaryOf(packageId, nodeId, conn);
     }
 
     return Results.Ok();
 });
+
+
+//Update selected internal 
+app.MapPost("/commissioning-package/{packageId}/update-internal/{nodeId}", async (string packageId, string nodeId) =>
+{
+    packageId = Uri.UnescapeDataString(packageId);
+    nodeId = Uri.UnescapeDataString(nodeId);
+
+    var isSelectedInternal = await QueryUtils.IsBoundaryOf(packageId, nodeId, conn);
+    var isBoundary = await QueryUtils.IsSelectedInternalOf(packageId, nodeId, conn);
+
+    if (isBoundary)
+        await QueryUtils.DeleteBoundaryOf(packageId, nodeId, conn);
+
+    if (isSelectedInternal)
+    {
+        await QueryUtils.DeleteSelectedInternalOf(packageId, nodeId, conn);
+    }
+    else
+    {
+        await QueryUtils.AddSelectedInternalOf(packageId, nodeId, conn);
+    }
+
+    return Results.Ok();
+});
+
 
 // Add node as boundary
 app.MapPost("/commissioning-package/{packageId}/boundary/{nodeId}", async (string packageId, string nodeId) =>
@@ -321,7 +346,7 @@ app.MapGet("/commissioning-package/{commissioningPackageId}", async (string comm
     }
 
     return Results.Ok(commissioningPackage);
-  
+
 });
 
 
