@@ -145,10 +145,31 @@ app.MapGet("/nodes/{nodeId}/adjacent", async (string nodeId) =>
 
     var query = $@"SELECT ?neighb WHERE {{ <{nodeId}> {PropertiesProvider.adjacentTo} ?neighb }}";
 
-    await RdfoxApi.QuerySparql(conn, query);
+    var result = await RdfoxApi.QuerySparql(conn, query);
 
-    return Results.Ok($"Adjacent nodes for node {nodeId} retrieved successfully.");
+    var adjacentNodes = new List<string>();
+
+    try
+    {
+        using (JsonDocument doc = JsonDocument.Parse(result))
+        {
+            var bindings = doc.RootElement.GetProperty("results").GetProperty("bindings");
+
+            foreach (var binding in bindings.EnumerateArray())
+            {
+                var neighb = binding.GetProperty("neighb").GetProperty("value").GetString();
+                adjacentNodes.Add(neighb);
+            }
+        }
+    }
+    catch (JsonException e)
+    {
+        return Results.Problem("An error occurred while parsing the SPARQL result.");
+    }
+
+    return Results.Ok(adjacentNodes);
 });
+
 
 //Add commissioning packageadd commision package endpoint?
 app.MapPost("/commissioning-package", async (CommissioningPackage commissioningPackage) =>
