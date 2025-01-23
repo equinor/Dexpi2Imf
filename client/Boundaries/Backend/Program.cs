@@ -31,6 +31,11 @@ app.MapPost("/commissioning-package/{packageId}/update-boundary/{nodeId}", async
     packageId = Uri.UnescapeDataString(packageId);
     nodeId = Uri.UnescapeDataString(nodeId);
 
+    if(!await QueryUtils.CommissioningPackageExists(packageId, nodeId, conn))
+    {
+        return Results.NotFound($"Commissioning package {packageId} not found.");
+    }
+
     var isSelectedInternal = await QueryUtils.IsBoundaryOf(packageId, nodeId, conn);
     var isNodeInPackage = await QueryUtils.NodeIsInPackage(packageId, nodeId, conn);
     var isBoundary = await QueryUtils.IsSelectedInternalOf(packageId, nodeId, conn);
@@ -38,7 +43,7 @@ app.MapPost("/commissioning-package/{packageId}/update-boundary/{nodeId}", async
     if (isSelectedInternal)
         await QueryUtils.DeleteIsSelectedInternalOf(packageId, nodeId, conn);
 
-    if(isNodeInPackage)
+    if (isNodeInPackage)
         await QueryUtils.DeleteNodeFromPackage(packageId, nodeId, conn);
 
     if (isBoundary)
@@ -59,6 +64,11 @@ app.MapPost("/commissioning-package/{packageId}/update-internal/{nodeId}", async
 {
     packageId = Uri.UnescapeDataString(packageId);
     nodeId = Uri.UnescapeDataString(nodeId);
+
+    if (!await QueryUtils.CommissioningPackageExists(packageId, nodeId, conn))
+    {
+        return Results.NotFound($"Commissioning package {packageId} not found.");
+    }
 
     var isSelectedInternal = await QueryUtils.IsBoundaryOf(packageId, nodeId, conn);
     var isBoundary = await QueryUtils.IsSelectedInternalOf(packageId, nodeId, conn);
