@@ -186,22 +186,24 @@ app.MapPost("/commissioning-package", async (CommissioningPackage commissioningP
 
 //Update commissioning package - updating information like name and color while persisting the calculated internal nodes, and boundaries. 
 app.MapPut("/commissioning-package", async (CommissioningPackage updatedPackage) =>
-{ 
-    var querycolor = $@"
-        DELETE {{<{updatedPackage.Id}> {PropertiesProvider.hasColor} ?color .}}
-        INSERT {{ <{updatedPackage.Id}> {PropertiesProvider.hasColor} <{updatedPackage.Color}> }}
-        WHERE {{<{updatedPackage.Id}> {PropertiesProvider.hasColor} ?color .
-        }}";
+{
+    var queryColor = $@"
+        DELETE {{<{updatedPackage.Id}> comp:hasColour ?color .}}
+        INSERT {{<{updatedPackage.Id}> comp:hasColour ""{updatedPackage.Color}"" .}}
+        WHERE {{<{updatedPackage.Id}> comp:hasColour ?color .}}";
 
     var queryName = $@"
-        DELETE {{<{updatedPackage.Id}> {PropertiesProvider.hasName} ?name.}} 
-        INSERT {{ <{updatedPackage.Id}> {PropertiesProvider.hasName} <{updatedPackage.Name}> }} 
-        WHERE {{<{updatedPackage.Id}> {PropertiesProvider.hasName} ?name .
-        }}";
+        DELETE {{<{updatedPackage.Id}> comp:hasName ?name .}}
+        INSERT {{<{updatedPackage.Id}> comp:hasName ""{updatedPackage.Name}"" .}}
+        WHERE {{<{updatedPackage.Id}> comp:hasName ?name .}}";
 
+    Console.WriteLine("Executing queryColor:");
+    Console.WriteLine(queryColor);
+    await RdfoxApi.LoadData(conn, queryColor);
 
-    await RdfoxApi.LoadData(conn, querycolor.ToString());
-    await RdfoxApi.LoadData(conn, queryName.ToString());
+    Console.WriteLine("Executing queryName:");
+    Console.WriteLine(queryName);
+    await RdfoxApi.LoadData(conn, queryName);
 
     return Results.Ok($"Commissioning package {updatedPackage.Id} updated successfully.");
 });
