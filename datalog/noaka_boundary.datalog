@@ -14,4 +14,4 @@ comp:isBoundaryOf [?new_node, ?package] :-
     imf:hasPart[?new_node, ?node] .
 
 comp:isInPackage [?node, ?package] :- 
-    comp:selectedInternalOf[?node, ?package]
+    comp:isSelectedInternalOf[?node, ?package] .
