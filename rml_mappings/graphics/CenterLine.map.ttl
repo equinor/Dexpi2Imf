@@ -12,20 +12,6 @@
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
 
-:hasCoordinatesMap 
-    rr:predicate graphic:hasCoordinates;
-    rr:objectMap [
-      a rr:RefObjectMap ;
-      rr:parentTriplesMap :CoordinateListMap ;
-      rr:joinCondition [
-        rr:child "../@ID";
-        rr:parent "../../@ID";
-      ], [
-        rr:child "position()";
-        rr:parent "../position()";
-      ]
-    ]
-   .
 
 
 :CenterLineToMap a rr:TriplesMap;
@@ -35,7 +21,7 @@
     rml:iterator "//*/CenterLine[../Connection/@ToID and not (following-sibling::PipingComponent or following-sibling::PropertyBreak)]" 
   ];
   rr:subjectMap [
-    rr:template "https://assetid.equinor.com/plantx/{/PlantModel/MetaData/GenericAttributes/GenericAttribute[@Name='DrawingNumberAssignmentClass']/@Value}/lines#{../Connection/@ToID}-node{../Connection/@ToNode}";
+    rr:template "https://assetid.equinor.com/plantx#{../Connection/@ToID}-node{../Connection/@ToNode}-connector-case1";
     rr:termType rr:IRI;
     rr:class graphic:Line 
   ] ;
@@ -46,10 +32,10 @@
   rml:logicalSource [
     rml:source "../pandid.xml";
     rml:referenceFormulation ql:XPath;
-    rml:iterator "//*/CenterLine[preceding-sibling::PipingComponent]" 
+    rml:iterator "//*/CenterLine[preceding-sibling::PipingComponent and (following-sibling::PipingComponent or following-sibling::PropertyBreak)]" 
   ];
   rr:subjectMap [
-    rr:template "https://assetid.equinor.com/plantx/{/PlantModel/MetaData/GenericAttributes/GenericAttribute[@Name='DrawingNumberAssignmentClass']/@Value}/lines#{preceding-sibling::PipingComponent[1]/@ID}-node2";
+    rr:template "https://assetid.equinor.com/plantx#{preceding-sibling::PipingComponent[1]/@ID}-node2-connector-case2";
     rr:termType rr:IRI;
     rr:class graphic:Line 
   ] ;
@@ -60,10 +46,10 @@
   rml:logicalSource [
     rml:source "../pandid.xml";
     rml:referenceFormulation ql:XPath;
-    rml:iterator "//*/CenterLine[../Connection/@FromID]" 
+    rml:iterator "//*/CenterLine[(../Connection/@FromID) and not (preceding-sibling::PipingComponent)]" 
   ];
   rr:subjectMap [
-    rr:template "https://assetid.equinor.com/plantx/{/PlantModel/MetaData/GenericAttributes/GenericAttribute[@Name='DrawingNumberAssignmentClass']/@Value}/lines#{../Connection/@FromID}-node{../Connection/@FromNode}";
+    rr:template "https://assetid.equinor.com/plantx#{../Connection/@FromID}-node{../Connection/@FromNode}-connector-case3";
     rr:termType rr:IRI;
     rr:class graphic:Line 
   ] ;
@@ -74,15 +60,31 @@
   rml:logicalSource [
     rml:source "../pandid.xml";
     rml:referenceFormulation ql:XPath;
-    rml:iterator "//*/CenterLine[../Connection/@ToID]" 
+    rml:iterator "//*/CenterLine[(../Connection/@ToID) and (not ((../Connection/@FromID) or (preceding-sibling::PipingComponent)))]" 
   ];
   rr:subjectMap [
-    rr:template "https://assetid.equinor.com/plantx/{/PlantModel/MetaData/GenericAttributes/GenericAttribute[@Name='DrawingNumberAssignmentClass']/@Value}/lines#{../Connection/@ToID}-node{../Connection/@ToNode}";
+    rr:template "https://assetid.equinor.com/plantx#{../Connection/@ToID}-node{../Connection/@ToNode}-connector-case4";
     rr:termType rr:IRI;
     rr:class graphic:Line 
   ] ;
   rr:predicateObjectMap :hasCoordinatesMap ;
   rr:predicateObjectMap :lineHasStyleMap .
+
+:hasCoordinatesMap 
+    rr:predicate graphic:hasCoordinates;
+    rr:objectMap [
+      a rr:RefObjectMap ;
+      rr:parentTriplesMap :CoordinateListMap ;
+      rr:joinCondition [
+        rr:child "../@ID";
+        rr:parent "../../@ID";
+      ], [
+        rr:child "count(preceding-sibling::CenterLine)";
+        rr:parent "../count(preceding-sibling::CenterLine)";
+      ]
+    ]
+   .
+
 
 :lineHasStyleMap a rr:PredicateObjectMap;
       rr:predicate graphic:hasStyle;
@@ -93,8 +95,8 @@
           rr:child "../@ID";
           rr:parent "../@ID";
         ], [
-          rr:child "position()";
-          rr:parent "position()";
+          rr:child "count(preceding-sibling::CenterLine)";
+          rr:parent "count(preceding-sibling::CenterLine)";
       ]
     ] .
 
@@ -117,8 +119,8 @@
           rr:child "../@ID";
           rr:parent "../@ID";
         ], [
-          rr:child "position()";
-          rr:parent "position()";
+          rr:child "count(preceding-sibling::CenterLine)";
+          rr:parent "count(preceding-sibling::CenterLine)";
       ]
     ] 
   ].
@@ -154,43 +156,34 @@
   rml:logicalSource [
     rml:source "../pandid.xml";
     rml:referenceFormulation ql:XPath;
-    rml:iterator "//*/CenterLine/Coordinate[position() = 1]"
+    rml:iterator "//*/CenterLine/Coordinate[not (preceding-sibling::Coordinate)]"
   ];
   rr:subjectMap [
-    rr:template "{/PlantModel/MetaData/GenericAttributes/GenericAttribute[@Name='DrawingNumberAssignmentClass']/@Value}_{../../@ID}_{../count(preceding-sibling::CenterLine)}_{count(preceding-sibling::Coordinate)}_coordinateListElement";
+    rr:template "{/PlantModel/MetaData/GenericAttributes/GenericAttribute[@Name='DrawingNumberAssignmentClass']/@Value}_{../../@ID}_{../count(preceding-sibling::CenterLine)}_0_coordinateListFirstElement";
     rr:termType rr:BlankNode;
   ];
-  rr:predicateObjectMap 
-   :coordinateListContentMap,
-   :restOfCoordinateListMap 
-  .
-
+  rr:predicateObjectMap :coordinateListContentMap, :restOfCoordinateListMap, :restOfCoordinateListLastMap .
 
 :CoordinateListElementMap a rr:TriplesMap;
   rml:logicalSource [
     rml:source "../pandid.xml";
     rml:referenceFormulation ql:XPath;
-    rml:iterator "//*/CenterLine/Coordinate[position() != last() and position() > 1]"
+    rml:iterator "//*/CenterLine/Coordinate[preceding-sibling::Coordinate and following-sibling::Coordinate]"
   ];
   rr:subjectMap [
     rr:template "{/PlantModel/MetaData/GenericAttributes/GenericAttribute[@Name='DrawingNumberAssignmentClass']/@Value}_{../../@ID}_{../count(preceding-sibling::CenterLine)}_{count(preceding-sibling::Coordinate)}_coordinateListElement";
     rr:termType rr:BlankNode;
   ];
-  rr:predicateObjectMap 
-   :coordinateListContentMap,
-   :restOfCoordinateListMap 
-  .
+  rr:predicateObjectMap :coordinateListContentMap, :restOfCoordinateListMap, :restOfCoordinateListLastMap .
   
-
-
 :CoordinateListLastElementMap a rr:TriplesMap;
   rml:logicalSource [
     rml:source "../pandid.xml";
     rml:referenceFormulation ql:XPath;
-    rml:iterator "//*/CenterLine/Coordinate[position() = last()]"
+    rml:iterator "//*/CenterLine/Coordinate[preceding-sibling::Coordinate and (not (following-sibling::Coordinate))]"
   ];
   rr:subjectMap [
-    rr:template "{/PlantModel/MetaData/GenericAttributes/GenericAttribute[@Name='DrawingNumberAssignmentClass']/@Value}_{../../@ID}_{../count(preceding-sibling::CenterLine)}_{count(preceding-sibling::CenterLine)}_coordinateListElement";
+    rr:template "{/PlantModel/MetaData/GenericAttributes/GenericAttribute[@Name='DrawingNumberAssignmentClass']/@Value}_{../../@ID}_{../count(preceding-sibling::CenterLine)}_{count(preceding-sibling::Coordinate)}_coordinateListLastElement";
     rr:termType rr:BlankNode;
   ];
   rr:predicateObjectMap :coordinateListContentMap, 
@@ -207,7 +200,11 @@
       rr:parentTriplesMap :CoordinateListElementMap ;
       a rr:RefObjectMap ;
       rr:joinCondition :nextCoordinateListElementJoinConditionId, :nextCoordinateListElementJoinConditionCenterLine, :nextCoordinateListElementJoinConditionCoordinate
-    ] , [
+    ] .
+  
+  :restOfCoordinateListLastMap a rr:PredicateObjectMap;
+    rr:predicate rdf:rest;
+    rr:objectMap [
       rr:parentTriplesMap :CoordinateListLastElementMap ;
       a rr:RefObjectMap ;
       rr:joinCondition :nextCoordinateListElementJoinConditionId
@@ -223,7 +220,7 @@
         rr:parent "../count(preceding-sibling::CenterLine)".
   :nextCoordinateListElementJoinConditionCoordinate
         rr:child "count(preceding-sibling::Coordinate)";
-        rr:parent "count(preceding-sibling::Coordinate)+1".
+        rr:parent "count(preceding-sibling::Coordinate)-1".
 
 :coordinateListContentMap a rr:PredicateObjectMap;
     rr:predicate rdf:first;
@@ -249,6 +246,7 @@
   rr:subjectMap [
     rr:template "{/PlantModel/MetaData/GenericAttributes/GenericAttribute[@Name='DrawingNumberAssignmentClass']/@Value}_{../../@ID}_{../count(preceding-sibling::CenterLine)}_{count(preceding-sibling::Coordinate)}_coordinate";
     rr:termType rr:BlankNode;
+    rr:class graphic:Position
   ];
   rr:predicateObjectMap [
     rr:predicate graphic:x;
