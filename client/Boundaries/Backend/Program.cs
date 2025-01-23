@@ -205,32 +205,27 @@ app.MapPost("/commissioning-package", async (CommissioningPackage commissioningP
     return Results.Ok($"Commissioning package {commissioningPackage.Id} added successfully.");
 });
 
-//Update commissioning package - updating information like name and color while persisting the calculated internal nodes, and boundaries. 
-app.MapPut("/commissioning-package", async (CommissioningPackage updatedPackage) =>
+// Update commissioning package - updating information like name and color while persisting the calculated internal nodes, and boundaries.
+app.MapPut("/put-commissioning-package", async (CommissioningPackage updatedPackage) =>
 {
-    var queryColor = $@"
-        DELETE {{<{updatedPackage.Id}> comp:hasColour ?color .}}
-        INSERT {{<{updatedPackage.Id}> comp:hasColour ""{updatedPackage.Color}"" .}}
-        WHERE {{<{updatedPackage.Id}> comp:hasColour ?color .}}";
 
-    var queryName = $@"
-        DELETE {{<{updatedPackage.Id}> comp:hasName ?name .}}
-        INSERT {{<{updatedPackage.Id}> comp:hasName ""{updatedPackage.Name}"" .}}
-        WHERE {{<{updatedPackage.Id}> comp:hasName ?name .}}";
+    var deleteColorData = $@"<{updatedPackage.Id}> {PropertiesProvider.hasColor} ?color . ";
+    var deleteNameData = $@"<{updatedPackage.Id}> {PropertiesProvider.hasName} ?name . ";
 
-    Console.WriteLine("Executing queryColor:");
-    Console.WriteLine(queryColor);
-    await RdfoxApi.LoadData(conn, queryColor);
+    await RdfoxApi.DeleteData(conn, deleteColorData);
+    await RdfoxApi.DeleteData(conn, deleteNameData);
 
-    Console.WriteLine("Executing queryName:");
-    Console.WriteLine(queryName);
-    await RdfoxApi.LoadData(conn, queryName);
+    /*var data = new StringBuilder();
+    data.AppendLine($@"<{updatedPackage.Id}> {PropertiesProvider.hasName} ""{updatedPackage.Name}"" .");
+    data.AppendLine($@"<{updatedPackage.Id}> {PropertiesProvider.hasColor} ""{updatedPackage.Color}"" .");
+
+    await RdfoxApi.LoadData(conn, data.ToString());*/
 
     return Results.Ok($"Commissioning package {updatedPackage.Id} updated successfully.");
 });
 
 //Delete commissioning package 
-app.MapDelete("/commissioning-package/{commissioningPackageId}", async (string commissioningPackageId) =>
+app.MapDelete(" /commissioning-package/{commissioningPackageId}", async (string commissioningPackageId) =>
 {
     commissioningPackageId = Uri.UnescapeDataString(commissioningPackageId);
 
