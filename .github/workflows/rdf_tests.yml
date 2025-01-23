@@ -47,7 +47,14 @@ jobs:
           export PATH="$PATH:$JENA_HOME/bin"
           curl -o rml_mappings/pandid.xml https://raw.githubusercontent.com/equinor/NOAKADEXPI/refs/heads/main/Blueprint/DISC_EXAMPLE-02/DISC_EXAMPLE-02-02.xml
           docker run -v .:/data rmlio/rmlmapper-java:7.2.0 -m rml_mappings/imf/* -o /data/imf.ttl -s Turtle
-          shacl v --shapes shacl/imf-dexpi.shacl.ttl --data imf.ttl
+          SHACL_RESULT=$(shacl v --shapes shacl/imf-dexpi.shacl.ttl --data imf.ttl --text --quiet)
+          if [ "$SHACL_RESULT" != "Conforms" ]; then
+            echo "SHACL validation failed"
+            echo $SHACL_RESULT
+            exit 1
+          else
+            echo "SHACL validation passed"
+          fi
 
       - name: Test graphics mappings
         run: |
@@ -55,7 +62,14 @@ jobs:
           export PATH="$PATH:$JENA_HOME/bin"
           curl -o rml_mappings/pandid.xml https://raw.githubusercontent.com/equinor/NOAKADEXPI/refs/heads/main/Blueprint/DISC_EXAMPLE-02/DISC_EXAMPLE-02-02.xml
           docker run -v .:/data rmlio/rmlmapper-java:7.2.0 -m rml_mappings/graphics/* -o /data/graphics.ttl -s Turtle
-          shacl v --shapes shacl/graphic-dexpi.shacl.ttl --data graphics.ttl
+          SHACL_RESULT=$(shacl v --shapes shacl/graphic-dexpi.shacl.ttl --data graphics.ttl --text --quiet)
+          if [ "$SHACL_RESULT" != "Conforms" ]; then
+            echo "SHACL validation failed"
+            echo $SHACL_RESULT
+            exit 1
+          else
+            echo "SHACL validation passed"
+          fi
 
       - name: Test rdf examples
         run: |
