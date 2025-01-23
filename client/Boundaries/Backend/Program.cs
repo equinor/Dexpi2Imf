@@ -32,18 +32,22 @@ app.MapPost("/commissioning-package/{packageId}/update-boundary/{nodeId}", async
     nodeId = Uri.UnescapeDataString(nodeId);
 
     var isSelectedInternal = await QueryUtils.IsBoundaryOf(packageId, nodeId, conn);
+    var isNodeInPackage = await QueryUtils.NodeIsInPackage(packageId, nodeId, conn);
     var isBoundary = await QueryUtils.IsSelectedInternalOf(packageId, nodeId, conn);
 
     if (isSelectedInternal)
-        await QueryUtils.DeleteSelectedInternalOf(packageId, nodeId, conn);
+        await QueryUtils.DeleteIsSelectedInternalOf(packageId, nodeId, conn);
+
+    if(isNodeInPackage)
+        await QueryUtils.DeleteNodeFromPackage(packageId, nodeId, conn);
 
     if (isBoundary)
     {
-        await QueryUtils.DeleteBoundaryOf(packageId, nodeId, conn);
+        await QueryUtils.DeleteisBoundaryOf(packageId, nodeId, conn);
     }
     else
     {
-        await QueryUtils.AddBounaryOf(packageId, nodeId, conn);
+        await QueryUtils.AddisBounaryOf(packageId, nodeId, conn);
     }
 
     return Results.Ok();
@@ -60,11 +64,11 @@ app.MapPost("/commissioning-package/{packageId}/update-internal/{nodeId}", async
     var isBoundary = await QueryUtils.IsSelectedInternalOf(packageId, nodeId, conn);
 
     if (isBoundary)
-        await QueryUtils.DeleteBoundaryOf(packageId, nodeId, conn);
+        await QueryUtils.DeleteisBoundaryOf(packageId, nodeId, conn);
 
     if (isSelectedInternal)
     {
-        await QueryUtils.DeleteSelectedInternalOf(packageId, nodeId, conn);
+        await QueryUtils.DeleteIsSelectedInternalOf(packageId, nodeId, conn);
     }
     else
     {
