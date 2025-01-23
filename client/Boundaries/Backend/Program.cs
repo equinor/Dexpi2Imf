@@ -25,6 +25,30 @@ app.UseHttpsRedirection();
 // Establish connection to Rdfox
 var conn = RdfoxApi.GetDefaultConnectionSettings();
 
+//update boundary 
+app.MapPost("/commissioning-package/{packageId}/update-boundary/{nodeId}", async (string packageId, string nodeId) =>
+{
+    packageId = Uri.UnescapeDataString(packageId);
+    nodeId = Uri.UnescapeDataString(nodeId);
+
+    var isSelectedInternal = await QueryUtils.IsBoundaryOf(packageId, nodeId, conn);
+    var isBoundary = await QueryUtils.IsSelectedInternalOf(packageId, nodeId, conn);
+
+    if (isSelectedInternal)
+        await QueryUtils.DeleteSelectedInternalOf(packageId, nodeId, conn);
+
+    if (isBoundary)
+    {
+        await QueryUtils.DeleteBoundaryOf(packageId, nodeId, conn);
+    }
+    else
+    {
+      var addBoundary = $@"<{nodeId}> {PropertiesProvider.isBoundaryOf} <{packageId}> .";
+      await RdfoxApi.LoadData(conn, addBoundary);
+    }
+
+    return Results.Ok();
+});
 
 // Add node as boundary
 app.MapPost("/commissioning-package/{packageId}/boundary/{nodeId}", async (string packageId, string nodeId) =>
@@ -52,9 +76,6 @@ app.MapPost("/commissioning-package/{packageId}/boundary/{nodeId}", async (strin
 
     return Results.Ok($"Triple with subject {packageId} and object {nodeId} inserted successfully.");
 });
-
-
-
 
 
 //Add node as internal
@@ -292,7 +313,7 @@ app.MapGet("/commissioning-package/{commissioningPackageId}", async (string comm
                 {
                     commissioningPackage.InternalIds.Add(new Node { Id = yValue });
                 }
-                else if (xValue == "yourPredicateUriForSelectedInternal")
+                else if (xValue == "https://rdf.equinor.com/completion#SelectedInternal")
                 {
                     commissioningPackage.SelectedInternalIds.Add(new Node { Id = yValue });
                 }
