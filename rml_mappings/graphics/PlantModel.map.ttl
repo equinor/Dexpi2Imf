@@ -10,18 +10,93 @@
 @prefix imf: <http://ns.imfid.org/imf#> .
 @prefix : <http://rdf.equinor.com/dexpi/mappings/graphic#> .
 
-:documentSubject 
-    rr:template "https://assetid.equinor.com/plantx/drawing#{MetaData/GenericAttributes/GenericAttribute[@Name='DrawingNumberAssignmentClass']/@Value}";
-    rr:termType rr:IRI;
-    rr:class graphic:Diagram .
-
 :PlantModelDrawingMap a rr:TriplesMap;
   rml:logicalSource [
     rml:source "../pandid.xml";
     rml:referenceFormulation ql:XPath;
     rml:iterator "/PlantModel"
   ];
-  rr:subjectMap :documentSubject .
+  rr:subjectMap [
+    rr:template "https://assetid.equinor.com/plantx/drawing#{MetaData/GenericAttributes/GenericAttribute[@Name='DrawingNumberAssignmentClass']/@Value}";
+    rr:termType rr:IRI;
+    rr:class graphic:Diagram
+  ] ;
+  rr:predicateObjectMap [
+    rr:predicate graphic:hasExtent;
+    rr:objectMap [
+      rr:parentTriplesMap :HasExtentMap ;
+      rr:joinCondition [
+        rr:child "MetaData/GenericAttributes/GenericAttribute[@Name='DrawingNumberAssignmentClass']/@Value";
+        rr:parent "MetaData/GenericAttributes/GenericAttribute[@Name='DrawingNumberAssignmentClass']/@Value";
+      ]
+    ]
+  ].
+
+:HasExtentMap a rr:TriplesMap;
+  rml:logicalSource [
+    rml:source "../pandid.xml";
+    rml:referenceFormulation ql:XPath;
+    rml:iterator "/PlantModel/Drawing/Extent"
+  ];
+  rr:subjectMap [
+    rr:template "{../../MetaData/GenericAttributes/GenericAttribute[@Name='DrawingNumberAssignmentClass']/@Value}_extent";
+    rr:termType rr:BlankNode;
+    rr:class graphic:Extent
+  ] ;
+  rr:predicateObjectMap [
+    rr:predicate graphic:minimumExtent;
+    rr:objectMap [
+      rr:parentTriplesMap :MinimumExtentMap ;
+      rr:joinCondition [
+        rr:child "../../MetaData/GenericAttributes/GenericAttribute[@Name='DrawingNumberAssignmentClass']/@Value";
+        rr:parent "../../MetaData/GenericAttributes/GenericAttribute[@Name='DrawingNumberAssignmentClass']/@Value";
+      ]
+    ]
+  ];
+  rr:predicateObjectMap [
+    rr:predicate graphic:maximumExtent;
+    rr:objectMap [
+      rr:parentTriplesMap :MaximumExtentMap ;
+      rr:joinCondition [
+        rr:child "../../MetaData/GenericAttributes/GenericAttribute[@Name='DrawingNumberAssignmentClass']/@Value";
+        rr:parent "../../MetaData/GenericAttributes/GenericAttribute[@Name='DrawingNumberAssignmentClass']/@Value";
+      ]
+    ]
+  ]
+  .
+
+:MaximumExtentMap a rr:TriplesMap;
+  rml:logicalSource [
+    rml:source "../pandid.xml";
+    rml:referenceFormulation ql:XPath;
+    rml:iterator "/PlantModel"
+  ];
+  rr:subjectMap [
+    rr:template "{MetaData/GenericAttributes/GenericAttribute[@Name='DrawingNumberAssignmentClass']/@Value}_maximumExtent";
+    rr:termType rr:BlankNode;
+    rr:class graphic:Position
+  ] ;
+  rr:predicateObjectMap [
+    rr:predicate schema:x;
+    rr:objectMap [
+      rr:parentTriplesMap :MaximumExtentXMap ;
+      rr:joinCondition [
+        rr:child "MetaData/GenericAttributes/GenericAttribute[@Name='DrawingNumberAssignmentClass']/@Value";
+        rr:parent "MetaData/GenericAttributes/GenericAttribute[@Name='DrawingNumberAssignmentClass']/@Value";
+      ]
+    ]
+  ];
+  rr:predicateObjectMap [
+    rr:predicate schema:y;
+    rr:objectMap [
+      rr:parentTriplesMap :MaximumExtentYMap ;
+      rr:joinCondition [
+        rr:child "MetaData/GenericAttributes/GenericAttribute[@Name='DrawingNumberAssignmentClass']/@Value";
+        rr:parent "MetaData/GenericAttributes/GenericAttribute[@Name='DrawingNumberAssignmentClass']/@Value";
+      ]
+    ]
+  ]
+  .
 
 :PlantModelDocumentMap a rr:TriplesMap;
   rml:logicalSource [
@@ -30,10 +105,17 @@
     rml:iterator "/PlantModel"
   ];
   rr:subjectMap [
-    rr:template "https://assetid.equinor.com/plantx#{MetaData/GenericAttributes/GenericAttribute[@Name='DrawingNumberAssignmentClass']/@Value}";
+    rr:template "https://assetid.equinor.com/document/SITE/{MetaData/GenericAttributes/GenericAttribute[@Name='DrawingNumberAssignmentClass']/@Value}";
     rr:termType rr:IRI
   ] ; 
     rr:predicateObjectMap [
         rr:predicate graphic:visualisedAs;
-        rr:objectMap :documentSubject
+        rr:objectMap [
+          a rr:RefObjectMap ;
+          rr:parentTriplesMap :PlantModelDrawingMap ;
+          rr:joinCondition [
+            rr:child "MetaData/GenericAttributes/GenericAttribute[@Name='DrawingNumberAssignmentClass']/@Value";
+            rr:parent "MetaData/GenericAttributes/GenericAttribute[@Name='DrawingNumberAssignmentClass']/@Value";
+          ]
+        ]
     ].
