@@ -33,4 +33,39 @@
     rr:objectMap [ 
       rml:reference "GenericAttributes/GenericAttribute[@Name='TagNameAssignmentClass']/@Value";
     ]
+  ] ,
+    [
+      rr:predicate graphic:hasPosition ;
+      rr:objectMap [
+        rr:parentTriplesMap :SymbolPositionMap ;
+        rr:joinCondition [
+          rr:child "@ID";
+          rr:parent "../@ID";
+        ]
+      ]
   ].
+
+:SymbolPositionMap a rr:TriplesMap;
+  rml:logicalSource [
+    rml:source "../pandid.xml";
+    rml:referenceFormulation ql:XPath;
+    rml:iterator "PlantModel/Equipment/Position"
+  ];
+  rr:subjectMap [
+    rr:template "position_{../@ID}_position";
+    rr:termType rr:BlankNode;
+    rr:class graphic:Position
+  ];
+  rr:predicateObjectMap [
+    rr:predicate graphic:x;
+    rr:objectMap [ 
+      rr:template "{Location/@X}";
+      rr:datatype xsd:double;
+    ]
+  ] , [
+    rr:predicate graphic:y;
+    rr:objectMap [ 
+      rr:template "{Location/@Y}";
+      rr:datatype xsd:double;
+    ]
+  ] .

@@ -17,8 +17,8 @@ document:GateValve-5-node2-connector :visualisedAs graphic:GateValve-5-node2-con
 document:graphic1234 a :Diagram ;
     :hasExtent [
         a :Extent ;
-        :minimumExtent [ :x 100 ; :y 100 ] ;
-        :maximumExtent [ :x 200 ; :y 200 ]
+        :minimumExtent [ :x "100"^^xsd:double ; :y "100"^^xsd:double ] ;
+        :maximumExtent [ :x "200"^^xsd:double ; :y "200"^^xsd:double ]
     ] ;
         :hasSymbol graphic:PressureVessel-1 ;
         :hasLine graphic:GateValve-5-node2-connector .
@@ -27,9 +27,9 @@ document:graphic1234 a :Diagram ;
 graphic:PressureVessel-1 a :Symbol ;
     :hasPosition [
         a :Position ;
-        :x 390 ;
-        :y 210 ;
-        :rotation 0
+        :x "390"^^xsd:double ;
+        :y "210"^^xsd:double ;
+        :rotation "0"^^xsd:double
     ];
     :hasGraphics symbol:PT002A .
 
@@ -37,25 +37,25 @@ graphic:GateValve-5-node2-connector a :Line ;
     :hasCoordinates (
         [
             a :Position ;
-            :x 646 ;
-            :y 188
+            :x "646"^^xsd:double ;
+            :y "188"^^xsd:double
         ] 
         [            
             a :Position ;
-            :x 646 ;
-            :y 180
+            :x "646"^^xsd:double ;
+            :y "180"^^xsd:double
         ]
         [            
             a :Position ;
-            :x 412 ;
-            :y 180
+            :x "412"^^xsd:double ;
+            :y "180"^^xsd:double
         ]
     );
     :hasStyle [
         :hasStroke [
             a :Stroke ;
             :dasharray "none"^^xsd:string ;
-            :width 1.4 ;
+            :width "1.4"^^xsd:double ;
             :color [
                 a :RgbColor ;
                 :red 255 ;
