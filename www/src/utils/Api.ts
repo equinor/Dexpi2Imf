@@ -37,15 +37,6 @@ const getRequestConfig = async (
   return requestConfig;
 };
 
-const addParametersToUrl = (url: string, o: object): string => {
-  const newUrl = new URL(url);
-  const json = JSON.parse(JSON.stringify(o));
-  for (const [key, value] of Object.entries(json)) {
-    newUrl.searchParams.append(key, value as string);
-  }
-  return newUrl.toString();
-};
-
 // COMMISSIONING PACKAGE
 
 export const createCommissioningPackage = async (
@@ -78,50 +69,19 @@ export const updateCommissioningPackage = async () => {};
 export const deleteCommissioningPackage = async () => {};
 
 // BOUNDARY
-export const addBoundary = async (
-  packageId: string,
-  nodeId: string,
-): Promise<string> => {
-  console.log(
-    `${BASE_URL}/commissioning-package/${packageId}/boundary/${nodeId}`,
-  );
-  const response = await fetch(
-    `${BASE_URL}/commissioning-package/${encodeURIComponent(packageId)}/boundary/${encodeURIComponent(nodeId)}`,
+
+export const updateBoundary = async (packageId: string, nodeId: string) => {
+  return await fetch(
+    `${BASE_URL}/commissioning-package/${encodeURIComponent(packageId)}/update-boundary/${encodeURIComponent(nodeId)}`,
     { method: "POST" },
   );
-  return response.json();
-};
-
-export const deleteBoundary = async (
-  packageId: string,
-  nodeId: string,
-): Promise<string> => {
-  const response = await fetch(
-    `${BASE_URL}/commissioning-package/${encodeURIComponent(packageId)}/boundary/${encodeURIComponent(nodeId)}`,
-    { method: "DELETE" },
-  );
-  return response.json();
 };
 
 // INTERNAL
-export const addInternal = async (
-  packageId: string,
-  nodeId: string,
-): Promise<string> => {
-  const response = await fetch(
-    `${BASE_URL}/commissioning-package/${encodeURIComponent(packageId)}/internal/${encodeURIComponent(nodeId)}`,
+
+export const updateInternal = async (packageId: string, nodeId: string) => {
+  return await fetch(
+    `${BASE_URL}/commissioning-package/${encodeURIComponent(packageId)}/update-internal/${encodeURIComponent(nodeId)}`,
     { method: "POST" },
   );
-  return response.json();
-};
-
-export const deleteInternal = async (
-  packageId: string,
-  nodeId: string,
-): Promise<string> => {
-  const response = await fetch(
-    `${BASE_URL}/commissioning-package/${encodeURIComponent(packageId)}/internal/${encodeURIComponent(nodeId)}`,
-    { method: "DELETE" },
-  );
-  return response.json();
 };

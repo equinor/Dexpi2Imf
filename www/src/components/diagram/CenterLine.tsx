@@ -27,12 +27,15 @@ export default function CenterLine(props: CenterLineComponentProps) {
   let hasSelectedInternalNode: boolean;
   if (props.id) {
     iri = iriFromSvgNode(props.id);
-    const commissioningPackage = context.commissioningPackages.find((pkg) =>
-      pkg.boundaryIds.includes(iri) || pkg.internalIds.includes(iri),
+    const commissioningPackage = context.commissioningPackages.find(
+      (pkg) =>
+        pkg.boundaryIds?.some((node) => node.id === iri) ||
+        pkg.internalIds?.some((node) => node.id === iri),
     );
     color = commissioningPackage?.color;
     if (commissioningPackage)
-      hasSelectedInternalNode = commissioningPackage.selectedInternalIds.length > 0;
+      hasSelectedInternalNode =
+        commissioningPackage.selectedInternalIds.length > 0;
   }
 
   return (
@@ -52,9 +55,7 @@ export default function CenterLine(props: CenterLineComponentProps) {
             )}
             <StyledPath
               onClick={() =>
-                iri
-                  ? selectHandleFunction(iri, context, setAction, tool)
-                  : {}
+                iri ? selectHandleFunction(iri, context, setAction, tool) : {}
               }
               key={index}
               d={constructPath(centerline.Coordinate, height)}

@@ -91,15 +91,7 @@ app.MapPost("/commissioning-package/{packageId}/boundary/{nodeId}", async (strin
     packageId = Uri.UnescapeDataString(packageId);
     nodeId = Uri.UnescapeDataString(nodeId);
 
-    // Check if the packageID exists
-    var checkQuery = $@"
-        ASK WHERE {{
-             <{packageId}> {TypesProvider.type} {PropertiesProvider.CommissioningPackage} .
-        }}";
-
-    var existsResult = await RdfoxApi.AskSparql(conn, checkQuery);
-
-    if (!existsResult)
+    if (!await QueryUtils.CommissioningPackageExists(packageId, string.Empty, conn))
     {
         return Results.NotFound($"Commissioning package {packageId} not found.");
     }
@@ -119,14 +111,7 @@ app.MapPost("/commissioning-package/{packageId}/internal/{nodeId}", async (strin
     packageId = Uri.UnescapeDataString(packageId);
     nodeId = Uri.UnescapeDataString(nodeId);
 
-    var checkQuery = $@"
-        ASK WHERE {{
-             <{packageId}> {TypesProvider.type} {PropertiesProvider.CommissioningPackage} .
-        }}";
-
-    var existsResult = await RdfoxApi.AskSparql(conn, checkQuery);
-
-    if (!existsResult)
+    if (!await QueryUtils.CommissioningPackageExists(packageId, string.Empty, conn))
     {
         return Results.NotFound($"Commissioning package {packageId} not found.");
     }
@@ -146,16 +131,9 @@ app.MapDelete("/commissioning-package/{packageId}/boundary/{nodeId}", async (str
     packageId = Uri.UnescapeDataString(packageId);
     nodeId = Uri.UnescapeDataString(nodeId);
 
-    var checkQuery = $@"
-        ASK WHERE {{
-             <{nodeId}> {PropertiesProvider.isBoundaryOf} <{packageId}> .
-        }}";
-
-    var existsResult = await RdfoxApi.AskSparql(conn, checkQuery);
-
-    if (!existsResult)
+    if (!await QueryUtils.CommissioningPackageExists(packageId, string.Empty, conn))
     {
-        return Results.NotFound($"Triple for package {packageId} and node {nodeId} not found.");
+        return Results.NotFound($"Commissioning package {packageId} not found.");
     }
 
     var data = $@"
@@ -173,16 +151,9 @@ app.MapDelete("/commissioning-package/{packageId}/internal/{nodeId}", async (str
     packageId = Uri.UnescapeDataString(packageId);
     nodeId = Uri.UnescapeDataString(nodeId);
 
-    var checkQuery = $@"
-        ASK WHERE {{
-             <{nodeId}> {PropertiesProvider.isInPackage} <{packageId}> .
-        }}";
-
-    var existsResult = await RdfoxApi.AskSparql(conn, checkQuery);
-
-    if (!existsResult)
+    if (!await QueryUtils.CommissioningPackageExists(packageId, string.Empty, conn))
     {
-        return Results.NotFound($"Triple for package {packageId} and node {nodeId} not found.");
+        return Results.NotFound($"Commissioning package {packageId} not found.");
     }
 
     var data = $@"
@@ -291,6 +262,12 @@ app.MapPut("/put-commissioning-package", async (CommissioningPackage updatedPack
 app.MapDelete("/commissioning-package/{commisioningPackageId}", async (string commissioningPackageId) =>
 {
     commissioningPackageId = Uri.UnescapeDataString(commissioningPackageId);
+
+    if (!await QueryUtils.CommissioningPackageExists(commissioningPackageId, string.Empty, conn))
+    {
+        return Results.NotFound($"Commissioning package {commissioningPackageId} not found.");
+    }
+
     var query = $@"
     SELECT ?x ?y WHERE {{
         {{ <{commissioningPackageId}> ?x ?y . }}
@@ -357,15 +334,7 @@ app.MapGet("/commissioning-package/{commissioningPackageId}", async (string comm
 {
     commissioningPackageId = Uri.UnescapeDataString(commissioningPackageId);
 
-    // Check if the packageID exists
-    var checkQuery = $@"
-        ASK WHERE {{
-             <{commissioningPackageId}> {TypesProvider.type} ?type .
-        }}";
-
-    var existsResult = await RdfoxApi.AskSparql(conn, checkQuery);
-
-    if (!existsResult)
+    if (!await QueryUtils.CommissioningPackageExists(commissioningPackageId, string.Empty, conn))
     {
         return Results.NotFound($"Commissioning package {commissioningPackageId} not found.");
     }
@@ -435,6 +404,96 @@ app.MapGet("/commissioning-package/{commissioningPackageId}", async (string comm
 
     return Results.Ok(commissioningPackage);
 
+});
+
+//Get all commissioning packages
+app.MapGet("/commissioning-package/get-all-commisioning-packages", async () =>
+{
+    var query = $@"
+        SELECT ?packageId WHERE {{
+            ?packageId rdf:type {PropertiesProvider.CommissioningPackage} .
+        }}";
+
+    var result = await RdfoxApi.QuerySparql(conn, query);
+
+    var jsonResponse = JsonDocument.Parse(result);
+    var packageIds = jsonResponse.RootElement
+        .GetProperty("results")
+        .GetProperty("bindings")
+        .EnumerateArray()
+        .Select(binding => binding.GetProperty("packageId").GetProperty("value").GetString())
+        .ToList();
+
+    var commissioningPackages = new List<CommissioningPackage>();
+
+    foreach (string commissioningPackageId in packageIds)
+    {
+        query = $@"
+            SELECT ?x ?y WHERE {{
+                {{ <{commissioningPackageId}> ?x ?y . }}
+                UNION
+                {{ ?y ?x <{commissioningPackageId}> . }}
+            }}
+        ";
+
+
+
+        result = await RdfoxApi.QuerySparql(conn, query);
+
+        var commissioningPackage = new CommissioningPackage
+        {
+            Id = commissioningPackageId,
+            Name = string.Empty,
+            Color = string.Empty,
+            BoundaryIds = [],
+            InternalIds = [],
+            SelectedInternalIds = []
+        };
+
+        try
+        {
+            using (JsonDocument doc = JsonDocument.Parse(result))
+            {
+                var bindings = doc.RootElement.GetProperty("results").GetProperty("bindings");
+
+                foreach (var binding in bindings.EnumerateArray())
+                {
+                    var xValue = binding.GetProperty("x").GetProperty("value").GetString();
+                    var yValue = binding.GetProperty("y").GetProperty("value").GetString();
+
+                    // Handle the predicates and corresponding values
+                    if (xValue == "https://rdf.equinor.com/completion#hasName")
+                    {
+                        commissioningPackage.Name = yValue;
+                    }
+                    else if (xValue == "https://rdf.equinor.com/completion#hasColour")
+                    {
+                        commissioningPackage.Color = yValue;
+                    }
+                    else if (xValue == "https://rdf.equinor.com/completion#isBoundaryOf")
+                    {
+                        commissioningPackage.BoundaryIds.Add(new Node { Id = yValue });
+                    }
+
+                    else if (xValue == "https://rdf.equinor.com/completion#isInPackage")
+                    {
+                        commissioningPackage.InternalIds.Add(new Node { Id = yValue });
+                    }
+                    else if (xValue == "https://rdf.equinor.com/completion#SelectedInternal")
+                    {
+                        commissioningPackage.SelectedInternalIds.Add(new Node { Id = yValue });
+                    }
+                }
+            }
+        }
+        catch (JsonException e)
+        {
+            return Results.Problem("An error occurred while parsing the SPARQL result.");
+        }
+        commissioningPackages.Add(commissioningPackage);
+    }
+
+    return Results.Ok(commissioningPackages);
 });
 
 
