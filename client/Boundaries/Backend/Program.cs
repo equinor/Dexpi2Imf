@@ -270,13 +270,13 @@ app.MapPut("/put-commissioning-package", async (CommissioningPackage updatedPack
             oldPackageColor = bindings[1].GetProperty("object").GetProperty("value").GetString();
         }
     }
-    
-    // Log the existing color and name of the package
-    var deleteColorData = $@"<{updatedPackage.Id}> {PropertiesProvider.hasColor} ""{oldPackageColor}"" .";
-    var deleteNameData = $@"<{updatedPackage.Id}> {PropertiesProvider.hasName} ""{oldPackageName}"" .";
 
-    await RdfoxApi.DeleteData(conn, deleteColorData);
-    await RdfoxApi.DeleteData(conn, deleteNameData);
+    // Log the existing color and name of the package
+    var deleteData = $@"<{updatedPackage.Id}> {PropertiesProvider.hasColor} ""{oldPackageColor}"" .
+                        <{updatedPackage.Id}> {PropertiesProvider.hasName} ""{oldPackageName}"" . ";
+
+
+    await RdfoxApi.DeleteData(conn, deleteData);
 
     var data = $@"
         <{updatedPackage.Id}> {PropertiesProvider.hasName} ""{updatedPackage.Name}"" .
@@ -292,19 +292,69 @@ app.MapPut("/put-commissioning-package", async (CommissioningPackage updatedPack
 
 
 //Delete commissioning package 
-app.MapDelete(" /commissioning-package/{commissioningPackageId}", async (string commissioningPackageId) =>
+app.MapDelete("/commissioning-package/{commisioningPackageId}", async (string commissioningPackageId) =>
 {
     commissioningPackageId = Uri.UnescapeDataString(commissioningPackageId);
+    var query = $@"
+    SELECT ?x ?y WHERE {{
+        {{ <{commissioningPackageId}> ?x ?y . }}
+    }}";
 
-    var deleteQuery = $@"
-        DELETE WHERE {{
-            <{commissioningPackageId}> ?predicate ?object .
-        }}";
+    var result = await RdfoxApi.QuerySparql(conn, query);
+    var deleteQueryBuilder = new StringBuilder();
 
-    await RdfoxApi.DeleteData(conn, deleteQuery);
 
-    return Results.Ok($"Commissioning package {commissioningPackageId} deleted");
+        using (JsonDocument doc = JsonDocument.Parse(result))
+        {
+            var bindings = doc.RootElement.GetProperty("results").GetProperty("bindings");
+
+            foreach (var binding in bindings.EnumerateArray())
+            {
+                var xValue = binding.GetProperty("x").GetProperty("value").GetString();
+                var yValue = binding.GetProperty("y").GetProperty("value").GetString();
+
+                if (yValue.Contains("http"))
+                {
+                    deleteQueryBuilder.AppendLine($@"<{commissioningPackageId}> <{xValue}> <{yValue}> . ");
+                }
+                else
+                {
+                    deleteQueryBuilder.AppendLine($@"<{commissioningPackageId}> <{xValue}> ""{yValue}"" . ");
+                }
+            }
+        }
+
+    await RdfoxApi.DeleteData(conn, deleteQueryBuilder.ToString());
+
+    query = $@"
+    SELECT ?x ?y WHERE {{
+        {{ ?y ?x <{commissioningPackageId}> . }}
+    }}";
+
+    result = await RdfoxApi.QuerySparql(conn, query);
+    deleteQueryBuilder = new StringBuilder();
+
+    using (JsonDocument docDel = JsonDocument.Parse(result))
+    {
+        var bindingsDel = docDel.RootElement.GetProperty("results").GetProperty("bindings");
+
+        foreach (var binding in bindingsDel.EnumerateArray())
+        {
+            var xValue = binding.GetProperty("x").GetProperty("value").GetString();
+            var yValue = binding.GetProperty("y").GetProperty("value").GetString();
+
+            deleteQueryBuilder.AppendLine($@"<{yValue}> <{xValue}> <{commissioningPackageId}> . ");
+        }
+    }
+
+    await RdfoxApi.DeleteData(conn, deleteQueryBuilder.ToString());
+
+    return Results.Ok($"Commissioning package {commissioningPackageId} deleted successfully.");
+
 });
+
+
+
 
 //Get commissioning package
 app.MapGet("/commissioning-package/{commissioningPackageId}", async (string commissioningPackageId) =>
