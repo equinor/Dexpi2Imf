@@ -407,7 +407,7 @@ app.MapGet("/commissioning-package/{commissioningPackageId}", async (string comm
 });
 
 //Get all commissioning packages
-app.MapGet("/commissioning-package/get-all-commisioning-packages", async () =>
+app.MapGet("/commissioning-package/get-all-commissioning-packages", async () =>
 {
     var query = $@"
         SELECT ?packageId WHERE {{
@@ -499,7 +499,7 @@ app.MapGet("/commissioning-package/get-all-commisioning-packages", async () =>
 
 
 //Get the ID of all commissioning packages
-app.MapGet("/commissioning-package/get-all-commisioning-packages-ids", async () =>
+app.MapGet("/commissioning-package/get-all-commissioning-packages-ids", async () =>
 {
     var query = $@"
         SELECT ?packageId WHERE {{
