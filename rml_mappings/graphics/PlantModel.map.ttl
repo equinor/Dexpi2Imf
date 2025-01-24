@@ -30,6 +30,35 @@
         rr:parent "../../MetaData/GenericAttributes/GenericAttribute[@Name='DrawingNumberAssignmentClass']/@Value";
       ]
     ]
+  ] , [
+    rr:predicate graphic:hasSymbol;
+    rr:objectMap [
+      rr:parentTriplesMap :EquipmentBlockMap ;
+      rr:joinCondition [
+        rr:child "MetaData/GenericAttributes/GenericAttribute[@Name='DrawingNumberAssignmentClass']/@Value";
+        rr:parent "../MetaData/GenericAttributes/GenericAttribute[@Name='DrawingNumberAssignmentClass']/@Value";
+      ]
+    ]
+  ], [
+    rr:predicate graphic:hasLine;
+    rr:objectMap [
+      rr:parentTriplesMap :CenterLineToMap       
+    ]
+  ], [
+    rr:predicate graphic:hasLine;
+    rr:objectMap [
+      rr:parentTriplesMap :CenterLineAfterComponentMap       
+    ]
+  ], [
+    rr:predicate graphic:hasLine;
+    rr:objectMap [
+      rr:parentTriplesMap :CenterLineFromMap       
+    ]
+  ], [
+    rr:predicate graphic:hasLine;
+    rr:objectMap [
+      rr:parentTriplesMap :CenterLineToIdMap       
+    ]
   ].
 
 :HasExtentMap a rr:TriplesMap;
@@ -113,7 +142,8 @@
   ];
   rr:subjectMap [
     rr:template "https://assetid.equinor.com/document/SITE/{MetaData/GenericAttributes/GenericAttribute[@Name='DrawingNumberAssignmentClass']/@Value}";
-    rr:termType rr:IRI
+    rr:termType rr:IRI ;
+    rr:class graphic:PID
   ] ; 
     rr:predicateObjectMap [
         rr:predicate graphic:visualisedAs;

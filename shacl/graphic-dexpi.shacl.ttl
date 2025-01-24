@@ -19,29 +19,29 @@
 :DiagramShape a sh:NodeShape ;
     sh:targetClass :Diagram ;
     sh:property [
-        sh:path :hasExtent ;
-        sh:node :ExtentShape ;
-        sh:class :Extent ;
-        sh:minCount 1;
-        sh:maxCount 1;
-        sh:message "A Dexpi diagram must have exactly one extent" ;
+            sh:path :hasExtent ;
+            sh:node :ExtentShape ;
+            sh:class :Extent ;
+            sh:minCount 1;
+            sh:maxCount 1;
+            sh:message "A Dexpi diagram must have exactly one extent" ;
         ] , [
             sh:path :hasSymbol ;
             sh:class :Symbol ;
             sh:minCount 1;
-                    sh:message "A Dexpi graphic must have at least one symbol"
-                ] , [
-                    sh:path :hasLine ;
-                    sh:class :Line ;
-                    sh:minCount 1;
-                    sh:message "A Dexpi graphic must have at least one line"
-                ] , [
-                    sh:path [sh:inversePath :visualisedAs] ;
-                    sh:class :PID ;
-                    sh:minCount 1;
-                    sh:maxCount 1;
-                    sh:message "A Dexpi graphic must be a visualization of exaxtly one P&ID document"
-                ].
+            sh:message "A Dexpi graphic must have at least one symbol"
+        ] , [
+            sh:path :hasLine ;
+            sh:class :Line ;
+            sh:minCount 1;
+            sh:message "A Dexpi graphic must have at least one line"
+        ] , [
+            sh:path [sh:inversePath :visualisedAs] ;
+            sh:class :PID ;
+            sh:minCount 1;
+            sh:maxCount 1;
+            sh:message "A Dexpi graphic must be a visualization of exaxtly one P&ID document"
+        ].
 
 :ExtentShape a sh:NodeShape ;
     sh:targetClass :Extent ;
@@ -104,9 +104,15 @@
                     sh:maxCount 1;
                     sh:message "A symbol must have exactly one graphics"
                 ] , [
-                    sh:path [sh:inversePath :visualisedAs] ;
+                    sh:path [sh:inversePath  :visualisedAs] ;
                     sh:maxCount 1;
                     sh:message "A Dexpi symbol is a visualization of at most one IMF concept (propably block or terminal)"
+                ] , [
+                    sh:path [sh:inversePath :hasSymbol  ] ;
+                    sh:maxCount 1;
+                    sh:minCount 1;
+                    sh:class :Diagram;
+                    sh:message "A Dexpi symbol is part of exactly one diagram"
                 ] , [
                     sh:path rdf:type;
                 ] , [
@@ -131,10 +137,16 @@
                     sh:message "A line must have at least one style";
                     sh:node :StyleShape ;
                 ] , [
-                    sh:path [sh:inversePath :visualisedAs] ;
+                    sh:path [ sh:inversePath :visualisedAs ] ;
                     sh:maxCount 1;
                     sh:message "A Dexpi line is a visualization of at most one IMF concept (propably connector)"
                 ], [
+                    sh:path [ sh:inversePath :hasLine ] ;
+                    sh:maxCount 1;
+                    sh:minCount 1;
+                    sh:class :Diagram;
+                    sh:message "A Dexpi line is part of exactly one diagram"
+                ] , [
                     sh:path rdf:type;
                 ] ;
     sh:closed true .
@@ -155,7 +167,7 @@
     ]  ;
     sh:or (
         [ sh:property [ sh:path rdf:rest ; sh:hasValue rdf:nil ] ]
-        [ sh:property [ sh:path rdf:rest ; sh:node :CoordinateListShape ] ]
+        [ sh:property [ sh:path rdf:rest ; sh:minCount 1 ; sh:maxCount 1 ] ]
     ) ;
     sh:closed true.
 
