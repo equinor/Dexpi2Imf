@@ -37,14 +37,10 @@ app.MapPost("/commissioning-package/{packageId}/update-boundary/{nodeId}", async
     }
 
     var isSelectedInternal = await QueryUtils.IsBoundaryOf(packageId, nodeId, conn);
-    var isNodeInPackage = await QueryUtils.NodeIsInPackage(packageId, nodeId, conn);
     var isBoundary = await QueryUtils.IsSelectedInternalOf(packageId, nodeId, conn);
 
     if (isSelectedInternal)
         await QueryUtils.DeleteIsSelectedInternalOf(packageId, nodeId, conn);
-
-    if (isNodeInPackage)
-        await QueryUtils.DeleteNodeFromPackage(packageId, nodeId, conn);
 
     if (isBoundary)
     {
