@@ -406,6 +406,96 @@ app.MapGet("/commissioning-package/{commissioningPackageId}", async (string comm
 
 });
 
+//Get all commissioning packages
+app.MapGet("/commissioning-package/get-all-commisioning-packages", async () =>
+{
+    var query = $@"
+        SELECT ?packageId WHERE {{
+            ?packageId rdf:type {PropertiesProvider.CommissioningPackage} .
+        }}";
+
+    var result = await RdfoxApi.QuerySparql(conn, query);
+
+    var jsonResponse = JsonDocument.Parse(result);
+    var packageIds = jsonResponse.RootElement
+        .GetProperty("results")
+        .GetProperty("bindings")
+        .EnumerateArray()
+        .Select(binding => binding.GetProperty("packageId").GetProperty("value").GetString())
+        .ToList();
+
+    var commissioningPackages = new List<CommissioningPackage>();
+
+    foreach (string commissioningPackageId in packageIds)
+    {
+        query = $@"
+            SELECT ?x ?y WHERE {{
+                {{ <{commissioningPackageId}> ?x ?y . }}
+                UNION
+                {{ ?y ?x <{commissioningPackageId}> . }}
+            }}
+        ";
+
+
+
+        result = await RdfoxApi.QuerySparql(conn, query);
+
+        var commissioningPackage = new CommissioningPackage
+        {
+            Id = commissioningPackageId,
+            Name = string.Empty,
+            Color = string.Empty,
+            BoundaryIds = [],
+            InternalIds = [],
+            SelectedInternalIds = []
+        };
+
+        try
+        {
+            using (JsonDocument doc = JsonDocument.Parse(result))
+            {
+                var bindings = doc.RootElement.GetProperty("results").GetProperty("bindings");
+
+                foreach (var binding in bindings.EnumerateArray())
+                {
+                    var xValue = binding.GetProperty("x").GetProperty("value").GetString();
+                    var yValue = binding.GetProperty("y").GetProperty("value").GetString();
+
+                    // Handle the predicates and corresponding values
+                    if (xValue == "https://rdf.equinor.com/completion#hasName")
+                    {
+                        commissioningPackage.Name = yValue;
+                    }
+                    else if (xValue == "https://rdf.equinor.com/completion#hasColour")
+                    {
+                        commissioningPackage.Color = yValue;
+                    }
+                    else if (xValue == "https://rdf.equinor.com/completion#isBoundaryOf")
+                    {
+                        commissioningPackage.BoundaryIds.Add(new Node { Id = yValue });
+                    }
+
+                    else if (xValue == "https://rdf.equinor.com/completion#isInPackage")
+                    {
+                        commissioningPackage.InternalIds.Add(new Node { Id = yValue });
+                    }
+                    else if (xValue == "https://rdf.equinor.com/completion#SelectedInternal")
+                    {
+                        commissioningPackage.SelectedInternalIds.Add(new Node { Id = yValue });
+                    }
+                }
+            }
+        }
+        catch (JsonException e)
+        {
+            return Results.Problem("An error occurred while parsing the SPARQL result.");
+        }
+        commissioningPackages.Add(commissioningPackage);
+    }
+
+    return Results.Ok(commissioningPackages);
+});
+
 
 
 //Get the ID of all commissioning packages
