@@ -27,8 +27,10 @@ export default function Equipment(props: EquipmentProps) {
   const nozzles: NozzleProps[] = props.Nozzle;
 
   const iri = iriFromSvgNode(props.ID);
-  const commissioningPackage = context.commissioningPackages.find((pkg) =>
-    pkg.boundaryIds.includes(iri) || pkg.internalIds.includes(iri),
+  const commissioningPackage = context.commissioningPackages.find(
+    (pkg) =>
+      pkg.boundaryIds?.some((node) => node.id === iri) ||
+      pkg.internalIds?.some((node) => node.id === iri),
   );
   const isInActivePackage = commissioningPackage
     ? context.activePackage.id === commissioningPackage.id

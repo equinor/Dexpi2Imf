@@ -8,15 +8,15 @@ export function ensureArray<T>(value: T | T[]): T[] {
 export const isBoundary = (
   id: string,
   context: CommissioningPackageContextProps,
-) => context.activePackage.boundaryIds.includes(id);
+) => context.activePackage.boundaryIds?.some((node) => node.id === id);
 export const isInternal = (
   id: string,
   context: CommissioningPackageContextProps,
-) => context.activePackage.internalIds.includes(id);
+) => context.activePackage.internalIds?.some((node) => node.id === id);
 export const isSelectedInternal = (
   id: string,
   context: CommissioningPackageContextProps,
-) => context.activePackage.selectedInternalIds?.includes(id);
+) => context.activePackage.selectedInternalIds?.some((node) => node.id === id);
 
 export function iriFromSvgNode(id: string) {
   return `https://assetid.equinor.com/plantx#${id}`;

@@ -60,4 +60,4 @@ services:
       context: ../
       dockerfile: docker/symbol-library/Dockerfile
     ports:
-      - 5000:5000
+      - 6000:5000
