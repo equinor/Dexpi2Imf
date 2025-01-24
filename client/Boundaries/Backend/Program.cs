@@ -25,6 +25,69 @@ app.UseHttpsRedirection();
 // Establish connection to Rdfox
 var conn = RdfoxApi.GetDefaultConnectionSettings();
 
+//Update boundary 
+app.MapPost("/commissioning-package/{packageId}/update-boundary/{nodeId}", async (string packageId, string nodeId) =>
+{
+    packageId = Uri.UnescapeDataString(packageId);
+    nodeId = Uri.UnescapeDataString(nodeId);
+
+    if(!await QueryUtils.CommissioningPackageExists(packageId, nodeId, conn))
+    {
+        return Results.NotFound($"Commissioning package {packageId} not found.");
+    }
+
+    var isSelectedInternal = await QueryUtils.IsBoundaryOf(packageId, nodeId, conn);
+    var isNodeInPackage = await QueryUtils.NodeIsInPackage(packageId, nodeId, conn);
+    var isBoundary = await QueryUtils.IsSelectedInternalOf(packageId, nodeId, conn);
+
+    if (isSelectedInternal)
+        await QueryUtils.DeleteIsSelectedInternalOf(packageId, nodeId, conn);
+
+    if (isNodeInPackage)
+        await QueryUtils.DeleteNodeFromPackage(packageId, nodeId, conn);
+
+    if (isBoundary)
+    {
+        await QueryUtils.DeleteisBoundaryOf(packageId, nodeId, conn);
+    }
+    else
+    {
+        await QueryUtils.AddisBounaryOf(packageId, nodeId, conn);
+    }
+
+    return Results.Ok();
+});
+
+
+//Update selected internal 
+app.MapPost("/commissioning-package/{packageId}/update-internal/{nodeId}", async (string packageId, string nodeId) =>
+{
+    packageId = Uri.UnescapeDataString(packageId);
+    nodeId = Uri.UnescapeDataString(nodeId);
+
+    if (!await QueryUtils.CommissioningPackageExists(packageId, nodeId, conn))
+    {
+        return Results.NotFound($"Commissioning package {packageId} not found.");
+    }
+
+    var isSelectedInternal = await QueryUtils.IsBoundaryOf(packageId, nodeId, conn);
+    var isBoundary = await QueryUtils.IsSelectedInternalOf(packageId, nodeId, conn);
+
+    if (isBoundary)
+        await QueryUtils.DeleteisBoundaryOf(packageId, nodeId, conn);
+
+    if (isSelectedInternal)
+    {
+        await QueryUtils.DeleteIsSelectedInternalOf(packageId, nodeId, conn);
+    }
+    else
+    {
+        await QueryUtils.AddSelectedInternalOf(packageId, nodeId, conn);
+    }
+
+    return Results.Ok();
+});
+
 
 // Add node as boundary
 app.MapPost("/commissioning-package/{packageId}/boundary/{nodeId}", async (string packageId, string nodeId) =>
@@ -52,9 +115,6 @@ app.MapPost("/commissioning-package/{packageId}/boundary/{nodeId}", async (strin
 
     return Results.Ok($"Triple with subject {packageId} and object {nodeId} inserted successfully.");
 });
-
-
-
 
 
 //Add node as internal
@@ -315,7 +375,7 @@ app.MapGet("/commissioning-package/{commissioningPackageId}", async (string comm
                 {
                     commissioningPackage.InternalIds.Add(new Node { Id = yValue });
                 }
-                else if (xValue == "yourPredicateUriForSelectedInternal")
+                else if (xValue == "https://rdf.equinor.com/completion#SelectedInternal")
                 {
                     commissioningPackage.SelectedInternalIds.Add(new Node { Id = yValue });
                 }
@@ -328,7 +388,7 @@ app.MapGet("/commissioning-package/{commissioningPackageId}", async (string comm
     }
 
     return Results.Ok(commissioningPackage);
-  
+
 });
 
 
