@@ -24,7 +24,7 @@ public static class QueryUtils
     public static async Task DeleteIsSelectedInternalOf(string packageId, string nodeId, ConnectionSettings conn)
     => await DeleteData(conn, $@"<{nodeId}> {PropertiesProvider.isSelectedInternalOf} <{packageId}> .");
 
-    public static async Task AddSelectedInternalOf(string packageId, string nodeId, ConnectionSettings conn)
+    public static async Task AddIsSelectedInternalOf(string packageId, string nodeId, ConnectionSettings conn)
         => await LoadData(conn, $@"<{nodeId}> {PropertiesProvider.isSelectedInternalOf} <{packageId}> .");
     #endregion
 

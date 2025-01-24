@@ -78,7 +78,7 @@ app.MapPost("/commissioning-package/{packageId}/update-internal/{nodeId}", async
     }
     else
     {
-        await QueryUtils.AddSelectedInternalOf(packageId, nodeId, conn);
+        await QueryUtils.AddIsSelectedInternalOf(packageId, nodeId, conn);
     }
 
     return Results.Ok();
