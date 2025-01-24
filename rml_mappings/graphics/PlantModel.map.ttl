@@ -27,7 +27,7 @@
       rr:parentTriplesMap :HasExtentMap ;
       rr:joinCondition [
         rr:child "MetaData/GenericAttributes/GenericAttribute[@Name='DrawingNumberAssignmentClass']/@Value";
-        rr:parent "MetaData/GenericAttributes/GenericAttribute[@Name='DrawingNumberAssignmentClass']/@Value";
+        rr:parent "../../MetaData/GenericAttributes/GenericAttribute[@Name='DrawingNumberAssignmentClass']/@Value";
       ]
     ]
   ].
@@ -42,16 +42,16 @@
     rr:template "{../../MetaData/GenericAttributes/GenericAttribute[@Name='DrawingNumberAssignmentClass']/@Value}_extent";
     rr:termType rr:BlankNode;
     rr:class graphic:Extent
-  # ] ;
-  # rr:predicateObjectMap [
-  #   rr:predicate graphic:minimumExtent;
-  #   rr:objectMap [
-  #     rr:parentTriplesMap :MinimumExtentMap ;
-  #     rr:joinCondition [
-  #       rr:child "../../MetaData/GenericAttributes/GenericAttribute[@Name='DrawingNumberAssignmentClass']/@Value";
-  #       rr:parent "../../MetaData/GenericAttributes/GenericAttribute[@Name='DrawingNumberAssignmentClass']/@Value";
-  #     ]
-  #   ]
+  ] ;
+  rr:predicateObjectMap [
+    rr:predicate graphic:minimumExtent;
+    rr:objectMap [
+      rr:parentTriplesMap :MinimumExtentMap ;
+      rr:joinCondition [
+        rr:child "../../MetaData/GenericAttributes/GenericAttribute[@Name='DrawingNumberAssignmentClass']/@Value";
+        rr:parent "../../../MetaData/GenericAttributes/GenericAttribute[@Name='DrawingNumberAssignmentClass']/@Value";
+      ]
+    ]
   ];
   rr:predicateObjectMap [
     rr:predicate graphic:maximumExtent;
@@ -76,39 +76,53 @@
     rr:termType rr:BlankNode;
     rr:class graphic:Position
   ] ;
-  rr:predicateObjectMap [
+  rr:predicateObjectMap :graphicXMapping, :graphicYMapping .
+
+:MinimumExtentMap a rr:TriplesMap;
+  rml:logicalSource [
+    rml:source "../pandid.xml";
+    rml:referenceFormulation ql:XPath;
+    rml:iterator "/PlantModel/Drawing/Extent/Min"
+  ];
+  rr:subjectMap [
+    rr:template "{../../../MetaData/GenericAttributes/GenericAttribute[@Name='DrawingNumberAssignmentClass']/@Value}_minimumExtent";
+    rr:termType rr:BlankNode;
+    rr:class graphic:Position
+  ] ;
+  rr:predicateObjectMap :graphicXMapping, :graphicYMapping .
+
+:graphicXMapping a rr:PredicateObjectMap;
     rr:predicate graphic:x;
     rr:objectMap [
-      rr:template "@X";
+      rr:template "{@X}";
       rr:datatype xsd:double
-    ]
-  ], [
+    ] .
+
+  :graphicYMapping a rr:PredicateObjectMap;
     rr:predicate graphic:y;
     rr:objectMap [
-      rr:template "@Y";
+      rr:template "{@Y}";
       rr:datatype xsd:double
-    ]
-  ]
-  .
+    ] .
 
-# :PlantModelDocumentMap a rr:TriplesMap;
-#   rml:logicalSource [
-#     rml:source "../pandid.xml";
-#     rml:referenceFormulation ql:XPath;
-#     rml:iterator "/PlantModel"
-#   ];
-#   rr:subjectMap [
-#     rr:template "https://assetid.equinor.com/document/SITE/{MetaData/GenericAttributes/GenericAttribute[@Name='DrawingNumberAssignmentClass']/@Value}";
-#     rr:termType rr:IRI
-#   ] ; 
-#     rr:predicateObjectMap [
-#         rr:predicate graphic:visualisedAs;
-#         rr:objectMap [
-#           a rr:RefObjectMap ;
-#           rr:parentTriplesMap :PlantModelDrawingMap ;
-#           rr:joinCondition [
-#             rr:child "MetaData/GenericAttributes/GenericAttribute[@Name='DrawingNumberAssignmentClass']/@Value";
-#             rr:parent "MetaData/GenericAttributes/GenericAttribute[@Name='DrawingNumberAssignmentClass']/@Value";
-#           ]
-#         ]
-#     ].
+:PlantModelDocumentMap a rr:TriplesMap;
+  rml:logicalSource [
+    rml:source "../pandid.xml";
+    rml:referenceFormulation ql:XPath;
+    rml:iterator "/PlantModel"
+  ];
+  rr:subjectMap [
+    rr:template "https://assetid.equinor.com/document/SITE/{MetaData/GenericAttributes/GenericAttribute[@Name='DrawingNumberAssignmentClass']/@Value}";
+    rr:termType rr:IRI
+  ] ; 
+    rr:predicateObjectMap [
+        rr:predicate graphic:visualisedAs;
+        rr:objectMap [
+          a rr:RefObjectMap ;
+          rr:parentTriplesMap :PlantModelDrawingMap ;
+          rr:joinCondition [
+            rr:child "MetaData/GenericAttributes/GenericAttribute[@Name='DrawingNumberAssignmentClass']/@Value";
+            rr:parent "MetaData/GenericAttributes/GenericAttribute[@Name='DrawingNumberAssignmentClass']/@Value";
+          ]
+        ]
+    ].
