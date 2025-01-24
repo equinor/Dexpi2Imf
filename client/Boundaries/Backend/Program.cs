@@ -187,21 +187,49 @@ app.MapPost("/commissioning-package", async (CommissioningPackage commissioningP
 // Update commissioning package - updating information like name and color while persisting the calculated internal nodes, and boundaries.
 app.MapPut("/put-commissioning-package", async (CommissioningPackage updatedPackage) =>
 {
+    var getQuery = $@"
+    SELECT ?object WHERE {{
+        {{ <{updatedPackage.Id}> {PropertiesProvider.hasColor} ?object . }}
+        UNION
+        {{ <{updatedPackage.Id}> {PropertiesProvider.hasName} ?object .  }}
+    }}
+    ";
 
-    var deleteColorData = $@"<{updatedPackage.Id}> {PropertiesProvider.hasColor} ?color . ";
-    var deleteNameData = $@"<{updatedPackage.Id}> {PropertiesProvider.hasName} ?name . ";
+    var result = await RdfoxApi.QuerySparql(conn, getQuery);
+
+    string oldPackageName = string.Empty;
+    string oldPackageColor = string.Empty;
+
+    using (JsonDocument doc = JsonDocument.Parse(result))
+    {
+        var bindings = doc.RootElement.GetProperty("results").GetProperty("bindings").EnumerateArray().ToList();
+
+        if (bindings.Count >= 2)
+        {
+            oldPackageName = bindings[0].GetProperty("object").GetProperty("value").GetString();
+            oldPackageColor = bindings[1].GetProperty("object").GetProperty("value").GetString();
+        }
+    }
+    
+    // Log the existing color and name of the package
+    var deleteColorData = $@"<{updatedPackage.Id}> {PropertiesProvider.hasColor} ""{oldPackageColor}"" .";
+    var deleteNameData = $@"<{updatedPackage.Id}> {PropertiesProvider.hasName} ""{oldPackageName}"" .";
 
     await RdfoxApi.DeleteData(conn, deleteColorData);
     await RdfoxApi.DeleteData(conn, deleteNameData);
 
-    /*var data = new StringBuilder();
-    data.AppendLine($@"<{updatedPackage.Id}> {PropertiesProvider.hasName} ""{updatedPackage.Name}"" .");
-    data.AppendLine($@"<{updatedPackage.Id}> {PropertiesProvider.hasColor} ""{updatedPackage.Color}"" .");
+    var data = $@"
+        <{updatedPackage.Id}> {PropertiesProvider.hasName} ""{updatedPackage.Name}"" .
+        <{updatedPackage.Id}> {PropertiesProvider.hasColor} ""{updatedPackage.Color}"" .
+    ";
 
-    await RdfoxApi.LoadData(conn, data.ToString());*/
+    await RdfoxApi.LoadData(conn, data);
 
     return Results.Ok($"Commissioning package {updatedPackage.Id} updated successfully.");
 });
+
+
+
 
 //Delete commissioning package 
 app.MapDelete(" /commissioning-package/{commissioningPackageId}", async (string commissioningPackageId) =>
