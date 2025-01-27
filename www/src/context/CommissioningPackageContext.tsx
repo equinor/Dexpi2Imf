@@ -1,7 +1,6 @@
 import React, { createContext, useEffect, useState } from "react";
 import CommissioningPackage from "../types/CommissioningPackage.ts";
 import HighlightColors from "../enums/HighlightColors.ts";
-import { addCommissioningPackage } from "../utils/Triplestore.ts";
 import {
   createCommissioningPackage,
   deleteCommissioningPackage,
@@ -32,18 +31,21 @@ export const CommissioningPackageContextProvider: React.FC<{
     internalIds: [],
     selectedInternalIds: [],
   };
+
   const [activePackage, setActivePackage] =
     useState<CommissioningPackage>(initialPackage);
   const [commissioningPackages, setCommissioningPackages] = useState<
     CommissioningPackage[]
   >([]);
 
+  const createInitialPackage = async (initialPackage: CommissioningPackage) => {
+    await createCommissioningPackage(initialPackage);
+  };
+
   useEffect(() => {
     if (activePackage && commissioningPackages.length === 0) {
       setCommissioningPackages([activePackage]);
-      (async () => {
-        await createCommissioningPackage(activePackage);
-      })();
+      createInitialPackage(activePackage);
     }
   }, [activePackage, commissioningPackages]);
 
@@ -55,11 +57,7 @@ export const CommissioningPackageContextProvider: React.FC<{
         (pkg) => pkg.id !== packageId,
       );
       if (updatedPackages.length === 0) {
-        addCommissioningPackage(
-          initialPackage.id,
-          initialPackage.name,
-          initialPackage.color,
-        );
+        createInitialPackage(initialPackage);
         setActivePackage(initialPackage);
         return [initialPackage];
       } else {

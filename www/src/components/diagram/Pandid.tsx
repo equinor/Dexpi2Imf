@@ -45,7 +45,6 @@ export default function Pandid() {
   useEffect(() => {
     (async () => {
       const packages = await getAllCommissioningPackages();
-      console.log(packages);
       context.setCommissioningPackages(packages);
       if (packages[0]) context.setActivePackage(packages[0]);
     })();

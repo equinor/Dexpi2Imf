@@ -257,7 +257,7 @@ app.MapPut("/put-commissioning-package", async (CommissioningPackage updatedPack
 
 
 //Delete commissioning package 
-app.MapDelete("/commissioning-package/{commisioningPackageId}", async (string commissioningPackageId) =>
+app.MapDelete("/commissioning-package/{commissioningPackageId}", async (string commissioningPackageId) =>
 {
     commissioningPackageId = Uri.UnescapeDataString(commissioningPackageId);
 
