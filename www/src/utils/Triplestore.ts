@@ -1,14 +1,3 @@
-export enum BoundaryActions {
-  Insert = "INSERT DATA ",
-  Delete = "DELETE DATA ",
-}
-
-export enum BoundaryParts {
-  InsideBoundary = "comp:isInPackage",
-  Boundary = "comp:isBoundaryOf",
-  SelectedInternal = "comp:isSelectedInternal",
-}
-
 export enum Method {
   Post = "POST",
   Get = "GET",
