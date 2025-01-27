@@ -1,4 +1,6 @@
-﻿using static Boundaries.RdfoxApi;
+﻿using Backend.Model;
+using System.Text.Json;
+using static Boundaries.RdfoxApi;
 
 namespace Backend.Utils;
 
@@ -32,7 +34,7 @@ public static class QueryUtils
     public static async Task<bool> NodeIsInPackage(string packageId, string nodeId, ConnectionSettings conn)
     => await AskSparql(conn, $@"ASK WHERE {{ <{nodeId}> {PropertiesProvider.isInPackage} <{packageId}> . }}");
 
-    public static async Task DeleteNodeFromPackage(string packageId, string nodeId, ConnectionSettings conn) 
+    public static async Task DeleteNodeFromPackage(string packageId, string nodeId, ConnectionSettings conn)
         => await LoadData(conn, $"<{nodeId}> {PropertiesProvider.isInPackage} <{packageId}> .");
     #endregion
 
@@ -40,5 +42,49 @@ public static class QueryUtils
     public static async Task<bool> CommissioningPackageExists(string packageId, string nodeId, ConnectionSettings conn)
         => await AskSparql(conn, $@"ASK WHERE {{ <{packageId}> {TypesProvider.type} {PropertiesProvider.CommissioningPackage} . }}");
 
-    #endregion
+    public static CommissioningPackage ParseCommissioningPackageQueryResult(string id, string queryResult)
+    {
+        var commissioningPackage = new CommissioningPackage
+        {
+            Id = id,
+            Name = string.Empty,
+            Color = string.Empty,
+            BoundaryIds = [],
+            InternalIds = [],
+            SelectedInternalIds = []
+        };
+
+        using JsonDocument doc = JsonDocument.Parse(queryResult);
+        var bindings = doc.RootElement.GetProperty("results").GetProperty("bindings");
+
+        foreach (var binding in bindings.EnumerateArray())
+        {
+            var xValue = binding.GetProperty("x").GetProperty("value").GetString() ?? throw new Exception("xValue is null");
+            var yValue = binding.GetProperty("y").GetProperty("value").GetString() ?? throw new Exception("yValue is null");
+
+            // Handle the predicates and corresponding values
+            switch (xValue)
+            {
+                case "https://rdf.equinor.com/completion#hasName":
+                    commissioningPackage.Name = yValue;
+                    break;
+                case "https://rdf.equinor.com/completion#hasColour":
+                    commissioningPackage.Color = yValue;
+                    break;
+                case "https://rdf.equinor.com/completion#isBoundaryOf":
+                    commissioningPackage.BoundaryIds.Add(new Node { Id = yValue });
+                    break;
+                case "https://rdf.equinor.com/completion#isInPackage":
+                    commissioningPackage.InternalIds.Add(new Node { Id = yValue });
+                    break;
+                case "https://rdf.equinor.com/completion#isSelectedInternalOf":
+                    commissioningPackage.SelectedInternalIds.Add(new Node { Id = yValue });
+                    break;
+            }
+        }
+        return commissioningPackage;
+    }
 }
+
+
+#endregion
