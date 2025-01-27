@@ -7,7 +7,7 @@ public static class QueryUtils
 
     #region Boundary actions
     public static async Task<bool> IsBoundaryOf(string packageId, string nodeId, ConnectionSettings conn)
-        => await AskSparql(conn, $@"ASK WHERE {{ <{nodeId}> {PropertiesProvider.isSelectedInternalOf} <{packageId}> .}}");
+        => await AskSparql(conn, $@"ASK WHERE {{ <{nodeId}> {PropertiesProvider.isBoundaryOf} <{packageId}> .}}");
 
     public static async Task DeleteisBoundaryOf(string packageId, string nodeId, ConnectionSettings conn)
         => await DeleteData(conn, $@"<{nodeId}> {PropertiesProvider.isBoundaryOf} <{packageId}> .");
