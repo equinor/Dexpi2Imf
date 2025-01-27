@@ -8,6 +8,7 @@
 @prefix dexpi: <https://rdf.equinor.com/dexpi#> .
 @prefix asset: <https://assetid.equinor.com/plantx#> .
 @prefix imf: <http://ns.imfid.org/imf#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix : <http://rdf.equinor.com/dexpi/mappings/graphic#> .
 
 :PlantModelDrawingMap a rr:TriplesMap;
