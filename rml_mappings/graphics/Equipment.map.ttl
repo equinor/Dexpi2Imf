@@ -38,19 +38,46 @@
     [
       rr:predicate graphic:hasPosition ;
       rr:objectMap [
-        rr:parentTriplesMap :SymbolPositionMap ;
-        rr:joinCondition [
-          rr:child "@ID";
-          rr:parent "../@ID";
+        rr:parentTriplesMap :SymbolPositionMap0 ;
+        rr:joinCondition :symbolPositionJoinCondition
+      ], 
+        [
+        rr:parentTriplesMap :SymbolPositionMap90 ;
+        rr:joinCondition :symbolPositionJoinCondition
         ]
-      ]
+        , 
+        [
+        rr:parentTriplesMap :SymbolPositionMap180 ;
+        rr:joinCondition :symbolPositionJoinCondition], 
+        [
+        rr:parentTriplesMap :SymbolPositionMap270 ;
+        rr:joinCondition :symbolPositionJoinCondition
+        ]
   ].
+:symbolPositionJoinCondition a rr:Join ;
+          rr:child "@ID";
+          rr:parent "../@ID" .
 
-:SymbolPositionMap a rr:TriplesMap;
+:SymbolPositionMap270 a rr:TriplesMap;
   rml:logicalSource [
     rml:source "../pandid.xml";
     rml:referenceFormulation ql:XPath;
-    rml:iterator "PlantModel/Equipment/Position"
+    rml:iterator "PlantModel/Equipment/Position[Reference/@X='0' and Reference/@Y='1' and Reference/@Z='0' and Axis/@Z='1']"
+  ];
+  rr:subjectMap :symbolPositionSubject;
+  rr:predicateObjectMap :symbolPositionX , :symbolPositionY ,
+    [
+      rr:predicate graphic:rotation;
+      rr:objectMap [ 
+        rr:template "270";
+        rr:datatype xsd:double;
+      ]
+  ] .
+:SymbolPositionMap0 a rr:TriplesMap;
+  rml:logicalSource [
+    rml:source "../pandid.xml";
+    rml:referenceFormulation ql:XPath;
+    rml:iterator "PlantModel/Equipment/Position[Reference/@X='1' and Reference/@Y='0' and Reference/@Z='0' and Axis/@Z='1']"
   ];
   rr:subjectMap :symbolPositionSubject;
   rr:predicateObjectMap :symbolPositionX , :symbolPositionY ,
@@ -61,6 +88,37 @@
         rr:datatype xsd:double;
       ]
   ] .
+:SymbolPositionMap180 a rr:TriplesMap;
+  rml:logicalSource [
+    rml:source "../pandid.xml";
+    rml:referenceFormulation ql:XPath;
+    rml:iterator "PlantModel/Equipment/Position[Reference/@X = '-1' and Reference/@Y = '0' and Reference/@Z = '0' and Axis/@Z='1']"
+  ];
+  rr:subjectMap :symbolPositionSubject;
+  rr:predicateObjectMap :symbolPositionX , :symbolPositionY ,
+    [
+      rr:predicate graphic:rotation;
+      rr:objectMap [ 
+        rr:template "180";
+        rr:datatype xsd:double;
+      ]
+  ] .
+:SymbolPositionMap90 a rr:TriplesMap;
+  rml:logicalSource [
+    rml:source "../pandid.xml";
+    rml:referenceFormulation ql:XPath;
+    rml:iterator "PlantModel/Equipment/Position[Reference/@X = '0' and Reference/@Y = '-1' and Reference/@Z = '0' and Axis/@Z='1']"
+  ];
+  rr:subjectMap :symbolPositionSubject;
+  rr:predicateObjectMap :symbolPositionX , :symbolPositionY ,
+    [
+      rr:predicate graphic:rotation;
+      rr:objectMap [ 
+        rr:template "90";
+        rr:datatype xsd:double;
+      ]
+  ] .
+
 
 :symbolPositionSubject a rr:SubjectMap;
     rr:template "position_{../@ID}_position";
