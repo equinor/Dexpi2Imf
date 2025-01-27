@@ -371,24 +371,24 @@ app.MapGet("/commissioning-package/{commissioningPackageId}", async (string comm
                     var yValue = binding.GetProperty("y").GetProperty("value").GetString();
 
                     // Handle the predicates and corresponding values
-                    if (xValue == PropertiesProvider.hasName)
+                    if (xValue == "https://rdf.equinor.com/completion#hasName")
                     {
                         commissioningPackage.Name = yValue;
                     }
-                    else if (xValue == PropertiesProvider.hasColor)
+                    else if (xValue == "https://rdf.equinor.com/completion#hasColour")
                     {
                         commissioningPackage.Color = yValue;
                     }
-                    else if (xValue == PropertiesProvider.isBoundaryOf)
+                    else if (xValue == "https://rdf.equinor.com/completion#isBoundaryOf")
                     {
                         commissioningPackage.BoundaryIds.Add(new Node { Id = yValue });
                     }
 
-                    else if (xValue == PropertiesProvider.isInPackage)
+                    else if (xValue == "https://rdf.equinor.com/completion#isInPackage")
                     {
                         commissioningPackage.InternalIds.Add(new Node { Id = yValue });
                     }
-                    else if (xValue == PropertiesProvider.isSelectedInternalOf)
+                    else if (xValue == "https://rdf.equinor.com/completion#isSelectedInternalOf")
                     {
                         commissioningPackage.SelectedInternalIds.Add(new Node { Id = yValue });
                     }
@@ -477,7 +477,7 @@ app.MapGet("/commissioning-package/get-all-commissioning-packages", async () =>
                     {
                         commissioningPackage.InternalIds.Add(new Node { Id = yValue });
                     }
-                    else if (xValue == PropertiesProvider.isSelectedInternalOf)
+                    else if (xValue == "https://rdf.equinor.com/completion#isSelectedInternalOf")
                     {
                         commissioningPackage.SelectedInternalIds.Add(new Node { Id = yValue });
                     }
