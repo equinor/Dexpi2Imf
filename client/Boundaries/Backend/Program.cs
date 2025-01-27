@@ -36,8 +36,8 @@ app.MapPost("/commissioning-package/{packageId}/update-boundary/{nodeId}", async
         return Results.NotFound($"Commissioning package {packageId} not found.");
     }
 
-    var isSelectedInternal = await QueryUtils.IsBoundaryOf(packageId, nodeId, conn);
-    var isBoundary = await QueryUtils.IsSelectedInternalOf(packageId, nodeId, conn);
+    var isSelectedInternal = await QueryUtils.IsSelectedInternalOf(packageId, nodeId, conn);
+    var isBoundary = await QueryUtils.IsBoundaryOf(packageId, nodeId, conn);
 
     if (isSelectedInternal)
         await QueryUtils.DeleteIsSelectedInternalOf(packageId, nodeId, conn);
@@ -346,61 +346,59 @@ app.MapGet("/commissioning-package/{commissioningPackageId}", async (string comm
         {{ ?y ?x <{commissioningPackageId}> . }}
     }}
 ";
-
-
-
+    
     var result = await RdfoxApi.QuerySparql(conn, query);
 
-    var commissioningPackage = new CommissioningPackage
-    {
-        Id = commissioningPackageId,
-        Name = string.Empty,
-        Color = string.Empty,
-        BoundaryIds = [],
-        InternalIds = [],
-        SelectedInternalIds = []
-    };
-
-    try
-    {
-        using (JsonDocument doc = JsonDocument.Parse(result))
+        var commissioningPackage = new CommissioningPackage
         {
-            var bindings = doc.RootElement.GetProperty("results").GetProperty("bindings");
+            Id = commissioningPackageId,
+            Name = string.Empty,
+            Color = string.Empty,
+            BoundaryIds = [],
+            InternalIds = [],
+            SelectedInternalIds = []
+        };
 
-            foreach (var binding in bindings.EnumerateArray())
+        try
+        {
+            using (JsonDocument doc = JsonDocument.Parse(result))
             {
-                var xValue = binding.GetProperty("x").GetProperty("value").GetString();
-                var yValue = binding.GetProperty("y").GetProperty("value").GetString();
+                var bindings = doc.RootElement.GetProperty("results").GetProperty("bindings");
 
-                // Handle the predicates and corresponding values
-                if (xValue == PropertiesProvider.hasName)
+                foreach (var binding in bindings.EnumerateArray())
                 {
-                    commissioningPackage.Name = yValue;
-                }
-                else if (xValue == PropertiesProvider.hasColor)
-                {
-                    commissioningPackage.Color = yValue;
-                }
-                else if (xValue == PropertiesProvider.isBoundaryOf)
-                {
-                    commissioningPackage.BoundaryIds.Add(new Node { Id = yValue });
-                }
+                    var xValue = binding.GetProperty("x").GetProperty("value").GetString();
+                    var yValue = binding.GetProperty("y").GetProperty("value").GetString();
 
-                else if (xValue == PropertiesProvider.isInPackage)
-                {
-                    commissioningPackage.InternalIds.Add(new Node { Id = yValue });
-                }
-                else if (xValue == PropertiesProvider.isSelectedInternalOf)
-                {
-                    commissioningPackage.SelectedInternalIds.Add(new Node { Id = yValue });
+                    // Handle the predicates and corresponding values
+                    if (xValue == "https://rdf.equinor.com/completion#hasName")
+                    {
+                        commissioningPackage.Name = yValue;
+                    }
+                    else if (xValue == "https://rdf.equinor.com/completion#hasColour")
+                    {
+                        commissioningPackage.Color = yValue;
+                    }
+                    else if (xValue == "https://rdf.equinor.com/completion#isBoundaryOf")
+                    {
+                        commissioningPackage.BoundaryIds.Add(new Node { Id = yValue });
+                    }
+
+                    else if (xValue == "https://rdf.equinor.com/completion#isInPackage")
+                    {
+                        commissioningPackage.InternalIds.Add(new Node { Id = yValue });
+                    }
+                    else if (xValue == "https://rdf.equinor.com/completion#SelectedInternal")
+                    {
+                        commissioningPackage.SelectedInternalIds.Add(new Node { Id = yValue });
+                    }
                 }
             }
         }
-    }
-    catch (JsonException e)
-    {
-        return Results.Problem("An error occurred while parsing the SPARQL result.");
-    }
+        catch (JsonException e)
+        {
+            return Results.Problem("An error occurred while parsing the SPARQL result.");
+        }
 
     return Results.Ok(commissioningPackage);
 

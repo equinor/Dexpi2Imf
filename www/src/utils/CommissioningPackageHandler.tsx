@@ -30,10 +30,8 @@ export async function handleAddInternal(
   id: string,
   context: CommissioningPackageContextProps,
 ) {
-  console.log(id);
   await updateInternal(context.activePackage.id, id);
   await updateNodesInPackage(context);
-  console.log(context.activePackage);
 }
 
 export async function handleAddBoundary(
@@ -48,6 +46,7 @@ export async function handleAddBoundary(
 async function updateNodesInPackage(context: CommissioningPackageContextProps) {
   const commissioningPackage: CommissioningPackage =
     await getCommissioningPackage(context.activePackage.id);
+  console.log(`Updating nodes in package: ${commissioningPackage.id}`);
   context.setActivePackage(commissioningPackage);
 
   context.setCommissioningPackages((prevPackages) =>
@@ -55,4 +54,6 @@ async function updateNodesInPackage(context: CommissioningPackageContextProps) {
       pkg.id === commissioningPackage.id ? commissioningPackage : pkg,
     ),
   );
+
+  console.table(context.commissioningPackages);
 }
