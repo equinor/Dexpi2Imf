@@ -52,21 +52,30 @@
     rml:referenceFormulation ql:XPath;
     rml:iterator "PlantModel/Equipment/Position"
   ];
-  rr:subjectMap [
+  rr:subjectMap :symbolPositionSubject;
+  rr:predicateObjectMap :symbolPositionX , :symbolPositionY ,
+    [
+      rr:predicate graphic:rotation;
+      rr:objectMap [ 
+        rr:template "0";
+        rr:datatype xsd:double;
+      ]
+  ] .
+
+:symbolPositionSubject a rr:SubjectMap;
     rr:template "position_{../@ID}_position";
     rr:termType rr:BlankNode;
-    rr:class graphic:Position
-  ];
-  rr:predicateObjectMap [
+    rr:class graphic:Position .
+:symbolPositionX a rr:PredicateObjectMap;
     rr:predicate graphic:x;
     rr:objectMap [ 
-      rr:template "{Location/@X}";
+      rml:reference "Location/@X";
       rr:datatype xsd:double;
-    ]
-  ] , [
+    ] .
+
+  :symbolPositionY a rr:PredicateObjectMap;
     rr:predicate graphic:y;
     rr:objectMap [ 
-      rr:template "{Location/@Y}";
+      rr:template "{//*/Drawing/Extent/Max/@Y - Location/@Y}";
       rr:datatype xsd:double;
-    ]
-  ] .
+    ] .
