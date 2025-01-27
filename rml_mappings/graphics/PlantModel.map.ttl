@@ -34,11 +34,7 @@
   ] , [
     rr:predicate graphic:hasSymbol;
     rr:objectMap [
-      rr:parentTriplesMap :EquipmentBlockMap ;
-      rr:joinCondition [
-        rr:child "MetaData/GenericAttributes/GenericAttribute[@Name='DrawingNumberAssignmentClass']/@Value";
-        rr:parent "../MetaData/GenericAttributes/GenericAttribute[@Name='DrawingNumberAssignmentClass']/@Value";
-      ]
+      rr:parentTriplesMap :EquipmentBlockMap 
     ]
   ], [
     rr:predicate graphic:hasLine;

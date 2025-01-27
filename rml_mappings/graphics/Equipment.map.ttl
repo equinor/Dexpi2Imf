@@ -15,7 +15,7 @@
   rml:logicalSource [
     rml:source "../pandid.xml";
     rml:referenceFormulation ql:XPath;
-    rml:iterator "PlantModel/Equipment"
+    rml:iterator "PlantModel/Equipment | //PipingNetworkSegment/PipingComponent[@ComponentName != 'PipeTee'] | //PipingNetworkSegment/PropertyBreak"
   ];
   rr:subjectMap [
     rr:template "https://assetid.equinor.com/plantx/{/PlantModel/MetaData/GenericAttributes/GenericAttribute[@Name='DrawingNumberAssignmentClass']/@Value}/symbols#{@ID}";
@@ -62,14 +62,14 @@
   rml:logicalSource [
     rml:source "../pandid.xml";
     rml:referenceFormulation ql:XPath;
-    rml:iterator "PlantModel/Equipment/Position[Reference/@X='0' and Reference/@Y='1' and Reference/@Z='0' and Axis/@Z='1']"
+    rml:iterator "//Position[Reference/@X='0' and Reference/@Y='1' and Reference/@Z='0' and Axis/@Z='1']"
   ];
   rr:subjectMap :symbolPositionSubject;
   rr:predicateObjectMap :symbolPositionX , :symbolPositionY ,
     [
       rr:predicate graphic:rotation;
       rr:objectMap [ 
-        rr:template "270";
+        rr:template "{270 * Axis/@Z}";
         rr:datatype xsd:double;
       ]
   ] .
@@ -77,7 +77,7 @@
   rml:logicalSource [
     rml:source "../pandid.xml";
     rml:referenceFormulation ql:XPath;
-    rml:iterator "PlantModel/Equipment/Position[Reference/@X='1' and Reference/@Y='0' and Reference/@Z='0' and Axis/@Z='1']"
+    rml:iterator "//Position[Reference/@X='1' and Reference/@Y='0' and Reference/@Z='0']"
   ];
   rr:subjectMap :symbolPositionSubject;
   rr:predicateObjectMap :symbolPositionX , :symbolPositionY ,
@@ -92,14 +92,14 @@
   rml:logicalSource [
     rml:source "../pandid.xml";
     rml:referenceFormulation ql:XPath;
-    rml:iterator "PlantModel/Equipment/Position[Reference/@X = '-1' and Reference/@Y = '0' and Reference/@Z = '0' and Axis/@Z='1']"
+    rml:iterator "//Position[Reference/@X = '-1' and Reference/@Y = '0' and Reference/@Z = '0']"
   ];
   rr:subjectMap :symbolPositionSubject;
   rr:predicateObjectMap :symbolPositionX , :symbolPositionY ,
     [
       rr:predicate graphic:rotation;
       rr:objectMap [ 
-        rr:template "180";
+        rr:template "{180 * Axis/@Z}";
         rr:datatype xsd:double;
       ]
   ] .
@@ -107,14 +107,14 @@
   rml:logicalSource [
     rml:source "../pandid.xml";
     rml:referenceFormulation ql:XPath;
-    rml:iterator "PlantModel/Equipment/Position[Reference/@X = '0' and Reference/@Y = '-1' and Reference/@Z = '0' and Axis/@Z='1']"
+    rml:iterator "//Position[Reference/@X = '0' and Reference/@Y = '-1' and Reference/@Z = '0' and Axis/@Z='1']"
   ];
   rr:subjectMap :symbolPositionSubject;
   rr:predicateObjectMap :symbolPositionX , :symbolPositionY ,
     [
       rr:predicate graphic:rotation;
       rr:objectMap [ 
-        rr:template "90";
+        rr:template "{90 * Axis/@Z}";
         rr:datatype xsd:double;
       ]
   ] .
