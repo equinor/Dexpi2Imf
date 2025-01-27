@@ -1,11 +1,11 @@
 import React, { createContext, useEffect, useState } from "react";
 import CommissioningPackage from "../types/CommissioningPackage.ts";
 import HighlightColors from "../enums/HighlightColors.ts";
+import { addCommissioningPackage } from "../utils/Triplestore.ts";
 import {
-  deletePackageFromTripleStore,
-  addCommissioningPackage,
-} from "../utils/Triplestore.ts";
-import { createCommissioningPackage } from "../utils/Api.ts";
+  createCommissioningPackage,
+  deleteCommissioningPackage,
+} from "../utils/Api.ts";
 
 export interface CommissioningPackageContextProps {
   activePackage: CommissioningPackage;
@@ -47,8 +47,8 @@ export const CommissioningPackageContextProvider: React.FC<{
     }
   }, [activePackage, commissioningPackages]);
 
-  const deleteCommissioningPackage = async (packageId: string) => {
-    await deletePackageFromTripleStore(packageId);
+  const handleDeleteCommissioningPackage = async (packageId: string) => {
+    await deleteCommissioningPackage(packageId);
 
     setCommissioningPackages((prevPackages) => {
       const updatedPackages = prevPackages.filter(
@@ -94,7 +94,7 @@ export const CommissioningPackageContextProvider: React.FC<{
         setActivePackage,
         commissioningPackages,
         setCommissioningPackages,
-        deleteCommissioningPackage,
+        deleteCommissioningPackage: handleDeleteCommissioningPackage,
       }}
     >
       {children}

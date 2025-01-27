@@ -57,16 +57,23 @@ export const getCommissioningPackage = async (
   return response.json();
 };
 
-export const getAllCommissioningPackages = async (): Promise<string[]> => {
+export const getAllCommissioningPackages = async (): Promise<
+  CommissioningPackage[]
+> => {
   const response = await fetch(
-    `${BASE_URL}/commissioning-package/get-all-commissioning-packages-ids`,
+    `${BASE_URL}/commissioning-package/get-all-commissioning-packages`,
   );
   return response.json();
 };
 
 export const updateCommissioningPackage = async () => {};
 
-export const deleteCommissioningPackage = async () => {};
+export const deleteCommissioningPackage = async (packageId: string) => {
+  return await fetch(
+    `${BASE_URL}/commissioning-package/${encodeURIComponent(packageId)}`,
+    { method: "DELETE" },
+  );
+};
 
 // BOUNDARY
 

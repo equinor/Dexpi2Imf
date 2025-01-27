@@ -66,8 +66,8 @@ app.MapPost("/commissioning-package/{packageId}/update-internal/{nodeId}", async
         return Results.NotFound($"Commissioning package {packageId} not found.");
     }
 
-    var isSelectedInternal = await QueryUtils.IsBoundaryOf(packageId, nodeId, conn);
-    var isBoundary = await QueryUtils.IsSelectedInternalOf(packageId, nodeId, conn);
+    var isSelectedInternal = await QueryUtils.IsSelectedInternalOf(packageId, nodeId, conn);
+    var isBoundary = await QueryUtils.IsBoundaryOf(packageId, nodeId, conn);
 
     if (isBoundary)
         await QueryUtils.DeleteisBoundaryOf(packageId, nodeId, conn);

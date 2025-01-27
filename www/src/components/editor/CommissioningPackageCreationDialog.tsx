@@ -11,7 +11,7 @@ import React, { useEffect, useState } from "react";
 import CommissioningPackage from "../../types/CommissioningPackage.ts";
 import { useCommissioningPackageContext } from "../../hooks/useCommissioningPackageContext.tsx";
 import ColorPreview from "./ColorPreview.tsx";
-import { addCommissioningPackage } from "../../utils/Triplestore.ts";
+import { createCommissioningPackage } from "../../utils/Api.ts";
 
 const ColorSelectionContainer = styled.div`
   display: flex;
@@ -40,7 +40,7 @@ export default function CommissioningPackageCreationDialog(
 
   async function handleCreate() {
     const newPackage = {
-      id: "asset:" + id,
+      id: "https://assetid.equinor.com/plantx#" + id,
       name: name,
       color: selectedColor!,
       boundaryIds: [],
@@ -48,11 +48,7 @@ export default function CommissioningPackageCreationDialog(
       selectedInternalIds: [],
     };
 
-    await addCommissioningPackage(
-      newPackage.id,
-      newPackage.name,
-      newPackage.color,
-    );
+    await createCommissioningPackage(newPackage);
 
     setCommissioningPackage(newPackage);
     props.setOpen(false);

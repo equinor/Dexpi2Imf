@@ -9,11 +9,11 @@ import { ActuatingSystemProps } from "../../types/diagram/ActuatingSystem.ts";
 import ActuatingSystem from "./ActuatingSystem.tsx";
 import PandidContext from "../../context/PandidContext.ts";
 import PipeSystem from "./piping/PipeSystem.tsx";
-import { getAllCommissioningPackages } from "../../utils/Triplestore.ts";
 import { useCommissioningPackageContext } from "../../hooks/useCommissioningPackageContext.tsx";
 import styled from "styled-components";
 import { preloadSVGs } from "../../utils/SvgEdit.ts";
 import ZoomableSVGWrapper from "../editor/ZoomableSVGWrapper.tsx";
+import { getAllCommissioningPackages } from "../../utils/Api.ts";
 
 const SVGContainer = styled.div`
   width: 100%;
@@ -41,13 +41,13 @@ export default function Pandid() {
     attributeNamePrefix: "",
   });
 
-// Step 1: Fetch existing commissioning packages
+  // Step 1: Fetch existing commissioning packages
   useEffect(() => {
     (async () => {
       const packages = await getAllCommissioningPackages();
+      console.log(packages);
       context.setCommissioningPackages(packages);
-      if (packages[0])
-        context.setActivePackage(packages[0]);
+      if (packages[0]) context.setActivePackage(packages[0]);
     })();
   }, []);
 
