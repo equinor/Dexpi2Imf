@@ -44,7 +44,7 @@ app.MapPost("/commissioning-package/{packageId}/update-boundary/{nodeId}", async
 
     if (isBoundary)
     {
-        await QueryUtils.DeleteisBoundaryOf(packageId, nodeId, conn);
+        await QueryUtils.DeleteIsBoundaryOf(packageId, nodeId, conn);
     }
     else
     {
