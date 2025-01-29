@@ -27,9 +27,9 @@ export const CommissioningPackageContextProvider: React.FC<{
     id: "https://assetid.equinor.com/plantx#Package1",
     name: "Initial Package",
     color: HighlightColors.LASER_LEMON,
-    boundaryIds: [],
-    internalIds: [],
-    selectedInternalIds: [],
+    boundaryNodes: [],
+    internalNodes: [],
+    selectedInternalNodes: [],
   };
 
   const [activePackage, setActivePackage] =
@@ -71,16 +71,20 @@ export const CommissioningPackageContextProvider: React.FC<{
     setCommissioningPackages((prevPackages) =>
       prevPackages.map((pkg) => ({
         ...pkg,
-        boundaryIds: pkg.boundaryIds.filter((node) => node.id !== packageId),
-        internalIds: pkg.internalIds.filter((node) => node.id !== packageId),
+        boundaryNodes: pkg.boundaryNodes.filter(
+          (node) => node.id !== packageId,
+        ),
+        internalNodes: pkg.internalNodes.filter(
+          (node) => node.id !== packageId,
+        ),
       })),
     );
 
     if (activePackage.id === packageId) {
       setActivePackage((prevPackage) => ({
         ...prevPackage,
-        boundaryIds: [],
-        internalIds: [],
+        boundaryNodes: [],
+        internalNodes: [],
       }));
     }
   };

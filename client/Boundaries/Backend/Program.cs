@@ -31,7 +31,7 @@ app.MapPost("/commissioning-package/{packageId}/update-boundary/{nodeId}", async
     packageId = Uri.UnescapeDataString(packageId);
     nodeId = Uri.UnescapeDataString(nodeId);
 
-    if (!await QueryUtils.CommissioningPackageExists(packageId, nodeId, conn))
+    if (!await QueryUtils.CommissioningPackageExists(packageId, conn))
     {
         return Results.NotFound($"Commissioning package {packageId} not found.");
     }
@@ -48,7 +48,7 @@ app.MapPost("/commissioning-package/{packageId}/update-boundary/{nodeId}", async
     }
     else
     {
-        await QueryUtils.AddisBounaryOf(packageId, nodeId, conn);
+        await QueryUtils.AddIsBoundaryOf(packageId, nodeId, conn);
     }
 
     return Results.Ok();
@@ -61,7 +61,7 @@ app.MapPost("/commissioning-package/{packageId}/update-internal/{nodeId}", async
     packageId = Uri.UnescapeDataString(packageId);
     nodeId = Uri.UnescapeDataString(nodeId);
 
-    if (!await QueryUtils.CommissioningPackageExists(packageId, nodeId, conn))
+    if (!await QueryUtils.CommissioningPackageExists(packageId, conn))
     {
         return Results.NotFound($"Commissioning package {packageId} not found.");
     }
@@ -70,7 +70,7 @@ app.MapPost("/commissioning-package/{packageId}/update-internal/{nodeId}", async
     var isBoundary = await QueryUtils.IsBoundaryOf(packageId, nodeId, conn);
 
     if (isBoundary)
-        await QueryUtils.DeleteisBoundaryOf(packageId, nodeId, conn);
+        await QueryUtils.DeleteIsBoundaryOf(packageId, nodeId, conn);
 
     if (isSelectedInternal)
     {
@@ -91,7 +91,7 @@ app.MapPost("/commissioning-package/{packageId}/boundary/{nodeId}", async (strin
     packageId = Uri.UnescapeDataString(packageId);
     nodeId = Uri.UnescapeDataString(nodeId);
 
-    if (!await QueryUtils.CommissioningPackageExists(packageId, string.Empty, conn))
+    if (!await QueryUtils.CommissioningPackageExists(packageId, conn))
     {
         return Results.NotFound($"Commissioning package {packageId} not found.");
     }
@@ -111,7 +111,7 @@ app.MapPost("/commissioning-package/{packageId}/internal/{nodeId}", async (strin
     packageId = Uri.UnescapeDataString(packageId);
     nodeId = Uri.UnescapeDataString(nodeId);
 
-    if (!await QueryUtils.CommissioningPackageExists(packageId, string.Empty, conn))
+    if (!await QueryUtils.CommissioningPackageExists(packageId, conn))
     {
         return Results.NotFound($"Commissioning package {packageId} not found.");
     }
@@ -131,7 +131,7 @@ app.MapDelete("/commissioning-package/{packageId}/boundary/{nodeId}", async (str
     packageId = Uri.UnescapeDataString(packageId);
     nodeId = Uri.UnescapeDataString(nodeId);
 
-    if (!await QueryUtils.CommissioningPackageExists(packageId, string.Empty, conn))
+    if (!await QueryUtils.CommissioningPackageExists(packageId, conn))
     {
         return Results.NotFound($"Commissioning package {packageId} not found.");
     }
@@ -151,7 +151,7 @@ app.MapDelete("/commissioning-package/{packageId}/internal/{nodeId}", async (str
     packageId = Uri.UnescapeDataString(packageId);
     nodeId = Uri.UnescapeDataString(nodeId);
 
-    if (!await QueryUtils.CommissioningPackageExists(packageId, string.Empty, conn))
+    if (!await QueryUtils.CommissioningPackageExists(packageId, conn))
     {
         return Results.NotFound($"Commissioning package {packageId} not found.");
     }
@@ -198,7 +198,7 @@ app.MapGet("/nodes/{nodeId}/adjacent", async (string nodeId) =>
 });
 
 
-//Add commissioning packageadd commision package endpoint?
+//Add commissioning package
 app.MapPost("/commissioning-package", async (CommissioningPackage commissioningPackage) =>
 {
     var data = new StringBuilder();
@@ -261,7 +261,7 @@ app.MapDelete("/commissioning-package/{commissioningPackageId}", async (string c
 {
     commissioningPackageId = Uri.UnescapeDataString(commissioningPackageId);
 
-    if (!await QueryUtils.CommissioningPackageExists(commissioningPackageId, string.Empty, conn))
+    if (!await QueryUtils.CommissioningPackageExists(commissioningPackageId, conn))
     {
         return Results.NotFound($"Commissioning package {commissioningPackageId} not found.");
     }
@@ -330,7 +330,7 @@ app.MapGet("/commissioning-package/{commissioningPackageId}", async (string comm
 {
     commissioningPackageId = Uri.UnescapeDataString(commissioningPackageId);
 
-    if (!await QueryUtils.CommissioningPackageExists(commissioningPackageId, string.Empty, conn))
+    if (!await QueryUtils.CommissioningPackageExists(commissioningPackageId, conn))
     {
         return Results.NotFound($"Commissioning package {commissioningPackageId} not found.");
     }

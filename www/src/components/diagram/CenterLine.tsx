@@ -29,13 +29,13 @@ export default function CenterLine(props: CenterLineComponentProps) {
     iri = iriFromSvgNode(props.id);
     const commissioningPackage = context.commissioningPackages.find(
       (pkg) =>
-        pkg.boundaryIds?.some((node) => node.id === iri) ||
-        pkg.internalIds?.some((node) => node.id === iri),
+        pkg.boundaryNodes?.some((node) => node.id === iri) ||
+        pkg.internalNodes?.some((node) => node.id === iri),
     );
     color = commissioningPackage?.color;
     if (commissioningPackage)
       hasSelectedInternalNode =
-        commissioningPackage.selectedInternalIds.length > 0;
+        commissioningPackage.selectedInternalNodes.length > 0;
   }
 
   return (

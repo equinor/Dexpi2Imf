@@ -11,10 +11,10 @@ public static class QueryUtils
     public static async Task<bool> IsBoundaryOf(string packageId, string nodeId, ConnectionSettings conn)
         => await AskSparql(conn, $@"ASK WHERE {{ <{nodeId}> {PropertiesProvider.isBoundaryOf} <{packageId}> .}}");
 
-    public static async Task DeleteisBoundaryOf(string packageId, string nodeId, ConnectionSettings conn)
+    public static async Task DeleteIsBoundaryOf(string packageId, string nodeId, ConnectionSettings conn)
         => await DeleteData(conn, $@"<{nodeId}> {PropertiesProvider.isBoundaryOf} <{packageId}> .");
 
-    public static async Task AddisBounaryOf(string packageId, string nodeId, ConnectionSettings conn)
+    public static async Task AddIsBoundaryOf(string packageId, string nodeId, ConnectionSettings conn)
     => await LoadData(conn, $@"<{nodeId}> {PropertiesProvider.isBoundaryOf} <{packageId}> .");
 
     #endregion
@@ -39,7 +39,7 @@ public static class QueryUtils
     #endregion
 
     #region CommissioningPackage actions
-    public static async Task<bool> CommissioningPackageExists(string packageId, string nodeId, ConnectionSettings conn)
+    public static async Task<bool> CommissioningPackageExists(string packageId, ConnectionSettings conn)
         => await AskSparql(conn, $@"ASK WHERE {{ <{packageId}> {TypesProvider.type} {PropertiesProvider.CommissioningPackage} . }}");
 
     public static CommissioningPackage ParseCommissioningPackageQueryResult(string id, string queryResult)
@@ -49,9 +49,9 @@ public static class QueryUtils
             Id = id,
             Name = string.Empty,
             Color = string.Empty,
-            BoundaryIds = [],
-            InternalIds = [],
-            SelectedInternalIds = []
+            BoundaryNodes = [],
+            InternalNodes = [],
+            SelectedInternalNodes = []
         };
 
         using JsonDocument doc = JsonDocument.Parse(queryResult);
@@ -72,13 +72,13 @@ public static class QueryUtils
                     commissioningPackage.Color = yValue;
                     break;
                 case "https://rdf.equinor.com/completion#isBoundaryOf":
-                    commissioningPackage.BoundaryIds.Add(new Node { Id = yValue });
+                    commissioningPackage.BoundaryNodes.Add(new Node { Id = yValue });
                     break;
                 case "https://rdf.equinor.com/completion#isInPackage":
-                    commissioningPackage.InternalIds.Add(new Node { Id = yValue });
+                    commissioningPackage.InternalNodes.Add(new Node { Id = yValue });
                     break;
                 case "https://rdf.equinor.com/completion#isSelectedInternalOf":
-                    commissioningPackage.SelectedInternalIds.Add(new Node { Id = yValue });
+                    commissioningPackage.SelectedInternalNodes.Add(new Node { Id = yValue });
                     break;
             }
         }

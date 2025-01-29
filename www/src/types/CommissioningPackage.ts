@@ -4,9 +4,9 @@ export default interface CommissioningPackage {
   id: string;
   name: string;
   color: HighlightColors;
-  boundaryIds: NodeElement[];
-  internalIds: NodeElement[];
-  selectedInternalIds: NodeElement[];
+  boundaryNodes: NodeElement[];
+  internalNodes: NodeElement[];
+  selectedInternalNodes: NodeElement[];
 }
 
 export interface NodeElement {

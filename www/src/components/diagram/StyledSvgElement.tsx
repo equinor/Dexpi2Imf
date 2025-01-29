@@ -30,13 +30,13 @@ export default function StyledSvgElement({
   const context = useCommissioningPackageContext();
   const commissioningPackage = context.commissioningPackages.find(
     (pkg) =>
-      pkg.boundaryIds?.some((node) => node.id === id) ||
-      pkg.internalIds?.some((node) => node.id === id),
+      pkg.boundaryNodes?.some((node) => node.id === id) ||
+      pkg.internalNodes?.some((node) => node.id === id),
   );
   let hasSelectedInternalNode: boolean;
   if (commissioningPackage) {
     hasSelectedInternalNode =
-      commissioningPackage.selectedInternalIds.length > 0;
+      commissioningPackage.selectedInternalNodes.length > 0;
 
     return (
       <>

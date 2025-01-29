@@ -43,9 +43,9 @@ export default function CommissioningPackageCreationDialog(
       id: "https://assetid.equinor.com/plantx#" + id,
       name: name,
       color: selectedColor!,
-      boundaryIds: [],
-      internalIds: [],
-      selectedInternalIds: [],
+      boundaryNodes: [],
+      internalNodes: [],
+      selectedInternalNodes: [],
     };
 
     await createCommissioningPackage(newPackage);
