@@ -60,9 +60,7 @@ export const getCommissioningPackage = async (
 export const getAllCommissioningPackages = async (): Promise<
   CommissioningPackage[]
 > => {
-  const response = await fetch(
-    `${BASE_URL}/commissioning-package/get-all-commissioning-packages`,
-  );
+  const response = await fetch(`${BASE_URL}/commissioning-package/all`);
   return response.json();
 };
 

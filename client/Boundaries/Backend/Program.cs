@@ -75,7 +75,7 @@ app.MapPost("/commissioning-package/{packageId}/boundary/{nodeId}", async (strin
     await RdfoxApi.LoadData(conn, data);
 
     return Results.Ok($"Triple with subject {packageId} and object {nodeId} inserted successfully.");
-}).WithTag("Boundary");
+}).WithTags("Boundary");
 
 
 // Remove node as boundary
@@ -96,7 +96,7 @@ app.MapDelete("/commissioning-package/{packageId}/boundary/{nodeId}", async (str
     await RdfoxApi.DeleteData(conn, data);
 
     return Results.Ok($"Triple for package {packageId} and node {nodeId} deleted successfully.");
-}).WithTag("Boundary");
+}).WithTags("Boundary");
 
 
 // ============ INTERNAL ============
@@ -128,7 +128,7 @@ app.MapPost("/commissioning-package/{packageId}/update-internal/{nodeId}", async
     }
 
     return Results.Ok();
-}).WithTag("Internal");
+}).WithTags("Internal");
 
 
 //Add node as internal
@@ -149,7 +149,7 @@ app.MapPost("/commissioning-package/{packageId}/internal/{nodeId}", async (strin
     await RdfoxApi.LoadData(conn, data);
 
     return Results.Ok($"Triple for package {packageId} and node {nodeId} inserted successfully.");
-}).WithTag("Internal");
+}).WithTags("Internal");
 
 
 // Remove node as internal
@@ -170,7 +170,7 @@ app.MapDelete("/commissioning-package/{packageId}/internal/{nodeId}", async (str
     await RdfoxApi.DeleteData(conn, data);
 
     return Results.Ok($"Triple for package {packageId} and node {nodeId} deleted successfully.");
-}).WithTag("Internal");
+}).WithTags("Internal");
 
 
 // ============ NODES ============
@@ -205,7 +205,7 @@ app.MapGet("/nodes/{nodeId}/adjacent", async (string nodeId) =>
     }
 
     return Results.Ok(adjacentNodes);
-}).WithTag("Nodes");
+}).WithTags("Nodes");
 
 
 // ============ COMMISSIONING PACKAGE ============
@@ -221,7 +221,7 @@ app.MapPost("/commissioning-package", async (CommissioningPackage commissioningP
     await RdfoxApi.LoadData(conn, data.ToString());
 
     return Results.Ok($"Commissioning package {commissioningPackage.Id} added successfully.");
-}).WithTag("Commissioning Package");
+}).WithTags("Commissioning Package");
 
 
 // Update commissioning package - updating information like name and color while persisting the calculated internal nodes, and boundaries.
@@ -266,7 +266,7 @@ app.MapPut("/commissioning-package", async (CommissioningPackage updatedPackage)
     await RdfoxApi.LoadData(conn, data);
 
     return Results.Ok($"Commissioning package {updatedPackage.Id} updated successfully.");
-}).WithTag("Commissioning Package");
+}).WithTags("Commissioning Package");
 
 
 //Get commissioning package
@@ -305,7 +305,7 @@ app.MapGet("/commissioning-package/{commissioningPackageId}", async (string comm
     }
 
     return Results.Ok(commissioningPackage);
-}).WithTag("Commissioning Package");
+}).WithTags("Commissioning Package");
 
 
 //Delete commissioning package 
@@ -374,7 +374,7 @@ app.MapDelete("/commissioning-package/{commissioningPackageId}", async (string c
 
     return Results.Ok($"Commissioning package {commissioningPackageId} deleted successfully.");
 
-}).WithTag("Commissioning Package");
+}).WithTags("Commissioning Package");
 
 
 //Get all commissioning packages
@@ -427,7 +427,7 @@ app.MapGet("/commissioning-package/all", async () =>
     }
 
     return Results.Ok(commissioningPackages);
-}).WithTag("Commissioning Package");
+}).WithTags("Commissioning Package");
 
 
 //Get the ID of all commissioning packages
@@ -449,6 +449,6 @@ app.MapGet("/commissioning-package/ids", async () =>
         .ToList();
 
     return Results.Ok(packageIds);
-}).WithTag("Commissioning Package");
+}).WithTags("Commissioning Package");
 
 app.Run();
