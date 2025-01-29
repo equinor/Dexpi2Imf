@@ -25,6 +25,9 @@ app.UseHttpsRedirection();
 // Establish connection to Rdfox
 var conn = RdfoxApi.GetDefaultConnectionSettings();
 
+
+// ============ BOUNDARIES ============
+
 //Update boundary 
 app.MapPost("/commissioning-package/{packageId}/update-boundary/{nodeId}", async (string packageId, string nodeId) =>
 {
@@ -52,8 +55,51 @@ app.MapPost("/commissioning-package/{packageId}/update-boundary/{nodeId}", async
     }
 
     return Results.Ok();
-});
+}).WithTags("Boundary");
 
+
+// Add node as boundary
+app.MapPost("/commissioning-package/{packageId}/boundary/{nodeId}", async (string packageId, string nodeId) =>
+{
+    packageId = Uri.UnescapeDataString(packageId);
+    nodeId = Uri.UnescapeDataString(nodeId);
+
+    if (!await QueryUtils.CommissioningPackageExists(packageId, conn))
+    {
+        return Results.NotFound($"Commissioning package {packageId} not found.");
+    }
+
+    var data = $@"
+         <{nodeId}> {PropertiesProvider.isBoundaryOf} <{packageId}> .";
+
+    await RdfoxApi.LoadData(conn, data);
+
+    return Results.Ok($"Triple with subject {packageId} and object {nodeId} inserted successfully.");
+}).WithTag("Boundary");
+
+
+// Remove node as boundary
+app.MapDelete("/commissioning-package/{packageId}/boundary/{nodeId}", async (string packageId, string nodeId) =>
+{
+    packageId = Uri.UnescapeDataString(packageId);
+    nodeId = Uri.UnescapeDataString(nodeId);
+
+    if (!await QueryUtils.CommissioningPackageExists(packageId, conn))
+    {
+        return Results.NotFound($"Commissioning package {packageId} not found.");
+    }
+
+    var data = $@"
+         <{nodeId}> {PropertiesProvider.isBoundaryOf} <{packageId}> .
+    ";
+
+    await RdfoxApi.DeleteData(conn, data);
+
+    return Results.Ok($"Triple for package {packageId} and node {nodeId} deleted successfully.");
+}).WithTag("Boundary");
+
+
+// ============ INTERNAL ============
 
 //Update selected internal 
 app.MapPost("/commissioning-package/{packageId}/update-internal/{nodeId}", async (string packageId, string nodeId) =>
@@ -82,27 +128,7 @@ app.MapPost("/commissioning-package/{packageId}/update-internal/{nodeId}", async
     }
 
     return Results.Ok();
-});
-
-
-// Add node as boundary
-app.MapPost("/commissioning-package/{packageId}/boundary/{nodeId}", async (string packageId, string nodeId) =>
-{
-    packageId = Uri.UnescapeDataString(packageId);
-    nodeId = Uri.UnescapeDataString(nodeId);
-
-    if (!await QueryUtils.CommissioningPackageExists(packageId, conn))
-    {
-        return Results.NotFound($"Commissioning package {packageId} not found.");
-    }
-
-    var data = $@"
-         <{nodeId}> {PropertiesProvider.isBoundaryOf} <{packageId}> .";
-
-    await RdfoxApi.LoadData(conn, data);
-
-    return Results.Ok($"Triple with subject {packageId} and object {nodeId} inserted successfully.");
-});
+}).WithTag("Internal");
 
 
 //Add node as internal
@@ -123,27 +149,8 @@ app.MapPost("/commissioning-package/{packageId}/internal/{nodeId}", async (strin
     await RdfoxApi.LoadData(conn, data);
 
     return Results.Ok($"Triple for package {packageId} and node {nodeId} inserted successfully.");
-});
+}).WithTag("Internal");
 
-// Remove node as boundary
-app.MapDelete("/commissioning-package/{packageId}/boundary/{nodeId}", async (string packageId, string nodeId) =>
-{
-    packageId = Uri.UnescapeDataString(packageId);
-    nodeId = Uri.UnescapeDataString(nodeId);
-
-    if (!await QueryUtils.CommissioningPackageExists(packageId, conn))
-    {
-        return Results.NotFound($"Commissioning package {packageId} not found.");
-    }
-
-    var data = $@"
-         <{nodeId}> {PropertiesProvider.isBoundaryOf} <{packageId}> .
-    ";
-
-    await RdfoxApi.DeleteData(conn, data);
-
-    return Results.Ok($"Triple for package {packageId} and node {nodeId} deleted successfully.");
-});
 
 // Remove node as internal
 app.MapDelete("/commissioning-package/{packageId}/internal/{nodeId}", async (string packageId, string nodeId) =>
@@ -163,7 +170,10 @@ app.MapDelete("/commissioning-package/{packageId}/internal/{nodeId}", async (str
     await RdfoxApi.DeleteData(conn, data);
 
     return Results.Ok($"Triple for package {packageId} and node {nodeId} deleted successfully.");
-});
+}).WithTag("Internal");
+
+
+// ============ NODES ============
 
 //Get adjacent nodes
 app.MapGet("/nodes/{nodeId}/adjacent", async (string nodeId) =>
@@ -195,8 +205,10 @@ app.MapGet("/nodes/{nodeId}/adjacent", async (string nodeId) =>
     }
 
     return Results.Ok(adjacentNodes);
-});
+}).WithTag("Nodes");
 
+
+// ============ COMMISSIONING PACKAGE ============
 
 //Add commissioning package
 app.MapPost("/commissioning-package", async (CommissioningPackage commissioningPackage) =>
@@ -209,10 +221,11 @@ app.MapPost("/commissioning-package", async (CommissioningPackage commissioningP
     await RdfoxApi.LoadData(conn, data.ToString());
 
     return Results.Ok($"Commissioning package {commissioningPackage.Id} added successfully.");
-});
+}).WithTag("Commissioning Package");
+
 
 // Update commissioning package - updating information like name and color while persisting the calculated internal nodes, and boundaries.
-app.MapPut("/put-commissioning-package", async (CommissioningPackage updatedPackage) =>
+app.MapPut("/commissioning-package", async (CommissioningPackage updatedPackage) =>
 {
     var getQuery = $@"
     SELECT ?object WHERE {{
@@ -253,7 +266,46 @@ app.MapPut("/put-commissioning-package", async (CommissioningPackage updatedPack
     await RdfoxApi.LoadData(conn, data);
 
     return Results.Ok($"Commissioning package {updatedPackage.Id} updated successfully.");
-});
+}).WithTag("Commissioning Package");
+
+
+//Get commissioning package
+app.MapGet("/commissioning-package/{commissioningPackageId}", async (string commissioningPackageId) =>
+{
+    commissioningPackageId = Uri.UnescapeDataString(commissioningPackageId);
+
+    if (!await QueryUtils.CommissioningPackageExists(commissioningPackageId, conn))
+    {
+        return Results.NotFound($"Commissioning package {commissioningPackageId} not found.");
+    }
+
+    var query = $@"
+    SELECT ?x ?y WHERE {{
+        {{ <{commissioningPackageId}> ?x ?y . }}
+        UNION
+        {{ ?y ?x <{commissioningPackageId}> . }}
+    }}
+";
+
+    var result = await RdfoxApi.QuerySparql(conn, query);
+
+    CommissioningPackage commissioningPackage;
+
+    try
+    {
+        commissioningPackage = QueryUtils.ParseCommissioningPackageQueryResult(commissioningPackageId, result);
+    }
+    catch (JsonException)
+    {
+        return Results.Problem("A json error occurred while parsing the SPARQL result.");
+    }
+    catch (Exception)
+    {
+        return Results.Problem("Null error occurred while parsing the SPARQL result.");
+    }
+
+    return Results.Ok(commissioningPackage);
+}).WithTag("Commissioning Package");
 
 
 //Delete commissioning package 
@@ -322,49 +374,11 @@ app.MapDelete("/commissioning-package/{commissioningPackageId}", async (string c
 
     return Results.Ok($"Commissioning package {commissioningPackageId} deleted successfully.");
 
-});
+}).WithTag("Commissioning Package");
 
-
-//Get commissioning package
-app.MapGet("/commissioning-package/{commissioningPackageId}", async (string commissioningPackageId) =>
-{
-    commissioningPackageId = Uri.UnescapeDataString(commissioningPackageId);
-
-    if (!await QueryUtils.CommissioningPackageExists(commissioningPackageId, conn))
-    {
-        return Results.NotFound($"Commissioning package {commissioningPackageId} not found.");
-    }
-
-    var query = $@"
-    SELECT ?x ?y WHERE {{
-        {{ <{commissioningPackageId}> ?x ?y . }}
-        UNION
-        {{ ?y ?x <{commissioningPackageId}> . }}
-    }}
-";
-
-    var result = await RdfoxApi.QuerySparql(conn, query);
-
-    CommissioningPackage commissioningPackage;
-
-    try
-    {
-        commissioningPackage = QueryUtils.ParseCommissioningPackageQueryResult(commissioningPackageId, result);
-    }
-    catch (JsonException)
-    {
-        return Results.Problem("A json error occurred while parsing the SPARQL result.");
-    }
-    catch (Exception)
-    {
-        return Results.Problem("Null error occurred while parsing the SPARQL result.");
-    }
-
-    return Results.Ok(commissioningPackage);
-});
 
 //Get all commissioning packages
-app.MapGet("/commissioning-package/get-all-commissioning-packages", async () =>
+app.MapGet("/commissioning-package/all", async () =>
 {
     var query = $@"
         SELECT ?packageId WHERE {{
@@ -413,11 +427,11 @@ app.MapGet("/commissioning-package/get-all-commissioning-packages", async () =>
     }
 
     return Results.Ok(commissioningPackages);
-});
+}).WithTag("Commissioning Package");
 
 
 //Get the ID of all commissioning packages
-app.MapGet("/commissioning-package/get-all-commissioning-packages-ids", async () =>
+app.MapGet("/commissioning-package/ids", async () =>
 {
     var query = $@"
         SELECT ?packageId WHERE {{
@@ -435,6 +449,6 @@ app.MapGet("/commissioning-package/get-all-commissioning-packages-ids", async ()
         .ToList();
 
     return Results.Ok(packageIds);
-});
+}).WithTag("Commissioning Package");
 
 app.Run();
