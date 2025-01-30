@@ -460,3 +460,7 @@ app.MapGet("/commissioning-package/ids", async () =>
 }).WithTags("Commissioning Package");
 
 app.Run();
+
+
+// Necessary for integration testing
+public partial class Program { }
