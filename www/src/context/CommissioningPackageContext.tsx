@@ -56,9 +56,11 @@ export const CommissioningPackageContextProvider: React.FC<{
       const updatedPackages = prevPackages.filter(
         (pkg) => pkg.id !== packageId,
       );
+      console.log(updatedPackages);
       if (updatedPackages.length === 0) {
         createInitialPackage(initialPackage);
         setActivePackage(initialPackage);
+        console.log("initial package created");
         return [initialPackage];
       } else {
         if (activePackage.id === packageId) {
@@ -67,26 +69,6 @@ export const CommissioningPackageContextProvider: React.FC<{
         return updatedPackages;
       }
     });
-
-    setCommissioningPackages((prevPackages) =>
-      prevPackages.map((pkg) => ({
-        ...pkg,
-        boundaryNodes: pkg.boundaryNodes.filter(
-          (node) => node.id !== packageId,
-        ),
-        internalNodes: pkg.internalNodes.filter(
-          (node) => node.id !== packageId,
-        ),
-      })),
-    );
-
-    if (activePackage.id === packageId) {
-      setActivePackage((prevPackage) => ({
-        ...prevPackage,
-        boundaryNodes: [],
-        internalNodes: [],
-      }));
-    }
   };
 
   return (

@@ -49,7 +49,6 @@ export default function CommissioningPackageCreationDialog(
     };
 
     await createCommissioningPackage(newPackage);
-
     setCommissioningPackage(newPackage);
     props.setOpen(false);
   }
