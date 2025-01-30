@@ -326,7 +326,7 @@ app.MapDelete("/commissioning-package/{commissioningPackageId}", async (string c
     var result = await RdfoxApi.QuerySparql(conn, query);
     var deleteQueryBuilder = new StringBuilder();
 
-
+    
     using (JsonDocument doc = JsonDocument.Parse(result))
     {
         var bindings = doc.RootElement.GetProperty("results").GetProperty("bindings");
@@ -354,23 +354,30 @@ app.MapDelete("/commissioning-package/{commissioningPackageId}", async (string c
         {{ ?y ?x <{commissioningPackageId}> . }}
     }}";
 
-    result = await RdfoxApi.QuerySparql(conn, query);
-    deleteQueryBuilder = new StringBuilder();
-
-    using (JsonDocument docDel = JsonDocument.Parse(result))
+    try
     {
-        var bindingsDel = docDel.RootElement.GetProperty("results").GetProperty("bindings");
+        result = await RdfoxApi.QuerySparql(conn, query);
+        deleteQueryBuilder = new StringBuilder();
 
-        foreach (var binding in bindingsDel.EnumerateArray())
+        using (JsonDocument docDel = JsonDocument.Parse(result))
         {
-            var xValue = binding.GetProperty("x").GetProperty("value").GetString();
-            var yValue = binding.GetProperty("y").GetProperty("value").GetString();
+            var bindingsDel = docDel.RootElement.GetProperty("results").GetProperty("bindings");
 
-            deleteQueryBuilder.AppendLine($@"<{yValue}> <{xValue}> <{commissioningPackageId}> . ");
+            foreach (var binding in bindingsDel.EnumerateArray())
+            {
+                var xValue = binding.GetProperty("x").GetProperty("value").GetString();
+                var yValue = binding.GetProperty("y").GetProperty("value").GetString();
+
+                deleteQueryBuilder.AppendLine($@"<{yValue}> <{xValue}> <{commissioningPackageId}> . ");
+            }
         }
-    }
 
-    await RdfoxApi.DeleteData(conn, deleteQueryBuilder.ToString());
+        await RdfoxApi.DeleteData(conn, deleteQueryBuilder.ToString());
+    }
+    catch (Exception ex)
+    {
+         Console.WriteLine($"An error occurred while executing the second SPARQL query: {ex.Message}");
+    }
 
     return Results.Ok($"Commissioning package {commissioningPackageId} deleted successfully.");
 

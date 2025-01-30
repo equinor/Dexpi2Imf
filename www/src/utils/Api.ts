@@ -67,10 +67,11 @@ export const getAllCommissioningPackages = async (): Promise<
 export const updateCommissioningPackage = async () => {};
 
 export const deleteCommissioningPackage = async (packageId: string) => {
-  return await fetch(
+  const response = await fetch(
     `${BASE_URL}/commissioning-package/${encodeURIComponent(packageId)}`,
     { method: "DELETE" },
   );
+  return response;
 };
 
 // BOUNDARY
