@@ -4,6 +4,7 @@ import HighlightColors from "../enums/HighlightColors.ts";
 import {
   createCommissioningPackage,
   deleteCommissioningPackage,
+  getAllCommissioningPackages,
 } from "../utils/Api.ts";
 
 export interface CommissioningPackageContextProps {
@@ -44,29 +45,22 @@ export const CommissioningPackageContextProvider: React.FC<{
 
   useEffect(() => {
     if (activePackage && commissioningPackages.length === 0) {
-      setCommissioningPackages([activePackage]);
       createInitialPackage(activePackage);
     }
   }, [activePackage, commissioningPackages]);
 
   const handleDeleteCommissioningPackage = async (packageId: string) => {
     await deleteCommissioningPackage(packageId);
-
-    setCommissioningPackages((prevPackages) => {
-      const updatedPackages = prevPackages.filter(
-        (pkg) => pkg.id !== packageId,
-      );
-      console.log(updatedPackages);
-      if (updatedPackages.length === 0) {
+    const packages = await getAllCommissioningPackages();
+    setCommissioningPackages(() => {
+      if (packages.length === 0) {
         createInitialPackage(initialPackage);
-        setActivePackage(initialPackage);
-        console.log("initial package created");
         return [initialPackage];
       } else {
         if (activePackage.id === packageId) {
-          setActivePackage(updatedPackages[0]);
+          setActivePackage(packages[0]);
         }
-        return updatedPackages;
+        return packages;
       }
     });
   };
