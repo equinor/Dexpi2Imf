@@ -45,6 +45,7 @@ export const CommissioningPackageContextProvider: React.FC<{
 
   useEffect(() => {
     if (activePackage && commissioningPackages.length === 0) {
+      setCommissioningPackages([activePackage]);
       createInitialPackage(activePackage);
     }
   }, [activePackage, commissioningPackages]);
