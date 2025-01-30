@@ -6,6 +6,14 @@ namespace Boundaries;
 
 public class RdfoxApi(ConnectionSettings conn) : IRdfoxApi
 {
+
+    //Return the CONNECTION conn that is used to connect to the RDFox server
+    public ConnectionSettings GetDefaultConnectionSettings()
+    {
+        return conn;
+    }
+
+
     /// <summary>
     /// curl -i -X POST localhost:12110/datastores/boundaries/content?operation=delete-content -H "Content-Type: application/x.datalog" -T boundaries.dlog
     /// </summary>
