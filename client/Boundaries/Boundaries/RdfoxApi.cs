@@ -104,7 +104,7 @@ public class RdfoxApi(ConnectionSettings conn) : IRdfoxApi
     /// <param name="conn"></param>
     /// <param name="query"></param>
     /// <returns></returns>
-    public static async Task<string> QuerySparql(ConnectionSettings conn, string query, string acceptHeader = "application/sparql-results+json")
+    public async Task<string> QuerySparql( string query, string acceptHeader = "application/sparql-results+json")
     {
         using (var client = new HttpClient())
         {
@@ -146,5 +146,4 @@ public class RdfoxApi(ConnectionSettings conn) : IRdfoxApi
             return jsonResponse.RootElement.GetProperty("boolean").GetBoolean();
         }
     }
-
 }

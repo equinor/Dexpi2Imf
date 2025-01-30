@@ -33,9 +33,6 @@ app.UseCors(builder => builder
 );
 app.UseHttpsRedirection();
 
-// Establish connection to Rdfox
-var conn = RdfoxApi.GetDefaultConnectionSettings();
-
 
 // ============ BOUNDARIES ============
 
