@@ -1,40 +1,16 @@
 using System.Text;
-using IriTools;
 
 namespace Boundaries;
 
 
-public class RdfoxApi
+public class RdfoxApi(ConnectionSettings conn) : IRdfoxApi
 {
-    public struct ConnectionSettings
-    {
-        public string Host { get; set; }
-        public int Port { get; set; }
-        public string Username { get; set; }
-        public string Password { get; set; }
-        public string Datastore { get; set; }
-
-    }
-
-    public static ConnectionSettings GetDefaultConnectionSettings()
-    {
-        return new ConnectionSettings
-        {
-            Host = "localhost",
-            Port = 12110,
-            Username = "admin",
-            Password = "admin",
-            Datastore = "boundaries"
-        };
-    }
-
-
     /// <summary>
     /// curl -i -X POST localhost:12110/datastores/boundaries/content?operation=delete-content -H "Content-Type: application/x.datalog" -T boundaries.dlog
     /// </summary>
     /// <param name="conn"></param>
     /// <param name="datalog"></param>
-    public static async Task DeleteDatalog(ConnectionSettings conn, string datalog)
+    public async Task DeleteDatalog(string datalog)
     {
         using (var client = new HttpClient())
         {
@@ -56,7 +32,7 @@ public class RdfoxApi
     /// </summary>
     /// <param name="conn"></param>
     /// <param name="datalog"></param>
-    public static async Task LoadDatalog(ConnectionSettings conn, string datalog)
+    public async Task LoadDatalog(string datalog)
     {
         using (var client = new HttpClient())
         {
@@ -79,7 +55,7 @@ public class RdfoxApi
     /// </summary>
     /// <param name="conn"></param>
     /// <param name="datalog"></param>
-    public static async Task DeleteData(ConnectionSettings conn, string data)
+    public  async Task DeleteData(string data)
     {
         using (var client = new HttpClient())
         {
@@ -102,7 +78,7 @@ public class RdfoxApi
     /// </summary>
     /// <param name="conn"></param>
     /// <param name="datalog"></param>
-    public static async Task LoadData(ConnectionSettings conn, string data)
+    public  async Task LoadData(string data)
     {
         using (var client = new HttpClient())
         {
@@ -126,7 +102,7 @@ public class RdfoxApi
     /// <param name="conn"></param>
     /// <param name="query"></param>
     /// <returns></returns>
-    public static async Task<string> QuerySparql(ConnectionSettings conn, string query)
+    public  async Task<string> QuerySparql(string query)
     {
         using (var client = new HttpClient())
         {
@@ -145,7 +121,7 @@ public class RdfoxApi
         }
     }
 
-    public static async Task<bool> AskSparql(ConnectionSettings conn, string query)
+    public  async Task<bool> AskSparql(string query)
     {
         using (var client = new HttpClient())
         {

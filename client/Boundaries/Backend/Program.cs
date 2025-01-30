@@ -9,20 +9,26 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+var connectionSettings = new ConnectionSettings
+{
+    Host = "localhost",
+    Port = 12110,
+    Username = "admin",
+    Password = "admin",
+    Datastore = "boundaries"
+};
+
+builder.Services.AddSingleton<IRdfoxApi>(new RdfoxApi(connectionSettings));
+
 var app = builder.Build();
 
 
 app.UseSwagger();
 app.UseSwaggerUI();
-
 app.UseHttpsRedirection();
 
-// Establish connection to Rdfox
-var conn = RdfoxApi.GetDefaultConnectionSettings();
-
-
 // Add node as boundary
-app.MapPost("/commissioning-package/{packageId}/boundary/{nodeId}", async (string packageId, string nodeId) =>
+app.MapPost("/commissioning-package/{packageId}/boundary/{nodeId}", async (string packageId, string nodeId, IRdfoxApi rdfoxApi) =>
 {
     packageId = Uri.UnescapeDataString(packageId);
     nodeId = Uri.UnescapeDataString(nodeId);
@@ -33,7 +39,7 @@ app.MapPost("/commissioning-package/{packageId}/boundary/{nodeId}", async (strin
              <{packageId}> {TypesProvider.type} ?type .
         }}";
 
-    var existsResult = await RdfoxApi.AskSparql(conn, checkQuery);
+    var existsResult = await rdfoxApi.AskSparql(checkQuery);
 
     if (!existsResult)
     {
@@ -43,16 +49,14 @@ app.MapPost("/commissioning-package/{packageId}/boundary/{nodeId}", async (strin
     var data = $@"
          <{nodeId}> {PropertiesProvider.isBoundaryOf} <{packageId}> .";
 
-    await RdfoxApi.LoadData(conn, data);
+    await rdfoxApi.LoadData(data);
 
     return Results.Ok($"Triple with subject {packageId} and object {nodeId} inserted successfully.");
 });
 
 
-
-
 //Add node as internal
-app.MapPost("/commissioning-package/{packageId}/internal/{nodeId}", async (string packageId, string nodeId) =>
+app.MapPost("/commissioning-package/{packageId}/internal/{nodeId}", async (string packageId, string nodeId, IRdfoxApi rdfoxApi) =>
 {
     packageId = Uri.UnescapeDataString(packageId);
     nodeId = Uri.UnescapeDataString(nodeId);
@@ -63,7 +67,7 @@ app.MapPost("/commissioning-package/{packageId}/internal/{nodeId}", async (strin
              <{packageId}> {TypesProvider.type} {PropertiesProvider.CommissioningPackage} .
         }}";
 
-    var existsResult = await RdfoxApi.AskSparql(conn, checkQuery);
+    var existsResult = await rdfoxApi.AskSparql(checkQuery);
 
     if (!existsResult)
     {
@@ -74,13 +78,13 @@ app.MapPost("/commissioning-package/{packageId}/internal/{nodeId}", async (strin
          <{nodeId}> {PropertiesProvider.isInPackage} <{packageId}> .
     ";
 
-    await RdfoxApi.LoadData(conn, data);
+    await rdfoxApi.LoadData(data);
 
     return Results.Ok($"Triple for package {packageId} and node {nodeId} inserted successfully.");
 });
 
 // Remove node as boundary
-app.MapDelete("/commissioning-package/{packageId}/boundary/{nodeId}", async (string packageId, string nodeId) =>
+app.MapDelete("/commissioning-package/{packageId}/boundary/{nodeId}", async (string packageId, string nodeId, IRdfoxApi rdfoxApi) =>
 {
     packageId = Uri.UnescapeDataString(packageId);
     nodeId = Uri.UnescapeDataString(nodeId);
@@ -90,7 +94,7 @@ app.MapDelete("/commissioning-package/{packageId}/boundary/{nodeId}", async (str
              <{nodeId}> {PropertiesProvider.isBoundaryOf} <{packageId}> .
         }}";
 
-    var existsResult = await RdfoxApi.AskSparql(conn, checkQuery);
+    var existsResult = await rdfoxApi.AskSparql(checkQuery);
 
     if (!existsResult)
     {
@@ -101,7 +105,7 @@ app.MapDelete("/commissioning-package/{packageId}/boundary/{nodeId}", async (str
          <{nodeId}> {PropertiesProvider.isBoundaryOf} <{packageId}> .
     ";
 
-    await RdfoxApi.DeleteData(conn, data);
+    await rdfoxApi.DeleteData(data);
 
     return Results.Ok($"Triple for package {packageId} and node {nodeId} deleted successfully.");
 });
