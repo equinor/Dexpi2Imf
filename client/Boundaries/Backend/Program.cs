@@ -376,7 +376,7 @@ app.MapDelete("/commissioning-package/{commissioningPackageId}", async (string c
     }
     catch (Exception ex)
     {
-         Console.WriteLine($"An error occurred while executing the second SPARQL query: {ex.Message
+         Console.WriteLine($"An error occurred while executing the second SPARQL query: {ex.Message}");
     }
 
     return Results.Ok($"Commissioning package {commissioningPackageId} deleted successfully.");
