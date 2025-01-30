@@ -20,8 +20,10 @@ export default function PipingComponent(props: PipingComponentProps) {
   const label = props.Label;
 
   const iri = iriFromSvgNode(props.ID);
-  const commissioningPackage = context.commissioningPackages.find((pkg) =>
-    pkg.boundaryIds.includes(iri) || pkg.internalIds.includes(iri),
+  const commissioningPackage = context.commissioningPackages.find(
+    (pkg) =>
+      pkg.boundaryNodes?.some((node) => node.id === iri) ||
+      pkg.internalNodes?.some((node) => node.id === iri),
   );
   const isInActivePackage = commissioningPackage
     ? context.activePackage.id === commissioningPackage.id

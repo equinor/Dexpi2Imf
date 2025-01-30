@@ -6,9 +6,12 @@ comp:isInPackage [?new_node, ?package] :-
     NOT comp:isBoundaryOf [?node, ?package] .
 
 comp:isInPackage [?new_node, ?package] :- 
-    comp:isInPackage [?node, ?package],
+    comp:isInPackage [?node, ?package] ,
     imf:hasPart[?new_node, ?node] .
 
 comp:isBoundaryOf [?new_node, ?package] :- 
-    comp:isBoundaryOf [?node, ?package],
+    comp:isBoundaryOf [?node, ?package] ,
     imf:hasPart[?new_node, ?node] .
+
+comp:isInPackage [?node, ?package] :- 
+    comp:isSelectedInternalOf[?node, ?package] .

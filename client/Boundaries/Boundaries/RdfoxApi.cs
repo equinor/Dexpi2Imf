@@ -92,6 +92,8 @@ public class RdfoxApi(ConnectionSettings conn) : IRdfoxApi
 
 
             var response = await client.SendAsync(request);
+            if (!response.IsSuccessStatusCode)
+                throw new Exception(await response.Content.ReadAsStringAsync());
             response.EnsureSuccessStatusCode();
         }
     }
@@ -102,7 +104,7 @@ public class RdfoxApi(ConnectionSettings conn) : IRdfoxApi
     /// <param name="conn"></param>
     /// <param name="query"></param>
     /// <returns></returns>
-    public  async Task<string> QuerySparql(string query)
+    public static async Task<string> QuerySparql(ConnectionSettings conn, string query, string acceptHeader = "application/sparql-results+json")
     {
         using (var client = new HttpClient())
         {
@@ -113,6 +115,7 @@ public class RdfoxApi(ConnectionSettings conn) : IRdfoxApi
             {
                 Content = content
             };
+            request.Headers.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue(acceptHeader));
 
             var response = await client.SendAsync(request);
             if (!response.IsSuccessStatusCode)
@@ -132,10 +135,15 @@ public class RdfoxApi(ConnectionSettings conn) : IRdfoxApi
             {
                 Content = content
             };
+            request.Headers.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/sparql-results+json"));
 
             var response = await client.SendAsync(request);
+            if (!response.IsSuccessStatusCode)
+                throw new Exception(await response.Content.ReadAsStringAsync());
 
-            return response.IsSuccessStatusCode;
+            var responseContent = await response.Content.ReadAsStringAsync();
+            var jsonResponse = JsonDocument.Parse(responseContent);
+            return jsonResponse.RootElement.GetProperty("boolean").GetBoolean();
         }
     }
 
