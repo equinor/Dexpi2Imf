@@ -1,4 +1,5 @@
 using System.Text;
+using System.Text.Json;
 
 namespace Boundaries;
 
@@ -55,7 +56,7 @@ public class RdfoxApi(ConnectionSettings conn) : IRdfoxApi
     /// </summary>
     /// <param name="conn"></param>
     /// <param name="datalog"></param>
-    public  async Task DeleteData(string data)
+    public async Task DeleteData(string data)
     {
         using (var client = new HttpClient())
         {
