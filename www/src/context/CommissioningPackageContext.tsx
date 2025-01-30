@@ -52,17 +52,16 @@ export const CommissioningPackageContextProvider: React.FC<{
   const handleDeleteCommissioningPackage = async (packageId: string) => {
     await deleteCommissioningPackage(packageId);
     const packages = await getAllCommissioningPackages();
-    setCommissioningPackages(() => {
-      if (packages.length === 0) {
-        createInitialPackage(initialPackage);
-        return [initialPackage];
-      } else {
-        if (activePackage.id === packageId) {
-          setActivePackage(packages[0]);
-        }
-        return packages;
+    if (packages.length === 0) {
+      await createInitialPackage(initialPackage);
+      setCommissioningPackages([initialPackage]);
+      setActivePackage(initialPackage);
+    } else {
+      if (activePackage.id === packageId) {
+        setActivePackage(packages[0]);
       }
-    });
+      setCommissioningPackages([...packages]);
+    }
   };
 
   return (
