@@ -11,7 +11,7 @@ public interface IRdfoxApi
 
     public Task LoadData(string data);
 
-    public Task<string> QuerySparql(string query, string acceptHeader);
+    public Task<string> QuerySparql(string query, string acceptHeader = "application/sparql-results+json");
 
     public Task<bool> AskSparql(string query);
 

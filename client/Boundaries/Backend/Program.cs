@@ -3,6 +3,7 @@ using Boundaries;
 using System.Text;
 using Backend.Utils;
 using System.Text.Json;
+using Microsoft.AspNetCore.Mvc;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,16 +12,19 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddCors();
 
-var connectionSettings = new ConnectionSettings
+builder.Services.AddSingleton<IRdfoxApi>(sp =>
 {
-    Host = "localhost",
-    Port = 12110,
-    Username = "admin",
-    Password = "admin",
-    Datastore = "boundaries"
-};
+    var connectionSettings = new ConnectionSettings
+    {
+        Host = "rdfox",
+        Port = 12110,
+        Username = "admin",
+        Password = "admin",
+        Datastore = "boundaries"
+    };
 
-builder.Services.AddSingleton<IRdfoxApi>(new RdfoxApi(connectionSettings));
+    return new RdfoxApi(connectionSettings);
+});
 
 var app = builder.Build();
 
@@ -37,7 +41,7 @@ app.UseHttpsRedirection();
 // ============ BOUNDARIES ============
 
 //Update boundary 
-app.MapPost("/commissioning-package/{packageId}/update-boundary/{nodeId}", async (string packageId, string nodeId, RdfoxApi rdfoxApi) =>
+app.MapPost("/commissioning-package/{packageId}/update-boundary/{nodeId}", async (string packageId, string nodeId, [FromServices] IRdfoxApi rdfoxApi) =>
 {
     packageId = Uri.UnescapeDataString(packageId);
     nodeId = Uri.UnescapeDataString(nodeId);
@@ -67,7 +71,7 @@ app.MapPost("/commissioning-package/{packageId}/update-boundary/{nodeId}", async
 
 
 // Add node as boundary
-app.MapPost("/commissioning-package/{packageId}/boundary/{nodeId}", async (string packageId, string nodeId, RdfoxApi rdfoxApi) =>
+app.MapPost("/commissioning-package/{packageId}/boundary/{nodeId}", async (string packageId, string nodeId, [FromServices] IRdfoxApi rdfoxApi) =>
 {
     packageId = Uri.UnescapeDataString(packageId);
     nodeId = Uri.UnescapeDataString(nodeId);
@@ -87,7 +91,7 @@ app.MapPost("/commissioning-package/{packageId}/boundary/{nodeId}", async (strin
 
 
 // Remove node as boundary
-app.MapDelete("/commissioning-package/{packageId}/boundary/{nodeId}", async (string packageId, string nodeId, RdfoxApi rdfoxApi) =>
+app.MapDelete("/commissioning-package/{packageId}/boundary/{nodeId}", async (string packageId, string nodeId, [FromServices] IRdfoxApi rdfoxApi) =>
 {
     packageId = Uri.UnescapeDataString(packageId);
     nodeId = Uri.UnescapeDataString(nodeId);
@@ -110,7 +114,7 @@ app.MapDelete("/commissioning-package/{packageId}/boundary/{nodeId}", async (str
 // ============ INTERNAL ============
 
 //Update selected internal 
-app.MapPost("/commissioning-package/{packageId}/update-internal/{nodeId}", async (string packageId, string nodeId, RdfoxApi rdfoxApi) =>
+app.MapPost("/commissioning-package/{packageId}/update-internal/{nodeId}", async (string packageId, string nodeId, [FromServices] IRdfoxApi rdfoxApi) =>
 {
     packageId = Uri.UnescapeDataString(packageId);
     nodeId = Uri.UnescapeDataString(nodeId);
@@ -140,7 +144,7 @@ app.MapPost("/commissioning-package/{packageId}/update-internal/{nodeId}", async
 
 
 //Add node as internal
-app.MapPost("/commissioning-package/{packageId}/internal/{nodeId}", async (string packageId, string nodeId, RdfoxApi rdfoxApi) =>
+app.MapPost("/commissioning-package/{packageId}/internal/{nodeId}", async (string packageId, string nodeId, [FromServices] IRdfoxApi rdfoxApi) =>
 {
     packageId = Uri.UnescapeDataString(packageId);
     nodeId = Uri.UnescapeDataString(nodeId);
@@ -161,7 +165,7 @@ app.MapPost("/commissioning-package/{packageId}/internal/{nodeId}", async (strin
 
 
 // Remove node as internal
-app.MapDelete("/commissioning-package/{packageId}/internal/{nodeId}", async (string packageId, string nodeId, RdfoxApi rdfoxApi) =>
+app.MapDelete("/commissioning-package/{packageId}/internal/{nodeId}", async (string packageId, string nodeId, [FromServices] IRdfoxApi rdfoxApi) =>
 {
     packageId = Uri.UnescapeDataString(packageId);
     nodeId = Uri.UnescapeDataString(nodeId);
@@ -184,7 +188,7 @@ app.MapDelete("/commissioning-package/{packageId}/internal/{nodeId}", async (str
 // ============ NODES ============
 
 //Get adjacent nodes
-app.MapGet("/nodes/{nodeId}/adjacent", async (string nodeId, RdfoxApi rdfoxApi) =>
+app.MapGet("/nodes/{nodeId}/adjacent", async (string nodeId, [FromServices] IRdfoxApi rdfoxApi) =>
 {
     nodeId = Uri.UnescapeDataString(nodeId);
 
@@ -219,7 +223,7 @@ app.MapGet("/nodes/{nodeId}/adjacent", async (string nodeId, RdfoxApi rdfoxApi) 
 // ============ COMMISSIONING PACKAGE ============
 
 //Add commissioning package
-app.MapPost("/commissioning-package", async (CommissioningPackage commissioningPackage, RdfoxApi rdfoxApi) =>
+app.MapPost("/commissioning-package", async (CommissioningPackage commissioningPackage, [FromServices] IRdfoxApi rdfoxApi) =>
 {
     var data = new StringBuilder();
     data.AppendLine($@"<{commissioningPackage.Id}> {TypesProvider.type} {PropertiesProvider.CommissioningPackage} .");
@@ -233,7 +237,7 @@ app.MapPost("/commissioning-package", async (CommissioningPackage commissioningP
 
 
 // Update commissioning package - updating information like name and color while persisting the calculated internal nodes, and boundaries.
-app.MapPut("/commissioning-package", async (CommissioningPackage updatedPackage, RdfoxApi rdfoxApi) =>
+app.MapPut("/commissioning-package", async (CommissioningPackage updatedPackage, [FromServices] IRdfoxApi rdfoxApi) =>
 {
     var getQuery = $@"
     SELECT ?object WHERE {{
@@ -278,7 +282,7 @@ app.MapPut("/commissioning-package", async (CommissioningPackage updatedPackage,
 
 
 //Get commissioning package
-app.MapGet("/commissioning-package/{commissioningPackageId}", async (string commissioningPackageId, RdfoxApi rdfoxApi) =>
+app.MapGet("/commissioning-package/{commissioningPackageId}", async (string commissioningPackageId, [FromServices] IRdfoxApi rdfoxApi) =>
 {
     commissioningPackageId = Uri.UnescapeDataString(commissioningPackageId);
 
@@ -317,7 +321,7 @@ app.MapGet("/commissioning-package/{commissioningPackageId}", async (string comm
 
 
 //Delete commissioning package 
-app.MapDelete("/commissioning-package/{commissioningPackageId}", async (string commissioningPackageId, RdfoxApi rdfoxApi) =>
+app.MapDelete("/commissioning-package/{commissioningPackageId}", async (string commissioningPackageId, [FromServices] IRdfoxApi rdfoxApi) =>
 {
     commissioningPackageId = Uri.UnescapeDataString(commissioningPackageId);
 
@@ -386,7 +390,7 @@ app.MapDelete("/commissioning-package/{commissioningPackageId}", async (string c
 
 
 //Get all commissioning packages
-app.MapGet("/commissioning-package/all", async (RdfoxApi rdfoxApi) =>
+app.MapGet("/commissioning-package/all", async ([FromServices] IRdfoxApi rdfoxApi) =>
 {
     var query = $@"
         SELECT ?packageId WHERE {{
@@ -439,7 +443,7 @@ app.MapGet("/commissioning-package/all", async (RdfoxApi rdfoxApi) =>
 
 
 //Get the ID of all commissioning packages
-app.MapGet("/commissioning-package/ids", async (RdfoxApi rdfoxApi) =>
+app.MapGet("/commissioning-package/ids", async ([FromServices] IRdfoxApi rdfoxApi) =>
 {
     var query = $@"
         SELECT ?packageId WHERE {{

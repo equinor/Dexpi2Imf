@@ -9,25 +9,25 @@ public static class QueryUtils
 {
 
     #region Boundary actions
-    public static async Task<bool> IsBoundaryOf(string packageId, string nodeId, RdfoxApi rdfoxApi)
+    public static async Task<bool> IsBoundaryOf(string packageId, string nodeId, IRdfoxApi rdfoxApi)
         => await rdfoxApi.AskSparql($@"ASK WHERE {{ <{nodeId}> {PropertiesProvider.isBoundaryOf} <{packageId}> .}}");
 
-    public static async Task DeleteIsBoundaryOf(string packageId, string nodeId, RdfoxApi rdfoxApi)
+    public static async Task DeleteIsBoundaryOf(string packageId, string nodeId, IRdfoxApi rdfoxApi)
         => await rdfoxApi.DeleteData($@"<{nodeId}> {PropertiesProvider.isBoundaryOf} <{packageId}> .");
 
-    public static async Task AddIsBoundaryOf(string packageId, string nodeId, RdfoxApi rdfoxApi)
+    public static async Task AddIsBoundaryOf(string packageId, string nodeId, IRdfoxApi rdfoxApi)
     => await rdfoxApi.LoadData($@"<{nodeId}> {PropertiesProvider.isBoundaryOf} <{packageId}> .");
 
     #endregion
 
     #region SelectedInternal actions
-    public static async Task<bool> IsSelectedInternalOf(string packageId, string nodeId, RdfoxApi rdfoxApi)
+    public static async Task<bool> IsSelectedInternalOf(string packageId, string nodeId, IRdfoxApi rdfoxApi)
         => await rdfoxApi.AskSparql($@"ASK WHERE {{ <{nodeId}> {PropertiesProvider.isSelectedInternalOf} <{packageId}> . }}");
 
-    public static async Task DeleteIsSelectedInternalOf(string packageId, string nodeId, RdfoxApi rdfoxApi)
+    public static async Task DeleteIsSelectedInternalOf(string packageId, string nodeId, IRdfoxApi rdfoxApi)
     => await rdfoxApi.DeleteData($@"<{nodeId}> {PropertiesProvider.isSelectedInternalOf} <{packageId}> .");
 
-    public static async Task AddIsSelectedInternalOf(string packageId, string nodeId, RdfoxApi rdfoxApi)
+    public static async Task AddIsSelectedInternalOf(string packageId, string nodeId, IRdfoxApi rdfoxApi)
         => await rdfoxApi.LoadData($@"<{nodeId}> {PropertiesProvider.isSelectedInternalOf} <{packageId}> .");
     #endregion
 
@@ -40,7 +40,7 @@ public static class QueryUtils
     #endregion
 
     #region CommissioningPackage actions
-    public static async Task<bool> CommissioningPackageExists(string packageId, RdfoxApi rdfoxApi)
+    public static async Task<bool> CommissioningPackageExists(string packageId, IRdfoxApi rdfoxApi)
         => await rdfoxApi.AskSparql($@"ASK WHERE {{ <{packageId}> {TypesProvider.type} {PropertiesProvider.CommissioningPackage} . }}");
 
     public static CommissioningPackage ParseCommissioningPackageQueryResult(string id, string queryResult)
