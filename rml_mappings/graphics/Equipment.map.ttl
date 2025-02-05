@@ -8,13 +8,14 @@
 @prefix dexpi: <https://rdf.equinor.com/dexpi#> .
 @prefix asset: <https://assetid.equinor.com/plantx#> .
 @prefix imf: <http://ns.imfid.org/imf#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix : <http://rdf.equinor.com/dexpi/mappings/graphic#> .
 
 :EquipmentBlockMap a rr:TriplesMap;
   rml:logicalSource [
     rml:source "../pandid.xml";
     rml:referenceFormulation ql:XPath;
-    rml:iterator "PlantModel/Equipment"
+    rml:iterator "PlantModel/Equipment | //PipingNetworkSegment/PipingComponent[@ComponentName != 'PipeTee'] | //PipingNetworkSegment/PropertyBreak"
   ];
   rr:subjectMap [
     rr:template "https://assetid.equinor.com/plantx/{/PlantModel/MetaData/GenericAttributes/GenericAttribute[@Name='DrawingNumberAssignmentClass']/@Value}/symbols#{@ID}";
@@ -33,4 +34,106 @@
     rr:objectMap [ 
       rml:reference "GenericAttributes/GenericAttribute[@Name='TagNameAssignmentClass']/@Value";
     ]
+  ] ,
+    [
+      rr:predicate graphic:hasPosition ;
+      rr:objectMap [
+        rr:parentTriplesMap :SymbolPositionMap0 ;
+        rr:joinCondition :symbolPositionJoinCondition
+      ], 
+        [
+        rr:parentTriplesMap :SymbolPositionMap90 ;
+        rr:joinCondition :symbolPositionJoinCondition
+        ]
+        , 
+        [
+        rr:parentTriplesMap :SymbolPositionMap180 ;
+        rr:joinCondition :symbolPositionJoinCondition], 
+        [
+        rr:parentTriplesMap :SymbolPositionMap270 ;
+        rr:joinCondition :symbolPositionJoinCondition
+        ]
   ].
+:symbolPositionJoinCondition a rr:Join ;
+          rr:child "@ID";
+          rr:parent "../@ID" .
+
+:SymbolPositionMap270 a rr:TriplesMap;
+  rml:logicalSource [
+    rml:source "../pandid.xml";
+    rml:referenceFormulation ql:XPath;
+    rml:iterator "//Position[Reference/@X='0' and Reference/@Y='1' and Reference/@Z='0' and Axis/@Z='1']"
+  ];
+  rr:subjectMap :symbolPositionSubject;
+  rr:predicateObjectMap :symbolPositionX , :symbolPositionY ,
+    [
+      rr:predicate graphic:rotation;
+      rr:objectMap [ 
+        rr:template "{270 * Axis/@Z}";
+        rr:datatype xsd:double;
+      ]
+  ] .
+:SymbolPositionMap0 a rr:TriplesMap;
+  rml:logicalSource [
+    rml:source "../pandid.xml";
+    rml:referenceFormulation ql:XPath;
+    rml:iterator "//Position[Reference/@X='1' and Reference/@Y='0' and Reference/@Z='0']"
+  ];
+  rr:subjectMap :symbolPositionSubject;
+  rr:predicateObjectMap :symbolPositionX , :symbolPositionY ,
+    [
+      rr:predicate graphic:rotation;
+      rr:objectMap [ 
+        rr:template "0";
+        rr:datatype xsd:double;
+      ]
+  ] .
+:SymbolPositionMap180 a rr:TriplesMap;
+  rml:logicalSource [
+    rml:source "../pandid.xml";
+    rml:referenceFormulation ql:XPath;
+    rml:iterator "//Position[Reference/@X = '-1' and Reference/@Y = '0' and Reference/@Z = '0']"
+  ];
+  rr:subjectMap :symbolPositionSubject;
+  rr:predicateObjectMap :symbolPositionX , :symbolPositionY ,
+    [
+      rr:predicate graphic:rotation;
+      rr:objectMap [ 
+        rr:template "{180 * Axis/@Z}";
+        rr:datatype xsd:double;
+      ]
+  ] .
+:SymbolPositionMap90 a rr:TriplesMap;
+  rml:logicalSource [
+    rml:source "../pandid.xml";
+    rml:referenceFormulation ql:XPath;
+    rml:iterator "//Position[Reference/@X = '0' and Reference/@Y = '-1' and Reference/@Z = '0' and Axis/@Z='1']"
+  ];
+  rr:subjectMap :symbolPositionSubject;
+  rr:predicateObjectMap :symbolPositionX , :symbolPositionY ,
+    [
+      rr:predicate graphic:rotation;
+      rr:objectMap [ 
+        rr:template "{90 * Axis/@Z}";
+        rr:datatype xsd:double;
+      ]
+  ] .
+
+
+:symbolPositionSubject a rr:SubjectMap;
+    rr:template "position_{../@ID}_position";
+    rr:termType rr:BlankNode;
+    rr:class graphic:Position .
+:symbolPositionX a rr:PredicateObjectMap;
+    rr:predicate graphic:x;
+    rr:objectMap [ 
+      rml:reference "Location/@X";
+      rr:datatype xsd:double;
+    ] .
+
+  :symbolPositionY a rr:PredicateObjectMap;
+    rr:predicate graphic:y;
+    rr:objectMap [ 
+      rr:template "{//*/Drawing/Extent/Max/@Y - Location/@Y}";
+      rr:datatype xsd:double;
+    ] .

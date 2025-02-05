@@ -46,8 +46,10 @@ export default function SvgElement({
     genericAttributes: text,
   });
   const iri = iriFromSvgNode(id);
-  const commissioningPackage = context.commissioningPackages.find((pkg) =>
-    pkg.boundaryIds.includes(iri) || pkg.internalIds.includes(iri),
+  const commissioningPackage = context.commissioningPackages.find(
+    (pkg) =>
+      pkg.boundaryNodes?.some((node) => node.id === iri) ||
+      pkg.internalNodes?.some((node) => node.id === iri),
   );
   const isInActivePackage = commissioningPackage
     ? context.activePackage.id === commissioningPackage.id

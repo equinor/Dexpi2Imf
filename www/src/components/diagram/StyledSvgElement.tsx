@@ -28,13 +28,16 @@ export default function StyledSvgElement({
 }: StyledSvgElementProps) {
   const height = useContext(PandidContext).height;
   const context = useCommissioningPackageContext();
-  const commissioningPackage = context.commissioningPackages.find((pkg) =>
-    pkg.boundaryIds.includes(id) || pkg.internalIds.includes(id),
+  const commissioningPackage = context.commissioningPackages.find(
+    (pkg) =>
+      pkg.boundaryNodes?.some((node) => node.id === id) ||
+      pkg.internalNodes?.some((node) => node.id === id),
   );
   let hasSelectedInternalNode: boolean;
   console.log("HELLO")
   if (commissioningPackage) {
-    hasSelectedInternalNode = commissioningPackage.selectedInternalIds.length > 0;
+    hasSelectedInternalNode =
+      commissioningPackage.selectedInternalNodes.length > 0;
 
     return (
       <>
@@ -46,11 +49,11 @@ export default function StyledSvgElement({
             transform={
               position
                 ? calculateAngleAndRotation(
-                  position.Reference.X,
-                  position.Reference.Y,
-                  position.Location.X,
-                  height - position.Location.Y,
-                )
+                    position.Reference.X,
+                    position.Reference.Y,
+                    position.Location.X,
+                    height - position.Location.Y,
+                  )
                 : ""
             }
             className={".node"}

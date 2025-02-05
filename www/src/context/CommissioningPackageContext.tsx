@@ -1,7 +1,11 @@
 import React, { createContext, useEffect, useState } from "react";
 import CommissioningPackage from "../types/CommissioningPackage.ts";
 import HighlightColors from "../enums/HighlightColors.ts";
-import { deletePackageFromTripleStore, addCommissioningPackage } from "../utils/Triplestore.ts";
+import {
+  createCommissioningPackage,
+  deleteCommissioningPackage,
+  getAllCommissioningPackages,
+} from "../utils/Api.ts";
 
 export interface CommissioningPackageContextProps {
   activePackage: CommissioningPackage;
@@ -11,77 +15,53 @@ export interface CommissioningPackageContextProps {
     React.SetStateAction<CommissioningPackage[]>
   >;
   deleteCommissioningPackage: (packageId: string) => void;
-  createInitialPackage: () => CommissioningPackage;
 }
 
 const CommissioningPackageContext = createContext<
   CommissioningPackageContextProps | undefined
 >(undefined);
 
-export const createInitialPackage = (): CommissioningPackage => ({
-  id: "asset:Package1",
-  name: "Initial Package",
-  color: HighlightColors.LASER_LEMON,
-  boundaryIds: [],
-  internalIds: [],
-  selectedInternalIds: [],
-});
-
 export const CommissioningPackageContextProvider: React.FC<{
   children: React.ReactNode;
-}> = ({children }) => {
-  const [activePackage, setActivePackage] = useState<CommissioningPackage>(createInitialPackage());
-  const [commissioningPackages, setCommissioningPackages] = useState<CommissioningPackage[]>([]);
+}> = ({ children }) => {
+  const initialPackage: CommissioningPackage = {
+    id: "https://assetid.equinor.com/plantx#Package1",
+    name: "Initial Package",
+    color: HighlightColors.LASER_LEMON,
+    boundaryNodes: [],
+    internalNodes: [],
+    selectedInternalNodes: [],
+  };
+
+  const [activePackage, setActivePackage] =
+    useState<CommissioningPackage>(initialPackage);
+  const [commissioningPackages, setCommissioningPackages] = useState<
+    CommissioningPackage[]
+  >([]);
+
+  const createInitialPackage = async (initialPackage: CommissioningPackage) => {
+    await createCommissioningPackage(initialPackage);
+  };
 
   useEffect(() => {
     if (activePackage && commissioningPackages.length === 0) {
       setCommissioningPackages([activePackage]);
-      (async () => {
-        await addCommissioningPackage(
-          activePackage.id,
-          activePackage.name,
-          activePackage.color,
-        );
-      })();
+      createInitialPackage(activePackage);
     }
   }, [activePackage, commissioningPackages]);
 
-  const deleteCommissioningPackage = async (packageId: string) => {
-    await deletePackageFromTripleStore(packageId);
-
-    setCommissioningPackages((prevPackages) => {
-      const updatedPackages = prevPackages.filter((pkg) => pkg.id !== packageId);
-      if (updatedPackages.length === 0) {
-        const initialPackage = createInitialPackage();
-        addCommissioningPackage(
-          initialPackage.id,
-          initialPackage.name,
-          initialPackage.color,
-        );
-        setActivePackage(initialPackage);
-        return [initialPackage];
-      } else {
-        if (activePackage.id === packageId) {
-          setActivePackage(updatedPackages[0]);
-        }
-        return updatedPackages;
+  const handleDeleteCommissioningPackage = async (packageId: string) => {
+    await deleteCommissioningPackage(packageId);
+    const packages = await getAllCommissioningPackages();
+    if (packages.length === 0) {
+      await createInitialPackage(initialPackage);
+      setCommissioningPackages([initialPackage]);
+      setActivePackage(initialPackage);
+    } else {
+      if (activePackage.id === packageId) {
+        setActivePackage(packages[0]);
       }
-    });
-
-    setCommissioningPackages((prevPackages) =>
-      prevPackages.map((pkg) => ({
-        ...pkg,
-        boundaryIds: pkg.boundaryIds.filter((id) => id !== packageId),
-        internalIds: pkg.internalIds.filter((id) => id !== packageId),
-      }))
-    );
-
-    if (activePackage.id === packageId) {
-      setActivePackage((prevPackage) => ({
-        ...prevPackage,
-        boundaryIds: [],
-        internalIds: [],
-      }));
+      setCommissioningPackages([...packages]);
     }
   };
 
@@ -92,8 +72,7 @@ export const CommissioningPackageContextProvider: React.FC<{
         setActivePackage,
         commissioningPackages,
         setCommissioningPackages,
-        deleteCommissioningPackage,
-        createInitialPackage,
+        deleteCommissioningPackage: handleDeleteCommissioningPackage,
       }}
     >
       {children}
