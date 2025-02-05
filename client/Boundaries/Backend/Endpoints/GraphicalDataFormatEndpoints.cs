@@ -7,6 +7,8 @@ public static class GraphicalDataFormatEndpoints
         // Get graphical data format by P&ID id
         endpoints.MapGet("/graphical-data-format/{id}", async (string id) =>
         {
+            var diagramId = Uri.UnescapeDataString(id);
+
             // return example file
             var filePath = Path.Combine(AppContext.BaseDirectory, "Example", "graphical-data-format-example.json");
             var jsonContent = await File.ReadAllTextAsync(filePath);
