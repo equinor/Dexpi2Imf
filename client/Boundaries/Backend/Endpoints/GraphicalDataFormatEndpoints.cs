@@ -1,6 +1,4 @@
-﻿using Boundaries;
-
-namespace Backend.Endpoints;
+﻿namespace Backend.Endpoints;
 
 public static class GraphicalDataFormatEndpoints
 {
