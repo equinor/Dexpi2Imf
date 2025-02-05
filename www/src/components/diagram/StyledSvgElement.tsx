@@ -32,15 +32,17 @@ export default function StyledSvgElement({
     pkg.boundaryIds.includes(id) || pkg.internalIds.includes(id),
   );
   let hasSelectedInternalNode: boolean;
+  console.log("HELLO")
   if (commissioningPackage) {
     hasSelectedInternalNode = commissioningPackage.selectedInternalIds.length > 0;
 
     return (
       <>
-        {svg && hasSelectedInternalNode && (
+        {svg && (
           <StyledG
             id={id}
-            color={color}
+            color={hasSelectedInternalNode ? color : "black"}
+            opacity={1}
             transform={
               position
                 ? calculateAngleAndRotation(
