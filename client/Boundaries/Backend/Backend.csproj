@@ -16,4 +16,10 @@
     <ProjectReference Include="..\Boundaries\Boundaries.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Update="Example\graphical-data-format-example.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
 </Project>

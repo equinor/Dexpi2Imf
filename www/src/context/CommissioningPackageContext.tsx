@@ -4,6 +4,7 @@ import HighlightColors from "../enums/HighlightColors.ts";
 import {
   createCommissioningPackage,
   deleteCommissioningPackage,
+  getAllCommissioningPackages,
 } from "../utils/Api.ts";
 
 export interface CommissioningPackageContextProps {
@@ -51,41 +52,16 @@ export const CommissioningPackageContextProvider: React.FC<{
 
   const handleDeleteCommissioningPackage = async (packageId: string) => {
     await deleteCommissioningPackage(packageId);
-
-    setCommissioningPackages((prevPackages) => {
-      const updatedPackages = prevPackages.filter(
-        (pkg) => pkg.id !== packageId,
-      );
-      if (updatedPackages.length === 0) {
-        createInitialPackage(initialPackage);
-        setActivePackage(initialPackage);
-        return [initialPackage];
-      } else {
-        if (activePackage.id === packageId) {
-          setActivePackage(updatedPackages[0]);
-        }
-        return updatedPackages;
+    const packages = await getAllCommissioningPackages();
+    if (packages.length === 0) {
+      await createInitialPackage(initialPackage);
+      setCommissioningPackages([initialPackage]);
+      setActivePackage(initialPackage);
+    } else {
+      if (activePackage.id === packageId) {
+        setActivePackage(packages[0]);
       }
-    });
-
-    setCommissioningPackages((prevPackages) =>
-      prevPackages.map((pkg) => ({
-        ...pkg,
-        boundaryNodes: pkg.boundaryNodes.filter(
-          (node) => node.id !== packageId,
-        ),
-        internalNodes: pkg.internalNodes.filter(
-          (node) => node.id !== packageId,
-        ),
-      })),
-    );
-
-    if (activePackage.id === packageId) {
-      setActivePackage((prevPackage) => ({
-        ...prevPackage,
-        boundaryNodes: [],
-        internalNodes: [],
-      }));
+      setCommissioningPackages([...packages]);
     }
   };
 

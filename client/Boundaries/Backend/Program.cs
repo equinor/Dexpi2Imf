@@ -1,5 +1,5 @@
-using Backend.Model;
 using Boundaries;
+using Backend.Endpoints;
 using System.Text;
 using Backend.Utils;
 using System.Text.Json;
@@ -30,13 +30,15 @@ var app = builder.Build();
 
 app.UseSwagger();
 app.UseSwaggerUI();
-app.UseCors(builder => builder
+app.UseCors(policyBuilder => policyBuilder
     .AllowAnyOrigin()
     .AllowAnyMethod()
     .AllowAnyHeader()
 );
 app.UseHttpsRedirection();
 
+// Establish connection to Rdfox
+var rdfoxConnectionSettings = RdfoxApi.GetDefaultConnectionSettings();
 
 // ============ BOUNDARIES ============
 
@@ -270,6 +272,10 @@ app.MapPut("/commissioning-package", async (CommissioningPackage updatedPackage,
 
     await rdfoxApi.DeleteData(deleteData);
 
+// Map endpoints
+app.MapBoundaryEndpoints(rdfoxConnectionSettings);
+app.MapCommissioningPackageEndpoints(rdfoxConnectionSettings);
+app.MapGraphicalDataFormatEndpoints();
     var data = $@"
         <{updatedPackage.Id}> {PropertiesProvider.hasName} ""{updatedPackage.Name}"" .
         <{updatedPackage.Id}> {PropertiesProvider.hasColor} ""{updatedPackage.Color}"" .

@@ -15,12 +15,14 @@ body,
 
 .boundary {
     path {
-        stroke: red;
+    stroke: red;
+    stroke-width: 0.6;
     }
 }
 
 .selectedInternal {
     path {
-        stroke: green;
+    stroke: green;
+    stroke-width: 0.6;
     }
 }

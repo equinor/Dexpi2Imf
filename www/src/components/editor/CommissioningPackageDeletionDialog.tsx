@@ -7,9 +7,14 @@ interface DeleteDialogProps {
   onClose: () => void;
 }
 
-const DeleteCommissioningPackageDialog: React.FC<DeleteDialogProps> = ({ isOpen, onClose }) => {
+const DeleteCommissioningPackageDialog: React.FC<DeleteDialogProps> = ({
+  isOpen,
+  onClose,
+}) => {
   const context = useCommissioningPackageContext();
-  const [selectedPackages, setSelectedPackages] = useState<Set<string>>(new Set());
+  const [selectedPackages, setSelectedPackages] = useState<Set<string>>(
+    new Set(),
+  );
 
   const handleCheckboxChange = (packageId: string) => {
     setSelectedPackages((prevSelected) => {
@@ -29,10 +34,6 @@ const DeleteCommissioningPackageDialog: React.FC<DeleteDialogProps> = ({ isOpen,
     });
     onClose();
     setSelectedPackages(new Set());
-
-    if (context?.commissioningPackages.length === 0) {
-      context?.createInitialPackage();
-    }
   };
 
   useEffect(() => {
@@ -51,34 +52,36 @@ const DeleteCommissioningPackageDialog: React.FC<DeleteDialogProps> = ({ isOpen,
         <Table>
           <Table.Body>
             {context?.commissioningPackages.map((commpckg) => (
-                <Table.Row key={commpckg.id}>
-                  <Table.Cell>
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                      <div
-                          style={{
-                            width: '16px',
-                            height: '16px',
-                            backgroundColor: commpckg.color,
-                            borderRadius: '50%',
-                            marginRight: '8px',
-                          }}
-                      ></div>
-                      <Checkbox
-                          label={commpckg.name}
-                          name="multiple"
-                          checked={selectedPackages.has(commpckg.id)}
-                          onChange={() => handleCheckboxChange(commpckg.id)}
-                      />
-                    </div>
-                  </Table.Cell>
-                </Table.Row>
+              <Table.Row key={commpckg.id}>
+                <Table.Cell>
+                  <div style={{ display: "flex", alignItems: "center" }}>
+                    <div
+                      style={{
+                        width: "16px",
+                        height: "16px",
+                        backgroundColor: commpckg.color,
+                        borderRadius: "50%",
+                        marginRight: "8px",
+                      }}
+                    ></div>
+                    <Checkbox
+                      label={commpckg.name}
+                      name="multiple"
+                      checked={selectedPackages.has(commpckg.id)}
+                      onChange={() => handleCheckboxChange(commpckg.id)}
+                    />
+                  </div>
+                </Table.Cell>
+              </Table.Row>
             ))}
           </Table.Body>
         </Table>
       </Dialog.CustomContent>
       <Dialog.Actions>
         <Button onClick={handleDelete}>Delete</Button>
-        <Button variant="ghost" onClick={onClose}>Cancel</Button>
+        <Button variant="ghost" onClick={onClose}>
+          Cancel
+        </Button>
       </Dialog.Actions>
     </Dialog>
   );
