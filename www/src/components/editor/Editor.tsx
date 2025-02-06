@@ -9,7 +9,8 @@ import EditorTopBar from "./EditorTopBar.tsx";
 import styled from "styled-components";
 import ActionContext from "../../context/ActionContext.ts";
 import NodeTable from "../tables/NodeTable.tsx";
-import {SideSheet} from "@equinor/eds-core-react";
+import { SideSheet } from "@equinor/eds-core-react";
+import PandIdGraphicalDataExample from "../diagram/PandIdGraphicalDataExample.tsx";
 
 const EditorContainer = styled.div`
   height: 100%;
@@ -36,15 +37,18 @@ export default function Editor() {
           <EditorContainer>
             <EditorTopBar />
             <SideBarAndPandid>
-              <EditorSidebar tableIsVisible={tableIsVisible} setTableIsVisible={setTableIsVisible} />
-              <Pandid />
+              <EditorSidebar
+                tableIsVisible={tableIsVisible}
+                setTableIsVisible={setTableIsVisible}
+              />
+              <PandIdGraphicalDataExample />
             </SideBarAndPandid>
           </EditorContainer>
         </ActionContext.Provider>
       </ToolContext.Provider>
-        <SideSheet open={tableIsVisible}>
-            <NodeTable/>
-        </SideSheet>
+      <SideSheet open={tableIsVisible}>
+        <NodeTable />
+      </SideSheet>
     </CommissioningPackageContextProvider>
   );
 }

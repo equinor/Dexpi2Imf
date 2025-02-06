@@ -11,8 +11,7 @@ public static class GraphicalDataFormatEndpoints
 
             // return example file
             var filePath = Path.Combine(AppContext.BaseDirectory, "Example", "graphical-data-format-example.json");
-            var jsonContent = await File.ReadAllTextAsync(filePath);
-            return Results.Json(jsonContent);
+            return Results.Stream(File.OpenRead(filePath), "application/json");
         }).WithTags("Graphical Data Format");
 
         // Get all P&ID graphical data formats
