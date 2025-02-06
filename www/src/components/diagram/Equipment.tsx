@@ -42,9 +42,9 @@ export default function Equipment(props: EquipmentProps) {
     <>
       <g
         onClick={() =>
-          isInActivePackage ?
-                selectHandleFunction(iri, context, setAction, tool)
-        : {}
+          isInActivePackage
+              ? selectHandleFunction(iri, context, setAction, tool)
+          : {}
         }
       >
         {svg && (
