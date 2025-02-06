@@ -54,7 +54,7 @@ export default function Equipment(props: EquipmentProps) {
                 id={iri}
                 position={props.Position}
                 svg={svg}
-                color={color ? color : ""}
+                color={color ? color : "black"}
               />
             )}
             <g

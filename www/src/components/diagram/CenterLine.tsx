@@ -51,7 +51,7 @@ export default function CenterLine(props: CenterLineComponentProps) {
                 id={iri ? iri : props.id}
                 key={index + "_highlight"}
                 d={constructPath(centerline.Coordinate, height)}
-                stroke={color ? color : "#000000"}
+                stroke={color ? color : "black"}
                 strokeWidth={5}
                 opacity={hasSelectedInternalNode ? 0.5 : 0}
                 fill={"none"}
