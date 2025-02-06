@@ -3,29 +3,30 @@ using System.Text.Json;
 using Backend.Model;
 using Backend.Utils;
 using Boundaries;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Backend.Endpoints;
 
 public static class CommissioningPackageEndpoints
 {
-    public static void MapCommissioningPackageEndpoints(this IEndpointRouteBuilder endpoints, RdfoxApi.ConnectionSettings connectionSettings)
+    public static void MapCommissioningPackageEndpoints(this IEndpointRouteBuilder endpoints)
     {
          //Add commissioning package
-         endpoints.MapPost("/commissioning-package", async (CommissioningPackage commissioningPackage) =>
+         endpoints.MapPost("/commissioning-package", async (CommissioningPackage commissioningPackage, [FromServices] IRdfoxApi rdfoxApi) =>
          {
             var data = new StringBuilder();
             data.AppendLine($@"<{commissioningPackage.Id}> {TypesProvider.type} {PropertiesProvider.CommissioningPackage} .");
             data.AppendLine($@"<{commissioningPackage.Id}> {PropertiesProvider.hasName} ""{commissioningPackage.Name}"" .");
             data.AppendLine($@"<{commissioningPackage.Id}> {PropertiesProvider.hasColor} ""{commissioningPackage.Color}"" .");
 
-            await RdfoxApi.LoadData(connectionSettings, data.ToString());
+            await rdfoxApi.LoadData(data.ToString());
 
             return Results.Ok($"Commissioning package {commissioningPackage.Id} added successfully.");
         }).WithTags("Commissioning Package");
 
 
         // Update commissioning package - updating information like name and color while persisting the calculated internal nodes, and boundaries.
-        endpoints.MapPut("/commissioning-package", async (CommissioningPackage updatedPackage) =>
+        endpoints.MapPut("/commissioning-package", async (CommissioningPackage updatedPackage, [FromServices] IRdfoxApi rdfoxApi) =>
         {
             var getQuery = $@"
             SELECT ?object WHERE {{
@@ -35,7 +36,7 @@ public static class CommissioningPackageEndpoints
             }}
             ";
 
-            var result = await RdfoxApi.QuerySparql(connectionSettings, getQuery);
+            var result = await rdfoxApi.QuerySparql(getQuery);
 
             var oldPackageName = string.Empty;
             var oldPackageColor = string.Empty;
@@ -56,25 +57,25 @@ public static class CommissioningPackageEndpoints
                                 <{updatedPackage.Id}> {PropertiesProvider.hasName} ""{oldPackageName}"" . ";
 
 
-            await RdfoxApi.DeleteData(connectionSettings, deleteData);
+            await rdfoxApi.DeleteData(deleteData);
 
             var data = $@"
                 <{updatedPackage.Id}> {PropertiesProvider.hasName} ""{updatedPackage.Name}"" .
                 <{updatedPackage.Id}> {PropertiesProvider.hasColor} ""{updatedPackage.Color}"" .
             ";
 
-            await RdfoxApi.LoadData(connectionSettings, data);
+            await rdfoxApi.LoadData(data);
 
             return Results.Ok($"Commissioning package {updatedPackage.Id} updated successfully.");
         }).WithTags("Commissioning Package");
 
 
         //Get commissioning package
-        endpoints.MapGet("/commissioning-package/{commissioningPackageId}", async (string commissioningPackageId) =>
+        endpoints.MapGet("/commissioning-package/{commissioningPackageId}", async (string commissioningPackageId, [FromServices] IRdfoxApi rdfoxApi) =>
         {
             commissioningPackageId = Uri.UnescapeDataString(commissioningPackageId);
 
-            if (!await QueryUtils.CommissioningPackageExists(commissioningPackageId, connectionSettings))
+            if (!await QueryUtils.CommissioningPackageExists(commissioningPackageId, rdfoxApi))
             {
                 return Results.NotFound($"Commissioning package {commissioningPackageId} not found.");
             }
@@ -87,7 +88,7 @@ public static class CommissioningPackageEndpoints
             }}
             ";
 
-            var result = await RdfoxApi.QuerySparql(connectionSettings, query);
+            var result = await rdfoxApi.QuerySparql(query);
 
             CommissioningPackage commissioningPackage;
 
@@ -109,11 +110,11 @@ public static class CommissioningPackageEndpoints
 
 
         //Delete commissioning package
-        endpoints.MapDelete("/commissioning-package/{commissioningPackageId}", async (string commissioningPackageId) =>
+        endpoints.MapDelete("/commissioning-package/{commissioningPackageId}", async (string commissioningPackageId, [FromServices] IRdfoxApi rdfoxApi) =>
         {
             commissioningPackageId = Uri.UnescapeDataString(commissioningPackageId);
 
-            if (!await QueryUtils.CommissioningPackageExists(commissioningPackageId, connectionSettings))
+            if (!await QueryUtils.CommissioningPackageExists(commissioningPackageId, rdfoxApi))
             {
                 return Results.NotFound($"Commissioning package {commissioningPackageId} not found.");
             }
@@ -123,7 +124,7 @@ public static class CommissioningPackageEndpoints
                 {{ <{commissioningPackageId}> ?x ?y . }}
             }}";
 
-            var result = await RdfoxApi.QuerySparql(connectionSettings, query);
+            var result = await rdfoxApi.QuerySparql(query);
             var deleteQueryBuilder = new StringBuilder();
 
 
@@ -147,7 +148,7 @@ public static class CommissioningPackageEndpoints
                 }
             }
 
-            await RdfoxApi.DeleteData(connectionSettings, deleteQueryBuilder.ToString());
+            await rdfoxApi.DeleteData( deleteQueryBuilder.ToString());
 
             query = $@"
             SELECT ?x ?y WHERE {{
@@ -156,7 +157,7 @@ public static class CommissioningPackageEndpoints
 
             try
             {
-                result = await RdfoxApi.QuerySparql(connectionSettings, query);
+                result = await rdfoxApi.QuerySparql(query);
                 deleteQueryBuilder = new StringBuilder();
 
                 using (var docDel = JsonDocument.Parse(result))
@@ -172,7 +173,7 @@ public static class CommissioningPackageEndpoints
                     }
                 }
 
-                await RdfoxApi.DeleteData(connectionSettings, deleteQueryBuilder.ToString());
+                await rdfoxApi.DeleteData(deleteQueryBuilder.ToString());
             }
             catch (Exception ex)
             {
@@ -185,14 +186,14 @@ public static class CommissioningPackageEndpoints
 
 
         //Get all commissioning packages
-        endpoints.MapGet("/commissioning-package/all", async () =>
+        endpoints.MapGet("/commissioning-package/all", async ([FromServices] IRdfoxApi rdfoxApi) =>
         {
             var query = $@"
                 SELECT ?packageId WHERE {{
                     ?packageId rdf:type {PropertiesProvider.CommissioningPackage} .
                 }}";
 
-            var result = await RdfoxApi.QuerySparql(connectionSettings, query);
+            var result = await rdfoxApi.QuerySparql(query);
 
             var jsonResponse = JsonDocument.Parse(result);
             var packageIds = jsonResponse.RootElement
@@ -214,7 +215,7 @@ public static class CommissioningPackageEndpoints
                     }}
                 ";
 
-                result = await RdfoxApi.QuerySparql(connectionSettings, query);
+                result = await rdfoxApi.QuerySparql(query);
 
                 CommissioningPackage commissioningPackage;
 
@@ -237,14 +238,14 @@ public static class CommissioningPackageEndpoints
         }).WithTags("Commissioning Package");
 
         //Get the ID of all commissioning packages
-        endpoints.MapGet("/commissioning-package/ids", async () =>
+        endpoints.MapGet("/commissioning-package/ids", async ([FromServices] IRdfoxApi rdfoxApi) =>
         {
             var query = $@"
                 SELECT ?packageId WHERE {{
                     ?packageId rdf:type {PropertiesProvider.CommissioningPackage} .
                 }}";
 
-            var result = await RdfoxApi.QuerySparql(connectionSettings, query);
+            var result = await rdfoxApi.QuerySparql(query);
 
             var jsonResponse = JsonDocument.Parse(result);
             var packageIds = jsonResponse.RootElement
