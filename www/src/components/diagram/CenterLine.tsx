@@ -43,20 +43,22 @@ export default function CenterLine(props: CenterLineComponentProps) {
       {props.centerLines.map((centerline: CenterLineProps, index: number) =>
         centerline !== undefined ? (
           <React.Fragment key={index}>
-            {color && hasSelectedInternalNode && (
+            {(
               <path
+                onClick={() =>
+                    iri ? selectHandleFunction(iri, context, setAction, tool) : {}
+                }
                 id={iri ? iri : props.id}
                 key={index + "_highlight"}
                 d={constructPath(centerline.Coordinate, height)}
-                stroke={color}
+                stroke={color ? color : "#000000"}
                 strokeWidth={5}
+                opacity={hasSelectedInternalNode ? 0.5 : 0}
                 fill={"none"}
               />
             )}
             <StyledPath
-              onClick={() =>
-                iri ? selectHandleFunction(iri, context, setAction, tool) : {}
-              }
+
               key={index}
               d={constructPath(centerline.Coordinate, height)}
               $isDashed={props.isInformationFlow}

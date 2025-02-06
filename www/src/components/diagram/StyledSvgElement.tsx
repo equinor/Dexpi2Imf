@@ -10,6 +10,7 @@ interface StyledSvgElementProps {
   position?: PositionProps;
   svg: string;
   color: string;
+  onClick?: (id: string) => void;
 }
 
 const StyledG = styled.g`
@@ -25,6 +26,7 @@ export default function StyledSvgElement({
   position,
   svg,
   color,
+  onClick,
 }: StyledSvgElementProps) {
   const height = useContext(PandidContext).height;
   const context = useCommissioningPackageContext();
@@ -33,19 +35,18 @@ export default function StyledSvgElement({
       pkg.boundaryNodes?.some((node) => node.id === id) ||
       pkg.internalNodes?.some((node) => node.id === id),
   );
-  let hasSelectedInternalNode: boolean;
-  console.log("HELLO")
+  let hasSelectedInternalNode: boolean = false;
   if (commissioningPackage) {
     hasSelectedInternalNode =
-      commissioningPackage.selectedInternalNodes.length > 0;
-
+        commissioningPackage.selectedInternalNodes.length > 0;
+  }
     return (
       <>
         {svg && (
           <StyledG
             id={id}
-            color={hasSelectedInternalNode ? color : "black"}
-            opacity={1}
+            color={color}
+            opacity={hasSelectedInternalNode ? 0.5 : 0}
             transform={
               position
                 ? calculateAngleAndRotation(
@@ -58,11 +59,12 @@ export default function StyledSvgElement({
             }
             className={".node"}
             dangerouslySetInnerHTML={{ __html: svg }}
+            onClick={() => onClick && onClick(id)}
           />
         )}
       </>
     );
-  }
 
-  return null;
+
+  //return null;
 }

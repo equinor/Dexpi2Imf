@@ -35,25 +35,26 @@ export default function Equipment(props: EquipmentProps) {
   const isInActivePackage = commissioningPackage
     ? context.activePackage.id === commissioningPackage.id
     : true;
+
   const color = commissioningPackage?.color;
 
   return (
     <>
       <g
         onClick={() =>
-          isInActivePackage
-            ? selectHandleFunction(iri, context, setAction, tool)
-            : {}
+          isInActivePackage ?
+                selectHandleFunction(iri, context, setAction, tool)
+        : {}
         }
       >
         {svg && (
           <>
-            {color && (
+            {(
               <StyledSvgElement
                 id={iri}
                 position={props.Position}
                 svg={svg}
-                color={color}
+                color={color ? color : ""}
               />
             )}
             <g
