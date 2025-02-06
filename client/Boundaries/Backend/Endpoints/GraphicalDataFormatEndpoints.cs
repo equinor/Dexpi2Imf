@@ -5,9 +5,9 @@ public static class GraphicalDataFormatEndpoints
     public static void MapGraphicalDataFormatEndpoints(this IEndpointRouteBuilder endpoints)
     {
         // Get graphical data format by P&ID id
-        endpoints.MapGet("/graphical-data-format/{id}", async (string id) =>
+        endpoints.MapGet("/graphical-data-format/{documentId}", async (string documentId) =>
         {
-            var diagramId = Uri.UnescapeDataString(id);
+            var diagramId = Uri.UnescapeDataString(documentId);
 
             // return example file
             var filePath = Path.Combine(AppContext.BaseDirectory, "Example", "graphical-data-format-example.json");
