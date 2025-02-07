@@ -44,6 +44,14 @@ export default function Line({ id, style, coordinates }: LineProps) {
       return style.stroke;
     }
   }
+
+  function calculateLineWeight() {
+    if (isBoundary(id, context) || isSelectedInternal(id, context)) {
+      return 0.6;
+    } else {
+      return style.strokeWidth;
+    }
+  }
   return (
     <g
       onClick={() =>
@@ -69,7 +77,7 @@ export default function Line({ id, style, coordinates }: LineProps) {
         key={id}
         d={constructLine(coordinates)}
         stroke={calculateLineColor()}
-        strokeWidth={style.strokeWidth}
+        strokeWidth={calculateLineWeight()}
         strokeDasharray={style.strokeDasharray}
         className={`${isBoundary(id, context) ? "boundary" : ""} ${isSelectedInternal(id, context) ? "selectedInternal" : ""}`}
         fill={"none"}
