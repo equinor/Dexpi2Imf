@@ -21,7 +21,7 @@ public static class CommissioningPackageEndpoints
 
             await rdfoxApi.LoadData(data.ToString());
 
-            return Results.Ok($"Commissioning package {commissioningPackage.Id} added successfully.");
+            return Results.Ok();
         }).WithTags("Commissioning Package");
 
 

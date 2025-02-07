@@ -20,8 +20,8 @@ builder.Services.AddSingleton<IRdfoxApi>(sp =>
     {
         Host = "rdfox",
         Port = 12110,
-        Username = "admin",
-        Password = "admin",
+        Username = "guest",
+        Password = "guest",
         Datastore = "boundaries"
     };
 

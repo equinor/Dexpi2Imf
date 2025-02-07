@@ -18,7 +18,8 @@ public static class BoundaryEndpoints
 
             if (!await QueryUtils.CommissioningPackageExists(packageId, rdfoxApi))
             {
-                return Results.NotFound($"Commissioning package {packageId} not found.");
+                string? value = $"Commissioning package {packageId} not found.";
+                return Results.NotFound();
             }
 
             var isSelectedInternal = await QueryUtils.IsSelectedInternalOf(packageId, nodeId, rdfoxApi);
@@ -38,27 +39,7 @@ public static class BoundaryEndpoints
 
             return Results.Ok();
         }).WithTags("Boundary");
-
-
-        // Add node as boundary
-        endpoints.MapPost("/commissioning-package/{packageId}/boundary/{nodeId}", async (string packageId, string nodeId, [FromServices] IRdfoxApi rdfoxApi) =>
-        {
-            packageId = Uri.UnescapeDataString(packageId);
-            nodeId = Uri.UnescapeDataString(nodeId);
-
-            if (!await QueryUtils.CommissioningPackageExists(packageId, rdfoxApi))
-            {
-                return Results.NotFound($"Commissioning package {packageId} not found.");
-            }
-
-            var data = $@"
-                     <{nodeId}> {PropertiesProvider.isBoundaryOf} <{packageId}> .";
-
-            await rdfoxApi.LoadData(data);
-
-            return Results.Ok($"Triple with subject {packageId} and object {nodeId} inserted successfully.");
-        }).WithTags("Boundary");
-
+        
 
         // Remove node as boundary
         endpoints.MapDelete("/commissioning-package/{packageId}/boundary/{nodeId}", async (string packageId, string nodeId, [FromServices] IRdfoxApi rdfoxApi) =>

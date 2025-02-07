@@ -21,7 +21,7 @@ public class RdfoxApi(ConnectionSettings conn) : IRdfoxApi
     /// <param name="datalog"></param>
     public async Task DeleteDatalog(string datalog)
     {
-        using (var client = new HttpClient())
+        using (var client = conn.GetAuthenticatedClient())
         {
             var uri = new Uri($"http://{conn.Host}:{conn.Port}/datastores/{conn.Datastore}/content?operation=delete-content");
             var content = new StringContent(datalog, Encoding.UTF8, "application/x.datalog");
@@ -43,7 +43,7 @@ public class RdfoxApi(ConnectionSettings conn) : IRdfoxApi
     /// <param name="datalog"></param>
     public async Task LoadDatalog(string datalog)
     {
-        using (var client = new HttpClient())
+        using (var client = conn.GetAuthenticatedClient())
         {
             var uri = new Uri($"http://{conn.Host}:{conn.Port}/datastores/{conn.Datastore}/content");
             var content = new StringContent(datalog, Encoding.UTF8, "application/x.datalog");
@@ -66,7 +66,7 @@ public class RdfoxApi(ConnectionSettings conn) : IRdfoxApi
     /// <param name="datalog"></param>
     public async Task DeleteData(string data)
     {
-        using (var client = new HttpClient())
+        using (var client = conn.GetAuthenticatedClient())
         {
             var uri = new Uri($"http://{conn.Host}:{conn.Port}/datastores/{conn.Datastore}/content?operation=delete-content");
             var content = new StringContent(data, Encoding.UTF8, "application/trig");
@@ -89,7 +89,7 @@ public class RdfoxApi(ConnectionSettings conn) : IRdfoxApi
     /// <param name="datalog"></param>
     public  async Task LoadData(string data)
     {
-        using (var client = new HttpClient())
+        using (var client = conn.GetAuthenticatedClient())
         {
             var uri = new Uri($"http://{conn.Host}:{conn.Port}/datastores/{conn.Datastore}/content");
             var content = new StringContent(data, Encoding.UTF8, "application/trig");
@@ -103,7 +103,7 @@ public class RdfoxApi(ConnectionSettings conn) : IRdfoxApi
             var response = await client.SendAsync(request);
             if (!response.IsSuccessStatusCode)
                 throw new Exception(await response.Content.ReadAsStringAsync());
-            response.EnsureSuccessStatusCode();
+            
         }
     }
 
@@ -115,7 +115,7 @@ public class RdfoxApi(ConnectionSettings conn) : IRdfoxApi
     /// <returns></returns>
     public async Task<string> QuerySparql( string query, string acceptHeader = "application/sparql-results+json")
     {
-        using (var client = new HttpClient())
+        using (var client = conn.GetAuthenticatedClient())
         {
             var uri = new Uri($"http://{conn.Host}:{conn.Port}/datastores/{conn.Datastore}/sparql");
             var content = new StringContent(query, Encoding.UTF8, "application/sparql-query");
@@ -135,7 +135,7 @@ public class RdfoxApi(ConnectionSettings conn) : IRdfoxApi
 
     public  async Task<bool> AskSparql(string query)
     {
-        using (var client = new HttpClient())
+        using (var client = conn.GetAuthenticatedClient())
         {
             var uri = new Uri($"http://{conn.Host}:{conn.Port}/datastores/{conn.Datastore}/sparql");
             var content = new StringContent(query, Encoding.UTF8, "application/sparql-query");
