@@ -7,6 +7,7 @@ using Backend.Model;
 using Microsoft.AspNetCore.Mvc;
 
 
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddEndpointsApiExplorer();
@@ -46,4 +47,6 @@ app.Run();
 
 
 // Necessary for integration testing
-public partial class Program { }
+namespace Backend{
+    public partial class Program { }
+}
