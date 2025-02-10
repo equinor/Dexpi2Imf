@@ -6,7 +6,7 @@ import constructPath from "../../../utils/Path.ts";
 import StyledPath from "../StyledPath.tsx";
 import { useCommissioningPackages } from "../../../hooks/useCommissioningPackages.tsx";
 import { iriFromSvgNode } from "../../../utils/HelperFunctions.ts";
-import selectHandleFunction from "../../../utils/CommissioningPackageHandler.tsx";
+import selectHandleFunction from "../../../utils/CommissioningPackageActions.tsx";
 import ToolContext from "../../../context/ToolContext.ts";
 import ActionContext from "../../../context/ActionContext.ts";
 

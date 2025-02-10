@@ -5,7 +5,7 @@ import PandidContext from "../../context/PandidContext.ts";
 import StyledPath from "./StyledPath.tsx";
 import { useCommissioningPackages } from "../../hooks/useCommissioningPackages.tsx";
 import React from "react";
-import selectHandleFunction from "../../utils/CommissioningPackageHandler.tsx";
+import selectHandleFunction from "../../utils/CommissioningPackageActions.tsx";
 import ToolContext from "../../context/ToolContext.ts";
 import HighlightColors from "../../enums/HighlightColors.ts";
 import { iriFromSvgNode } from "../../utils/HelperFunctions.ts";

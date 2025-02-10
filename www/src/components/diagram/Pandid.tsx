@@ -13,7 +13,7 @@ import { useCommissioningPackages } from "../../hooks/useCommissioningPackages.t
 import styled from "styled-components";
 import { preloadSVGs } from "../../utils/SvgEdit.ts";
 import ZoomableSVGWrapper from "../editor/ZoomableSVGWrapper.tsx";
-import { getAllCommissioningPackages } from "../../utils/Api.ts";
+import { getAllPackagesAction } from "../../utils/CommissioningPackageActions.tsx";
 
 const SVGContainer = styled.div`
   width: 100%;
@@ -44,8 +44,7 @@ export default function Pandid() {
   // Step 1: Fetch existing commissioning packages
   useEffect(() => {
     (async () => {
-      const packages = await getAllCommissioningPackages();
-      dispatch({ type: "SET_PACKAGES", payload: packages });
+      await getAllPackagesAction(dispatch);
     })();
   }, []);
 

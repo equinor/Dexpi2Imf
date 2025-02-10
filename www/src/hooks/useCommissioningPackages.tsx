@@ -1,8 +1,6 @@
 import { useContext } from "react";
-import {
-  CommissioningPackageContext,
-  CommissioningPackageDispatchContext,
-} from "../context/NewCommissioningPackageContextProvider.tsx";
+import { CommissioningPackageContext } from "../context/CommissioningPackageContext.ts";
+import { CommissioningPackageDispatchContext } from "../context/CommissioningPackageDispatchContext.ts";
 
 export const useCommissioningPackages = () => {
   const context = useContext(CommissioningPackageContext);

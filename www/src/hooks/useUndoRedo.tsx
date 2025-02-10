@@ -3,9 +3,9 @@ import { useContext, useEffect, useRef, useState } from "react";
 import ActionContext from "../context/ActionContext.ts";
 import Tools from "../enums/Tools.ts";
 import {
-  handleAddBoundary,
-  handleAddInternal,
-} from "../utils/CommissioningPackageHandler.tsx";
+  addBoundaryAction,
+  addInternalAction,
+} from "../utils/CommissioningPackageActions.tsx";
 import { useCommissioningPackages } from "./useCommissioningPackages.tsx";
 
 export default function useUndoRedo() {
@@ -20,10 +20,10 @@ export default function useUndoRedo() {
       const action = history[index.current];
       switch (action.tool) {
         case Tools.BOUNDARY:
-          await handleAddBoundary(action.node, context, dispatch);
+          await addBoundaryAction(action.node, context, dispatch);
           break;
         case Tools.INSIDEBOUNDARY:
-          await handleAddInternal(action.node, context, dispatch);
+          await addInternalAction(action.node, context, dispatch);
           break;
       }
       index.current = index.current - 1;
@@ -35,10 +35,10 @@ export default function useUndoRedo() {
       const action = history[index.current + 1];
       switch (action.tool) {
         case Tools.BOUNDARY:
-          await handleAddBoundary(action.node, context, dispatch);
+          await addBoundaryAction(action.node, context, dispatch);
           break;
         case Tools.INSIDEBOUNDARY:
-          await handleAddInternal(action.node, context, dispatch);
+          await addInternalAction(action.node, context, dispatch);
           break;
       }
       index.current = index.current + 1;

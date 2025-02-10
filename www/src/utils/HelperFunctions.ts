@@ -9,15 +9,40 @@ export const isBoundary = (
   id: string,
   commissioningPackage: CommissioningPackage,
 ) => commissioningPackage.boundaryNodes.some((node) => node.id === id);
-export const isInternal = (
-  id: string,
-  commissioningPackage: CommissioningPackage,
-) => commissioningPackage.internalNodes?.some((node) => node.id === id);
+
 export const isSelectedInternal = (
   id: string,
   commissioningPackage: CommissioningPackage,
 ) => commissioningPackage.selectedInternalNodes?.some((node) => node.id === id);
 
+export const constructClasses = (
+  id: string,
+  activePackage: CommissioningPackage,
+) => {
+  return `${isBoundary(id, activePackage) ? "boundary" : ""} ${isSelectedInternal(id, activePackage) ? "selectedInternal" : ""}`;
+};
+
+export const findPackageOfNode = (
+  packages: CommissioningPackage[],
+  nodeId: string,
+) => {
+  return packages.find(
+    (pkg) =>
+      pkg.boundaryNodes?.some((node) => node.id === nodeId) ||
+      pkg.internalNodes?.some((node) => node.id === nodeId),
+  );
+};
+
+export const isInActivePackage = (
+  commissioningPackage: CommissioningPackage | undefined,
+  activePackageId: string,
+) => {
+  return commissioningPackage
+    ? activePackageId === commissioningPackage.id
+    : true;
+};
+
+// IRI CALCULATION
 export function iriFromSvgNode(id: string) {
   return `https://assetid.equinor.com/plantx#${id}`;
 }

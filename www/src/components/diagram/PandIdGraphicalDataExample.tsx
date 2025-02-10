@@ -3,13 +3,11 @@ import React, { useEffect, useRef, useState } from "react";
 import { useCommissioningPackages } from "../../hooks/useCommissioningPackages.tsx";
 import styled from "styled-components";
 import ZoomableSVGWrapper from "../editor/ZoomableSVGWrapper.tsx";
-import {
-  getAllCommissioningPackages,
-  getGraphicalData,
-} from "../../utils/Api.ts";
+import { getGraphicalData } from "../../utils/Api.ts";
 import SymbolGraphicalDataExample from "./SymbolGraphicalDataExample.tsx";
 import { DiagramProps } from "../../types/diagram/GraphicalDataFormatTestTypes.ts";
 import Line from "./LinesGraphicalDataExample.tsx";
+import { getAllPackagesAction } from "../../utils/CommissioningPackageActions.tsx";
 
 const SVGContainer = styled.div`
   width: 100%;
@@ -24,13 +22,9 @@ export default function PandIdGraphicalDataExample() {
   // Step 1: Fetch existing commissioning packages
   useEffect(() => {
     (async () => {
-      const packages = await getAllCommissioningPackages();
+      await getAllPackagesAction(dispatch);
       const graphicalDataTest = await getGraphicalData("test");
       setGraphicalData(graphicalDataTest);
-      dispatch({
-        type: "SET_PACKAGES",
-        payload: packages,
-      });
     })();
   }, []);
 

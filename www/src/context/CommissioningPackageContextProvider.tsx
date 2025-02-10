@@ -1,19 +1,13 @@
 import HighlightColors from "../enums/HighlightColors.ts";
 import CommissioningPackage from "../types/CommissioningPackage.ts";
-import React, { createContext, ReactNode, useReducer } from "react";
-import { deleteCommissioningPackage } from "../utils/Api.ts";
+import { ReactNode, useReducer } from "react";
+import {
+  CommissioningPackageContext,
+  CommissioningPackageContextProps,
+} from "./CommissioningPackageContext.ts";
+import { CommissioningPackageDispatchContext } from "./CommissioningPackageDispatchContext.ts";
 
-export interface CommissioningPackageContextProps {
-  activePackage: CommissioningPackage;
-  commissioningPackages: CommissioningPackage[];
-}
-
-// This context uses a reducer, which takes in the current state and an action, and returns the new state. The reducer is defined below.
-export const CommissioningPackageContext =
-  createContext<CommissioningPackageContextProps | null>(null);
-export const CommissioningPackageDispatchContext =
-  createContext<React.Dispatch<PackageAction> | null>(null);
-
+// This context provider uses a reducer, which takes in the current state and an action, and returns the new state. The reducer is defined below.
 export function CommissioningPackageProvider({
   children,
 }: {
@@ -61,7 +55,7 @@ export type PackageAction =
 function commissioningPackageReducer(
   state: CommissioningPackageContextProps,
   action: PackageAction,
-) {
+): CommissioningPackageContextProps {
   switch (action.type) {
     case "SET_PACKAGES": {
       return {
@@ -88,18 +82,15 @@ function commissioningPackageReducer(
       };
     }
     case "DELETE_PACKAGE": {
-      console.log("Deleting package with id: ", action.payload);
       const updatedPackages = state.commissioningPackages.filter(
         (pkg) => pkg.id !== action.payload,
       );
-
       if (updatedPackages.length === 0) {
         return initialState;
       }
 
       return {
-        ...state,
-        packages: updatedPackages,
+        commissioningPackages: updatedPackages,
         activePackage:
           state.activePackage.id === action.payload
             ? updatedPackages[0]

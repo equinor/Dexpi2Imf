@@ -6,8 +6,14 @@ import {
   LineProps,
   PointProps,
 } from "../../types/diagram/GraphicalDataFormatTestTypes.ts";
-import selectHandleFunction from "../../utils/CommissioningPackageHandler.tsx";
-import { isBoundary, isSelectedInternal } from "../../utils/HelperFunctions.ts";
+import selectHandleFunction from "../../utils/CommissioningPackageActions.tsx";
+import {
+  constructClasses,
+  findPackageOfNode,
+  isBoundary,
+  isInActivePackage,
+  isSelectedInternal,
+} from "../../utils/HelperFunctions.ts";
 
 function constructLine(coordinates: PointProps[]) {
   let dString = "M ";
@@ -25,14 +31,14 @@ export default function Line({ id, style, coordinates }: LineProps) {
   const { context, dispatch } = useCommissioningPackages();
   const setAction = useContext(ActionContext).setAction;
   const tool = useContext(ToolContext).activeTool;
-  const commissioningPackage = context.commissioningPackages.find(
-    (pkg) =>
-      pkg.boundaryNodes?.some((node) => node.id === id) ||
-      pkg.internalNodes?.some((node) => node.id === id),
+  const commissioningPackage = findPackageOfNode(
+    context.commissioningPackages,
+    id,
   );
-  const isInActivePackage = commissioningPackage
-    ? context.activePackage.id === commissioningPackage.id
-    : true;
+  const inActivePackage = isInActivePackage(
+    commissioningPackage,
+    context.activePackage.id,
+  );
   const color = commissioningPackage?.color;
 
   function calculateLineColor() {
@@ -58,7 +64,7 @@ export default function Line({ id, style, coordinates }: LineProps) {
   return (
     <g
       onClick={() =>
-        isInActivePackage
+        inActivePackage
           ? selectHandleFunction(id, context, dispatch, setAction, tool)
           : {}
       }
@@ -82,7 +88,7 @@ export default function Line({ id, style, coordinates }: LineProps) {
         stroke={calculateLineColor()}
         strokeWidth={calculateLineWeight()}
         strokeDasharray={style.strokeDasharray}
-        className={`${isBoundary(id, context.activePackage) ? "boundary" : ""} ${isSelectedInternal(id, context.activePackage) ? "selectedInternal" : ""}`}
+        className={constructClasses(id, context.activePackage)}
         fill={"none"}
       />
     </g>

@@ -9,7 +9,7 @@ import ActionContext from "../../context/ActionContext.ts";
 import NodeTable from "../tables/NodeTable.tsx";
 import { SideSheet } from "@equinor/eds-core-react";
 import PandIdGraphicalDataExample from "../diagram/PandIdGraphicalDataExample.tsx";
-import { CommissioningPackageProvider } from "../../context/NewCommissioningPackageContextProvider.tsx";
+import { CommissioningPackageProvider } from "../../context/CommissioningPackageContextProvider.tsx";
 import Pandid from "../diagram/Pandid.tsx";
 
 const EditorContainer = styled.div`

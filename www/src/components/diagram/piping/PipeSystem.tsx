@@ -11,7 +11,7 @@ import {
 import useSerializePipeSvg from "../../../hooks/useSerializePipeSvg.tsx";
 import { ensureArray, iriFromSvgNode } from "../../../utils/HelperFunctions.ts";
 import PipeSegment from "./PipeSegment.tsx";
-import selectHandleFunction from "../../../utils/CommissioningPackageHandler.tsx";
+import selectHandleFunction from "../../../utils/CommissioningPackageActions.tsx";
 import ToolContext from "../../../context/ToolContext.ts";
 import { useCommissioningPackages } from "../../../hooks/useCommissioningPackages.tsx";
 import ActionContext from "../../../context/ActionContext.ts";

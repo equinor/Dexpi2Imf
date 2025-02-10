@@ -10,12 +10,13 @@ import PandidContext from "../../context/PandidContext.ts";
 import { useCommissioningPackages } from "../../hooks/useCommissioningPackages.tsx";
 
 import StyledSvgElement from "./StyledSvgElement.tsx";
-import selectHandleFunction from "../../utils/CommissioningPackageHandler.tsx";
+import selectHandleFunction from "../../utils/CommissioningPackageActions.tsx";
 import ToolContext from "../../context/ToolContext.ts";
 import {
+  constructClasses,
+  findPackageOfNode,
   iriFromSvgNode,
-  isBoundary,
-  isSelectedInternal,
+  isInActivePackage,
 } from "../../utils/HelperFunctions.ts";
 import ActionContext from "../../context/ActionContext.ts";
 
@@ -46,14 +47,14 @@ export default function SvgElement({
     genericAttributes: text,
   });
   const iri = iriFromSvgNode(id);
-  const commissioningPackage = context.commissioningPackages.find(
-    (pkg) =>
-      pkg.boundaryNodes?.some((node) => node.id === iri) ||
-      pkg.internalNodes?.some((node) => node.id === iri),
+  const commissioningPackage = findPackageOfNode(
+    context.commissioningPackages,
+    iri,
   );
-  const isInActivePackage = commissioningPackage
-    ? context.activePackage.id === commissioningPackage.id
-    : true;
+  const inActivePackage = isInActivePackage(
+    commissioningPackage,
+    context.activePackage.id,
+  );
   const color = commissioningPackage?.color;
   return (
     <>
@@ -70,7 +71,7 @@ export default function SvgElement({
           <g
             id={iri}
             onClick={() =>
-              isInActivePackage
+              inActivePackage
                 ? selectHandleFunction(iri, context, dispatch, setAction, tool)
                 : {}
             }
@@ -84,7 +85,7 @@ export default function SvgElement({
                   )
                 : ""
             }
-            className={`.node ${isBoundary(iri, context.activePackage) ? "boundary" : ""} ${isSelectedInternal(iri, context.activePackage) ? "selectedInternal" : ""}`}
+            className={constructClasses(iri, context.activePackage)}
             dangerouslySetInnerHTML={{ __html: svg }}
           />
         </>

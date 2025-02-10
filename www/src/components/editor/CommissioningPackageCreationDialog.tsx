@@ -11,7 +11,7 @@ import React, { useEffect, useState } from "react";
 import CommissioningPackage from "../../types/CommissioningPackage.ts";
 import { useCommissioningPackages } from "../../hooks/useCommissioningPackages.tsx";
 import ColorPreview from "./ColorPreview.tsx";
-import { createCommissioningPackage } from "../../utils/Api.ts";
+import { addPackageAction } from "../../utils/CommissioningPackageActions.tsx";
 
 const ColorSelectionContainer = styled.div`
   display: flex;
@@ -48,8 +48,7 @@ export default function CommissioningPackageCreationDialog(
       selectedInternalNodes: [],
     };
 
-    await createCommissioningPackage(newPackage);
-    setCommissioningPackage(newPackage);
+    await addPackageAction(newPackage, dispatch);
     props.setOpen(false);
   }
 
