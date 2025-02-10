@@ -5,22 +5,13 @@ using Xunit.Abstractions;
 
 namespace TestBoundaries;
 
-public class IntegrationTests : IClassFixture<TestFactory>
+public class IntegrationTests(TestFactory factory, ITestOutputHelper testOutputHelper) : IClassFixture<TestFactory>
 {
-    private TestFactory _factory;
-    private ITestOutputHelper _testOutputHelper;
-    public IntegrationTests(TestFactory factory, ITestOutputHelper testOutputHelper)
-    {
-        _factory = factory;
-        _testOutputHelper = testOutputHelper;
-        var unused = _factory.CreateClient();
-    }
-
     [Fact]
     public async Task TestCreatePackage()
     {
         // Arrange
-        var client = _factory.CreateAuthenticatingClient();
+        var client = factory.CreateAuthenticatingClient();
         var commissioningPackage = new CommissioningPackage
         {
             Id = "package1",
@@ -28,7 +19,6 @@ public class IntegrationTests : IClassFixture<TestFactory>
             Color = "Red"
         };
 
-        // Act
         // Act
         var response = await client.PostAsJsonAsync("/commissioning-package", commissioningPackage);
 
@@ -36,17 +26,17 @@ public class IntegrationTests : IClassFixture<TestFactory>
         if (!response.IsSuccessStatusCode)
         {
             var errorString = await response.Content.ReadAsStringAsync();
-            _testOutputHelper.WriteLine($"Error: {response.StatusCode}");
-            _testOutputHelper.WriteLine(errorString);
+            testOutputHelper.WriteLine($"Error: {response.StatusCode}");
+            testOutputHelper.WriteLine(errorString);
         }
         response.EnsureSuccessStatusCode();
     }
-    
+
     [Fact]
     public async Task TestGetAllPackages()
     {
         // Arrange
-        var client = _factory.CreateAuthenticatingClient();
+        var client = factory.CreateAuthenticatingClient();
         var commissioningPackage = new CommissioningPackage
         {
             Id = "package1",
@@ -54,28 +44,28 @@ public class IntegrationTests : IClassFixture<TestFactory>
             Color = "Red"
         };
 
-        var createresponse = await client.PostAsJsonAsync("/commissioning-package", commissioningPackage);
-        createresponse.EnsureSuccessStatusCode();
-        
+        var createResponse = await client.PostAsJsonAsync("/commissioning-package", commissioningPackage);
+        createResponse.EnsureSuccessStatusCode();
+
         // Act
         var response = await client.GetAsync("/commissioning-package/all");
+
         // Assert
         if (!response.IsSuccessStatusCode)
         {
             var errorString = await response.Content.ReadAsStringAsync();
-            _testOutputHelper.WriteLine($"Error: {response.StatusCode}");
-            _testOutputHelper.WriteLine(errorString);
+            testOutputHelper.WriteLine($"Error: {response.StatusCode}");
+            testOutputHelper.WriteLine(errorString);
         }
-        var package = await response.Content.ReadFromJsonAsync<CommissioningPackage[]>();
+        await response.Content.ReadFromJsonAsync<CommissioningPackage[]>();
         response.EnsureSuccessStatusCode();
     }
-    
-        
+
     [Fact]
     public async Task TestGetAllPackageIds()
     {
         // Arrange
-        var client = _factory.CreateAuthenticatingClient();
+        var client = factory.CreateAuthenticatingClient();
         var commissioningPackage = new CommissioningPackage
         {
             Id = "package1",
@@ -83,20 +73,21 @@ public class IntegrationTests : IClassFixture<TestFactory>
             Color = "Red"
         };
 
-        var createresponse = await client.PostAsJsonAsync("/commissioning-package", commissioningPackage);
-        createresponse.EnsureSuccessStatusCode();
-        
+        var createResponse = await client.PostAsJsonAsync("/commissioning-package", commissioningPackage);
+        createResponse.EnsureSuccessStatusCode();
+
         // Act
         var response = await client.GetAsync("/commissioning-package/ids");
+
         // Assert
         if (!response.IsSuccessStatusCode)
         {
             var errorString = await response.Content.ReadAsStringAsync();
-            _testOutputHelper.WriteLine($"Error: {response.StatusCode}");
-            _testOutputHelper.WriteLine(errorString);
+            testOutputHelper.WriteLine($"Error: {response.StatusCode}");
+            testOutputHelper.WriteLine(errorString);
         }
         var stringResult = await response.Content.ReadAsStringAsync();
-        var package = JsonSerializer.Deserialize<List<string>>(stringResult);
+        JsonSerializer.Deserialize<List<string>>(stringResult);
         response.EnsureSuccessStatusCode();
     }
 }

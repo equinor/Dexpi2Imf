@@ -18,8 +18,7 @@ public static class BoundaryEndpoints
 
             if (!await QueryUtils.CommissioningPackageExists(packageId, rdfoxApi))
             {
-                string? value = $"Commissioning package {packageId} not found.";
-                return Results.NotFound();
+                return Results.NotFound($"Commissioning package {packageId} not found.");
             }
 
             var isSelectedInternal = await QueryUtils.IsSelectedInternalOf(packageId, nodeId, rdfoxApi);
@@ -39,7 +38,7 @@ public static class BoundaryEndpoints
 
             return Results.Ok();
         }).WithTags("Boundary");
-        
+
 
         // Remove node as boundary
         endpoints.MapDelete("/commissioning-package/{packageId}/boundary/{nodeId}", async (string packageId, string nodeId, [FromServices] IRdfoxApi rdfoxApi) =>

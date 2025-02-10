@@ -1,6 +1,8 @@
 using Microsoft.Extensions.Logging;
 using Xunit.Abstractions;
 
+namespace TestBoundaries;
+
 public class TestOutputLoggerProvider : ILoggerProvider
 {
     private readonly ITestOutputHelper _testOutputHelper;

@@ -1,31 +1,19 @@
 using System.Net.Http.Json;
 using Backend.Model;
-using Xunit;
 using Xunit.Abstractions;
 using FluentAssertions;
 
 namespace TestBoundaries;
 
-public class BoundaryIntegrationTests : IClassFixture<TestFactory>
+public class BoundaryIntegrationTests(TestFactory factory, ITestOutputHelper testOutputHelper) : IClassFixture<TestFactory>
 {
-    private readonly TestFactory _factory;
-    private readonly ITestOutputHelper _testOutputHelper;
-
-    public BoundaryIntegrationTests(TestFactory factory, ITestOutputHelper testOutputHelper)
-    {
-        _factory = factory;
-        _testOutputHelper = testOutputHelper;
-        var unused = _factory.CreateClient();
-    }
-    
-
     [Fact]
     public async Task TestAddBoundary()
     {
         // Arrange
-        var client = _factory.CreateAuthenticatingClient();
-        var packageId = "packageX";
-        var nodeId = "node1";
+        var client = factory.CreateAuthenticatingClient();
+        const string packageId = "packageX";
+        const string nodeId = "node1";
 
         var commissioningPackage = new CommissioningPackage
         {
@@ -35,7 +23,7 @@ public class BoundaryIntegrationTests : IClassFixture<TestFactory>
         };
         var responsePackage = await client.PostAsJsonAsync("/commissioning-package", commissioningPackage);
         responsePackage.EnsureSuccessStatusCode();
-        
+
         // Act
         var response = await client.PostAsync($"/commissioning-package/{packageId}/update-boundary/{nodeId}", null);
 
@@ -43,20 +31,19 @@ public class BoundaryIntegrationTests : IClassFixture<TestFactory>
         if (!response.IsSuccessStatusCode)
         {
             var errorString = await response.Content.ReadAsStringAsync();
-            _testOutputHelper.WriteLine($"Error: {response.StatusCode}");
-            _testOutputHelper.WriteLine(errorString);
+            testOutputHelper.WriteLine($"Error: {response.StatusCode}");
+            testOutputHelper.WriteLine(errorString);
         }
         response.EnsureSuccessStatusCode();
     }
 
-    
     [Fact]
     public async Task TestAddBoundaryWithWrongPackage()
     {
         // Arrange
-        var client = _factory.CreateAuthenticatingClient();
+        var client = factory.CreateAuthenticatingClient();
         var packageId = $"package{Guid.NewGuid()}";
-        var nodeId = "node1";
+        const string nodeId = "node1";
 
         // Act
         var response = await client.PostAsync($"/commissioning-package/{packageId}/update-boundary/{nodeId}", null);
@@ -69,9 +56,9 @@ public class BoundaryIntegrationTests : IClassFixture<TestFactory>
     public async Task TestRemoveBoundary()
     {
         // Arrange
-        var client = _factory.CreateAuthenticatingClient();
+        var client = factory.CreateAuthenticatingClient();
         var packageId = $"package{Guid.NewGuid()}";
-        var nodeId = "node1";
+        const string nodeId = "node1";
 
         var commissioningPackage = new CommissioningPackage
         {
@@ -81,17 +68,17 @@ public class BoundaryIntegrationTests : IClassFixture<TestFactory>
         };
         var responsePackage = await client.PostAsJsonAsync("/commissioning-package", commissioningPackage);
         responsePackage.EnsureSuccessStatusCode();
-        var addresponse = await client.PostAsync($"/commissioning-package/{packageId}/update-boundary/{nodeId}", null);
-        addresponse.EnsureSuccessStatusCode();
+        var addResponse = await client.PostAsync($"/commissioning-package/{packageId}/update-boundary/{nodeId}", null);
+        addResponse.EnsureSuccessStatusCode();
 
         // Act
-        string nodeUri = $"/commissioning-package/{packageId}/boundary/{nodeId}";
+        var nodeUri = $"/commissioning-package/{packageId}/boundary/{nodeId}";
         var message = new HttpRequestMessage()
         {
             Method = HttpMethod.Delete,
-            RequestUri = new Uri(client.BaseAddress ?? throw new Exception("Lacking client base adress"), nodeUri)
+            RequestUri = new Uri(client.BaseAddress ?? throw new Exception("Lacking client base address"), nodeUri)
         };
-        var deleteresponse = await client.SendAsync(message);
-        deleteresponse.IsSuccessStatusCode.Should().BeTrue();
+        var deleteResponse = await client.SendAsync(message);
+        deleteResponse.IsSuccessStatusCode.Should().BeTrue();
     }
 }
