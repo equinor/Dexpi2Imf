@@ -1,4 +1,5 @@
 import CommissioningPackage from "../types/CommissioningPackage.ts";
+import { DiagramProps } from "../types/diagram/GraphicalDataFormatTestTypes.ts";
 
 const BASE_URL = "http://localhost:8000";
 
@@ -90,4 +91,15 @@ export const updateInternal = async (packageId: string, nodeId: string) => {
     `${BASE_URL}/commissioning-package/${encodeURIComponent(packageId)}/update-internal/${encodeURIComponent(nodeId)}`,
     { method: "POST" },
   );
+};
+
+// GRAPHICS
+
+export const getGraphicalData = async (
+  documentId: string,
+): Promise<DiagramProps> => {
+  const response = await fetch(
+    `${BASE_URL}/graphical-data-format/${encodeURIComponent(documentId)}`,
+  );
+  return response.json();
 };

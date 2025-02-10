@@ -9,7 +9,8 @@ import EditorTopBar from "./EditorTopBar.tsx";
 import styled from "styled-components";
 import ActionContext from "../../context/ActionContext.ts";
 import NodeTable from "../tables/NodeTable.tsx";
-import {SideSheet} from "@equinor/eds-core-react";
+import { SideSheet } from "@equinor/eds-core-react";
+import PandIdGraphicalDataExample from "../diagram/PandIdGraphicalDataExample.tsx";
 
 const EditorContainer = styled.div`
   height: 100%;
@@ -29,6 +30,7 @@ export default function Editor() {
   const [activeTool, setActiveTool] = useState(Tools.BOUNDARY);
   const [action, setAction] = useState<Action>({ tool: null, node: "" });
   const [tableIsVisible, setTableIsVisible] = useState(false);
+  const [isNewGraphics, setIsNewGraphics] = useState(false);
   return (
     <CommissioningPackageContextProvider>
       <ToolContext.Provider value={{ activeTool, setActiveTool }}>
@@ -36,15 +38,20 @@ export default function Editor() {
           <EditorContainer>
             <EditorTopBar />
             <SideBarAndPandid>
-              <EditorSidebar tableIsVisible={tableIsVisible} setTableIsVisible={setTableIsVisible} />
-              <Pandid />
+              <EditorSidebar
+                tableIsVisible={tableIsVisible}
+                setTableIsVisible={setTableIsVisible}
+                isNewGraphics={isNewGraphics}
+                setIsNewGraphics={setIsNewGraphics}
+              />
+              {isNewGraphics ? <PandIdGraphicalDataExample /> : <Pandid />}
             </SideBarAndPandid>
           </EditorContainer>
         </ActionContext.Provider>
       </ToolContext.Provider>
-        <SideSheet open={tableIsVisible}>
-            <NodeTable/>
-        </SideSheet>
+      <SideSheet open={tableIsVisible}>
+        <NodeTable />
+      </SideSheet>
     </CommissioningPackageContextProvider>
   );
 }

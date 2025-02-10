@@ -39,9 +39,9 @@
             }
         ],
         "style": {
-            "stroke-dasharray": "none",
-            "stroke-width": "1,4",
-            "stroke": "rgb(255,255,255)"
+            "strokeDasharray": "none",
+            "strokeWidth": "0.25",
+            "stroke": "rgb(0,0,0)"
         }
         }
     ]
