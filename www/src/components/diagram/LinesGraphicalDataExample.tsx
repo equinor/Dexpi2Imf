@@ -9,7 +9,7 @@ import {
 import selectHandleFunction from "../../utils/CommissioningPackageActions.tsx";
 import {
   constructClasses,
-  findPackageOfNode,
+  findPackageOfElement,
   isBoundary,
   isInActivePackage,
   isSelectedInternal,
@@ -31,7 +31,7 @@ export default function Line({ id, style, coordinates }: LineProps) {
   const { context, dispatch } = useCommissioningPackages();
   const setAction = useContext(ActionContext).setAction;
   const tool = useContext(ToolContext).activeTool;
-  const commissioningPackage = findPackageOfNode(
+  const commissioningPackage = findPackageOfElement(
     context.commissioningPackages,
     id,
   );

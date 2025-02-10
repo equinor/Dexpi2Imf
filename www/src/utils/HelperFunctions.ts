@@ -22,7 +22,7 @@ export const constructClasses = (
   return `${isBoundary(id, activePackage) ? "boundary" : ""} ${isSelectedInternal(id, activePackage) ? "selectedInternal" : ""}`;
 };
 
-export const findPackageOfNode = (
+export const findPackageOfElement = (
   packages: CommissioningPackage[],
   nodeId: string,
 ) => {

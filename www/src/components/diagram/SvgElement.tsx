@@ -14,7 +14,7 @@ import selectHandleFunction from "../../utils/CommissioningPackageActions.tsx";
 import ToolContext from "../../context/ToolContext.ts";
 import {
   constructClasses,
-  findPackageOfNode,
+  findPackageOfElement,
   iriFromSvgNode,
   isInActivePackage,
 } from "../../utils/HelperFunctions.ts";
@@ -47,7 +47,7 @@ export default function SvgElement({
     genericAttributes: text,
   });
   const iri = iriFromSvgNode(id);
-  const commissioningPackage = findPackageOfNode(
+  const commissioningPackage = findPackageOfElement(
     context.commissioningPackages,
     iri,
   );

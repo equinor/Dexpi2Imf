@@ -2,7 +2,7 @@ import { useContext } from "react";
 import { useCommissioningPackages } from "../../hooks/useCommissioningPackages.tsx";
 import {
   constructClasses,
-  findPackageOfNode,
+  findPackageOfElement,
   isInActivePackage,
 } from "../../utils/HelperFunctions.ts";
 import ToolContext from "../../context/ToolContext.ts";
@@ -24,7 +24,7 @@ export default function Symbol(props: SymbolProps) {
   const setAction = useContext(ActionContext).setAction;
   const tool = useContext(ToolContext).activeTool;
 
-  const commissioningPackage = findPackageOfNode(
+  const commissioningPackage = findPackageOfElement(
     context.commissioningPackages,
     props.id,
   );

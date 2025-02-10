@@ -7,7 +7,7 @@ import SvgElement from "./SvgElement.tsx";
 import { useCommissioningPackages } from "../../hooks/useCommissioningPackages.tsx";
 import {
   constructClasses,
-  findPackageOfNode,
+  findPackageOfElement,
   iriFromSvgNode,
   isInActivePackage,
 } from "../../utils/HelperFunctions.ts";
@@ -28,7 +28,7 @@ export default function Equipment(props: EquipmentProps) {
   const nozzles: NozzleProps[] = props.Nozzle;
 
   const iri = iriFromSvgNode(props.ID);
-  const commissioningPackage = findPackageOfNode(
+  const commissioningPackage = findPackageOfElement(
     context.commissioningPackages,
     iri,
   );
