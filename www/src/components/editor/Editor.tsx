@@ -30,6 +30,7 @@ export default function Editor() {
   const [activeTool, setActiveTool] = useState(Tools.BOUNDARY);
   const [action, setAction] = useState<Action>({ tool: null, node: "" });
   const [tableIsVisible, setTableIsVisible] = useState(false);
+  const [isNewGraphics, setIsNewGraphics] = useState(false);
   return (
     <CommissioningPackageContextProvider>
       <ToolContext.Provider value={{ activeTool, setActiveTool }}>
@@ -40,8 +41,10 @@ export default function Editor() {
               <EditorSidebar
                 tableIsVisible={tableIsVisible}
                 setTableIsVisible={setTableIsVisible}
+                isNewGraphics={isNewGraphics}
+                setIsNewGraphics={setIsNewGraphics}
               />
-              <PandIdGraphicalDataExample />
+              {isNewGraphics ? <PandIdGraphicalDataExample /> : <Pandid />}
             </SideBarAndPandid>
           </EditorContainer>
         </ActionContext.Provider>
