@@ -7,6 +7,20 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddCors();
 
+builder.Services.AddSingleton<IRdfoxApi>(sp =>
+{
+    var connectionSettings = new ConnectionSettings
+    {
+        Host = "rdfox",
+        Port = 12110,
+        Username = "guest",
+        Password = "guest",
+        Datastore = "boundaries"
+    };
+
+    return new RdfoxApi(connectionSettings);
+});
+
 var app = builder.Build();
 
 app.UseSwagger();
@@ -18,12 +32,14 @@ app.UseCors(policyBuilder => policyBuilder
 );
 app.UseHttpsRedirection();
 
-// Establish connection to Rdfox
-var rdfoxConnectionSettings = RdfoxApi.GetDefaultConnectionSettings();
-
-// Map endpoints
-app.MapBoundaryEndpoints(rdfoxConnectionSettings);
-app.MapCommissioningPackageEndpoints(rdfoxConnectionSettings);
+app.MapBoundaryEndpoints();
+app.MapCommissioningPackageEndpoints();
 app.MapGraphicalDataFormatEndpoints();
 
 app.Run();
+
+
+// Necessary for integration testing
+namespace Backend{
+    public partial class Program { }
+}
