@@ -1,5 +1,6 @@
 import { CoordinateProps } from "../types/diagram/Common.ts";
 
+//TODO - remove when new graphical format implemented
 export default function constructPath(
   coordinates: CoordinateProps[],
   height: number,

@@ -10,6 +10,7 @@ import selectHandleFunction from "../../../utils/CommissioningPackageActions.tsx
 import ToolContext from "../../../context/ToolContext.ts";
 import ActionContext from "../../../context/ActionContext.ts";
 
+//TODO - remove when new graphical format implemented
 export default function PipingComponent(props: PipingComponentProps) {
   const height = useContext(PandidContext).height;
   const { context, dispatch } = useCommissioningPackages();

@@ -1,5 +1,6 @@
 import { PositionProps } from "../types/diagram/Common.ts";
 
+//TODO - remove when new graphical format implemented
 export default function calculateAngleAndRotation(
   refX: number,
   refY: number,

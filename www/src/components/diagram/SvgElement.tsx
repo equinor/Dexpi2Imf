@@ -29,6 +29,7 @@ interface SvgElementProps {
   text?: GenericAttributesProps;
 }
 
+//TODO - remove when new graphical format implemented
 export default function SvgElement({
   id,
   componentName,

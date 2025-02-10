@@ -16,6 +16,7 @@ interface PipeSegmentProps extends PipingNetworkSegmentProps {
   onClick: () => Promise<void>;
 }
 
+//TODO - remove when new graphical format implemented
 export default function PipeSegment(props: PipeSegmentProps) {
   const height = useContext(PandidContext).height;
   const centerlines: CenterLineProps[] = Array.isArray(props.CenterLine)

@@ -1,4 +1,3 @@
-import { setAttributes } from "./Highlighting.ts";
 import {
   GenericAttributesProps,
   LabelProps,
@@ -7,7 +6,9 @@ import {
 } from "../types/diagram/Common.ts";
 import { calculateAngle } from "./Transformation.ts";
 import { XMLProps } from "../types/diagram/Diagram.ts";
+import { setAttributes } from "./HelperFunctions.ts";
 
+//TODO - remove when new graphical format implemented
 export async function noakaDexpiSvg(componentName: string) {
   const shapeName = `/Origo/${componentName.replace("_SHAPE", "_Origo")}.svg`;
   try {

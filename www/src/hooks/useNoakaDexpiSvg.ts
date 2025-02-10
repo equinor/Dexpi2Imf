@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 
+//TODO - remove when new graphical format implemented
 export default function useNoakaDexpiSvg(componentName: string) {
   const shapeName = `/Origo/${componentName.replace("_SHAPE", "_Origo")}.svg`;
 

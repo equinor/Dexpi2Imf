@@ -17,6 +17,7 @@ interface CenterLineComponentProps {
   isInformationFlow: boolean;
 }
 
+//TODO - remove when new graphical format implemented
 export default function CenterLine(props: CenterLineComponentProps) {
   const height = useContext(PandidContext).height;
   const { context, dispatch } = useCommissioningPackages();
@@ -43,10 +44,18 @@ export default function CenterLine(props: CenterLineComponentProps) {
       {props.centerLines.map((centerline: CenterLineProps, index: number) =>
         centerline !== undefined ? (
           <React.Fragment key={index}>
-            {(
+            {
               <path
                 onClick={() =>
-                    iri ? selectHandleFunction(iri, context, dispatch, setAction, tool) : {}
+                  iri
+                    ? selectHandleFunction(
+                        iri,
+                        context,
+                        dispatch,
+                        setAction,
+                        tool,
+                      )
+                    : {}
                 }
                 id={iri ? iri : props.id}
                 key={index + "_highlight"}
@@ -56,9 +65,8 @@ export default function CenterLine(props: CenterLineComponentProps) {
                 opacity={hasSelectedInternalNode ? 0.5 : 0}
                 fill={"none"}
               />
-            )}
+            }
             <StyledPath
-
               key={index}
               d={constructPath(centerline.Coordinate, height)}
               $isDashed={props.isInformationFlow}

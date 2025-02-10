@@ -51,6 +51,7 @@ function PipeSystemSVG({
   );
 }
 
+//TODO - remove when new graphical format implemented
 export default function PipeSystem(props: PipingNetworkSystemProps) {
   const height = useContext(PandidContext).height;
   const { context, dispatch } = useCommissioningPackages();

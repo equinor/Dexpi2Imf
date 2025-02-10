@@ -43,6 +43,7 @@ export const isInActivePackage = (
 };
 
 // IRI CALCULATION
+//TODO - remove when new graphical format implemented
 export function iriFromSvgNode(id: string) {
   return `https://assetid.equinor.com/plantx#${id}`;
 }
@@ -63,4 +64,8 @@ export function iriFromPiping(segment: PipingNetworkSegmentProps) {
     console.error("Something went wrong with iri creation");
     return ``;
   }
+}
+
+export function setAttributes(el: Element, attrs: { [key: string]: string }) {
+  Object.keys(attrs).forEach((key) => el.setAttribute(key, attrs[key]));
 }

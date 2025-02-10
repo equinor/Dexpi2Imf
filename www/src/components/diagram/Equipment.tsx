@@ -15,6 +15,7 @@ import ToolContext from "../../context/ToolContext.ts";
 import selectHandleFunction from "../../utils/CommissioningPackageActions.tsx";
 import ActionContext from "../../context/ActionContext.ts";
 
+//TODO - remove when new graphical format implemented
 export default function Equipment(props: EquipmentProps) {
   const { context, dispatch } = useCommissioningPackages();
   const setAction = useContext(ActionContext).setAction;

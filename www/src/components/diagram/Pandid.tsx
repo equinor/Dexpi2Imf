@@ -20,6 +20,7 @@ const SVGContainer = styled.div`
   height: 100%;
 `;
 
+//TODO - remove when new graphical format implemented
 export default function Pandid() {
   const { dispatch } = useCommissioningPackages();
 
