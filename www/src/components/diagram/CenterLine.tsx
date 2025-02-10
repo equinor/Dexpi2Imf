@@ -3,7 +3,7 @@ import constructPath from "../../utils/Path.ts";
 import { useContext } from "react";
 import PandidContext from "../../context/PandidContext.ts";
 import StyledPath from "./StyledPath.tsx";
-import { useCommissioningPackageContext } from "../../hooks/useCommissioningPackageContext.tsx";
+import { useCommissioningPackages } from "../../hooks/useCommissioningPackages.tsx";
 import React from "react";
 import selectHandleFunction from "../../utils/CommissioningPackageHandler.tsx";
 import ToolContext from "../../context/ToolContext.ts";
@@ -19,7 +19,7 @@ interface CenterLineComponentProps {
 
 export default function CenterLine(props: CenterLineComponentProps) {
   const height = useContext(PandidContext).height;
-  const context = useCommissioningPackageContext();
+  const { context, dispatch } = useCommissioningPackages();
   const setAction = useContext(ActionContext).setAction;
   const tool = useContext(ToolContext).activeTool;
   let color: HighlightColors | undefined;
@@ -55,7 +55,15 @@ export default function CenterLine(props: CenterLineComponentProps) {
             )}
             <StyledPath
               onClick={() =>
-                iri ? selectHandleFunction(iri, context, setAction, tool) : {}
+                iri
+                  ? selectHandleFunction(
+                      iri,
+                      context,
+                      dispatch,
+                      setAction,
+                      tool,
+                    )
+                  : {}
               }
               key={index}
               d={constructPath(centerline.Coordinate, height)}

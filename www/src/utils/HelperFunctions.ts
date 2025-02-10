@@ -1,5 +1,5 @@
-import { CommissioningPackageContextProps } from "../context/CommissioningPackageContext.tsx";
 import { PipingNetworkSegmentProps } from "../types/diagram/Piping.ts";
+import CommissioningPackage from "../types/CommissioningPackage.ts";
 
 export function ensureArray<T>(value: T | T[]): T[] {
   return Array.isArray(value) ? value : [value];
@@ -7,17 +7,16 @@ export function ensureArray<T>(value: T | T[]): T[] {
 
 export const isBoundary = (
   id: string,
-  context: CommissioningPackageContextProps,
-) => context.activePackage.boundaryNodes?.some((node) => node.id === id);
+  commissioningPackage: CommissioningPackage,
+) => commissioningPackage.boundaryNodes.some((node) => node.id === id);
 export const isInternal = (
   id: string,
-  context: CommissioningPackageContextProps,
-) => context.activePackage.internalNodes?.some((node) => node.id === id);
+  commissioningPackage: CommissioningPackage,
+) => commissioningPackage.internalNodes?.some((node) => node.id === id);
 export const isSelectedInternal = (
   id: string,
-  context: CommissioningPackageContextProps,
-) =>
-  context.activePackage.selectedInternalNodes?.some((node) => node.id === id);
+  commissioningPackage: CommissioningPackage,
+) => commissioningPackage.selectedInternalNodes?.some((node) => node.id === id);
 
 export function iriFromSvgNode(id: string) {
   return `https://assetid.equinor.com/plantx#${id}`;

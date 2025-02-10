@@ -9,7 +9,7 @@ import { ActuatingSystemProps } from "../../types/diagram/ActuatingSystem.ts";
 import ActuatingSystem from "./ActuatingSystem.tsx";
 import PandidContext from "../../context/PandidContext.ts";
 import PipeSystem from "./piping/PipeSystem.tsx";
-import { useCommissioningPackageContext } from "../../hooks/useCommissioningPackageContext.tsx";
+import { useCommissioningPackages } from "../../hooks/useCommissioningPackages.tsx";
 import styled from "styled-components";
 import { preloadSVGs } from "../../utils/SvgEdit.ts";
 import ZoomableSVGWrapper from "../editor/ZoomableSVGWrapper.tsx";
@@ -21,7 +21,7 @@ const SVGContainer = styled.div`
 `;
 
 export default function Pandid() {
-  const context = useCommissioningPackageContext();
+  const { dispatch } = useCommissioningPackages();
 
   const [xmlData, setXmlData] = useState<XMLProps | null>(null);
   const [equipments, setEquipments] = useState<EquipmentProps[]>([]);
@@ -45,8 +45,7 @@ export default function Pandid() {
   useEffect(() => {
     (async () => {
       const packages = await getAllCommissioningPackages();
-      context.setCommissioningPackages(packages);
-      if (packages[0]) context.setActivePackage(packages[0]);
+      dispatch({ type: "SET_PACKAGES", payload: packages });
     })();
   }, []);
 
@@ -89,7 +88,9 @@ export default function Pandid() {
           }}
         >
           {" "}
-          <ZoomableSVGWrapper containerRef={containerRef as React.RefObject<HTMLDivElement>}>
+          <ZoomableSVGWrapper
+            containerRef={containerRef as React.RefObject<HTMLDivElement>}
+          >
             <svg
               viewBox={`${xmlData.PlantModel.Drawing.Extent.Min.X} ${xmlData.PlantModel.Drawing.Extent.Min.Y} ${xmlData.PlantModel.Drawing.Extent.Max.X} ${xmlData.PlantModel.Drawing.Extent.Max.Y}`}
               width={"100%"}

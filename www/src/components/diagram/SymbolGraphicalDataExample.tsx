@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { useCommissioningPackageContext } from "../../hooks/useCommissioningPackageContext.tsx";
+import { useCommissioningPackages } from "../../hooks/useCommissioningPackages.tsx";
 import { isBoundary, isSelectedInternal } from "../../utils/HelperFunctions.ts";
 import ToolContext from "../../context/ToolContext.ts";
 import selectHandleFunction from "../../utils/CommissioningPackageHandler.tsx";
@@ -16,7 +16,7 @@ const StyledG = styled.g`
 `;
 
 export default function Symbol(props: SymbolProps) {
-  const context = useCommissioningPackageContext();
+  const { context, dispatch } = useCommissioningPackages();
   const setAction = useContext(ActionContext).setAction;
   const tool = useContext(ToolContext).activeTool;
   const commissioningPackage = context.commissioningPackages.find(
@@ -33,7 +33,7 @@ export default function Symbol(props: SymbolProps) {
     <g
       onClick={() =>
         isInActivePackage
-          ? selectHandleFunction(props.id, context, setAction, tool)
+          ? selectHandleFunction(props.id, context, dispatch, setAction, tool)
           : {}
       }
     >
@@ -42,13 +42,13 @@ export default function Symbol(props: SymbolProps) {
         color={color ? color : "white"}
         opacity={color ? 1 : 0}
         transform={`rotate(${props.position.rotation}) translate(${props.position.x}, ${props.position.y})`}
-        className={`.node ${isBoundary(props.id, context) ? "boundary" : ""} ${isSelectedInternal(props.id, context) ? "selectedInternal" : ""}`}
+        className={`.node ${isBoundary(props.id, context.activePackage) ? "boundary" : ""} ${isSelectedInternal(props.id, context.activePackage) ? "selectedInternal" : ""}`}
         dangerouslySetInnerHTML={{ __html: props.svg }}
       />
       <g
         id={props.id}
         transform={`rotate(${props.position.rotation}) translate(${props.position.x}, ${props.position.y})`}
-        className={`.node ${isBoundary(props.id, context) ? "boundary" : ""} ${isSelectedInternal(props.id, context) ? "selectedInternal" : ""}`}
+        className={`.node ${isBoundary(props.id, context.activePackage) ? "boundary" : ""} ${isSelectedInternal(props.id, context.activePackage) ? "selectedInternal" : ""}`}
         dangerouslySetInnerHTML={{ __html: props.svg }}
       />
     </g>

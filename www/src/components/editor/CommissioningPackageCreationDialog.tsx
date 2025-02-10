@@ -9,7 +9,7 @@ import HighlightColors from "../../enums/HighlightColors.ts";
 import styled from "styled-components";
 import React, { useEffect, useState } from "react";
 import CommissioningPackage from "../../types/CommissioningPackage.ts";
-import { useCommissioningPackageContext } from "../../hooks/useCommissioningPackageContext.tsx";
+import { useCommissioningPackages } from "../../hooks/useCommissioningPackages.tsx";
 import ColorPreview from "./ColorPreview.tsx";
 import { createCommissioningPackage } from "../../utils/Api.ts";
 
@@ -28,7 +28,7 @@ interface CommissioningPackageCreationDialogProps {
 export default function CommissioningPackageCreationDialog(
   props: CommissioningPackageCreationDialogProps,
 ) {
-  const context = useCommissioningPackageContext();
+  const { dispatch } = useCommissioningPackages();
   const [commissioningPackage, setCommissioningPackage] = useState<
     CommissioningPackage | undefined
   >();
@@ -55,8 +55,7 @@ export default function CommissioningPackageCreationDialog(
 
   useEffect(() => {
     if (!commissioningPackage) return;
-    context.setCommissioningPackages((prev) => [...prev, commissioningPackage]);
-    context.setActivePackage(commissioningPackage);
+    dispatch({ type: "ADD_PACKAGE", payload: commissioningPackage });
   }, [commissioningPackage]);
 
   const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {

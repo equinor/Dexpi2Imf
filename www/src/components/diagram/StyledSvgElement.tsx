@@ -3,7 +3,7 @@ import calculateAngleAndRotation from "../../utils/Transformation.ts";
 import { useContext } from "react";
 import PandidContext from "../../context/PandidContext.ts";
 import styled from "styled-components";
-import { useCommissioningPackageContext } from "../../hooks/useCommissioningPackageContext.tsx";
+import { useCommissioningPackages } from "../../hooks/useCommissioningPackages.tsx";
 
 interface StyledSvgElementProps {
   id: string;
@@ -27,7 +27,7 @@ export default function StyledSvgElement({
   color,
 }: StyledSvgElementProps) {
   const height = useContext(PandidContext).height;
-  const context = useCommissioningPackageContext();
+  const { context } = useCommissioningPackages();
   const commissioningPackage = context.commissioningPackages.find(
     (pkg) =>
       pkg.boundaryNodes?.some((node) => node.id === id) ||

@@ -1,5 +1,4 @@
 import Tools from "../enums/Tools.ts";
-import { CommissioningPackageContextProps } from "../context/CommissioningPackageContext.tsx";
 import Action from "../types/Action.ts";
 import React from "react";
 import {
@@ -8,48 +7,52 @@ import {
   updateInternal,
 } from "./Api.ts";
 import CommissioningPackage from "../types/CommissioningPackage.ts";
+import {
+  CommissioningPackageContextProps,
+  PackageAction,
+} from "../context/NewCommissioningPackageContextProvider.tsx";
 
 export default async function selectHandleFunction(
   id: string,
   context: CommissioningPackageContextProps,
+  dispatch: React.Dispatch<PackageAction>,
   setAction: React.Dispatch<React.SetStateAction<Action>>,
   tool: Tools,
 ) {
   setAction({ tool: tool, node: id });
   switch (tool) {
     case Tools.BOUNDARY:
-      return await handleAddBoundary(id, context);
+      return await handleAddBoundary(id, context, dispatch);
     case Tools.INSIDEBOUNDARY:
-      return await handleAddInternal(id, context);
+      return await handleAddInternal(id, context, dispatch);
     default:
-      return await handleAddBoundary(id, context);
+      return await handleAddBoundary(id, context, dispatch);
   }
 }
 
 export async function handleAddInternal(
   id: string,
   context: CommissioningPackageContextProps,
+  dispatch: React.Dispatch<PackageAction>,
 ) {
   await updateInternal(context.activePackage.id, id);
-  await updateNodesInPackage(context);
+  await updateNodesInPackage(context, dispatch);
 }
 
 export async function handleAddBoundary(
   id: string,
   context: CommissioningPackageContextProps,
+  dispatch: React.Dispatch<PackageAction>,
 ) {
   await updateBoundary(context.activePackage.id, id);
-  await updateNodesInPackage(context);
+  await updateNodesInPackage(context, dispatch);
 }
 
-async function updateNodesInPackage(context: CommissioningPackageContextProps) {
+async function updateNodesInPackage(
+  context: CommissioningPackageContextProps,
+  dispatch: React.Dispatch<PackageAction>,
+) {
   const commissioningPackage: CommissioningPackage =
     await getCommissioningPackage(context.activePackage.id);
-  context.setActivePackage(commissioningPackage);
-
-  context.setCommissioningPackages((prevPackages) =>
-    prevPackages.map((pkg) =>
-      pkg.id === commissioningPackage.id ? commissioningPackage : pkg,
-    ),
-  );
+  dispatch({ type: "UPDATE_PACKAGE", payload: commissioningPackage });
 }

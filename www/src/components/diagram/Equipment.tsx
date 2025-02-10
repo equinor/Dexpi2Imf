@@ -4,7 +4,7 @@ import StyledSvgElement from "./StyledSvgElement.tsx";
 import PandidContext from "../../context/PandidContext.ts";
 import useSerializeNodeSvg from "../../hooks/useSerializeNodeSvg.tsx";
 import SvgElement from "./SvgElement.tsx";
-import { useCommissioningPackageContext } from "../../hooks/useCommissioningPackageContext.tsx";
+import { useCommissioningPackages } from "../../hooks/useCommissioningPackages.tsx";
 import {
   iriFromSvgNode,
   isBoundary,
@@ -15,7 +15,7 @@ import selectHandleFunction from "../../utils/CommissioningPackageHandler.tsx";
 import ActionContext from "../../context/ActionContext.ts";
 
 export default function Equipment(props: EquipmentProps) {
-  const context = useCommissioningPackageContext();
+  const { context, dispatch } = useCommissioningPackages();
   const setAction = useContext(ActionContext).setAction;
   const height = useContext(PandidContext).height;
   const tool = useContext(ToolContext).activeTool;
@@ -29,20 +29,20 @@ export default function Equipment(props: EquipmentProps) {
   const iri = iriFromSvgNode(props.ID);
   const commissioningPackage = context.commissioningPackages.find(
     (pkg) =>
-      pkg.boundaryNodes?.some((node) => node.id === iri) ||
-      pkg.internalNodes?.some((node) => node.id === iri),
+      pkg.boundaryNodes.some((node) => node.id === iri) ||
+      pkg.internalNodes.some((node) => node.id === iri),
   );
   const isInActivePackage = commissioningPackage
     ? context.activePackage.id === commissioningPackage.id
     : true;
   const color = commissioningPackage?.color;
-
+  //console.log(`Node with ID ${iri} is in active package: ${isInActivePackage}`);
   return (
     <>
       <g
         onClick={() =>
           isInActivePackage
-            ? selectHandleFunction(iri, context, setAction, tool)
+            ? selectHandleFunction(iri, context, dispatch, setAction, tool)
             : {}
         }
       >
@@ -59,7 +59,7 @@ export default function Equipment(props: EquipmentProps) {
             <g
               id={iri}
               transform={`${props.Position.Reference.X === -1 ? "rotate(-180deg)" : ""}translate(${props.Position.Location.X}, ${height - props.Position.Location.Y})`}
-              className={`.node ${isBoundary(iri, context) ? "boundary" : ""} ${isSelectedInternal(iri, context) ? "selectedInternal" : ""}`}
+              className={`.node ${isBoundary(iri, context.activePackage) ? "boundary" : ""} ${isSelectedInternal(iri, context.activePackage) ? "selectedInternal" : ""}`}
               dangerouslySetInnerHTML={{ __html: svg }}
             />
           </>

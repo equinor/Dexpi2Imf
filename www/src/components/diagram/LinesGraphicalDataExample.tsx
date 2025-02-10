@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { useCommissioningPackageContext } from "../../hooks/useCommissioningPackageContext.tsx";
+import { useCommissioningPackages } from "../../hooks/useCommissioningPackages.tsx";
 import ToolContext from "../../context/ToolContext.ts";
 import ActionContext from "../../context/ActionContext.ts";
 import {
@@ -22,7 +22,7 @@ function constructLine(coordinates: PointProps[]) {
 }
 
 export default function Line({ id, style, coordinates }: LineProps) {
-  const context = useCommissioningPackageContext();
+  const { context, dispatch } = useCommissioningPackages();
   const setAction = useContext(ActionContext).setAction;
   const tool = useContext(ToolContext).activeTool;
   const commissioningPackage = context.commissioningPackages.find(
@@ -36,9 +36,9 @@ export default function Line({ id, style, coordinates }: LineProps) {
   const color = commissioningPackage?.color;
 
   function calculateLineColor() {
-    if (isBoundary(id, context)) {
+    if (isBoundary(id, context.activePackage)) {
       return "green";
-    } else if (isSelectedInternal(id, context)) {
+    } else if (isSelectedInternal(id, context.activePackage)) {
       return "red";
     } else {
       return style.stroke;
@@ -46,7 +46,10 @@ export default function Line({ id, style, coordinates }: LineProps) {
   }
 
   function calculateLineWeight() {
-    if (isBoundary(id, context) || isSelectedInternal(id, context)) {
+    if (
+      isBoundary(id, context.activePackage) ||
+      isSelectedInternal(id, context.activePackage)
+    ) {
       return 0.6;
     } else {
       return style.strokeWidth;
@@ -56,7 +59,7 @@ export default function Line({ id, style, coordinates }: LineProps) {
     <g
       onClick={() =>
         isInActivePackage
-          ? selectHandleFunction(id, context, setAction, tool)
+          ? selectHandleFunction(id, context, dispatch, setAction, tool)
           : {}
       }
     >
@@ -79,7 +82,7 @@ export default function Line({ id, style, coordinates }: LineProps) {
         stroke={calculateLineColor()}
         strokeWidth={calculateLineWeight()}
         strokeDasharray={style.strokeDasharray}
-        className={`${isBoundary(id, context) ? "boundary" : ""} ${isSelectedInternal(id, context) ? "selectedInternal" : ""}`}
+        className={`${isBoundary(id, context.activePackage) ? "boundary" : ""} ${isSelectedInternal(id, context.activePackage) ? "selectedInternal" : ""}`}
         fill={"none"}
       />
     </g>

@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 
-import { useCommissioningPackageContext } from "../../hooks/useCommissioningPackageContext.tsx";
+import { useCommissioningPackages } from "../../hooks/useCommissioningPackages.tsx";
 import styled from "styled-components";
 import ZoomableSVGWrapper from "../editor/ZoomableSVGWrapper.tsx";
 import {
@@ -17,7 +17,7 @@ const SVGContainer = styled.div`
 `;
 
 export default function PandIdGraphicalDataExample() {
-  const context = useCommissioningPackageContext();
+  const { dispatch } = useCommissioningPackages();
   const [graphicalData, setGraphicalData] = useState<DiagramProps>();
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -27,8 +27,10 @@ export default function PandIdGraphicalDataExample() {
       const packages = await getAllCommissioningPackages();
       const graphicalDataTest = await getGraphicalData("test");
       setGraphicalData(graphicalDataTest);
-      context.setCommissioningPackages(packages);
-      if (packages[0]) context.setActivePackage(packages[0]);
+      dispatch({
+        type: "SET_PACKAGES",
+        payload: packages,
+      });
     })();
   }, []);
 

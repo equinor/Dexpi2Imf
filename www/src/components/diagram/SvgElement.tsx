@@ -7,7 +7,7 @@ import calculateAngleAndRotation from "../../utils/Transformation.ts";
 import useSerializeNodeSvg from "../../hooks/useSerializeNodeSvg.tsx";
 import { useContext } from "react";
 import PandidContext from "../../context/PandidContext.ts";
-import { useCommissioningPackageContext } from "../../hooks/useCommissioningPackageContext.tsx";
+import { useCommissioningPackages } from "../../hooks/useCommissioningPackages.tsx";
 
 import StyledSvgElement from "./StyledSvgElement.tsx";
 import selectHandleFunction from "../../utils/CommissioningPackageHandler.tsx";
@@ -36,7 +36,7 @@ export default function SvgElement({
   text,
 }: SvgElementProps) {
   const height = useContext(PandidContext).height;
-  const context = useCommissioningPackageContext();
+  const { context, dispatch } = useCommissioningPackages();
   const setAction = useContext(ActionContext).setAction;
   const tool = useContext(ToolContext).activeTool;
   const svg = useSerializeNodeSvg({
@@ -71,7 +71,7 @@ export default function SvgElement({
             id={iri}
             onClick={() =>
               isInActivePackage
-                ? selectHandleFunction(iri, context, setAction, tool)
+                ? selectHandleFunction(iri, context, dispatch, setAction, tool)
                 : {}
             }
             transform={
@@ -84,7 +84,7 @@ export default function SvgElement({
                   )
                 : ""
             }
-            className={`.node ${isBoundary(iri, context) ? "boundary" : ""} ${isSelectedInternal(iri, context) ? "selectedInternal" : ""}`}
+            className={`.node ${isBoundary(iri, context.activePackage) ? "boundary" : ""} ${isSelectedInternal(iri, context.activePackage) ? "selectedInternal" : ""}`}
             dangerouslySetInnerHTML={{ __html: svg }}
           />
         </>
