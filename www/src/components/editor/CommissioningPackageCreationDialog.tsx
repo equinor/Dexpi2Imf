@@ -7,8 +7,7 @@ import {
 } from "@equinor/eds-core-react";
 import HighlightColors from "../../enums/HighlightColors.ts";
 import styled from "styled-components";
-import React, { useEffect, useState } from "react";
-import CommissioningPackage from "../../types/CommissioningPackage.ts";
+import React, { useState } from "react";
 import { useCommissioningPackages } from "../../hooks/useCommissioningPackages.tsx";
 import ColorPreview from "./ColorPreview.tsx";
 import { addPackageAction } from "../../utils/CommissioningPackageActions.tsx";
@@ -29,9 +28,6 @@ export default function CommissioningPackageCreationDialog(
   props: CommissioningPackageCreationDialogProps,
 ) {
   const { dispatch } = useCommissioningPackages();
-  const [commissioningPackage, setCommissioningPackage] = useState<
-    CommissioningPackage | undefined
-  >();
   const [id, setId] = useState<string>("");
   const [name, setName] = useState("");
   const [selectedColor, setSelectedColor] = useState<
@@ -52,11 +48,6 @@ export default function CommissioningPackageCreationDialog(
     props.setOpen(false);
   }
 
-  useEffect(() => {
-    if (!commissioningPackage) return;
-    dispatch({ type: "ADD_PACKAGE", payload: commissioningPackage });
-  }, [commissioningPackage]);
-
   const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedColor(
       HighlightColors[event.target.value as keyof typeof HighlightColors],
@@ -64,7 +55,6 @@ export default function CommissioningPackageCreationDialog(
   };
   function handleCancel() {
     setSelectedColor(undefined);
-    setCommissioningPackage(undefined);
     props.setOpen(false);
   }
 
