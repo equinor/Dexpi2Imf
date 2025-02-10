@@ -8,6 +8,7 @@ import {
   texture,
   delete_to_trash,
   table_chart,
+  switch_on,
 } from "@equinor/eds-icons";
 import styled from "styled-components";
 import React, { useContext, useState } from "react";
@@ -25,13 +26,17 @@ const StyledSideBar = styled.div`
 interface EditorSidebarProps {
   tableIsVisible: boolean;
   setTableIsVisible: React.Dispatch<React.SetStateAction<boolean>>;
+  isNewGraphics: boolean;
+  setIsNewGraphics: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export default function EditorSidebar({
   tableIsVisible,
   setTableIsVisible,
+  isNewGraphics,
+  setIsNewGraphics,
 }: EditorSidebarProps) {
-  const { context, dispatch } = useCommissioningPackages();
+    const { context, dispatch } = useCommissioningPackages();
   const { handleUndo, handleRedo } = useUndoRedo();
   const { activeTool, setActiveTool } = useContext(ToolContext);
   const [isCreationOpen, setIsCreationOpen] = useState<boolean>(false);
@@ -82,6 +87,13 @@ export default function EditorSidebar({
       icon: table_chart,
       onClick: () => {
         setTableIsVisible(!tableIsVisible);
+      },
+    },
+    {
+      label: "Toggle new graphical format",
+      icon: switch_on,
+      onClick: () => {
+        setIsNewGraphics(!isNewGraphics);
       },
     },
   ];
