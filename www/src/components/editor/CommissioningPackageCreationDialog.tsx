@@ -45,6 +45,7 @@ export default function CommissioningPackageCreationDialog(
     };
 
     await addPackageAction(newPackage, dispatch);
+    clearFields();
     props.setOpen(false);
   }
 
@@ -54,8 +55,14 @@ export default function CommissioningPackageCreationDialog(
     );
   };
   function handleCancel() {
-    setSelectedColor(undefined);
+    clearFields();
     props.setOpen(false);
+  }
+
+  function clearFields() {
+    setSelectedColor(undefined);
+    setName("");
+    setId("");
   }
 
   return (
