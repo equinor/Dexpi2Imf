@@ -7,11 +7,10 @@ import {
 } from "@equinor/eds-core-react";
 import HighlightColors from "../../enums/HighlightColors.ts";
 import styled from "styled-components";
-import React, { useEffect, useState } from "react";
-import CommissioningPackage from "../../types/CommissioningPackage.ts";
-import { useCommissioningPackageContext } from "../../hooks/useCommissioningPackageContext.tsx";
+import React, { useState } from "react";
+import { useCommissioningPackages } from "../../hooks/useCommissioningPackages.tsx";
 import ColorPreview from "./ColorPreview.tsx";
-import { createCommissioningPackage } from "../../utils/Api.ts";
+import { addPackageAction } from "../../utils/CommissioningPackageActions.tsx";
 
 const ColorSelectionContainer = styled.div`
   display: flex;
@@ -28,10 +27,7 @@ interface CommissioningPackageCreationDialogProps {
 export default function CommissioningPackageCreationDialog(
   props: CommissioningPackageCreationDialogProps,
 ) {
-  const context = useCommissioningPackageContext();
-  const [commissioningPackage, setCommissioningPackage] = useState<
-    CommissioningPackage | undefined
-  >();
+  const { dispatch } = useCommissioningPackages();
   const [id, setId] = useState<string>("");
   const [name, setName] = useState("");
   const [selectedColor, setSelectedColor] = useState<
@@ -48,16 +44,10 @@ export default function CommissioningPackageCreationDialog(
       selectedInternalNodes: [],
     };
 
-    await createCommissioningPackage(newPackage);
-    setCommissioningPackage(newPackage);
+    await addPackageAction(newPackage, dispatch);
+    clearFields();
     props.setOpen(false);
   }
-
-  useEffect(() => {
-    if (!commissioningPackage) return;
-    context.setCommissioningPackages((prev) => [...prev, commissioningPackage]);
-    context.setActivePackage(commissioningPackage);
-  }, [commissioningPackage]);
 
   const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedColor(
@@ -65,9 +55,14 @@ export default function CommissioningPackageCreationDialog(
     );
   };
   function handleCancel() {
-    setSelectedColor(undefined);
-    setCommissioningPackage(undefined);
+    clearFields();
     props.setOpen(false);
+  }
+
+  function clearFields() {
+    setSelectedColor(undefined);
+    setName("");
+    setId("");
   }
 
   return (

@@ -1,13 +1,19 @@
 import { useContext } from "react";
-import { useCommissioningPackageContext } from "../../hooks/useCommissioningPackageContext.tsx";
+import { useCommissioningPackages } from "../../hooks/useCommissioningPackages.tsx";
 import ToolContext from "../../context/ToolContext.ts";
 import ActionContext from "../../context/ActionContext.ts";
 import {
   LineProps,
   PointProps,
 } from "../../types/diagram/GraphicalDataFormatTestTypes.ts";
-import selectHandleFunction from "../../utils/CommissioningPackageHandler.tsx";
-import { isBoundary, isSelectedInternal } from "../../utils/HelperFunctions.ts";
+import selectHandleFunction from "../../utils/CommissioningPackageActions.tsx";
+import {
+  constructClasses,
+  findPackageOfElement,
+  isBoundary,
+  isInActivePackage,
+  isSelectedInternal,
+} from "../../utils/HelperFunctions.ts";
 
 function constructLine(coordinates: PointProps[]) {
   let dString = "M ";
@@ -22,23 +28,23 @@ function constructLine(coordinates: PointProps[]) {
 }
 
 export default function Line({ id, style, coordinates }: LineProps) {
-  const context = useCommissioningPackageContext();
+  const { context, dispatch } = useCommissioningPackages();
   const setAction = useContext(ActionContext).setAction;
   const tool = useContext(ToolContext).activeTool;
-  const commissioningPackage = context.commissioningPackages.find(
-    (pkg) =>
-      pkg.boundaryNodes?.some((node) => node.id === id) ||
-      pkg.internalNodes?.some((node) => node.id === id),
+  const commissioningPackage = findPackageOfElement(
+    context.commissioningPackages,
+    id,
   );
-  const isInActivePackage = commissioningPackage
-    ? context.activePackage.id === commissioningPackage.id
-    : true;
+  const inActivePackage = isInActivePackage(
+    commissioningPackage,
+    context.activePackage.id,
+  );
   const color = commissioningPackage?.color;
 
   function calculateLineColor() {
-    if (isBoundary(id, context)) {
+    if (isBoundary(id, context.activePackage)) {
       return "green";
-    } else if (isSelectedInternal(id, context)) {
+    } else if (isSelectedInternal(id, context.activePackage)) {
       return "red";
     } else {
       return style.stroke;
@@ -46,7 +52,10 @@ export default function Line({ id, style, coordinates }: LineProps) {
   }
 
   function calculateLineWeight() {
-    if (isBoundary(id, context) || isSelectedInternal(id, context)) {
+    if (
+      isBoundary(id, context.activePackage) ||
+      isSelectedInternal(id, context.activePackage)
+    ) {
       return 0.6;
     } else {
       return style.strokeWidth;
@@ -55,8 +64,8 @@ export default function Line({ id, style, coordinates }: LineProps) {
   return (
     <g
       onClick={() =>
-        isInActivePackage
-          ? selectHandleFunction(id, context, setAction, tool)
+        inActivePackage
+          ? selectHandleFunction(id, context, dispatch, setAction, tool)
           : {}
       }
     >
@@ -79,7 +88,7 @@ export default function Line({ id, style, coordinates }: LineProps) {
         stroke={calculateLineColor()}
         strokeWidth={calculateLineWeight()}
         strokeDasharray={style.strokeDasharray}
-        className={`${isBoundary(id, context) ? "boundary" : ""} ${isSelectedInternal(id, context) ? "selectedInternal" : ""}`}
+        className={constructClasses(id, context.activePackage)}
         fill={"none"}
       />
     </g>

@@ -1,15 +1,13 @@
 import React, { useEffect, useRef, useState } from "react";
 
-import { useCommissioningPackageContext } from "../../hooks/useCommissioningPackageContext.tsx";
+import { useCommissioningPackages } from "../../hooks/useCommissioningPackages.tsx";
 import styled from "styled-components";
 import ZoomableSVGWrapper from "../editor/ZoomableSVGWrapper.tsx";
-import {
-  getAllCommissioningPackages,
-  getGraphicalData,
-} from "../../utils/Api.ts";
+import { getGraphicalData } from "../../utils/Api.ts";
 import SymbolGraphicalDataExample from "./SymbolGraphicalDataExample.tsx";
 import { DiagramProps } from "../../types/diagram/GraphicalDataFormatTestTypes.ts";
 import Line from "./LinesGraphicalDataExample.tsx";
+import { getAllPackagesAction } from "../../utils/CommissioningPackageActions.tsx";
 
 const SVGContainer = styled.div`
   width: 100%;
@@ -17,18 +15,16 @@ const SVGContainer = styled.div`
 `;
 
 export default function PandIdGraphicalDataExample() {
-  const context = useCommissioningPackageContext();
+  const { dispatch } = useCommissioningPackages();
   const [graphicalData, setGraphicalData] = useState<DiagramProps>();
   const containerRef = useRef<HTMLDivElement>(null);
 
   // Step 1: Fetch existing commissioning packages
   useEffect(() => {
     (async () => {
-      const packages = await getAllCommissioningPackages();
+      await getAllPackagesAction(dispatch);
       const graphicalDataTest = await getGraphicalData("test");
       setGraphicalData(graphicalDataTest);
-      context.setCommissioningPackages(packages);
-      if (packages[0]) context.setActivePackage(packages[0]);
     })();
   }, []);
 

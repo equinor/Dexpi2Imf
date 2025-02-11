@@ -6,6 +6,7 @@ import {
 } from "../types/diagram/Common.ts";
 import PandidContext from "../context/PandidContext.ts";
 
+//TODO - remove when new graphical format implemented
 export default function useSerializePipeSvg(
   componentName: string,
   genericAttributes: GenericAttributesProps,

@@ -1,9 +1,9 @@
 import { TopBar, Typography } from "@equinor/eds-core-react";
-import { useCommissioningPackageContext } from "../../hooks/useCommissioningPackageContext.tsx";
+import { useCommissioningPackages } from "../../hooks/useCommissioningPackages.tsx";
 import ColorPreview from "./ColorPreview.tsx";
 
 export default function EditorTopBar() {
-  const context = useCommissioningPackageContext();
+  const { context } = useCommissioningPackages();
   return (
     <TopBar>
       <TopBar.Header>

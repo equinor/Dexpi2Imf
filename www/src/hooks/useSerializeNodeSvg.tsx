@@ -16,6 +16,7 @@ interface SerializedNodeProps {
   genericAttributes?: GenericAttributesProps;
 }
 
+//TODO - remove when new graphical format implemented
 export default function useSerializeNodeSvg({
   id,
   componentName,

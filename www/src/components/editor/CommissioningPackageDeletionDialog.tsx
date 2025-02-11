@@ -1,6 +1,7 @@
 ﻿import { Button, Checkbox, Dialog, Table } from "@equinor/eds-core-react";
 import React, { useEffect, useState } from "react";
-import { useCommissioningPackageContext } from "../../hooks/useCommissioningPackageContext.tsx";
+import { useCommissioningPackages } from "../../hooks/useCommissioningPackages.tsx";
+import { deletePackageAction } from "../../utils/CommissioningPackageActions.tsx";
 
 interface DeleteDialogProps {
   isOpen: boolean;
@@ -11,7 +12,7 @@ const DeleteCommissioningPackageDialog: React.FC<DeleteDialogProps> = ({
   isOpen,
   onClose,
 }) => {
-  const context = useCommissioningPackageContext();
+  const { context, dispatch } = useCommissioningPackages();
   const [selectedPackages, setSelectedPackages] = useState<Set<string>>(
     new Set(),
   );
@@ -28,10 +29,10 @@ const DeleteCommissioningPackageDialog: React.FC<DeleteDialogProps> = ({
     });
   };
 
-  const handleDelete = () => {
-    selectedPackages.forEach((packageId) => {
-      context?.deleteCommissioningPackage(packageId);
-    });
+  const handleDelete = async () => {
+    for (const packageId of selectedPackages) {
+      await deletePackageAction(packageId, dispatch);
+    }
     onClose();
     setSelectedPackages(new Set());
   };

@@ -1,5 +1,6 @@
 import styled from "styled-components";
 
+//TODO - remove when new graphical format implemented
 interface StyledPathProps {
   $isDashed: boolean;
 }

@@ -13,7 +13,7 @@ import {
 import styled from "styled-components";
 import React, { useContext, useState } from "react";
 import Tools from "../../enums/Tools.ts";
-import { useCommissioningPackageContext } from "../../hooks/useCommissioningPackageContext.tsx";
+import { useCommissioningPackages } from "../../hooks/useCommissioningPackages.tsx";
 import ToolContext from "../../context/ToolContext.ts";
 import CommissioningPackageCreationDialog from "./CommissioningPackageCreationDialog.tsx";
 import CommissioningPackageDeletionDialog from "./CommissioningPackageDeletionDialog.tsx";
@@ -36,7 +36,7 @@ export default function EditorSidebar({
   isNewGraphics,
   setIsNewGraphics,
 }: EditorSidebarProps) {
-  const context = useCommissioningPackageContext();
+    const { context, dispatch } = useCommissioningPackages();
   const { handleUndo, handleRedo } = useUndoRedo();
   const { activeTool, setActiveTool } = useContext(ToolContext);
   const [isCreationOpen, setIsCreationOpen] = useState<boolean>(false);
@@ -128,7 +128,10 @@ export default function EditorSidebar({
                     label={commpckg.name}
                     key={commpckg.name}
                     onClick={() => {
-                      context?.setActivePackage(commpckg);
+                      dispatch({
+                        type: "SET_ACTIVE_PACKAGE",
+                        payload: commpckg,
+                      });
                     }}
                   />
                 ))}

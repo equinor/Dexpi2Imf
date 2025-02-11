@@ -3,9 +3,9 @@ import constructPath from "../../utils/Path.ts";
 import { useContext } from "react";
 import PandidContext from "../../context/PandidContext.ts";
 import StyledPath from "./StyledPath.tsx";
-import { useCommissioningPackageContext } from "../../hooks/useCommissioningPackageContext.tsx";
+import { useCommissioningPackages } from "../../hooks/useCommissioningPackages.tsx";
 import React from "react";
-import selectHandleFunction from "../../utils/CommissioningPackageHandler.tsx";
+import selectHandleFunction from "../../utils/CommissioningPackageActions.tsx";
 import ToolContext from "../../context/ToolContext.ts";
 import HighlightColors from "../../enums/HighlightColors.ts";
 import { iriFromSvgNode } from "../../utils/HelperFunctions.ts";
@@ -17,9 +17,10 @@ interface CenterLineComponentProps {
   isInformationFlow: boolean;
 }
 
+//TODO - remove when new graphical format implemented
 export default function CenterLine(props: CenterLineComponentProps) {
   const height = useContext(PandidContext).height;
-  const context = useCommissioningPackageContext();
+  const { context, dispatch } = useCommissioningPackages();
   const setAction = useContext(ActionContext).setAction;
   const tool = useContext(ToolContext).activeTool;
   let color: HighlightColors | undefined;
@@ -43,10 +44,18 @@ export default function CenterLine(props: CenterLineComponentProps) {
       {props.centerLines.map((centerline: CenterLineProps, index: number) =>
         centerline !== undefined ? (
           <React.Fragment key={index}>
-            {(
+            {
               <path
                 onClick={() =>
-                    iri ? selectHandleFunction(iri, context, setAction, tool) : {}
+                  iri
+                    ? selectHandleFunction(
+                        iri,
+                        context,
+                        dispatch,
+                        setAction,
+                        tool,
+                      )
+                    : {}
                 }
                 id={iri ? iri : props.id}
                 key={index + "_highlight"}
@@ -56,9 +65,8 @@ export default function CenterLine(props: CenterLineComponentProps) {
                 opacity={hasSelectedInternalNode ? 0.5 : 0}
                 fill={"none"}
               />
-            )}
+            }
             <StyledPath
-
               key={index}
               d={constructPath(centerline.Coordinate, height)}
               $isDashed={props.isInformationFlow}

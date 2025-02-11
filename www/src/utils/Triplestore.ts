@@ -3,6 +3,7 @@ export enum Method {
   Get = "GET",
 }
 
+//TODO - remove when API is finished
 export async function queryTripleStore(
   sparql: string,
   method: Method.Get | Method.Post,
