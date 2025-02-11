@@ -10,8 +10,8 @@ import {
   updateInternal,
 } from "./Api.ts";
 import CommissioningPackage from "../types/CommissioningPackage.ts";
-import { PackageAction } from "../context/CommissioningPackageContextProvider.tsx";
 import { CommissioningPackageContextProps } from "../context/CommissioningPackageContext.ts";
+import { initialPackage, PackageAction } from "./Reducer.ts";
 
 export default async function selectHandleFunction(
   id: string,
@@ -62,6 +62,10 @@ export async function getAllPackagesAction(
   dispatch: React.Dispatch<PackageAction>,
 ) {
   const commissioningPackages = await getAllCommissioningPackages();
+  if (commissioningPackages.length === 0) {
+    await addInitialPackageAction(dispatch);
+    return;
+  }
   dispatch({ type: "SET_PACKAGES", payload: commissioningPackages });
 }
 
@@ -70,7 +74,7 @@ export async function deletePackageAction(
   dispatch: React.Dispatch<PackageAction>,
 ) {
   await deleteCommissioningPackage(packageId);
-  dispatch({ type: "DELETE_PACKAGE", payload: packageId });
+  await getAllPackagesAction(dispatch);
 }
 
 export async function addPackageAction(
@@ -79,4 +83,11 @@ export async function addPackageAction(
 ) {
   await createCommissioningPackage(commissioningPackage);
   dispatch({ type: "ADD_PACKAGE", payload: commissioningPackage });
+}
+
+export async function addInitialPackageAction(
+  dispatch: React.Dispatch<PackageAction>,
+) {
+  await createCommissioningPackage(initialPackage);
+  dispatch({ type: "SET_INITIAL" });
 }
