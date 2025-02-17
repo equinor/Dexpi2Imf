@@ -65,8 +65,9 @@ export async function getAllPackagesAction(
   if (commissioningPackages.length === 0) {
     await addInitialPackageAction(dispatch);
     return;
+  } else {
+    dispatch({ type: "SET_PACKAGES", payload: commissioningPackages });
   }
-  dispatch({ type: "SET_PACKAGES", payload: commissioningPackages });
 }
 
 export async function deletePackageAction(

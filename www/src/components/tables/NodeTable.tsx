@@ -15,10 +15,10 @@ const StyledTableCaption = styled.div`
 `;
 
 export default function NodeTable() {
-  const { activePackage } = useCommissioningPackages();
+  const { context } = useCommissioningPackages();
   const [insideNodes, setInsideNodes] = useState<string[]>([]);
   const [boundaryNodes, setBoundaryNodes] = useState<string[]>([]);
-  const packageIri = activePackage.id;
+  const packageIri = context.activePackage.id;
 
   useEffect(() => {
     const fetchNodes = async () => {
@@ -31,14 +31,14 @@ export default function NodeTable() {
     };
 
     fetchNodes();
-  }, [activePackage]);
+  }, [packageIri]);
 
   return (
     <>
       <StyledTableCaption>
-        <Typography variant="h2">{activePackage.name} </Typography>
+        <Typography variant="h2">{context.activePackage.name} </Typography>
         <DownloadButton
-          filename={activePackage.name}
+          filename={context.activePackage.name}
           nodeIdsInside={insideNodes}
           nodeIdsBoundary={boundaryNodes}
         />
