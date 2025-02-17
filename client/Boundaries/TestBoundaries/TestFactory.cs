@@ -1,35 +1,31 @@
 ﻿using System.Net.Http.Headers;
 using System.Reflection;
 using Boundaries;
+using DotNet.Testcontainers.Builders;
+using DotNet.Testcontainers.Configurations;
+using DotNet.Testcontainers.Containers;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.VisualStudio.TestPlatform.TestHost;
-using DotNet.Testcontainers.Containers;
-using DotNet.Testcontainers.Builders;
-using DotNet.Testcontainers.Configurations;
-using Xunit.Abstractions;
 
+namespace TestBoundaries;
 
 public class TestFactory : WebApplicationFactory<Backend.Program>, IAsyncLifetime
 {
-    
-    private IContainer _rdfoxContainer;
+    private readonly IContainer _rdfoxContainer;
+    private string _hostname;
+    private int _port;
 
-    private string hostname;
-    private int port;
-    
-    
     private readonly string _outputFolderPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? throw new InvalidOperationException();
-    private string _tempRdfoxDirectory = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
+    private readonly string _tempRdfoxDirectory = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
     private const string RdfoxUsername = "dexpi";
     private readonly string _rdfoxPassword = Guid.NewGuid().ToString("D");
 
     public TestFactory()
     {
         Directory.CreateDirectory(_tempRdfoxDirectory);
-        string filePath = Path.Combine(_tempRdfoxDirectory, "RDFox.versions");
-        string content = "data-store-catalog 1\ndata-store-change-log 1\nendpoint.params 1\nrole-database 1\nserver.params 1";
+        var filePath = Path.Combine(_tempRdfoxDirectory, "RDFox.versions");
+        const string content = "data-store-catalog 1\ndata-store-change-log 1\nendpoint.params 1\nrole-database 1\nserver.params 1";
 
         File.WriteAllText(filePath, content);
 
@@ -47,22 +43,18 @@ public class TestFactory : WebApplicationFactory<Backend.Program>, IAsyncLifetim
             .Build();
     }
 
-
-    
     public async Task InitializeAsync()
     {
         await _rdfoxContainer.StartAsync();
-        hostname = _rdfoxContainer.Hostname;
-        port = _rdfoxContainer.GetMappedPublicPort(12110);
-        return;
+        _hostname = _rdfoxContainer.Hostname;
+        _port = _rdfoxContainer.GetMappedPublicPort(12110);
     }
 
     public HttpClient CreateAuthenticatingClient(params string[] roles)
     {
         var client = CreateClient();
         client.DefaultRequestHeaders.Authorization =
-            new AuthenticationHeaderValue(scheme: "TestAuthenticationScheme",
-                $"Bearer null");
+            new AuthenticationHeaderValue(scheme: "TestAuthenticationScheme", "Bearer null");
         return client;
     }
     protected override void ConfigureWebHost(IWebHostBuilder builder)
@@ -74,8 +66,8 @@ public class TestFactory : WebApplicationFactory<Backend.Program>, IAsyncLifetim
             // Register a test-specific RdfoxApi instance
             services.AddSingleton<IRdfoxApi>(new RdfoxApi(new ConnectionSettings
             {
-                Host = hostname,
-                Port = port,
+                Host = _hostname,
+                Port = _port,
                 Username = RdfoxUsername,
                 Password = _rdfoxPassword,
                 Datastore = "boundaries"
