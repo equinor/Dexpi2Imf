@@ -9,6 +9,7 @@ import { GenericAttributesProps } from "../../types/diagram/Common.ts";
 import SvgElement from "./SvgElement.tsx";
 import useSerializeNodeSvg from "../../hooks/useSerializeNodeSvg.tsx";
 
+//TODO - remove when new graphical format implemented
 export default function ProcessInstrumentationFunction(
   props: ProcessInstrumentationFunctionProps,
 ) {

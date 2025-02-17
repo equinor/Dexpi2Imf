@@ -1,5 +1,6 @@
 import React, { createContext } from "react";
 
+// TODO - remove when new graphical format is done
 interface PandidContextProps {
   height: number;
   svgMap: Map<string, Element | null>;

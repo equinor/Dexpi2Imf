@@ -1,6 +1,7 @@
 import { ActuatingSystemProps } from "../../types/diagram/ActuatingSystem.ts";
 import SvgElement from "./SvgElement.tsx";
 
+// TODO - Remove when new graphical format implemented
 export default function ActuatingSystem(props: ActuatingSystemProps) {
   const actuatingSystemComponents = props.ActuatingSystemComponent.filter(
     (component) => component.ComponentName,
