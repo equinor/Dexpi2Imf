@@ -28,14 +28,14 @@ export default function ZoomableSVGWrapper({
     };
 
     updateDimensions();
-    window.addEventListener("resize", updateDimensions);
-    return () => window.removeEventListener("resize", updateDimensions);
   }, []);
 
   // Fit SVG to screen on mount
   useEffect(() => {
-    if (Viewer.current) {
-      Viewer.current.fitToViewer();
+    if (Viewer.current && dimensions.width > 0 && dimensions.height > 0) {
+      requestAnimationFrame(() => {
+        Viewer.current!.fitToViewer();
+      });
     }
   }, [dimensions]);
 
@@ -46,13 +46,14 @@ export default function ZoomableSVGWrapper({
           width={dimensions.width}
           height={dimensions.height}
           background={"#FFFFFF"}
-          scaleFactorMin={2}
+          scaleFactorMin={1}
           scaleFactorMax={10}
           tool={TOOL_AUTO}
           ref={Viewer}
           detectAutoPan={false}
           onChangeValue={() => {}}
           onChangeTool={() => {}}
+          toolbarProps={{ position: "none" }}
           detectWheel={true}
         >
           {children}
