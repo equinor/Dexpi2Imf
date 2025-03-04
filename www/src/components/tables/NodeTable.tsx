@@ -1,5 +1,5 @@
 import { Table, Typography } from "@equinor/eds-core-react";
-import { useCommissioningPackageContext } from "../../hooks/useCommissioningPackageContext.tsx";
+import { useCommissioningPackages } from "../../hooks/useCommissioningPackages.tsx";
 import {
   getBoundaryNodesForTable,
   getInsideNodesForTable,
@@ -8,13 +8,17 @@ import { useEffect, useState } from "react";
 import DownloadButton from "./DownloadButton.tsx";
 import styled from "styled-components";
 
-const StyledTableCaption = styled.div`display:flex;flex-direction:row;caption-side:top ;`;
+const StyledTableCaption = styled.div`
+  display: flex;
+  flex-direction: row;
+  caption-side: top;
+`;
 
 export default function NodeTable() {
-  const { activePackage } = useCommissioningPackageContext();
+  const { context } = useCommissioningPackages();
   const [insideNodes, setInsideNodes] = useState<string[]>([]);
   const [boundaryNodes, setBoundaryNodes] = useState<string[]>([]);
-  const packageIri = activePackage.id;
+  const packageIri = context.activePackage.id;
 
   useEffect(() => {
     const fetchNodes = async () => {
@@ -27,20 +31,20 @@ export default function NodeTable() {
     };
 
     fetchNodes();
-  }, [activePackage]);
+  }, [packageIri]);
 
   return (
     <>
       <StyledTableCaption>
-        <Typography variant="h2">{activePackage.name} </Typography>
+        <Typography variant="h2">{context.activePackage.name} </Typography>
         <DownloadButton
-            filename={activePackage.name}
-            nodeIdsInside={insideNodes}
-            nodeIdsBoundary={boundaryNodes}
+          filename={context.activePackage.name}
+          nodeIdsInside={insideNodes}
+          nodeIdsBoundary={boundaryNodes}
         />
       </StyledTableCaption>
       <Table>
-  <Table.Head>
+        <Table.Head>
           <Table.Row>
             <Table.Cell>Inside Boundary</Table.Cell>
             <Table.Cell>Boundary</Table.Cell>
@@ -61,7 +65,6 @@ export default function NodeTable() {
           ))}
         </Table.Body>
       </Table>
-
     </>
   );
 }

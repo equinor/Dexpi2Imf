@@ -1,0 +1,39 @@
+version: 2
+updates:
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    target-branch: "main"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:00"
+
+  - package-ecosystem: "pip"
+    directory: "/cli/chex/"
+    target-branch: "main"
+    labels:
+      - "Pip deps"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:00"
+
+  - package-ecosystem: "nuget"
+    directory: "/client/Boundaries/"
+    target-branch: "main"
+    labels:
+       - "nuget deps"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:00"
+
+  - package-ecosystem: "npm"
+    directory: "/www/"
+    target-branch: "main"
+    labels:
+      - "npm deps"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:00"

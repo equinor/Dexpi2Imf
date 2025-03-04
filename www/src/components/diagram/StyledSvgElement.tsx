@@ -3,7 +3,7 @@ import calculateAngleAndRotation from "../../utils/Transformation.ts";
 import { useContext } from "react";
 import PandidContext from "../../context/PandidContext.ts";
 import styled from "styled-components";
-import { useCommissioningPackageContext } from "../../hooks/useCommissioningPackageContext.tsx";
+import { useCommissioningPackages } from "../../hooks/useCommissioningPackages.tsx";
 
 interface StyledSvgElementProps {
   id: string;
@@ -21,6 +21,7 @@ const StyledG = styled.g`
   }
 `;
 
+//TODO - remove when new graphical format implemented
 export default function StyledSvgElement({
   id,
   position,
@@ -29,7 +30,7 @@ export default function StyledSvgElement({
   onClick,
 }: StyledSvgElementProps) {
   const height = useContext(PandidContext).height;
-  const context = useCommissioningPackageContext();
+  const { context } = useCommissioningPackages();
   const commissioningPackage = context.commissioningPackages.find(
     (pkg) =>
       pkg.boundaryNodes?.some((node) => node.id === id) ||
@@ -38,33 +39,32 @@ export default function StyledSvgElement({
   let hasSelectedInternalNode: boolean = false;
   if (commissioningPackage) {
     hasSelectedInternalNode =
-        commissioningPackage.selectedInternalNodes.length > 0;
+      commissioningPackage.selectedInternalNodes.length > 0;
   }
-    return (
-      <>
-        {svg && (
-          <StyledG
-            id={id}
-            color={color}
-            opacity={hasSelectedInternalNode ? 0.5 : 0}
-            transform={
-              position
-                ? calculateAngleAndRotation(
-                    position.Reference.X,
-                    position.Reference.Y,
-                    position.Location.X,
-                    height - position.Location.Y,
-                  )
-                : ""
-            }
-            className={".node"}
-            dangerouslySetInnerHTML={{ __html: svg }}
-            onClick={() => onClick && onClick(id)}
-          />
-        )}
-      </>
-    );
-
+  return (
+    <>
+      {svg && (
+        <StyledG
+          id={id}
+          color={color}
+          opacity={hasSelectedInternalNode ? 0.5 : 0}
+          transform={
+            position
+              ? calculateAngleAndRotation(
+                  position.Reference.X,
+                  position.Reference.Y,
+                  position.Location.X,
+                  height - position.Location.Y,
+                )
+              : ""
+          }
+          className={".node"}
+          dangerouslySetInnerHTML={{ __html: svg }}
+          onClick={() => onClick && onClick(id)}
+        />
+      )}
+    </>
+  );
 
   //return null;
 }

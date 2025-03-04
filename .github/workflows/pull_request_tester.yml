@@ -10,15 +10,18 @@ jobs:
   dotnet-tests:
     runs-on: ubuntu-latest
     name: ".NET Tests & Reports"
-    timeout-minutes: 5
+    timeout-minutes: 10
     steps:
     - name: Checkout
       uses: actions/checkout@v4
 
+    - name: Download RDFox license key
+      run: echo "${{ secrets.RDFOX_LICENSE_CONTENT }}" > ./RDFox.lic
+
     - name: Setup .NET
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: 8.0.x
+      run: |
+        sudo add-apt-repository ppa:dotnet/backports
+        sudo apt-get update && sudo apt-get install -y dotnet-sdk-9.0
 
     - name: Restore dependencies
       run: dotnet restore ./client/Boundaries/Boundaries.sln
@@ -29,3 +32,6 @@ jobs:
     - name: Test
       run: |
         dotnet test ./client/Boundaries/Boundaries.sln --no-build --verbosity normal 
+
+    - name: Delete license file
+      run: rm ./RDFox.lic
