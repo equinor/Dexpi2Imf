@@ -11,9 +11,7 @@
   },
   "dependencies": {
     "@equinor/eds-core-react": "^0.43.0",
-    "@svgr/core": "^8.1.0",
     "@types/react-svg-pan-zoom": "^3.3.9",
-    "file-saver": "^2.0.5",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-svg-pan-zoom": "^3.13.1",
