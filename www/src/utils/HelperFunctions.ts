@@ -60,6 +60,8 @@ export function iriFromPiping(segment: PipingNetworkSegmentProps) {
     return `https://assetid.equinor.com/plantx#${segment.Connection.FromID}-node${segment.Connection.FromNode}-connector`;
   } else if (segment.Connection?.ToID) {
     return `https://assetid.equinor.com/plantx#${segment.Connection!.ToID}-node${segment.Connection!.ToNode}-connector`;
+  } else if (segment.PipingComponent?.ID) {
+    return `https://assetid.equinor.com/plantx#${segment.PipingComponent.ID}-node2-connector`;
   } else {
     console.error("Something went wrong with iri creation");
     return ``;

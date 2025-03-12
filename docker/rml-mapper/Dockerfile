@@ -20,6 +20,7 @@ COPY demo.sh /app/demo.sh
 RUN dos2unix /app/demo.sh
 RUN chmod +x /app/demo.sh
 
+
 # Run the rml mappings
 ENTRYPOINT "/app/demo.sh"
 
