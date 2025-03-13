@@ -54,7 +54,7 @@ export function iriFromPiping(segment: PipingNetworkSegmentProps) {
     (!segment.PipingComponent || !segment.PropertyBreak)
   ) {
     return `https://assetid.equinor.com/plantx#${segment.Connection.ToID}-node${segment.Connection.ToNode}-connector`;
-  } else if (segment.PipingComponent[1]) {
+  } else if (segment.PipingComponent && segment.PipingComponent[1]) {
     return `https://assetid.equinor.com/plantx#${segment.PipingComponent[1].ID}-node2-connector`;
   } else if (segment.Connection?.FromID) {
     return `https://assetid.equinor.com/plantx#${segment.Connection.FromID}-node${segment.Connection.FromNode}-connector`;

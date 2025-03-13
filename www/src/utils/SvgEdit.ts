@@ -64,7 +64,7 @@ export function addTextToNode(
       fill: "black",
     });
     const genericAttribute = extractGenericAttributes(genericAttributes);
-    textElement!.textContent = genericAttribute[0].Value;
+    textElement!.textContent = genericAttribute[0]?.Value || "Lacking value";
   }
 
   return element;
