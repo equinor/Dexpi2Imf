@@ -59,7 +59,10 @@ export default function CenterLine(props: CenterLineComponentProps) {
                 }
                 id={iri ? iri : props.id}
                 key={index + "_highlight"}
-                d={constructPath(centerline.Coordinate, height)}
+                d={Array.isArray(centerline.Coordinate)
+                    ? constructPath(centerline.Coordinate, height)
+                    : ""
+                }
                 stroke={color ? color : "black"}
                 strokeWidth={5}
                 opacity={hasSelectedInternalNode ? 0.5 : 0}
@@ -68,7 +71,10 @@ export default function CenterLine(props: CenterLineComponentProps) {
             }
             <StyledPath
               key={index}
-              d={constructPath(centerline.Coordinate, height)}
+              d={Array.isArray(centerline.Coordinate)
+                  ? constructPath(centerline.Coordinate, height)
+                  : ""
+              }
               $isDashed={props.isInformationFlow}
             />
           </React.Fragment>
