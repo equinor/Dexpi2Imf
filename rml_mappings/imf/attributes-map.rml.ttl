@@ -28,10 +28,10 @@
     rml:reference "@AttributeURI";
   ];
   rr:objectMap [ 
-    rml:reference "@Value" ;
-    rr:termType rr:Literal
-    ],
-    [ 
+    # rml:reference "@Value" ;
+    # rr:termType rr:Literal
+    # ],
+    # [ 
     rml:reference "@ValueURI";
     rr:termType rr:IRI
     ]; 

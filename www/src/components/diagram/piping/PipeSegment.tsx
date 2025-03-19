@@ -46,7 +46,7 @@ export default function PipeSegment(props: PipeSegmentProps) {
           <SvgElement
             id={props.PropertyBreak.ID}
             componentName={props.PropertyBreak.ComponentName}
-            text={props.PropertyBreak.GenericAttributes[0]}
+            text={props.PropertyBreak.GenericAttributes?.[0] ?? props.PropertyBreak.ComponentName}
             position={props.PropertyBreak.Position}
           />
           {props.PropertyBreak.PolyLine && (
