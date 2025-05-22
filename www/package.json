@@ -13,7 +13,7 @@
     "@equinor/eds-core-react": "^0.44.0",
     "@types/react-svg-pan-zoom": "^3.3.9",
     "react": "^19.1.0",
-    "react-dom": "^19.0.0",
+    "react-dom": "^19.1.0",
     "react-svg-pan-zoom": "^3.13.1",
     "styled-components": "^6.1.15",
     "xlsx": "^0.18.5",
