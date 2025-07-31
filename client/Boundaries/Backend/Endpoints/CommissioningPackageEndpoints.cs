@@ -11,17 +11,24 @@ public static class CommissioningPackageEndpoints
 {
     public static void MapCommissioningPackageEndpoints(this IEndpointRouteBuilder endpoints)
     {
-         //Add commissioning package
-         endpoints.MapPost("/commissioning-package", async (CommissioningPackage commissioningPackage, [FromServices] IRdfoxApi rdfoxApi) =>
-         {
+        //Add commissioning package
+        endpoints.MapPost("/commissioning-package", async (CommissioningPackage commissioningPackage, [FromServices] IRdfoxApi rdfoxApi) =>
+        {
             var data = new StringBuilder();
             data.AppendLine($@"<{commissioningPackage.Id}> {TypesProvider.type} {PropertiesProvider.CommissioningPackage} .");
             data.AppendLine($@"<{commissioningPackage.Id}> {PropertiesProvider.hasName} ""{commissioningPackage.Name}"" .");
             data.AppendLine($@"<{commissioningPackage.Id}> {PropertiesProvider.hasColor} ""{commissioningPackage.Color}"" .");
 
-            await rdfoxApi.LoadData(data.ToString());
-
-            return Results.Ok();
+            try
+            {
+                await rdfoxApi.LoadData(data.ToString());
+                return Results.Ok(new { message = $"Commissioning package {commissioningPackage.Id} added successfully." });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[POST /commissioning-package] Exception: {ex}");
+                return Results.Problem("Failed to create commissioning package.");
+            }
         }).WithTags("Commissioning Package");
 
 
