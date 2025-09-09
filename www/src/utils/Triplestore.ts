@@ -45,14 +45,15 @@ function parseSparqlSelectResult(result: string) {
 export async function getInsideNodesForTable(completionPackageIri: string) {
   const queryInside = `
     SELECT ?tagNr WHERE {
-        ?node comp:isInPackage ${completionPackageIri} . 
-        ?node <http://noaka.org/rdl/SequenceAssignmentClass> ?o .
-        { ?node <http://sandbox.dexpi.org/rdl/TagNameAssignmentClass> ?tagNr. }
+        ?node comp:isInPackage <${completionPackageIri}> . 
+        ?node dexpi:SequenceAssignmentClass ?o .
+        { ?node dexpi:TagNameAssignmentClass ?tagNr. }
             UNION
-            { ?node <http://noaka.org/rdl/ItemTagAssignmentClass> ?tagNr. }
+            { ?node dexpi:ItemTagAssignmentClass ?tagNr. }
           FILTER NOT EXISTS { ?node a imf:Terminal . }
     }
     `;
+    console.log("Querying for inside nodes with query:", queryInside);
   const result = await queryTripleStore(queryInside, Method.Get);
   if (result === undefined) {
     throw new Error("Query for inside nodes returned undefined");
@@ -63,14 +64,14 @@ export async function getInsideNodesForTable(completionPackageIri: string) {
 export async function getBoundaryNodesForTable(completionPackageIri: string) {
   const queryBoundary = `
     SELECT DISTINCT  ?tagNr WHERE {
-    ?node comp:isBoundaryOf ${completionPackageIri} . 
-    ?node <http://noaka.org/rdl/SequenceAssignmentClass> ?o .
+    ?node comp:isBoundaryOf <${completionPackageIri}> . 
+    ?node dexpi:SequenceAssignmentClass ?o .
         {
-            { ?node <http://sandbox.dexpi.org/rdl/TagNameAssignmentClass> ?tagNr. }
+            { ?node dexpi:TagNameAssignmentClass ?tagNr. }
             UNION
-            { ?node <http://noaka.org/rdl/ObjectDisplayNameAssignmentClass> ?tagNr. }
-            UNION 
-            { ?node <http://noaka.org/rdl/ItemTagAssignmentClass> ?tagNr. }
+            { ?node dexpi:ObjectDisplayNameAssignmentClass ?tagNr. }
+            UNION
+            { ?node dexpi:ItemTagAssignmentClass ?tagNr. }
         }
     }
     `;

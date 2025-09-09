@@ -1,4 +1,6 @@
 boundaries.rdfox
 
 import ../datalog/spade_list.datalog
+# Use the line below (in stead of the one above) to do spade-lists in stead of boundaries
+#import ../datalog/spade_list.datalog
 import +p "../rml_mappings/pandid.trig"
