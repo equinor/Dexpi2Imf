@@ -1,4 +1,4 @@
 boundaries.rdfox
 
-import ../datalog/noaka_boundary.datalog
+import ../datalog/spade_list.datalog
 import +p "../rml_mappings/pandid.trig"
