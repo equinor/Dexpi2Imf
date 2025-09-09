@@ -44,13 +44,8 @@ function parseSparqlSelectResult(result: string) {
 
 export async function getInsideNodesForTable(completionPackageIri: string) {
   const queryInside = `
-    SELECT ?tagNr WHERE {
-        ?node comp:isInPackage ${completionPackageIri} . 
-        ?node <http://noaka.org/rdl/SequenceAssignmentClass> ?o .
-        { ?node <http://sandbox.dexpi.org/rdl/TagNameAssignmentClass> ?tagNr. }
-            UNION
-            { ?node <http://noaka.org/rdl/ItemTagAssignmentClass> ?tagNr. }
-          FILTER NOT EXISTS { ?node a imf:Terminal . }
+    SELECT ?node WHERE {
+      ?node comp:isInPackage <https://assetid.equinor.com/plantx#Package1> .
     }
     `;
   const result = await queryTripleStore(queryInside, Method.Get);
