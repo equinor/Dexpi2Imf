@@ -1,0 +1,25 @@
+prefix comp: <https://rdf.equinor.com/completion#>
+
+comp:ValveOrSpade[?node] :- 
+    dexpi:TagTypeAssignmentClass [?node, ?dexpiTag] , 
+    FILTER (?dexpiTag IN ("PV", "HV", "TV", "VG", "ESV", "PA")) .
+
+comp:ValveOrSpade[?part_node] :- 
+    comp:ValveOrSpade[?whole_node] ,
+    imf:hasPart[?whole_node, ?part_node] .
+
+comp:isInPackage [?node, ?package] :- 
+    comp:isSelectedInternalOf[?node, ?package] .
+
+comp:isInPackage [?new_node, ?package] :- 
+    comp:isInPackage [?node, ?package] ,
+    imf:adjacentTo [?node, ?new_node] ,
+    NOT comp:ValveOrSpade[?node].
+
+comp:isBoundaryOf [?node, ?package] :- 
+    comp:isInPackage [?node, ?package] ,
+    comp:ValveOrSpade[?node] .
+
+
+
+
