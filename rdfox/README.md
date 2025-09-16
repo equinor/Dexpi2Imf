@@ -41,3 +41,11 @@ RDFox sandbox . connected
 This will load ontology and datalog rules, and in addition load the data in [../rml/pandid.trig](../rml/pandid.trig)
 
 There are a lot of warnings about axioms in the IMF ontology that cannot be handled. This can safely be ignored. Other warnings and errors should be checked, especially if the last output is not the expected commissioning package output
+
+## Running the spade-list example. 
+Switch the datalog imported in [../rdfox/dexpi.rdfox](../rdfox/dexpi.rdfox)
+Click the front-end as selecting an internal object
+Also try the sparql query
+```sparql
+
+```
