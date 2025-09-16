@@ -53,7 +53,6 @@ export async function getInsideNodesForTable(completionPackageIri: string) {
           FILTER NOT EXISTS { ?node a imf:Terminal . }
     }
     `;
-    console.log("Querying for inside nodes with query:", queryInside);
   const result = await queryTripleStore(queryInside, Method.Get);
   if (result === undefined) {
     throw new Error("Query for inside nodes returned undefined");
