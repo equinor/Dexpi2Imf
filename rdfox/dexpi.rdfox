@@ -1,6 +1,6 @@
 boundaries.rdfox
 
-import ../datalog/spade_list.datalog
+import ../datalog/noaka_boundary.datalog
 # Use the import above for boundaries. To use spade-lists instead, comment out the line above and uncomment the line below.
 #import ../datalog/spade_list.datalog
 import +p "../rml_mappings/pandid.trig"
