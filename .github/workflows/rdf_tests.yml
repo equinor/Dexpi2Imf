@@ -31,13 +31,13 @@ jobs:
 
       - name: install apache jena
         run: |
-          wget https://dlcdn.apache.org/jena/binaries/apache-jena-5.5.0.tar.gz
+          wget https://dlcdn.apache.org/jena/binaries/apache-jena-5.6.0.tar.gz
           tar -xzvf apache-jena-*.tar.gz
           
       - name: Check ontologies and mappings are valid rdf
         id: validate_ontology_rdf
         run: |
-          export JENA_HOME=$(pwd)/apache-jena-5.5.0/
+          export JENA_HOME=$(pwd)/apache-jena-5.6.0/
           export PATH="$PATH:$JENA_HOME/bin"
           riot --validate owl/*ttl
           riot --validate rml_mappings/imf/*
@@ -45,7 +45,7 @@ jobs:
           
       - name: Test imf mappings
         run: |
-          export JENA_HOME=$(pwd)/apache-jena-5.5.0/
+          export JENA_HOME=$(pwd)/apache-jena-5.6.0/
           export PATH="$PATH:$JENA_HOME/bin"
           curl -o rml_mappings/pandid.xml https://raw.githubusercontent.com/equinor/NOAKADEXPI/refs/heads/main/Blueprint/DISC_EXAMPLE-02/DISC_EXAMPLE-02-02.xml
           docker run -v .:/data rmlio/rmlmapper-java:7.2.0 -m rml_mappings/imf/* -o /data/imf.ttl -s Turtle
@@ -60,7 +60,7 @@ jobs:
 
       - name: Test graphics mappings
         run: |
-          export JENA_HOME=$(pwd)/apache-jena-5.5.0/
+          export JENA_HOME=$(pwd)/apache-jena-5.6.0/
           export PATH="$PATH:$JENA_HOME/bin"
           curl -o rml_mappings/pandid.xml https://raw.githubusercontent.com/equinor/NOAKADEXPI/refs/heads/main/Blueprint/DISC_EXAMPLE-02/DISC_EXAMPLE-02-02.xml
           docker run -v .:/data rmlio/rmlmapper-java:7.2.0 -m rml_mappings/graphics/* -o /data/graphics.ttl -s Turtle
@@ -75,7 +75,7 @@ jobs:
 
       - name: Test rdf examples
         run: |
-          export JENA_HOME=$(pwd)/apache-jena-5.5.0/
+          export JENA_HOME=$(pwd)/apache-jena-5.6.0/
           export PATH="$PATH:$JENA_HOME/bin"
           riot --validate examples/graphical.trig
           shacl v --shapes  shacl/graphic-dexpi.shacl.ttl --data examples/graphical.trig
