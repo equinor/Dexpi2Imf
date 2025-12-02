@@ -29,7 +29,7 @@ jobs:
 
       - name: install apache jena
         run: |
-          wget https://dlcdn.apache.org/jena/binaries/apache-jena-5.5.0.tar.gz
+          wget https://dlcdn.apache.org/jena/binaries/apache-jena-5.6.0.tar.gz
           tar -xzvf apache-jena-*.tar.gz
           
       - name: Check ontologies and mappings are valid rdf
