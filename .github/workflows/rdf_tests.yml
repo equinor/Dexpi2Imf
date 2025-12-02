@@ -73,7 +73,7 @@ jobs:
 
       - name: Test rdf examples
         run: |
-          export JENA_HOME=$(pwd)/apache-jena-5.5.0/
+          export JENA_HOME=$(pwd)/apache-jena-5.6.0/
           export PATH="$PATH:$JENA_HOME/bin"
           riot --validate examples/graphical.trig
           shacl v --shapes  shacl/graphic-dexpi.shacl.ttl --data examples/graphical.trig
