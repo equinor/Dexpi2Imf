@@ -12,7 +12,7 @@ public static class CommissioningPackageEndpoints
     public static void MapCommissioningPackageEndpoints(this IEndpointRouteBuilder endpoints)
     {
         //Add commissioning package
-        endpoints.MapPost("/commissioning-package", async (CommissioningPackage commissioningPackage, [FromServices] IRdfoxApi rdfoxApi) =>
+        endpoints.MapPost("/commissioning-package", async (CommissioningPackage commissioningPackage, [FromServices] IDagalogApi dagalogApi) =>
         {
             var data = new StringBuilder();
             data.AppendLine($@"<{commissioningPackage.Id}> {TypesProvider.type} {PropertiesProvider.CommissioningPackage} .");
@@ -21,7 +21,7 @@ public static class CommissioningPackageEndpoints
 
             try
             {
-                await rdfoxApi.LoadData(data.ToString());
+                await dagalogApi.InsertData(data.ToString());
                 return Results.Ok(new { message = $"Commissioning package {commissioningPackage.Id} added successfully." });
             }
             catch (Exception ex)
@@ -33,7 +33,7 @@ public static class CommissioningPackageEndpoints
 
 
         // Update commissioning package - updating information like name and color while persisting the calculated internal nodes, and boundaries.
-        endpoints.MapPut("/commissioning-package", async (CommissioningPackage updatedPackage, [FromServices] IRdfoxApi rdfoxApi) =>
+        endpoints.MapPut("/commissioning-package", async (CommissioningPackage updatedPackage, [FromServices] IDagalogApi dagalogApi) =>
         {
             var getQuery = $@"
             SELECT ?object WHERE {{
@@ -43,7 +43,7 @@ public static class CommissioningPackageEndpoints
             }}
             ";
 
-            var result = await rdfoxApi.QuerySparql(getQuery);
+            var result = await dagalogApi.QuerySparql(getQuery);
 
             var oldPackageName = string.Empty;
             var oldPackageColor = string.Empty;
@@ -64,25 +64,25 @@ public static class CommissioningPackageEndpoints
                                 <{updatedPackage.Id}> {PropertiesProvider.hasName} ""{oldPackageName}"" . ";
 
 
-            await rdfoxApi.DeleteData(deleteData);
+            await dagalogApi.DeleteData(deleteData);
 
             var data = $@"
                 <{updatedPackage.Id}> {PropertiesProvider.hasName} ""{updatedPackage.Name}"" .
                 <{updatedPackage.Id}> {PropertiesProvider.hasColor} ""{updatedPackage.Color}"" .
             ";
 
-            await rdfoxApi.LoadData(data);
+            await dagalogApi.InsertData(data);
 
             return Results.Ok($"Commissioning package {updatedPackage.Id} updated successfully.");
         }).WithTags("Commissioning Package");
 
 
         //Get commissioning package
-        endpoints.MapGet("/commissioning-package/{commissioningPackageId}", async (string commissioningPackageId, [FromServices] IRdfoxApi rdfoxApi) =>
+        endpoints.MapGet("/commissioning-package/{commissioningPackageId}", async (string commissioningPackageId, [FromServices] IDagalogApi dagalogApi) =>
         {
             commissioningPackageId = Uri.UnescapeDataString(commissioningPackageId);
 
-            if (!await QueryUtils.CommissioningPackageExists(commissioningPackageId, rdfoxApi))
+            if (!await QueryUtils.CommissioningPackageExists(commissioningPackageId, dagalogApi))
             {
                 return Results.NotFound($"Commissioning package {commissioningPackageId} not found.");
             }
@@ -95,7 +95,7 @@ public static class CommissioningPackageEndpoints
             }}
             ";
 
-            var result = await rdfoxApi.QuerySparql(query);
+            var result = await dagalogApi.QuerySparql(query);
 
             CommissioningPackage commissioningPackage;
 
@@ -117,11 +117,11 @@ public static class CommissioningPackageEndpoints
 
 
         //Delete commissioning package
-        endpoints.MapDelete("/commissioning-package/{commissioningPackageId}", async (string commissioningPackageId, [FromServices] IRdfoxApi rdfoxApi) =>
+        endpoints.MapDelete("/commissioning-package/{commissioningPackageId}", async (string commissioningPackageId, [FromServices] IDagalogApi dagalogApi) =>
         {
             commissioningPackageId = Uri.UnescapeDataString(commissioningPackageId);
 
-            if (!await QueryUtils.CommissioningPackageExists(commissioningPackageId, rdfoxApi))
+            if (!await QueryUtils.CommissioningPackageExists(commissioningPackageId, dagalogApi))
             {
                 return Results.NotFound($"Commissioning package {commissioningPackageId} not found.");
             }
@@ -131,7 +131,7 @@ public static class CommissioningPackageEndpoints
                 {{ <{commissioningPackageId}> ?x ?y . }}
             }}";
 
-            var result = await rdfoxApi.QuerySparql(query);
+            var result = await dagalogApi.QuerySparql(query);
             var deleteQueryBuilder = new StringBuilder();
 
 
@@ -155,7 +155,7 @@ public static class CommissioningPackageEndpoints
                 }
             }
 
-            await rdfoxApi.DeleteData( deleteQueryBuilder.ToString());
+            await dagalogApi.DeleteData( deleteQueryBuilder.ToString());
 
             query = $@"
             SELECT ?x ?y WHERE {{
@@ -164,7 +164,7 @@ public static class CommissioningPackageEndpoints
 
             try
             {
-                result = await rdfoxApi.QuerySparql(query);
+                result = await dagalogApi.QuerySparql(query);
                 deleteQueryBuilder = new StringBuilder();
 
                 using (var docDel = JsonDocument.Parse(result))
@@ -180,7 +180,7 @@ public static class CommissioningPackageEndpoints
                     }
                 }
 
-                await rdfoxApi.DeleteData(deleteQueryBuilder.ToString());
+                await dagalogApi.DeleteData(deleteQueryBuilder.ToString());
             }
             catch (Exception ex)
             {
@@ -193,14 +193,14 @@ public static class CommissioningPackageEndpoints
 
 
         //Get all commissioning packages
-        endpoints.MapGet("/commissioning-package/all", async ([FromServices] IRdfoxApi rdfoxApi) =>
+        endpoints.MapGet("/commissioning-package/all", async ([FromServices] IDagalogApi dagalogApi) =>
         {
             var query = $@"
                 SELECT ?packageId WHERE {{
                     ?packageId rdf:type {PropertiesProvider.CommissioningPackage} .
                 }}";
 
-            var result = await rdfoxApi.QuerySparql(query);
+            var result = await dagalogApi.QuerySparql(query);
 
             var jsonResponse = JsonDocument.Parse(result);
             var packageIds = jsonResponse.RootElement
@@ -222,7 +222,7 @@ public static class CommissioningPackageEndpoints
                     }}
                 ";
 
-                result = await rdfoxApi.QuerySparql(query);
+                result = await dagalogApi.QuerySparql(query);
 
                 CommissioningPackage commissioningPackage;
 
@@ -245,14 +245,14 @@ public static class CommissioningPackageEndpoints
         }).WithTags("Commissioning Package");
 
         //Get the ID of all commissioning packages
-        endpoints.MapGet("/commissioning-package/ids", async ([FromServices] IRdfoxApi rdfoxApi) =>
+        endpoints.MapGet("/commissioning-package/ids", async ([FromServices] IDagalogApi dagalogApi) =>
         {
             var query = $@"
                 SELECT ?packageId WHERE {{
                     ?packageId rdf:type {PropertiesProvider.CommissioningPackage} .
                 }}";
 
-            var result = await rdfoxApi.QuerySparql(query);
+            var result = await dagalogApi.QuerySparql(query);
 
             var jsonResponse = JsonDocument.Parse(result);
             var packageIds = jsonResponse.RootElement

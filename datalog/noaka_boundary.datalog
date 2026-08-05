@@ -1,4 +1,5 @@
 prefix comp: <https://rdf.equinor.com/completion#>
+prefix imf: <http://ns.imfid.org/imf#>
 
 comp:isInPackage [?new_node, ?package] :- 
     comp:isInPackage [?node, ?package] ,

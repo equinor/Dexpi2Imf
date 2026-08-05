@@ -11,29 +11,29 @@ public static class BoundaryEndpoints
     {
         #region Boundaries
         //Update boundary
-        endpoints.MapPost("/commissioning-package/{packageId}/update-boundary/{nodeId}", async (string packageId, string nodeId, [FromServices] IRdfoxApi rdfoxApi) =>
+        endpoints.MapPost("/commissioning-package/{packageId}/update-boundary/{nodeId}", async (string packageId, string nodeId, [FromServices] IDagalogApi dagalogApi) =>
         {
             packageId = Uri.UnescapeDataString(packageId);
             nodeId = Uri.UnescapeDataString(nodeId);
 
-            if (!await QueryUtils.CommissioningPackageExists(packageId, rdfoxApi))
+            if (!await QueryUtils.CommissioningPackageExists(packageId, dagalogApi))
             {
                 return Results.NotFound($"Commissioning package {packageId} not found.");
             }
 
-            var isSelectedInternal = await QueryUtils.IsSelectedInternalOf(packageId, nodeId, rdfoxApi);
-            var isBoundary = await QueryUtils.IsBoundaryOf(packageId, nodeId, rdfoxApi);
+            var isSelectedInternal = await QueryUtils.IsSelectedInternalOf(packageId, nodeId, dagalogApi);
+            var isBoundary = await QueryUtils.IsBoundaryOf(packageId, nodeId, dagalogApi);
 
             if (isSelectedInternal)
-                await QueryUtils.DeleteIsSelectedInternalOf(packageId, nodeId, rdfoxApi);
+                await QueryUtils.DeleteIsSelectedInternalOf(packageId, nodeId, dagalogApi);
 
             if (isBoundary)
             {
-                await QueryUtils.DeleteIsBoundaryOf(packageId, nodeId, rdfoxApi);
+                await QueryUtils.DeleteIsBoundaryOf(packageId, nodeId, dagalogApi);
             }
             else
             {
-                await QueryUtils.AddIsBoundaryOf(packageId, nodeId, rdfoxApi);
+                await QueryUtils.AddIsBoundaryOf(packageId, nodeId, dagalogApi);
             }
 
             return Results.Ok();
@@ -41,12 +41,12 @@ public static class BoundaryEndpoints
 
 
         // Remove node as boundary
-        endpoints.MapDelete("/commissioning-package/{packageId}/boundary/{nodeId}", async (string packageId, string nodeId, [FromServices] IRdfoxApi rdfoxApi) =>
+        endpoints.MapDelete("/commissioning-package/{packageId}/boundary/{nodeId}", async (string packageId, string nodeId, [FromServices] IDagalogApi dagalogApi) =>
         {
             packageId = Uri.UnescapeDataString(packageId);
             nodeId = Uri.UnescapeDataString(nodeId);
 
-            if (!await QueryUtils.CommissioningPackageExists(packageId, rdfoxApi))
+            if (!await QueryUtils.CommissioningPackageExists(packageId, dagalogApi))
             {
                 return Results.NotFound($"Commissioning package {packageId} not found.");
             }
@@ -55,7 +55,7 @@ public static class BoundaryEndpoints
                      <{nodeId}> {PropertiesProvider.isBoundaryOf} <{packageId}> .
                 ";
 
-            await rdfoxApi.DeleteData(data);
+            await dagalogApi.DeleteData(data);
 
             return Results.Ok($"Triple for package {packageId} and node {nodeId} deleted successfully.");
         }).WithTags("Boundary");
@@ -63,29 +63,29 @@ public static class BoundaryEndpoints
 
         #region Internal
         //Update selected internal
-        endpoints.MapPost("/commissioning-package/{packageId}/update-internal/{nodeId}", async (string packageId, string nodeId, [FromServices] IRdfoxApi rdfoxApi) =>
+        endpoints.MapPost("/commissioning-package/{packageId}/update-internal/{nodeId}", async (string packageId, string nodeId, [FromServices] IDagalogApi dagalogApi) =>
         {
             packageId = Uri.UnescapeDataString(packageId);
             nodeId = Uri.UnescapeDataString(nodeId);
 
-            if (!await QueryUtils.CommissioningPackageExists(packageId, rdfoxApi))
+            if (!await QueryUtils.CommissioningPackageExists(packageId, dagalogApi))
             {
                 return Results.NotFound($"Commissioning package {packageId} not found.");
             }
 
-            var isSelectedInternal = await QueryUtils.IsSelectedInternalOf(packageId, nodeId, rdfoxApi);
-            var isBoundary = await QueryUtils.IsBoundaryOf(packageId, nodeId, rdfoxApi);
+            var isSelectedInternal = await QueryUtils.IsSelectedInternalOf(packageId, nodeId, dagalogApi);
+            var isBoundary = await QueryUtils.IsBoundaryOf(packageId, nodeId, dagalogApi);
 
             if (isBoundary)
-                await QueryUtils.DeleteIsBoundaryOf(packageId, nodeId, rdfoxApi);
+                await QueryUtils.DeleteIsBoundaryOf(packageId, nodeId, dagalogApi);
 
             if (isSelectedInternal)
             {
-                await QueryUtils.DeleteIsSelectedInternalOf(packageId, nodeId, rdfoxApi);
+                await QueryUtils.DeleteIsSelectedInternalOf(packageId, nodeId, dagalogApi);
             }
             else
             {
-                await QueryUtils.AddIsSelectedInternalOf(packageId, nodeId, rdfoxApi);
+                await QueryUtils.AddIsSelectedInternalOf(packageId, nodeId, dagalogApi);
             }
 
             return Results.Ok();
@@ -93,12 +93,12 @@ public static class BoundaryEndpoints
 
 
         //Add node as internal
-        endpoints.MapPost("/commissioning-package/{packageId}/internal/{nodeId}", async (string packageId, string nodeId, [FromServices] IRdfoxApi rdfoxApi) =>
+        endpoints.MapPost("/commissioning-package/{packageId}/internal/{nodeId}", async (string packageId, string nodeId, [FromServices] IDagalogApi dagalogApi) =>
         {
             packageId = Uri.UnescapeDataString(packageId);
             nodeId = Uri.UnescapeDataString(nodeId);
 
-            if (!await QueryUtils.CommissioningPackageExists(packageId, rdfoxApi))
+            if (!await QueryUtils.CommissioningPackageExists(packageId, dagalogApi))
             {
                 return Results.NotFound($"Commissioning package {packageId} not found.");
             }
@@ -107,19 +107,19 @@ public static class BoundaryEndpoints
                      <{nodeId}> {PropertiesProvider.isInPackage} <{packageId}> .
                 ";
 
-            await rdfoxApi.LoadData(data);
+            await dagalogApi.InsertData(data);
 
             return Results.Ok($"Triple for package {packageId} and node {nodeId} inserted successfully.");
         }).WithTags("Internal");
 
 
         // Remove node as internal
-        endpoints.MapDelete("/commissioning-package/{packageId}/internal/{nodeId}", async (string packageId, string nodeId, [FromServices] IRdfoxApi rdfoxApi) =>
+        endpoints.MapDelete("/commissioning-package/{packageId}/internal/{nodeId}", async (string packageId, string nodeId, [FromServices] IDagalogApi dagalogApi) =>
         {
             packageId = Uri.UnescapeDataString(packageId);
             nodeId = Uri.UnescapeDataString(nodeId);
 
-            if (!await QueryUtils.CommissioningPackageExists(packageId, rdfoxApi))
+            if (!await QueryUtils.CommissioningPackageExists(packageId, dagalogApi))
             {
                 return Results.NotFound($"Commissioning package {packageId} not found.");
             }
@@ -128,7 +128,7 @@ public static class BoundaryEndpoints
                      <{nodeId}> {PropertiesProvider.isInPackage} <{packageId}> .
                 ";
 
-            await rdfoxApi.DeleteData(data);
+            await dagalogApi.DeleteData(data);
 
             return Results.Ok($"Triple for package {packageId} and node {nodeId} deleted successfully.");
         }).WithTags("Internal");
@@ -136,13 +136,13 @@ public static class BoundaryEndpoints
 
         #region Nodes
         //Get adjacent nodes
-        endpoints.MapGet("/nodes/{nodeId}/adjacent", async (string nodeId, [FromServices] IRdfoxApi rdfoxApi) =>
+        endpoints.MapGet("/nodes/{nodeId}/adjacent", async (string nodeId, [FromServices] IDagalogApi dagalogApi) =>
         {
             nodeId = Uri.UnescapeDataString(nodeId);
 
             var query = $@"SELECT ?neighbour WHERE {{ <{nodeId}> {PropertiesProvider.adjacentTo} ?neighbour }}";
 
-            var result = await rdfoxApi.QuerySparql(query);
+            var result = await dagalogApi.QuerySparql(query);
 
             var adjacentNodes = new List<string>();
 

@@ -7,18 +7,16 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddCors();
 
-builder.Services.AddSingleton<IRdfoxApi>(sp =>
+builder.Services.AddSingleton<IDagalogApi>(sp =>
 {
     var connectionSettings = new ConnectionSettings
     {
-        Host = "rdfox",
-        Port = 12110,
-        Username = "guest",
-        Password = "guest",
-        Datastore = "boundaries"
+        Host = "dagalog",
+        Port = 3030,
+        Dataset = "ds"
     };
 
-    return new RdfoxApi(connectionSettings);
+    return new DagalogApi(connectionSettings);
 });
 
 var app = builder.Build();

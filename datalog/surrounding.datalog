@@ -1,8 +1,11 @@
 prefix data: <https://assetid.equinor.com/plantx/document/12345#>
-
+prefix imf: <http://ns.imfid.org/imf#>
+prefix dexpi: <https://rdf.equinor.com/dexpi#>
+prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
 data:connectedEquipment [?node] :- 
-    rdfs:label [?internal, "P4712"],
+    rdfs:label [?internal, ?label],
+    FILTER (?label = "P4712"),
     imf:connectedTo [?internal, ?node],
     dexpi:PipingOrEquipment [?node].
 
