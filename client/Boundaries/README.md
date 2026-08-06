@@ -2,10 +2,10 @@
 
 ## Usage
 
-Start a rdfox server from the folder [../../rdfox/](../../rdfox) with the following command:
+Start a dagalog server from the folder [../../dagalog/](../../dagalog) with the following command:
 
 ```
-RDFox sandbox ../../rdfox boundaries
+./boundaries.sh
 ```
 
 Then run `dotnet run` and follow instructions.

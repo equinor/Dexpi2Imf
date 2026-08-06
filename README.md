@@ -8,7 +8,7 @@ A repository for SSI experiments with DEXPI.
 
 * For the mappings from Dexpi to IMF see the [RML mappings](rml/README.md)
 
-* For the backend setup of the triplestore, see the [RDFox scripts](rdfox/README.md)
+* For the backend setup of the triplestore, see the [dagalog scripts](dagalog/README.md)
 
 ### Security
 The code in this repository is not deployed anywhere as this project is only used for demos run locally.
