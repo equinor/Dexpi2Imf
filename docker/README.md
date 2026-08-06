@@ -3,8 +3,6 @@
 ## Prerequisites
 * Install Docker and Docker-compose [https://docs.docker.com/compose/install/](https://docs.docker.com/compose/install/)
 
-* Copy the RDFox license file to [../RDFox.lic](../RDFox.lic)
-
 * Find a dexpi file, and copy it to [../rml_mappings/pandid.xml](../rml_mappings/pandid.xml)
 
 ## Running

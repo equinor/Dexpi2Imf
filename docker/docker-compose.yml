@@ -1,16 +1,30 @@
 
 services:
-  rdfox: 
-    image: oxfordsemantic/rdfox:7.2e
-    command: -license.file /home/rdfox/.RDFox/RDFox.lic sandbox /home/rdfox/.RDFox/rdfox dexpi
+  dagalog:
+    image: ghcr.io/daghovland/dagalog:0.4.1
+    command:
+      - --serve
+      - --port
+      - "3030"
+      - --data
+      - /home/dagalog/data/rml_mappings/pandid.trig
+      - --ontology
+      - /home/dagalog/data/owl/dexpi.ttl
+      - --ontology
+      - /home/dagalog/data/owl/imf-ontology.owl.ttl
+      - --ontology
+      - /home/dagalog/data/owl/boundary.ttl
+      - --rules
+      - /home/dagalog/data/datalog/noaka_boundary.datalog
     stdin_open: true
     tty: true
     ports:
-      - 12110:12110
+      - 3030:3030
     volumes:
       - type: bind
         source: ../
-        target: /home/rdfox/.RDFox/
+        target: /home/dagalog/data/
+        read_only: true
     depends_on:
       rml-mapper:
         condition: service_completed_successfully
@@ -29,7 +43,7 @@ services:
     ports:
       - 8000:8000
     depends_on:
-      - rdfox
+      - dagalog
   frontend:
     image: node:23
     working_dir: /app/local/www
