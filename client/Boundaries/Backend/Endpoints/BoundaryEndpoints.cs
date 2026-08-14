@@ -7,6 +7,18 @@ namespace Backend.Endpoints;
 
 public static class BoundaryEndpoints
 {
+    private static string ToSafeIri(string value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            throw new ArgumentException("IRI value cannot be null or whitespace.");
+
+        if (value.IndexOfAny(['<', '>', '"', '{', '}', '|', '\\', '^', '`']) >= 0 || value.Any(char.IsWhiteSpace))
+            throw new ArgumentException("IRI contains invalid characters.");
+
+        return Uri.IsWellFormedUriString(value, UriKind.Absolute)
+            ? value
+            : Uri.EscapeUriString(value);
+    }
     public static void MapBoundaryEndpoints(this IEndpointRouteBuilder endpoints)
     {
         #region Boundaries
@@ -138,7 +150,7 @@ public static class BoundaryEndpoints
         //Get adjacent nodes
         endpoints.MapGet("/nodes/{nodeId}/adjacent", async (string nodeId, [FromServices] IDagalogApi dagalogApi) =>
         {
-            nodeId = Uri.UnescapeDataString(nodeId);
+            nodeId = ToSafeIri(Uri.UnescapeDataString(nodeId));
 
             var query = $@"SELECT ?neighbour WHERE {{ <{nodeId}> {PropertiesProvider.adjacentTo} ?neighbour }}";
 
