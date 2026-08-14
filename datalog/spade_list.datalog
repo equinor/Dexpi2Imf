@@ -1,4 +1,6 @@
 prefix comp: <https://rdf.equinor.com/completion#>
+prefix imf: <http://ns.imfid.org/imf#>
+prefix dexpi: <https://rdf.equinor.com/dexpi#>
 
 comp:ValveOrSpade[?node] :- 
     dexpi:TagTypeAssignmentClass [?node, ?dexpiTag] , 

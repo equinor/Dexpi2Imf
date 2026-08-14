@@ -2,6 +2,20 @@ using IriTools;
 
 namespace Boundaries;
 
+/// <summary>
+/// Builds per-request Datalog rule text for RDFox's dynamic content-load endpoint
+/// (see the old IRdfoxApi.LoadDatalog/DeleteDatalog). Not currently wired to any live
+/// Backend endpoint - it's exercised only by DatalogCreatorTests.
+///
+/// dagalog (the current RDF backend, replacing RDFox) has no equivalent runtime
+/// endpoint for loading/unloading a named ruleset - see
+/// https://github.com/daghovland/rdf-datalog/issues/390. The generated rule text also
+/// uses RDFox-only syntax not supported by dagalog's Datalog parser: literal constants in
+/// atom position ("T4750") and the combined "NOT FILTER(...)" form - see
+/// https://github.com/daghovland/rdf-datalog/issues/388. If this class is revived for use
+/// against dagalog, both would need addressing (e.g. bind literals to a variable plus a
+/// separate FILTER, and split "NOT FILTER(...)" into plain FILTER(?x != ...) conjuncts).
+/// </summary>
 public class DatalogCreator
 {
     public IriReference BoundaryGraph = new IriReference($"https://data.equinor.com/boundaries/{Guid.NewGuid()}");
