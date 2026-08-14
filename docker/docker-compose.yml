@@ -1,7 +1,7 @@
 
 services:
   dagalog:
-    image: ghcr.io/daghovland/dagalog:0.4.1
+    image: ghcr.io/daghovland/dagalog:0.5.3
     command:
       - --serve
       - --port

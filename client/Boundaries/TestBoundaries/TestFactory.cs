@@ -24,7 +24,7 @@ public class TestFactory : WebApplicationFactory<Backend.Program>, IAsyncLifetim
     public TestFactory()
     {
         _dagalogContainer = new ContainerBuilder()
-            .WithImage("ghcr.io/daghovland/dagalog:latest")
+            .WithImage("ghcr.io/daghovland/dagalog:0.5.3")
             .WithBindMount($"{_outputFolderPath}/../../../../../../", RepoMountPath, AccessMode.ReadOnly)
             .WithCommand(
                 "--serve", "--port", "3030",
