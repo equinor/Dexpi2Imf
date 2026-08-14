@@ -1,46 +1,91 @@
 ﻿using Backend.Model;
 using Boundaries;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 
 namespace Backend.Utils;
 
 public static class QueryUtils
 {
+    private static readonly Regex SafeIriRefContentPattern = new(@"^[^<>\s""{}|^`\\]+$", RegexOptions.Compiled);
+
+    private static string AsSafeIriRefContent(string value, string paramName)
+    {
+        if (string.IsNullOrWhiteSpace(value) || !SafeIriRefContentPattern.IsMatch(value))
+            throw new ArgumentException($"Invalid IRI reference content for parameter '{paramName}'.", paramName);
+
+        return value;
+    }
 
     #region Boundary actions
     public static async Task<bool> IsBoundaryOf(string packageId, string nodeId, IDagalogApi dagalogApi)
-        => await dagalogApi.AskSparql($@"ASK WHERE {{ <{nodeId}> {PropertiesProvider.isBoundaryOf} <{packageId}> .}}");
+    {
+        var safePackageId = AsSafeIriRefContent(packageId, nameof(packageId));
+        var safeNodeId = AsSafeIriRefContent(nodeId, nameof(nodeId));
+        return await dagalogApi.AskSparql($@"ASK WHERE {{ <{safeNodeId}> {PropertiesProvider.isBoundaryOf} <{safePackageId}> .}}");
+    }
 
     public static async Task DeleteIsBoundaryOf(string packageId, string nodeId, IDagalogApi dagalogApi)
-        => await dagalogApi.DeleteData($@"<{nodeId}> {PropertiesProvider.isBoundaryOf} <{packageId}> .");
+    {
+        var safePackageId = AsSafeIriRefContent(packageId, nameof(packageId));
+        var safeNodeId = AsSafeIriRefContent(nodeId, nameof(nodeId));
+        await dagalogApi.DeleteData($@"<{safeNodeId}> {PropertiesProvider.isBoundaryOf} <{safePackageId}> .");
+    }
 
     public static async Task AddIsBoundaryOf(string packageId, string nodeId, IDagalogApi dagalogApi)
-    => await dagalogApi.InsertData($@"<{nodeId}> {PropertiesProvider.isBoundaryOf} <{packageId}> .");
+    {
+        var safePackageId = AsSafeIriRefContent(packageId, nameof(packageId));
+        var safeNodeId = AsSafeIriRefContent(nodeId, nameof(nodeId));
+        await dagalogApi.InsertData($@"<{safeNodeId}> {PropertiesProvider.isBoundaryOf} <{safePackageId}> .");
+    }
 
     #endregion
 
     #region SelectedInternal actions
     public static async Task<bool> IsSelectedInternalOf(string packageId, string nodeId, IDagalogApi dagalogApi)
-        => await dagalogApi.AskSparql($@"ASK WHERE {{ <{nodeId}> {PropertiesProvider.isSelectedInternalOf} <{packageId}> . }}");
+    {
+        var safePackageId = AsSafeIriRefContent(packageId, nameof(packageId));
+        var safeNodeId = AsSafeIriRefContent(nodeId, nameof(nodeId));
+        return await dagalogApi.AskSparql($@"ASK WHERE {{ <{safeNodeId}> {PropertiesProvider.isSelectedInternalOf} <{safePackageId}> . }}");
+    }
 
     public static async Task DeleteIsSelectedInternalOf(string packageId, string nodeId, IDagalogApi dagalogApi)
-    => await dagalogApi.DeleteData($@"<{nodeId}> {PropertiesProvider.isSelectedInternalOf} <{packageId}> .");
+    {
+        var safePackageId = AsSafeIriRefContent(packageId, nameof(packageId));
+        var safeNodeId = AsSafeIriRefContent(nodeId, nameof(nodeId));
+        await dagalogApi.DeleteData($@"<{safeNodeId}> {PropertiesProvider.isSelectedInternalOf} <{safePackageId}> .");
+    }
 
     public static async Task AddIsSelectedInternalOf(string packageId, string nodeId, IDagalogApi dagalogApi)
-        => await dagalogApi.InsertData($@"<{nodeId}> {PropertiesProvider.isSelectedInternalOf} <{packageId}> .");
+    {
+        var safePackageId = AsSafeIriRefContent(packageId, nameof(packageId));
+        var safeNodeId = AsSafeIriRefContent(nodeId, nameof(nodeId));
+        await dagalogApi.InsertData($@"<{safeNodeId}> {PropertiesProvider.isSelectedInternalOf} <{safePackageId}> .");
+    }
     #endregion
 
     #region IsInPackage actions 
     public static async Task<bool> NodeIsInPackage(string packageId, string nodeId, DagalogApi dagalogApi)
-    => await dagalogApi.AskSparql($@"ASK WHERE {{ <{nodeId}> {PropertiesProvider.isInPackage} <{packageId}> . }}");
+    {
+        var safePackageId = AsSafeIriRefContent(packageId, nameof(packageId));
+        var safeNodeId = AsSafeIriRefContent(nodeId, nameof(nodeId));
+        return await dagalogApi.AskSparql($@"ASK WHERE {{ <{safeNodeId}> {PropertiesProvider.isInPackage} <{safePackageId}> . }}");
+    }
 
     public static async Task DeleteNodeFromPackage(string packageId, string nodeId, DagalogApi dagalogApi)
-        => await dagalogApi.InsertData($"<{nodeId}> {PropertiesProvider.isInPackage} <{packageId}> .");
+    {
+        var safePackageId = AsSafeIriRefContent(packageId, nameof(packageId));
+        var safeNodeId = AsSafeIriRefContent(nodeId, nameof(nodeId));
+        await dagalogApi.InsertData($"<{safeNodeId}> {PropertiesProvider.isInPackage} <{safePackageId}> .");
+    }
     #endregion
 
     #region CommissioningPackage actions
     public static async Task<bool> CommissioningPackageExists(string packageId, IDagalogApi dagalogApi)
-        => await dagalogApi.AskSparql($@"ASK WHERE {{ <{packageId}> {TypesProvider.type} {PropertiesProvider.CommissioningPackage} . }}");
+    {
+        var safePackageId = AsSafeIriRefContent(packageId, nameof(packageId));
+        return await dagalogApi.AskSparql($@"ASK WHERE {{ <{safePackageId}> {TypesProvider.type} {PropertiesProvider.CommissioningPackage} . }}");
+    }
 
     public static CommissioningPackage ParseCommissioningPackageQueryResult(string id, string queryResult)
     {
