@@ -9,15 +9,42 @@ namespace Backend.Endpoints;
 
 public static class CommissioningPackageEndpoints
 {
+    private static string ToSafeIri(string value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            throw new ArgumentException("IRI value cannot be null or whitespace.");
+
+        if (value.IndexOfAny(['<', '>', '"', '{', '}', '|', '\\', '^', '`']) >= 0 || value.Any(char.IsWhiteSpace))
+            throw new ArgumentException("IRI contains invalid characters.");
+
+        return Uri.IsWellFormedUriString(value, UriKind.Absolute)
+            ? value
+            : Uri.EscapeUriString(value);
+    }
+
+    private static string EscapeSparqlLiteral(string value)
+    {
+        if (value is null) return string.Empty;
+        return value
+            .Replace("\\", "\\\\")
+            .Replace("\"", "\\\"")
+            .Replace("\r", "\\r")
+            .Replace("\n", "\\n")
+            .Replace("\t", "\\t");
+    }
     public static void MapCommissioningPackageEndpoints(this IEndpointRouteBuilder endpoints)
     {
         //Add commissioning package
         endpoints.MapPost("/commissioning-package", async (CommissioningPackage commissioningPackage, [FromServices] IDagalogApi dagalogApi) =>
         {
+            var safeId = ToSafeIri(commissioningPackage.Id);
+            var safeName = EscapeSparqlLiteral(commissioningPackage.Name);
+            var safeColor = EscapeSparqlLiteral(commissioningPackage.Color);
+
             var data = new StringBuilder();
-            data.AppendLine($@"<{commissioningPackage.Id}> {TypesProvider.type} {PropertiesProvider.CommissioningPackage} .");
-            data.AppendLine($@"<{commissioningPackage.Id}> {PropertiesProvider.hasName} ""{commissioningPackage.Name}"" .");
-            data.AppendLine($@"<{commissioningPackage.Id}> {PropertiesProvider.hasColor} ""{commissioningPackage.Color}"" .");
+            data.AppendLine($@"<{safeId}> {TypesProvider.type} {PropertiesProvider.CommissioningPackage} .");
+            data.AppendLine($@"<{safeId}> {PropertiesProvider.hasName} ""{safeName}"" .");
+            data.AppendLine($@"<{safeId}> {PropertiesProvider.hasColor} ""{safeColor}"" .");
 
             try
             {
@@ -35,11 +62,15 @@ public static class CommissioningPackageEndpoints
         // Update commissioning package - updating information like name and color while persisting the calculated internal nodes, and boundaries.
         endpoints.MapPut("/commissioning-package", async (CommissioningPackage updatedPackage, [FromServices] IDagalogApi dagalogApi) =>
         {
+            var safeUpdatedId = ToSafeIri(updatedPackage.Id);
+            var safeUpdatedName = EscapeSparqlLiteral(updatedPackage.Name);
+            var safeUpdatedColor = EscapeSparqlLiteral(updatedPackage.Color);
+
             var getQuery = $@"
             SELECT ?object WHERE {{
-                {{ <{updatedPackage.Id}> {PropertiesProvider.hasColor} ?object . }}
+                {{ <{safeUpdatedId}> {PropertiesProvider.hasColor} ?object . }}
                 UNION
-                {{ <{updatedPackage.Id}> {PropertiesProvider.hasName} ?object .  }}
+                {{ <{safeUpdatedId}> {PropertiesProvider.hasName} ?object .  }}
             }}
             ";
 
@@ -60,15 +91,15 @@ public static class CommissioningPackageEndpoints
             }
 
             // Log the existing color and name of the package
-            var deleteData = $@"<{updatedPackage.Id}> {PropertiesProvider.hasColor} ""{oldPackageColor}"" .
-                                <{updatedPackage.Id}> {PropertiesProvider.hasName} ""{oldPackageName}"" . ";
+            var deleteData = $@"<{safeUpdatedId}> {PropertiesProvider.hasColor} ""{EscapeSparqlLiteral(oldPackageColor)}"" .
+                                <{safeUpdatedId}> {PropertiesProvider.hasName} ""{EscapeSparqlLiteral(oldPackageName)}"" . ";
 
 
             await dagalogApi.DeleteData(deleteData);
 
             var data = $@"
-                <{updatedPackage.Id}> {PropertiesProvider.hasName} ""{updatedPackage.Name}"" .
-                <{updatedPackage.Id}> {PropertiesProvider.hasColor} ""{updatedPackage.Color}"" .
+                <{safeUpdatedId}> {PropertiesProvider.hasName} ""{safeUpdatedName}"" .
+                <{safeUpdatedId}> {PropertiesProvider.hasColor} ""{safeUpdatedColor}"" .
             ";
 
             await dagalogApi.InsertData(data);
@@ -80,7 +111,7 @@ public static class CommissioningPackageEndpoints
         //Get commissioning package
         endpoints.MapGet("/commissioning-package/{commissioningPackageId}", async (string commissioningPackageId, [FromServices] IDagalogApi dagalogApi) =>
         {
-            commissioningPackageId = Uri.UnescapeDataString(commissioningPackageId);
+            commissioningPackageId = ToSafeIri(Uri.UnescapeDataString(commissioningPackageId));
 
             if (!await QueryUtils.CommissioningPackageExists(commissioningPackageId, dagalogApi))
             {
@@ -119,7 +150,7 @@ public static class CommissioningPackageEndpoints
         //Delete commissioning package
         endpoints.MapDelete("/commissioning-package/{commissioningPackageId}", async (string commissioningPackageId, [FromServices] IDagalogApi dagalogApi) =>
         {
-            commissioningPackageId = Uri.UnescapeDataString(commissioningPackageId);
+            commissioningPackageId = ToSafeIri(Uri.UnescapeDataString(commissioningPackageId));
 
             if (!await QueryUtils.CommissioningPackageExists(commissioningPackageId, dagalogApi))
             {
@@ -144,13 +175,15 @@ public static class CommissioningPackageEndpoints
                     var xValue = binding.GetProperty("x").GetProperty("value").GetString();
                     var yValue = binding.GetProperty("y").GetProperty("value").GetString();
 
+                    var safeX = ToSafeIri(xValue ?? string.Empty);
                     if (yValue != null && yValue.Contains("http"))
                     {
-                        deleteQueryBuilder.AppendLine($@"<{commissioningPackageId}> <{xValue}> <{yValue}> . ");
+                        var safeYIri = ToSafeIri(yValue);
+                        deleteQueryBuilder.AppendLine($@"<{commissioningPackageId}> <{safeX}> <{safeYIri}> . ");
                     }
                     else
                     {
-                        deleteQueryBuilder.AppendLine($@"<{commissioningPackageId}> <{xValue}> ""{yValue}"" . ");
+                        deleteQueryBuilder.AppendLine($@"<{commissioningPackageId}> <{safeX}> ""{EscapeSparqlLiteral(yValue ?? string.Empty)}"" . ");
                     }
                 }
             }
@@ -176,7 +209,7 @@ public static class CommissioningPackageEndpoints
                         var xValue = binding.GetProperty("x").GetProperty("value").GetString();
                         var yValue = binding.GetProperty("y").GetProperty("value").GetString();
 
-                        deleteQueryBuilder.AppendLine($@"<{yValue}> <{xValue}> <{commissioningPackageId}> . ");
+                        deleteQueryBuilder.AppendLine($@"<{ToSafeIri(yValue ?? string.Empty)}> <{ToSafeIri(xValue ?? string.Empty)}> <{commissioningPackageId}> . ");
                     }
                 }
 
